@@ -46,6 +46,10 @@ int main(int argc, char* argv[])
 		else if (c == engine.input.drop)
 			game_drop_piece(&game);
 
+		else if (c == engine.input.pause)
+			board_delete_line(&(game.board), 5);
+
+		game_update(&game);
 		game_draw(&game);
 
 		if (game_is_over(&game))

@@ -36,3 +36,15 @@ void engine_draw_block(block_s* b)
 	mvwaddstr(w, b->y, (b->x * 2), b->theme);
 }
 
+/** Copies block #a into #b */
+void block_copy(block_s* a, block_s* b)
+{
+	b->x        = a->x;
+	b->y        = a->y;
+	b->color    = a->color;
+	b->type     = a->type;
+	b->theme[0] = a->theme[0];
+	b->theme[1] = a->theme[1];
+	b->theme[2] = a->theme[2];
+}
+

@@ -81,7 +81,7 @@ int engine_screen_init(int width, int height)
 		init_pair(BLUE_BLACK,    COLOR_BLUE,    COLOR_BLACK);
 		init_pair(MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
 		init_pair(YELLOW_BLACK,  COLOR_YELLOW,  COLOR_BLACK);
-		init_pair(WHITE_BLACK,   COLOR_BLACK,   COLOR_BLACK);
+		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
 		init_pair(BLACK_GREEN,   COLOR_BLACK,   COLOR_GREEN);
 		init_pair(BLACK_CYAN,    COLOR_BLACK,   COLOR_CYAN);
 		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
@@ -270,17 +270,6 @@ int engine_get_input(int delay_ms)
 		return engine.input.none;
 
 	return c;
-	/* /\* Will only get here if something's pressed *\/ */
-	/* switch (c) */
-	/* { */
-	/* case engine.input.left:   case KEY_LEFT:  return LEFT; */
-	/* case engine.input.right:  case KEY_RIGHT: return RIGHT; */
-	/* case engine.input.rotate: case KEY_UP:    return ROTATE; */
-	/* case engine.input.down:   case KEY_DOWN:  return DOWN; */
-	/* case engine.input.drop:                   return DROP; */
-	/* case engine.input.quit:                   return QUIT; */
-	/* case engine.input.pause:                  return PAUSE; */
-	/* case engine.input.rotate_backw:           return ROTATE_BACKW; */
-	/* } */
 }
+
 

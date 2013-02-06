@@ -56,3 +56,8 @@ bool game_is_over(game_s* g)
 	return false;
 }
 
+void game_update(game_s* g)
+{
+	board_delete_possible_lines(&(g->board));
+}
+
