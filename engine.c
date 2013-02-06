@@ -30,10 +30,11 @@ typedef struct screen_s
 	int height;
 	WINDOW* main;
 	WINDOW* left;
+	WINDOW* middle;
 	WINDOW* right;
 	WINDOW* board;
 	WINDOW* info;
-
+	WINDOW* next[4];
 } screen_s;
 
 /** Container for all info about the game engine */
@@ -119,36 +120,58 @@ int engine_windows_init()
 
 	w = newwin(24, 80, 0, 0);
 	box(w, ACS_VLINE, ACS_HLINE);
-	wbkgd(w, ' ');
+//	wbkgd(w, '*');
 	wrefresh(w);
 	engine.screen.main = w;
 
 	w = derwin(engine.screen.main, 22, 11 * 2, 1, 2);
 	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wbkgd(w, ' ');
 	wrefresh(w);
 	engine.screen.left = w;
 
-	w = derwin(engine.screen.left, 20, 10 * 2, 1, 1);
-	wbkgd(w, ' ');
-	wrefresh(w);
-	engine.screen.board = w;
-
-	w = derwin(engine.screen.main, 22, 53, 1, 25);
+	w = derwin(engine.screen.main, 22, 6 * 2, 1, 25);
 	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wbkgd(w, ' ');
+	wrefresh(w);
+	engine.screen.middle = w;
+
+	w = derwin(engine.screen.main, 22, 40, 1, 38);
+	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w);
 	engine.screen.right = w;
 
-	w = derwin(engine.screen.right, 20, 51, 1, 1);
-	wbkgd(w, ' ');
+	//////////
+	w = derwin(engine.screen.middle, 5, 5 * 2, 1, 1);
+	mvwhline(w, 4, 0, '-', 10);
+	wrefresh(w);
+	engine.screen.next[0] = w;
+
+	w = derwin(engine.screen.middle, 5, 5 * 2, 6, 1);
+	wrefresh(w);
+	engine.screen.next[1] = w;
+
+	w = derwin(engine.screen.middle, 5, 5 * 2, 11, 1);
+	wrefresh(w);
+	engine.screen.next[2] = w;
+
+	w = derwin(engine.screen.middle, 5, 5 * 2, 16, 1);
+	wrefresh(w);
+	engine.screen.next[3] = w;
+    //////////
+
+	w = derwin(engine.screen.left, 20, 10 * 2, 1, 1);
+	wrefresh(w);
+	engine.screen.board = w;
+
+	w = derwin(engine.screen.right, 20, 36, 1, 2);
 	wrefresh(w);
 	engine.screen.info = w;
 
 	w = engine.screen.info;
 	mvwaddstr(w, 1, 1, "yetris v0.5");
 	mvwaddstr(w, 3, 5, "Ahh yeah");
-	mvwaddstr(w, 4, 5, "This is awesome, everything's fine");
+	mvwaddstr(w, 4, 5, "This is awesome, everything's fine! "
+		               "you see, this is a multilined string "
+		               "and i'm still able to print it aligned");
 	wrefresh(w);
 }
 
