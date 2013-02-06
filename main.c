@@ -47,6 +47,9 @@ int main(int argc, char* argv[])
 			game_drop_piece(&game);
 
 		game_draw(&game);
+
+		if (game_is_over(&game))
+			quit = true;
 	}
 	return 0;
 }

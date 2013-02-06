@@ -284,4 +284,3 @@ int engine_get_input(int delay_ms)
 	/* } */
 }
 
-

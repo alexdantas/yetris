@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 
 typedef struct game_s
 {
@@ -43,5 +44,15 @@ void game_draw(game_s* g)
 	engine_draw_board(&(g->board));
 
 	wrefresh(engine.screen.board);
+}
+
+bool game_is_over(game_s* g)
+{
+	int i;
+	for (i = 0; i < BOARD_WIDTH; i++)
+		if (g->board.block[i][0].type != EMPTY)
+			return true;
+
+	return false;
 }
 
