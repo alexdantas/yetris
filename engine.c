@@ -47,9 +47,9 @@ engine_s engine;
 
 /** Defining the game color pairs (background_foreground) -- arbitrary numbers */
 enum color_e { BLACK_WHITE = 1337, CYAN_BLACK,  BLUE_BLACK,
-              WHITE_BLACK,        GREEN_BLACK, RED_BLACK,    YELLOW_BLACK,
-			  MAGENTA_BLACK,      BLACK_CYAN,  BLACK_BLUE,   BLACK_YELLOW,
-			  BLACK_GREEN,        BLACK_RED,   BLACK_MAGENTA
+               WHITE_BLACK,        GREEN_BLACK, RED_BLACK,    YELLOW_BLACK,
+               MAGENTA_BLACK,      BLACK_CYAN,  BLACK_BLUE,   BLACK_YELLOW,
+			   BLACK_GREEN,        BLACK_RED,   BLACK_MAGENTA
               };
 typedef enum color_e color_e;
 
@@ -114,14 +114,27 @@ int engine_screen_init(int width, int height)
 
 int engine_windows_init()
 {
-	engine.screen.main = newwin(24, 80, 0, 0);
-	box(engine.screen.main, ACS_VLINE, ACS_HLINE);
-	wbkgd(engine.screen.main, COLOR_PAIR(CYAN_BLACK));
-	wrefresh(engine.screen.main);
+	WINDOW* w = NULL;
 
-	engine.screen.game = subwin(engine.screen.main, 22, 12 * 2, 1, 2);
-	box(engine.screen.game, 0, 0);
-	wrefresh(engine.screen.game);
+	w = newwin(24, 80, 0, 0);
+	box(w, ACS_VLINE, ACS_HLINE);
+	wattron(w, COLOR_PAIR(BLACK_CYAN));
+	wbkgd(w, ' ');
+	wrefresh(w);
+	engine.screen.main = w;
+
+	w = derwin(engine.screen.main, 22, 11 * 2, 1, 2);
+	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
+	wattron(w, COLOR_PAIR(BLACK_RED));
+	wbkgd(w, '*');
+	wrefresh(w);
+	engine.screen.game = w;
+
+	w = derwin(engine.screen.game, 20, 10 * 2, 1, 1);
+	wattron(w, COLOR_PAIR(BLACK_GREEN));
+	wbkgd(w, '#');
+	wrefresh(w);
+	engine.screen.board = w;
 }
 
 int engine_init()
