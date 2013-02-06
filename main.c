@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include "arguments.h"
 #include "engine.c"
 #include "game.c"
@@ -17,7 +18,8 @@ int main(int argc, char* argv[])
 	engine_init();
 	atexit(engine_exit);
 
-	piece_s piece = new_piece(PIECE_T);
+	board_s board = new_board();
+	piece_s piece = new_piece(PIECE_L);
 
 	bool quit = false;
 	while (!quit)
@@ -38,8 +40,15 @@ int main(int argc, char* argv[])
 			piece_rotate(&piece, 1);
 		else if (c == engine.input.rotate_backw)
 			piece_rotate(&piece, -1);
+		else if (c == engine.input.pause)
+		{
+			board_save_piece(&board, &piece);
+			piece = new_piece(piece_get_random());
+		}
+
 
 		engine_draw_piece(&piece);
+		engine_draw_board(&board);
 		wrefresh(engine.screen.board);
 	}
 	return 0;

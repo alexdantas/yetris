@@ -29,7 +29,8 @@ typedef struct screen_s
 	int width;
 	int height;
 	WINDOW* main;
-	WINDOW* game;
+	WINDOW* left;
+	WINDOW* right;
 	WINDOW* board;
 	WINDOW* info;
 
@@ -46,13 +47,13 @@ engine_s engine;
 
 
 /** Defining the game color pairs (background_foreground) -- arbitrary numbers */
-enum color_e { BLACK_WHITE = 1337, CYAN_BLACK,  BLUE_BLACK,
-               WHITE_BLACK,        GREEN_BLACK, RED_BLACK,    YELLOW_BLACK,
-               MAGENTA_BLACK,      BLACK_CYAN,  BLACK_BLUE,   BLACK_YELLOW,
-			   BLACK_GREEN,        BLACK_RED,   BLACK_MAGENTA
-              };
-typedef enum color_e color_e;
-
+typedef enum color_e { BLACK_WHITE = 1, WHITE_BLACK,
+                       BLACK_CYAN,      CYAN_BLACK,
+                       BLACK_BLUE,      BLUE_BLACK,
+                       BLACK_RED,       RED_BLACK,
+                       BLACK_YELLOW,    YELLOW_BLACK,
+                       BLACK_MAGENTA,   MAGENTA_BLACK,
+                       BLACK_GREEN,     GREEN_BLACK} color_e;
 
 /* /\** Definitions for the input keys -- arbitrary numbers *\/ */
 /* enum Input { RIGHT=666, DOWN,  LEFT, ROTATE, ROTATE_BACKW, */
@@ -70,25 +71,25 @@ int engine_screen_init(int width, int height)
 
 	if (has_colors() == TRUE)
 	{
+		start_color();
 		/* Colors (Enum Name,     Foreground,    Background) */
-		init_pair (GREEN_BLACK,   COLOR_GREEN,   COLOR_BLACK);
-		init_pair (CYAN_BLACK,    COLOR_CYAN,    COLOR_BLACK);
-		init_pair (WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
-		init_pair (RED_BLACK,     COLOR_RED,     COLOR_BLACK);
-		init_pair (BLUE_BLACK,    COLOR_BLUE,    COLOR_BLACK);
-		init_pair (MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
-		init_pair (YELLOW_BLACK,  COLOR_YELLOW,  COLOR_BLACK);
-		init_pair (WHITE_BLACK,   COLOR_BLACK,   COLOR_BLACK);
-		init_pair (BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
-		init_pair (BLACK_GREEN,   COLOR_BLACK,   COLOR_GREEN);
-		init_pair (BLACK_CYAN,    COLOR_BLACK,   COLOR_CYAN);
-		init_pair (BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
-		init_pair (BLACK_RED,     COLOR_BLACK,   COLOR_RED);
-		init_pair (BLACK_BLUE,    COLOR_BLACK,   COLOR_BLUE);
-		init_pair (BLACK_MAGENTA, COLOR_BLACK,   COLOR_MAGENTA);
-		init_pair (BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
+		init_pair(GREEN_BLACK,   COLOR_GREEN,   COLOR_BLACK);
+		init_pair(CYAN_BLACK,    COLOR_CYAN,    COLOR_BLACK);
+		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
+		init_pair(RED_BLACK,     COLOR_RED,     COLOR_BLACK);
+		init_pair(BLUE_BLACK,    COLOR_BLUE,    COLOR_BLACK);
+		init_pair(MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
+		init_pair(YELLOW_BLACK,  COLOR_YELLOW,  COLOR_BLACK);
+		init_pair(WHITE_BLACK,   COLOR_BLACK,   COLOR_BLACK);
+		init_pair(BLACK_GREEN,   COLOR_BLACK,   COLOR_GREEN);
+		init_pair(BLACK_CYAN,    COLOR_BLACK,   COLOR_CYAN);
+		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
+		init_pair(BLACK_RED,     COLOR_BLACK,   COLOR_RED);
+		init_pair(BLACK_BLUE,    COLOR_BLACK,   COLOR_BLUE);
+		init_pair(BLACK_MAGENTA, COLOR_BLACK,   COLOR_MAGENTA);
+		init_pair(BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
+		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
 	}
-
 
 	/* Gets the current width and height */
 	int current_height, current_width;
@@ -107,7 +108,7 @@ int engine_screen_init(int width, int height)
 	raw ();       /* Character input doesnt require the <enter> key anymore */
 	curs_set (0); /* Makes the blinking cursor invisible */
 	noecho ();    /* Wont print the keys received through input */
-	nodelay (stdscr, TRUE); /* Wont wait for input - the game will run instantaneously */
+	nodelay (stdscr, TRUE); /* Wont wait for input */
 	keypad (stdscr, TRUE);  /* Support for extra keys (life F1, F2, ... ) */
 	refresh ();   /* Refresh the screen (prints whats in the screen buffer) */
 }
@@ -118,23 +119,37 @@ int engine_windows_init()
 
 	w = newwin(24, 80, 0, 0);
 	box(w, ACS_VLINE, ACS_HLINE);
-	wattron(w, COLOR_PAIR(BLACK_CYAN));
 	wbkgd(w, ' ');
 	wrefresh(w);
 	engine.screen.main = w;
 
 	w = derwin(engine.screen.main, 22, 11 * 2, 1, 2);
 	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wattron(w, COLOR_PAIR(BLACK_RED));
-	wbkgd(w, '*');
+	wbkgd(w, ' ');
 	wrefresh(w);
-	engine.screen.game = w;
+	engine.screen.left = w;
 
-	w = derwin(engine.screen.game, 20, 10 * 2, 1, 1);
-	wattron(w, COLOR_PAIR(BLACK_GREEN));
-	wbkgd(w, '#');
+	w = derwin(engine.screen.left, 20, 10 * 2, 1, 1);
+	wbkgd(w, ' ');
 	wrefresh(w);
 	engine.screen.board = w;
+
+	w = derwin(engine.screen.main, 22, 53, 1, 25);
+	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
+	wbkgd(w, ' ');
+	wrefresh(w);
+	engine.screen.right = w;
+
+	w = derwin(engine.screen.right, 20, 51, 1, 1);
+	wbkgd(w, ' ');
+	wrefresh(w);
+	engine.screen.info = w;
+
+	w = engine.screen.info;
+	mvwaddstr(w, 1, 1, "yetris v0.5");
+	mvwaddstr(w, 3, 5, "Ahh yeah");
+	mvwaddstr(w, 4, 5, "This is awesome, everything's fine");
+	wrefresh(w);
 }
 
 int engine_init()
@@ -146,6 +161,7 @@ int engine_init()
 	engine_screen_init(80, 24);
 	engine_windows_init();
 	engine_keymap(NULL);
+	srand(time(NULL));
 
 	restore_signals();
 }

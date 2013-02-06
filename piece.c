@@ -10,15 +10,19 @@
 #define BOARD_HEIGHT 20
 
 
-/* This order is important */
+/** Enumerate all possible pieces.
+ *  @note This order is important.
+ *  Also, PIECE_MAX tells the biggest number for a piece
+ */
 typedef enum piece_e { PIECE_O = 0, PIECE_I, PIECE_J,
-                       PIECE_L,     PIECE_S, PIECE_Z, PIECE_T} piece_e;
+                       PIECE_L,     PIECE_S, PIECE_Z, PIECE_T,
+                       PIECE_MAX} piece_e;
 
 typedef struct piece_s
 {
 	piece_e type;
-	int x;
-	int y;
+	int     x;
+	int     y;
 	color_e color;
 	char    theme[3]; /* the appearance of each block of this piece */
 	block_s block[4];
@@ -28,26 +32,29 @@ typedef struct piece_s
 
 piece_s new_piece(piece_e type)
 {
+	if ((type < 0) || (type >= PIECE_MAX))
+		exit(0);
+
 	piece_s p;
 	color_e color;
 
 	switch(type)
 	{
-	case PIECE_S: color = BLACK_CYAN; break;
-	case PIECE_Z: color = BLACK_RED; break;
-	case PIECE_O: color = BLACK_GREEN; break;
-	case PIECE_I: color = BLACK_YELLOW; break;
-	case PIECE_L: color = BLACK_BLUE; break;
-	case PIECE_J: color = BLACK_MAGENTA; break;
-	case PIECE_T: color = BLACK_WHITE; break;
+	case PIECE_S: color = BLACK_GREEN;   break;
+	case PIECE_Z: color = BLACK_RED;     break;
+	case PIECE_O: color = BLACK_YELLOW | A_BOLD; break;
+	case PIECE_I: color = BLACK_CYAN   | A_BOLD; break;
+	case PIECE_L: color = BLACK_YELLOW;  break;
+	case PIECE_J: color = BLACK_BLUE;    break;
+	case PIECE_T: color = BLACK_MAGENTA; break;
 	}
 
-	p.type  = type;
-	p.color = color;
-	p.theme[0] = '['; p.theme[1] = ']'; p.theme[3] = '\0';
 	p.rotation = 0;
-	p.x = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
-	p.y = global_pieces_position[p.type][p.rotation][1];
+	p.type     = type;
+	p.color    = color;
+	p.theme[0] = '['; p.theme[1] = ']'; p.theme[3] = '\0';
+	p.x        = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
+	p.y        = global_pieces_position[p.type][p.rotation][1];
 
 	/* This seems complicated, but it's just starting each
 	 * block of the piece according to it's x and y on the board */
@@ -56,15 +63,12 @@ piece_s new_piece(piece_e type)
 		for (j = 0; j < PIECE_BLOCKS; j++)
 			if (global_pieces[p.type][p.rotation][j][i] != 0)
 			{
-//				int offset_x = global_pieces_position[p.type][p.rotation][0];
-//				int offset_y = global_pieces_position[p.type][p.rotation][0];
 				int block_x  = p.x + i;
 				int block_y  = p.y + j;
 
 				p.block[k] = new_block(block_x, block_y, p.theme, p.color);
 				k++;
 			}
-
 	return p;
 }
 
@@ -135,5 +139,13 @@ void piece_move(piece_s* p, int direction)
 void piece_hard_drop(piece_s* p)
 {
 
+}
+
+/** Returns a random piece */
+piece_e piece_get_random()
+{
+	int min = 0;
+	int max = PIECE_MAX - 1;
+	return rand() % (max - min + 1) + min;
 }
 
