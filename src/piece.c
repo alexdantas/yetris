@@ -140,8 +140,8 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 			(board_x < 0))
 			return false;
 
-//		if (b->block[board_x][board_y].type != EMPTY)
-//			return false;
+		if (b->block[board_x][board_y].type != EMPTY)
+			return false;
 	}
 	return true;
 }
