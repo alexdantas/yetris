@@ -55,10 +55,13 @@ int main(int argc, char* argv[])
 				piece_rotate(game.piece_current, -1);
 		}
 		else if (c == engine.input.drop)
+		{
 			piece_hard_drop(game.piece_current, &(game.board));
-
+		}
 		else if (c == engine.input.pause)
+		{
 			board_delete_line(&(game.board), 5);
+		}
 
 		game_update(&game);
 		game_draw(&game);
