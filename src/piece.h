@@ -9,11 +9,12 @@
 
 /** Enumerate all possible pieces.
  *  @note This order is important.
- *  Also, PIECE_MAX tells the biggest number for a piece
+ *  Also, PIECE_MAX tells the biggest number for a visible piece.
+ *  The others are flags for special pieces.
  */
 typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
                PIECE_J,     PIECE_S, PIECE_Z, PIECE_T,
-               PIECE_MAX} piece_e;
+               PIECE_MAX,   PIECE_DUMMY } piece_e;
 
 /** Possible directions a piece can move */
 typedef enum { DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } direction_e;
@@ -40,5 +41,7 @@ void piece_hard_drop(piece_s* p, board_s* b);
 piece_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
 bool piece_can_rotate(piece_s* p, board_s* b, int rotation);
+void piece_reset(piece_s* p);
+bool piece_is_valid(piece_s* p);
 
 #endif /* PIECE_H_DEFINED */

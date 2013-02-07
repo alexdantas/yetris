@@ -16,6 +16,8 @@ game_s new_game()
 	for (i = 0; i < 5; i++)
 		g.piece_next[i] = new_piece(piece_get_random());
 
+	g.can_hold = true;
+	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	g.piece_current = &(g.piece_next[0]);
 
 	game_ghost_update(&g);
@@ -52,6 +54,8 @@ void game_drop_piece(game_s* g)
 	g->piece_current = &(g->piece_next[0]);
 
 	game_ghost_update(g);
+
+	g->can_hold = true; /* now we can switch pieces! */
 }
 
 /** Tests if the game is over */
@@ -65,8 +69,45 @@ void game_update(game_s* g)
 {
 	board_delete_possible_lines(&(g->board));
 	game_ghost_update(g);
+	// as soon as the piece hits the ground it's setted -- CHANGE THIS
 	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
 		game_drop_piece(g);
 }
 
+bool game_hold_piece(game_s* g)
+{
+	if (!g->can_hold)
+		return false;
+
+   	g->can_hold = false;
+
+	piece_s tmp = g->piece_hold;
+	g->piece_hold = *(g->piece_current);
+
+	if (tmp.type == PIECE_DUMMY)
+	{
+		int i;
+		for (i = 0; i < 4; i++)
+			g->piece_next[i] = g->piece_next[i + 1];
+
+		g->piece_next[i] = new_piece(piece_get_random());
+		game_ghost_update(g);
+
+	}
+	else
+	{
+		(*g->piece_current) = tmp;
+		piece_reset(g->piece_current);
+	}
+
+	/* Move the hold piece to fit the hold screen */
+	int k;
+	for (k = 0; k < 4; k++)
+	{
+		g->piece_hold.block[k].x -= g->piece_hold.x;
+		g->piece_hold.block[k].y -= g->piece_hold.y;
+	}
+
+	return true;
+}
 

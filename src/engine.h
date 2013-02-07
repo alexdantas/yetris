@@ -84,6 +84,7 @@ int engine_get_input(int delay_ms);
 void engine_draw_block(block_s* b, WINDOW* w);
 void engine_draw_piece(piece_s* p, WINDOW* w);
 void engine_draw_board(board_s* b);
+void engine_draw_hold(game_s* g);
 void engine_draw(game_s* g);
 
 #endif /* ENGINE_H_DEFINED */

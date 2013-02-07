@@ -7,9 +7,8 @@
 
 piece_s new_piece(piece_e type)
 {
-	if ((type < 0) || (type >= PIECE_MAX))
-		exit(0); /* Isn't that a bit rough? */
-
+//	if ((type < 0) || (type >= PIECE_MAX))
+//		exit(0); /* Isn't that a bit rough? */
 	piece_s p;
 	color_e color;
 
@@ -22,12 +21,18 @@ piece_s new_piece(piece_e type)
 	case PIECE_L: color = BLACK_YELLOW;  break;
 	case PIECE_J: color = BLACK_BLUE;    break;
 	case PIECE_T: color = BLACK_MAGENTA; break;
+	default:      color = WHITE_BLACK;
 	}
 
 	p.rotation = 0;
 	p.type     = type;
 	p.color    = color;
 	p.theme[0] = '['; p.theme[1] = ']'; p.theme[3] = '\0';
+
+	/* If we're creating a dummy piece, it won't be printed anyway */
+	if (!piece_is_valid(&p))
+		return p;
+
 	p.x        = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
 	p.y        = global_pieces_position[p.type][p.rotation][1];
 
@@ -147,5 +152,39 @@ bool piece_can_rotate(piece_s* p, board_s* b, int rotation)
 
 	piece_rotate(&new_p, rotation);
 	return piece_can_move(&new_p, b, DIR_NONE);
+}
+
+/** Reset piece's state - right on top and with no rotation */
+void piece_reset(piece_s* p)
+{
+	if (!piece_is_valid(p))
+		return;
+
+	p->rotation = 0;
+	p->x = BOARD_WIDTH/2 + global_pieces_position[p->type][p->rotation][0];
+	p->y = global_pieces_position[p->type][p->rotation][1];
+
+	/* This seems complicated, but it's just starting each
+	 * block of the piece according to it's x and y on the board */
+	int i,j, k = 0;
+	for (i = 0; i < PIECE_BLOCKS; i++)
+		for (j = 0; j < PIECE_BLOCKS; j++)
+			if (global_pieces[p->type][p->rotation][j][i] != 0)
+			{
+				int block_x  = p->x + i;
+				int block_y  = p->y + j;
+
+				p->block[k] = new_block(block_x, block_y, p->theme, p->color);
+				k++;
+			}
+}
+
+/** Tells if a piece is a basic one (one of the 7 original ones) */
+bool piece_is_valid(piece_s* p)
+{
+	if ((p->type < 0) || (p->type >= PIECE_MAX))
+		return false;
+	else
+		return true;
 }
 

@@ -192,11 +192,11 @@ int engine_windows_init()
 
 	/* hold */
 	w.width  = s->leftmost_container.width;
-	w.height = 5;
+	w.height = 6;
 	w.x      = 0;
 	w.y      = 1;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	mvwhline(w.win, w.height - 1, 0, '-', w.width);
 	wrefresh(w.win);
 	s->hold = w;
 
@@ -319,8 +319,9 @@ void engine_draw_block(block_s* b, WINDOW* w)
 
 void engine_draw_piece(piece_s* p, WINDOW* w)
 {
-	/* WARNING this function assumes there are no more than 4
-	 * blocks for each piece on the #pieces global array! */
+	if (!piece_is_valid(p))
+		return;
+
 	int k;
 	for (k = 0; k < 4; k++)
 		engine_draw_block(&(p->block[k]), w);
@@ -365,6 +366,20 @@ void engine_draw_next_pieces(game_s* g)
 	wrefresh(w);
 }
 
+void engine_draw_hold(game_s* g)
+{
+	window_s w = engine.screen.hold;
+	piece_s  p = g->piece_hold;
+
+	werase(w.win);
+
+	engine_draw_piece(&p, w.win);
+	wattrset(w.win, COLOR_PAIR(WHITE_BLACK));
+	mvwhline(w.win, w.height - 1, 0, '-', w.width);
+
+	wrefresh(w.win);
+}
+
 /** Calls all drawing routines in order */
 void engine_draw(game_s* g)
 {
@@ -375,6 +390,7 @@ void engine_draw(game_s* g)
 	engine_draw_piece(&(g->piece_ghost), w);
 	engine_draw_piece(g->piece_current, w);
 	engine_draw_next_pieces(g);
+	engine_draw_hold(g);
 
 	wrefresh(w);
 }
