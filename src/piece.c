@@ -114,7 +114,10 @@ piece_e piece_get_random()
 	return rand() % (max - min + 1) + min;
 }
 
-/** Checks if the piece #p can move to direction #dir */
+/** Checks if the piece #p can move to direction #dir.
+ *  The thing here is we create a 'dummy' piece, move it and then
+ *  tests if it's on a right spot.
+ */
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 {
 	piece_s new_p = *p;
@@ -125,23 +128,23 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 	int k;
 	for (k = 0; k < 4; k++)
 	{
-		/* Here we don't confuse our 'ghost' blocks with real ones */
+		/* Here we don't confuse our 'dummy' blocks with real ones */
 		new_p.block[k].type = EMPTY;
 
 		/* block's x and y are not relative to the piece -- they're global */
-		int board_x = new_p.block[k].x;
-		int board_y = new_p.block[k].y;
-
-		/* Just in case part of the piece is out of the board */
-		if (board_y < 0) continue;
+		int block_x = new_p.block[k].x;
+		int block_y = new_p.block[k].y;
 
 		/* Off-limits check */
-		if ((board_x >= BOARD_WIDTH) || (board_y >= BOARD_HEIGHT) ||
-			(board_x < 0))
+		if ((block_x >= BOARD_WIDTH) || (block_y >= BOARD_HEIGHT) ||
+			(block_x < 0))
 			return false;
 
+		/* If the piece is still out of the board, we don't check collision */
+		if (block_y < 0) continue;
+
 		/* Fellow blocks check */
-		if (b->block[board_x][board_y].type != EMPTY)
+		if (b->block[block_x][block_y].type != EMPTY)
 			return false;
 	}
 	return true;
