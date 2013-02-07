@@ -19,7 +19,6 @@ typedef struct board_s
 } board_s;
 
 board_s new_board();
-void engine_draw_board(board_s* b);
 void board_save_piece(board_s* b, piece_s* p);
 void board_delete_line(board_s* b, int line);
 void board_delete_possible_lines(board_s* b);

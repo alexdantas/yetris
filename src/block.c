@@ -17,15 +17,6 @@ block_s new_block(int x, int y, char theme[], color_e color)
 	return b;
 }
 
-/* wont call refresh */
-void engine_draw_block(block_s* b)
-{
-	WINDOW* w = engine.screen.board;
-
-	wattrset(w, COLOR_PAIR(b->color));
-	mvwaddstr(w, b->y, (b->x * 2), b->theme);
-}
-
 /** Copies block #a into #b */
 void block_copy(block_s* a, block_s* b)
 {

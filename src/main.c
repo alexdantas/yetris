@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 		}
 
 		game_update(&game);
-		game_draw(&game);
+		engine_draw(&game);
 
 		if (game_is_over(&game))
 			quit = true;

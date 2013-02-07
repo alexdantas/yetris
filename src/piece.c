@@ -47,15 +47,6 @@ piece_s new_piece(piece_e type)
 	return p;
 }
 
-void engine_draw_piece(piece_s* p)
-{
-	/* WARNING this function assumes there are no more than 4
-	 * blocks for each piece on the #pieces global array! */
-	int k;
-	for (k = 0; k < 4; k++)
-		engine_draw_block(&(p->block[k]));
-}
-
 /** Rotate piece #p by #rotation times. Negative number rotates backwards */
 void piece_rotate(piece_s* p, int rotation)
 {

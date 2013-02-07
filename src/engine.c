@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "engine.h"
+#include "game.h"
 
 /* /\** Definitions for the input keys -- arbitrary numbers *\/ */
 /* enum Input { RIGHT=666, DOWN,  LEFT, ROTATE, ROTATE_BACKW, */
@@ -81,12 +82,12 @@ int engine_windows_init()
 	wrefresh(w);
 	engine.screen.left = w;
 
-	w = derwin(engine.screen.main, 22, 6 * 2, 1, 25);
+	w = derwin(engine.screen.main, 22, 7 * 2, 1, 25);
 	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w);
 	engine.screen.middle = w;
 
-	w = derwin(engine.screen.main, 22, 40, 1, 38);
+	w = derwin(engine.screen.main, 22, 38, 1, 40);
 	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w);
 	engine.screen.right = w;
@@ -114,7 +115,7 @@ int engine_windows_init()
 	wrefresh(w);
 	engine.screen.board = w;
 
-	w = derwin(engine.screen.right, 20, 36, 1, 2);
+	w = derwin(engine.screen.right, 20, 34, 1, 2);
 	wrefresh(w);
 	engine.screen.info = w;
 
@@ -224,4 +225,64 @@ int engine_get_input(int delay_ms)
 	return c;
 }
 
+/* wont call refresh */
+void engine_draw_block(block_s* b, WINDOW* w)
+{
+	wattrset(w, COLOR_PAIR(b->color));
+	mvwaddstr(w, b->y, (b->x * 2), b->theme);
+}
+
+void engine_draw_piece(piece_s* p, WINDOW* w)
+{
+	/* WARNING this function assumes there are no more than 4
+	 * blocks for each piece on the #pieces global array! */
+	int k;
+	for (k = 0; k < 4; k++)
+		engine_draw_block(&(p->block[k]), w);
+}
+
+void engine_draw_board(board_s* b)
+{
+	WINDOW* w = engine.screen.board;
+
+	int i, j;
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+			if (b->block[i][j].type != EMPTY)
+				engine_draw_block(&(b->block[i][j]), w);
+}
+
+void engine_draw_next_pieces(game_s* g)
+{
+	int i, k;
+	for (i = 1; i < 5; i++) /* starting at the first next piece */
+	{
+		piece_s p = g->piece_next[i];
+		WINDOW* w = engine.screen.next[i - 1];
+
+		werase(w);
+
+		for (k = 0; k < 4; k++)
+		{
+			p.block[k].x -= p.x;
+			p.block[k].y -= p.y;
+		}
+		engine_draw_piece(&p, w);
+		wrefresh(w);
+	}
+}
+
+/** Calls all drawing routines in order */
+void engine_draw(game_s* g)
+{
+	WINDOW* w = engine.screen.board;
+	werase(w);
+
+	engine_draw_board(&(g->board));
+	engine_draw_piece(&(g->piece_ghost), w);
+	engine_draw_piece(g->piece_current, w);
+	engine_draw_next_pieces(g);
+
+	wrefresh(w);
+}
 

@@ -17,7 +17,6 @@ typedef struct game_s
 
 game_s new_game();
 void game_drop_piece(game_s* g);
-void game_draw(game_s* g);
 bool game_is_over(game_s* g);
 void game_update(game_s* g);
 void game_ghost_update(game_s* g);

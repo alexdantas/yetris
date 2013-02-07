@@ -4,8 +4,8 @@
 
 #include "engine.h"
 
-enum block_e { BLOCK, EMPTY };
-typedef enum block_e block_e;
+/** Which states can a block be? */
+typedef enum { BLOCK, EMPTY } block_e;
 
 /** x and y are relative to the board */
 typedef struct block_s
@@ -18,7 +18,6 @@ typedef struct block_s
 } block_s;
 
 block_s new_block(int x, int y, char theme[], color_e color);
-void engine_draw_block(block_s* b);
 void block_copy(block_s* a, block_s* b);
 
 #endif /* BLOCK_H_DEFINED */

@@ -16,16 +16,6 @@ board_s new_board()
 	return b;
 }
 
-void engine_draw_board(board_s* b)
-{
-	int i, j;
-
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			if (b->block[i][j].type != EMPTY)
-				engine_draw_block(&(b->block[i][j]));
-}
-
 /** Puts the piece #p on the board */
 void board_save_piece(board_s* b, piece_s* p)
 {

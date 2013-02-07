@@ -54,18 +54,6 @@ void game_drop_piece(game_s* g)
 	game_ghost_update(g);
 }
 
-/** Calls all drawing routines in order */
-void game_draw(game_s* g)
-{
-	werase(engine.screen.board);
-
-	engine_draw_board(&(g->board));
-	engine_draw_piece(&(g->piece_ghost));
-	engine_draw_piece(g->piece_current);
-
-	wrefresh(engine.screen.board);
-}
-
 /** Tests if the game is over */
 bool game_is_over(game_s* g)
 {
@@ -80,4 +68,5 @@ void game_update(game_s* g)
 	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
 		game_drop_piece(g);
 }
+
 

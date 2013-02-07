@@ -34,7 +34,6 @@ typedef struct piece_s
 } piece_s;
 
 piece_s new_piece(piece_e type);
-void engine_draw_piece(piece_s* p);
 void piece_rotate(piece_s* p, int rotation);
 void piece_move(piece_s* p, direction_e dir);
 void piece_hard_drop(piece_s* p, board_s* b);
