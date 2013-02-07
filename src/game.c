@@ -36,8 +36,8 @@ void game_draw(game_s* g)
 {
 	werase(engine.screen.board);
 
-	engine_draw_piece(g->piece_current);
 	engine_draw_board(&(g->board));
+	engine_draw_piece(g->piece_current);
 
 	wrefresh(engine.screen.board);
 }

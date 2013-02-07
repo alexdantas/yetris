@@ -30,13 +30,13 @@ int main(int argc, char* argv[])
 		if (c == engine.input.quit)
 			quit = 1;
 		else if (c == engine.input.left)
-			piece_move(game.piece_current, 1);
+			piece_move(game.piece_current, LEFT);
 
 		else if (c == engine.input.right)
-			piece_move(game.piece_current, 0);
+			piece_move(game.piece_current, RIGHT);
 
 		else if (c == engine.input.down)
-			piece_soft_drop(game.piece_current);
+			piece_move(game.piece_current, DOWN);
 
 		else if (c == engine.input.rotate)
 			piece_rotate(game.piece_current, 1);

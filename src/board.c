@@ -1,7 +1,8 @@
 
-#include <unistd.h>
+#include <stdbool.h>
 #include "board.h"
 #include "block.h"
+#include "piece.h"
 
 board_s new_board()
 {

@@ -2,10 +2,13 @@
 #define BOARD_H_DEFINED
 
 #include "block.h"
-#include "piece.h"
 
+/* How many blocks we have for width and height */
 #define BOARD_WIDTH  10
 #define BOARD_HEIGHT 20
+
+/* Forward declaration of the piece type -- see #piece.h */
+typedef struct piece_s piece_s;
 
 /** The map containing all blocks */
 typedef struct board_s

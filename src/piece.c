@@ -3,6 +3,7 @@
 #include "piece.h"
 #include "pieces_define.h"
 #include "block.h"
+#include "board.h"
 
 piece_s new_piece(piece_e type)
 {
@@ -77,34 +78,30 @@ void piece_rotate(piece_s* p, int rotation)
 			}
 }
 
-/** Drops piece by one tile */
-void piece_soft_drop(piece_s* p)
-{
-	p->y++;
-
-	int i,j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[p->type][p->rotation][j][i] != 0)
-			{
-				p->block[k].y++;
-				k++;
-			}
-}
-
 /** Moves piece according to #direction. 0 is right and 1 is left */
-void piece_move(piece_s* p, int direction)
+void piece_move(piece_s* p, direction_e dir)
 {
-	int delta = (direction == 0) ? 1 : -1;
+	int delta_x = 0;
+	int delta_y = 0;
 
-	p->x += delta;
+	switch (dir)
+	{
+	case LEFT:  delta_x = -1; break;
+	case RIGHT: delta_x =  1; break;
+	case DOWN:  delta_y =  1; break;
+	case UP:    delta_y = -1; break;
+	}
+
+	p->x += delta_x;
+	p->y += delta_y;
 
 	int i,j, k = 0;
 	for (i = 0; i < PIECE_BLOCKS; i++)
 		for (j = 0; j < PIECE_BLOCKS; j++)
 			if (global_pieces[p->type][p->rotation][j][i] != 0)
 			{
-				p->block[k].x += delta;
+				p->block[k].x += delta_x;
+				p->block[k].y += delta_y;
 				k++;
 			}
 }
@@ -121,5 +118,31 @@ piece_e piece_get_random()
 	int min = 0;
 	int max = PIECE_MAX - 1;
 	return rand() % (max - min + 1) + min;
+}
+
+/** Checks if the piece #p can move to direction #dir */
+bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
+{
+	piece_s new_p = *p;
+
+	piece_move(&new_p, dir);
+
+	/* Going through the board only on the positions of the piece's blocks */
+	int i,j, k = 0;
+	for (i = 0; i < PIECE_BLOCKS; i++)
+		for (j = 0; j < PIECE_BLOCKS; j++)
+			if (global_pieces[new_p.type][new_p.rotation][j][i] != 0)
+			{
+				int board_x = new_p.x + new_p.block[k].x;
+				int board_y = new_p.y + new_p.block[k].y;
+
+				if ((board_x > BOARD_WIDTH) || (board_y > BOARD_HEIGHT) ||
+					(board_x < 0) ||
+				    (b->block[board_x][board_y].type != EMPTY))
+					return false;
+
+				k++;
+			}
+	return true;
 }
 
