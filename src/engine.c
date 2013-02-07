@@ -200,6 +200,15 @@ int engine_windows_init()
 	wrefresh(w.win);
 	s->hold = w;
 
+	/* score screen */
+	w.width  = s->leftmost_container.width;
+	w.height = s->leftmost_container.height - (s->hold.height + 1);
+	w.x      = 0;
+	w.y      = s->hold.y + s->hold.height;
+	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->score = w;
+
 	w = s->leftmost_container;
 	mvwaddstr(w.win, 0, 1, "Hold");
 	wrefresh(w.win);
@@ -380,6 +389,21 @@ void engine_draw_hold(game_s* g)
 	wrefresh(w.win);
 }
 
+void engine_draw_score(game_s* g)
+{
+	window_s w = engine.screen.score;
+	int offset = 8;
+
+
+	mvwaddstr(w.win, offset + 0, 1, "Score");
+	mvwprintw(w.win, offset + 1, 1, "%10d", 112412);
+
+	mvwaddstr(w.win, offset + 3, 1, "Lines");
+	mvwprintw(w.win, offset + 4, 1, "%10d", 3);
+
+	wrefresh(w.win);
+}
+
 /** Calls all drawing routines in order */
 void engine_draw(game_s* g)
 {
@@ -391,6 +415,7 @@ void engine_draw(game_s* g)
 	engine_draw_piece(g->piece_current, w);
 	engine_draw_next_pieces(g);
 	engine_draw_hold(g);
+	engine_draw_score(g);
 
 	wrefresh(w);
 }

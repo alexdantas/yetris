@@ -15,6 +15,9 @@ typedef struct game_s
 	board_s  board;
 
 	bool     can_hold; /* Tells if user has switched pieces this round */
+	int      score;
+	int      lines; /* how many lines have been cleared yet */
+
 } game_s;
 
 game_s new_game();

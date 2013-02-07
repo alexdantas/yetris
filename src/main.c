@@ -43,6 +43,8 @@ int main(int argc, char* argv[])
 		{
 			if (piece_can_move(game.piece_current, &(game.board), DIR_DOWN))
 				piece_move(game.piece_current, DIR_DOWN);
+			else
+				game_drop_piece(&game);
 		}
 		else if (c == engine.input.rotate)
 		{
@@ -57,6 +59,7 @@ int main(int argc, char* argv[])
 		else if (c == engine.input.drop)
 		{
 			piece_hard_drop(game.piece_current, &(game.board));
+			game_drop_piece(&game);
 		}
 		else if (c == engine.input.pause)
 		{

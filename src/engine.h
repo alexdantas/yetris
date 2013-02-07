@@ -46,6 +46,7 @@ typedef struct screen_s
 	window_s next[4];
 	window_s hold;
 	window_s leftmost_container;
+	window_s score;
 } screen_s;
 
 /** Container for all info about the game engine */
@@ -85,6 +86,7 @@ void engine_draw_block(block_s* b, WINDOW* w);
 void engine_draw_piece(piece_s* p, WINDOW* w);
 void engine_draw_board(board_s* b);
 void engine_draw_hold(game_s* g);
+void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
 
 #endif /* ENGINE_H_DEFINED */

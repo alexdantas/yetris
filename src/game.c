@@ -19,6 +19,8 @@ game_s new_game()
 	g.can_hold = true;
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	g.piece_current = &(g.piece_next[0]);
+	g.score = 0;
+	g.lines = 0;
 
 	game_ghost_update(&g);
 
@@ -70,8 +72,8 @@ void game_update(game_s* g)
 	board_delete_possible_lines(&(g->board));
 	game_ghost_update(g);
 	// as soon as the piece hits the ground it's setted -- CHANGE THIS
-	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
-		game_drop_piece(g);
+//	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
+//		game_drop_piece(g);
 }
 
 bool game_hold_piece(game_s* g)
