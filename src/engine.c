@@ -134,7 +134,7 @@ int engine_windows_init()
 	w.width  = s->next_container.width;
 	w.height = 5;
 	w.x      = 0;
-	w.y      = 0;
+	w.y      = 1;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[0] = w;
@@ -142,7 +142,7 @@ int engine_windows_init()
 	w.width  = s->next_container.width;
 	w.height = 5;
 	w.x      = 0;
-	w.y      = s->next[0].y + s->next[0].height;
+	w.y      = s->next[0].y + s->next[0].height - 1;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[1] = w;
@@ -150,7 +150,7 @@ int engine_windows_init()
 	w.width  = s->next_container.width;
 	w.height = 5;
 	w.x      = 0;
-	w.y      = s->next[1].y + s->next[1].height;
+	w.y      = s->next[1].y + s->next[1].height - 1;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[2] = w;
@@ -158,7 +158,7 @@ int engine_windows_init()
 	w.width  = s->next_container.width;
 	w.height = 5;
 	w.x      = 0;
-	w.y      = s->next[2].y + s->next[2].height;
+	w.y      = s->next[2].y + s->next[2].height - 1;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[3] = w;
@@ -316,11 +316,12 @@ void engine_draw_board(board_s* b)
 
 void engine_draw_next_pieces(game_s* g)
 {
+	WINDOW* w = NULL;
 	int i, k;
 	for (i = 1; i < 5; i++) /* starting at the first next piece */
 	{
 		piece_s p = g->piece_next[i];
-		WINDOW* w = engine.screen.next[i - 1].win;
+		w = engine.screen.next[i - 1].win;
 
 		werase(w);
 
@@ -332,6 +333,10 @@ void engine_draw_next_pieces(game_s* g)
 		engine_draw_piece(&p, w);
 		wrefresh(w);
 	}
+	w = engine.screen.next_container.win;
+	wattron(w, COLOR_PAIR(WHITE_BLACK));
+	mvwaddstr(w, 0, 0, "Next");
+	wrefresh(w);
 }
 
 /** Calls all drawing routines in order */
