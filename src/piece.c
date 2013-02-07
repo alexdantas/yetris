@@ -86,10 +86,11 @@ void piece_move(piece_s* p, direction_e dir)
 
 	switch (dir)
 	{
-	case LEFT:  delta_x = -1; break;
-	case RIGHT: delta_x =  1; break;
-	case DOWN:  delta_y =  1; break;
-	case UP:    delta_y = -1; break;
+	case DIR_LEFT:  delta_x = -1; break;
+	case DIR_RIGHT: delta_x =  1; break;
+	case DIR_DOWN:  delta_y =  1; break;
+	case DIR_UP:    delta_y = -1; break;
+	default: return;
 	}
 
 	p->x += delta_x;
@@ -128,21 +129,28 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 	piece_move(&new_p, dir);
 
 	/* Going through the board only on the positions of the piece's blocks */
-	int i,j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[new_p.type][new_p.rotation][j][i] != 0)
-			{
-				int board_x = new_p.x + new_p.block[k].x;
-				int board_y = new_p.y + new_p.block[k].y;
+	int k;
+	for (k = 0; k < 4; k++)
+	{
+		/* block's x and y are not relative to the piece -- they're global */
+		int board_x = new_p.block[k].x;
+		int board_y = new_p.block[k].y;
 
-				if ((board_x > BOARD_WIDTH) || (board_y > BOARD_HEIGHT) ||
-					(board_x < 0) ||
-				    (b->block[board_x][board_y].type != EMPTY))
-					return false;
+		if ((board_x >= BOARD_WIDTH) || (board_y >= BOARD_HEIGHT) ||
+			(board_x < 0))
+			return false;
 
-				k++;
-			}
+//		if (b->block[board_x][board_y].type != EMPTY)
+//			return false;
+	}
 	return true;
+}
+
+bool piece_can_rotate(piece_s* p, board_s* b, int rotation)
+{
+	piece_s new_p = *p;
+
+	piece_rotate(&new_p, rotation);
+	return piece_can_move(&new_p, b, DIR_NONE);
 }
 

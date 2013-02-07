@@ -30,25 +30,38 @@ int main(int argc, char* argv[])
 		if (c == engine.input.quit)
 			quit = 1;
 		else if (c == engine.input.left)
-			piece_move(game.piece_current, LEFT);
-
+		{
+			if (piece_can_move(game.piece_current, &(game.board), DIR_LEFT))
+				piece_move(game.piece_current, DIR_LEFT);
+		}
 		else if (c == engine.input.right)
-			piece_move(game.piece_current, RIGHT);
-
+		{
+			if (piece_can_move(game.piece_current, &(game.board), DIR_RIGHT))
+				piece_move(game.piece_current, DIR_RIGHT);
+		}
 		else if (c == engine.input.down)
-			piece_move(game.piece_current, DOWN);
-
+		{
+			if (piece_can_move(game.piece_current, &(game.board), DIR_DOWN))
+				piece_move(game.piece_current, DIR_DOWN);
+		}
 		else if (c == engine.input.rotate)
-			piece_rotate(game.piece_current, 1);
-
+		{
+			if (piece_can_rotate(game.piece_current, &(game.board), 1))
+				piece_rotate(game.piece_current, 1);
+		}
 		else if (c == engine.input.rotate_backw)
-			piece_rotate(game.piece_current, -1);
-
+		{
+			if (piece_can_rotate(game.piece_current, &(game.board), -1))
+				piece_rotate(game.piece_current, -1);
+		}
 		else if (c == engine.input.drop)
+		{
 			game_drop_piece(&game);
-
+		}
 		else if (c == engine.input.pause)
+		{
 			board_delete_line(&(game.board), 5);
+		}
 
 		game_update(&game);
 		game_draw(&game);

@@ -16,7 +16,7 @@ typedef enum { PIECE_O = 0, PIECE_I, PIECE_J,
                PIECE_MAX} piece_e;
 
 /** Possible directions a piece can move */
-typedef enum { UP, DOWN, LEFT, RIGHT } direction_e;
+typedef enum { DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } direction_e;
 
 /* Forward declaration of the board type -- check #board.h */
 typedef struct board_s board_s;
@@ -40,5 +40,6 @@ void piece_move(piece_s* p, direction_e dir);
 void piece_hard_drop(piece_s* p);
 piece_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
+bool piece_can_rotate(piece_s* p, board_s* b, int rotation);
 
 #endif /* PIECE_H_DEFINED */
