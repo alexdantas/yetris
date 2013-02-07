@@ -44,6 +44,8 @@ typedef struct screen_s
 	window_s board;
 	window_s info;
 	window_s next[4];
+	window_s hold;
+	window_s leftmost_container;
 } screen_s;
 
 /** Container for all info about the game engine */

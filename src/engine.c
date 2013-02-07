@@ -173,18 +173,41 @@ int engine_windows_init()
 	s->board = w;
 
 	/* info */
+	w.width  = s->rightmost.width  - 4;
+	w.height = s->rightmost.height - 2;
+	w.x      = 2;
+	w.y      = 1;
+	w.win    = derwin(s->rightmost.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->info = w;
+
+	/* leftmost container */
 	w.width  = s->leftmost.width  - 2;
 	w.height = s->leftmost.height - 2;
 	w.x      = 1;
 	w.y      = 1;
 	w.win    = derwin(s->leftmost.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
-	s->info = w;
+	s->leftmost_container = w;
+
+	/* hold */
+	w.width  = s->leftmost_container.width;
+	w.height = 5;
+	w.x      = 0;
+	w.y      = 1;
+	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wrefresh(w.win);
+	s->hold = w;
+
+	w = s->leftmost_container;
+	mvwaddstr(w.win, 0, 1, "Hold");
+	wrefresh(w.win);
 
 	w = s->info;
-	mvwaddstr(w.win, 1, 0, "yetris v0.5");
-	mvwaddstr(w.win, 3, 4, "Ahh yeah");
-	mvwaddstr(w.win, 4, 4, "This is awesome, everything's fine! "
+	mvwaddstr(w.win, 0, 0, "yetris v0.5");
+	mvwaddstr(w.win, 1, 4, "Ahh yeah");
+	mvwaddstr(w.win, 3, 4, "This is awesome, everything's fine! "
 		                   "you see, this is a multilined string "
 		                   "and i'm still able to print it aligned");
 	wrefresh(w.win);
@@ -338,7 +361,7 @@ void engine_draw_next_pieces(game_s* g)
 	}
 	w = engine.screen.next_container.win;
 	wattron(w, COLOR_PAIR(WHITE_BLACK));
-	mvwaddstr(w, 0, 0, "Next");
+	mvwaddstr(w, 0, 1, "Next");
 	wrefresh(w);
 }
 
