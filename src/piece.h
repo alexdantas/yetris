@@ -11,8 +11,8 @@
  *  @note This order is important.
  *  Also, PIECE_MAX tells the biggest number for a piece
  */
-typedef enum { PIECE_O = 0, PIECE_I, PIECE_J,
-               PIECE_L,     PIECE_S, PIECE_Z, PIECE_T,
+typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
+               PIECE_J,     PIECE_S, PIECE_Z, PIECE_T,
                PIECE_MAX} piece_e;
 
 /** Possible directions a piece can move */

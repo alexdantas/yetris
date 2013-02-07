@@ -329,6 +329,9 @@ void engine_draw_next_pieces(game_s* g)
 		{
 			p.block[k].x -= p.x;
 			p.block[k].y -= p.y;
+
+			if (p.type == PIECE_J) /* Pretty-printing */
+				p.block[k].x += 1;
 		}
 		engine_draw_piece(&p, w);
 		wrefresh(w);
