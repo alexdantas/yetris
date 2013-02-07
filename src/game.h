@@ -26,5 +26,6 @@ bool game_is_over(game_s* g);
 void game_update(game_s* g);
 void game_ghost_update(game_s* g);
 bool game_hold_piece(game_s* g);
+void game_delete_possible_lines(game_s* g);
 
 #endif /* GAME_H_DEFINED */

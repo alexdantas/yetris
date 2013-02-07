@@ -396,10 +396,10 @@ void engine_draw_score(game_s* g)
 
 
 	mvwaddstr(w.win, offset + 0, 1, "Score");
-	mvwprintw(w.win, offset + 1, 1, "%10d", 112412);
+	mvwprintw(w.win, offset + 1, 1, "%10d", g->score);
 
 	mvwaddstr(w.win, offset + 3, 1, "Lines");
-	mvwprintw(w.win, offset + 4, 1, "%10d", 3);
+	mvwprintw(w.win, offset + 4, 1, "%10d", g->lines);
 
 	wrefresh(w.win);
 }

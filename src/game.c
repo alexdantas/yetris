@@ -58,6 +58,7 @@ void game_drop_piece(game_s* g)
 	game_ghost_update(g);
 
 	g->can_hold = true; /* now we can switch pieces! */
+	g->score += 10;
 }
 
 /** Tests if the game is over */
@@ -69,11 +70,8 @@ bool game_is_over(game_s* g)
 /** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
-	board_delete_possible_lines(&(g->board));
+	game_delete_possible_lines(g);
 	game_ghost_update(g);
-	// as soon as the piece hits the ground it's setted -- CHANGE THIS
-//	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
-//		game_drop_piece(g);
 }
 
 bool game_hold_piece(game_s* g)
@@ -111,5 +109,28 @@ bool game_hold_piece(game_s* g)
 	}
 
 	return true;
+}
+
+/** Checks all lines, deleting the ones that are full */
+void game_delete_possible_lines(game_s* g)
+{
+	board_s* b = &(g->board);
+
+	int j;
+	for (j = 0; j < BOARD_HEIGHT; j++)
+	{
+		int i = 0;
+		while (i < BOARD_WIDTH)
+		{
+			if (b->block[i][j].type == EMPTY)
+				break;
+			i++;
+		}
+		if (i == BOARD_WIDTH)
+		{
+			board_delete_line(b, j);
+			g->score += 100;
+		}
+	}
 }
 

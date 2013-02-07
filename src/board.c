@@ -54,24 +54,6 @@ void board_delete_line(board_s* b, int line)
 		}
 }
 
-/** Checks all lines, deleting the ones that are full */
-void board_delete_possible_lines(board_s* b)
-{
-	int j;
-	for (j = 0; j < BOARD_HEIGHT; j++)
-	{
-		int i = 0;
-		while (i < BOARD_WIDTH)
-		{
-			if (b->block[i][j].type == EMPTY)
-				break;
-			i++;
-		}
-		if (i == BOARD_WIDTH)
-			board_delete_line(b, j);
-	}
-}
-
 bool board_is_full(board_s* b)
 {
 	/* Currently, we watch the first line for any non-EMPTY blocks */
