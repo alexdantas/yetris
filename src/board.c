@@ -42,7 +42,7 @@ void board_delete_line(board_s* b, int line)
 	}
 
 	engine_draw_board(b);
-	wrefresh(engine.screen.board);
+	wrefresh(engine.screen.board.win);
 	usleep(300 * 1000);
 
 	/* Moves all upper lines one row down */

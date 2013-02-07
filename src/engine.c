@@ -69,63 +69,125 @@ int engine_screen_init(int width, int height)
 
 int engine_windows_init()
 {
-	WINDOW* w = NULL;
+	window_s  w;
+	screen_s* s = &(engine.screen);
 
-	w = newwin(24, 80, 0, 0);
-	box(w, ACS_VLINE, ACS_HLINE);
-//	wbkgd(w, '*');
-	wrefresh(w);
-	engine.screen.main = w;
+	/* main */
+	w.width  = 80;
+	w.height = 24;
+	w.x      = 0;
+	w.y      = 0;
+	w.win    = newwin(w.height, w.width, w.y, w.x);
+	box(w.win, 0, 0);
+	wrefresh(w.win);
+	s->main = w;
 
-	w = derwin(engine.screen.main, 22, 11 * 2, 1, 2);
-	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wrefresh(w);
-	engine.screen.left = w;
+	/* leftmost */
+	w.width  = 6 * 2 + 2;
+	w.height = s->main.height - 2; /* borders */
+	w.x      = 2;
+	w.y      = 1;
+	w.win    = newwin(w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wrefresh(w.win);
+	s->leftmost = w;
 
-	w = derwin(engine.screen.main, 22, 7 * 2, 1, 25);
-	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wrefresh(w);
-	engine.screen.middle = w;
+	/* middle-left */
+	w.width  = 10 * 2 + 2;
+	w.height = s->main.height - 2; /* borders */
+	w.x      = s->leftmost.x + s->leftmost.width + 1;
+	w.y      = 1;
+	w.win    = newwin(w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wrefresh(w.win);
+	s->middle_left = w;
 
-	w = derwin(engine.screen.main, 22, 38, 1, 40);
-	wborder(w, '|', '|', '-', '-', '+', '+', '+', '+');
-	wrefresh(w);
-	engine.screen.right = w;
+	/* middle-right */
+	w.width  = 6 * 2 + 2;
+	w.height = s->main.height - 2; /* borders */
+	w.x      = s->middle_left.x + s->middle_left.width + 1;
+	w.y      = 1;
+	w.win    = newwin(w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wrefresh(w.win);
+	s->middle_right = w;
 
-	//////////
-	w = derwin(engine.screen.middle, 5, 5 * 2, 1, 1);
-	mvwhline(w, 4, 0, '-', 10);
-	wrefresh(w);
-	engine.screen.next[0] = w;
+	/* right-most */
+	w.width  = s->main.width - (s->middle_right.x + s->middle_right.width) - 3;
+	w.height = s->main.height - 2; /* borders */
+	w.x      = s->middle_right.x + s->middle_right.width + 1;
+	w.y      = 1;
+	w.win    = newwin(w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wrefresh(w.win);
+	s->rightmost = w;
 
-	w = derwin(engine.screen.middle, 5, 5 * 2, 6, 1);
-	wrefresh(w);
-	engine.screen.next[1] = w;
+	/* next pieces */
+	w.width  = s->middle_right.width  - 2;
+	w.height = s->middle_right.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(s->middle_right.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next_container = w;
 
-	w = derwin(engine.screen.middle, 5, 5 * 2, 11, 1);
-	wrefresh(w);
-	engine.screen.next[2] = w;
+	w.width  = s->next_container.width;
+	w.height = 5;
+	w.x      = 0;
+	w.y      = 0;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[0] = w;
 
-	w = derwin(engine.screen.middle, 5, 5 * 2, 16, 1);
-	wrefresh(w);
-	engine.screen.next[3] = w;
-    //////////
+	w.width  = s->next_container.width;
+	w.height = 5;
+	w.x      = 0;
+	w.y      = s->next[0].y + s->next[0].height;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[1] = w;
 
-	w = derwin(engine.screen.left, 20, 10 * 2, 1, 1);
-	wrefresh(w);
-	engine.screen.board = w;
+	w.width  = s->next_container.width;
+	w.height = 5;
+	w.x      = 0;
+	w.y      = s->next[1].y + s->next[1].height;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[2] = w;
 
-	w = derwin(engine.screen.right, 20, 34, 1, 2);
-	wrefresh(w);
-	engine.screen.info = w;
+	w.width  = s->next_container.width;
+	w.height = 5;
+	w.x      = 0;
+	w.y      = s->next[2].y + s->next[2].height;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[3] = w;
 
-	w = engine.screen.info;
-	mvwaddstr(w, 1, 1, "yetris v0.5");
-	mvwaddstr(w, 3, 5, "Ahh yeah");
-	mvwaddstr(w, 4, 5, "This is awesome, everything's fine! "
-		               "you see, this is a multilined string "
-		               "and i'm still able to print it aligned");
-	wrefresh(w);
+	/* game board */
+	w.width  = s->middle_left.width  - 2;
+	w.height = s->middle_left.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(s->middle_left.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->board = w;
+
+	/* info */
+	w.width  = s->leftmost.width  - 2;
+	w.height = s->leftmost.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(s->leftmost.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->info = w;
+
+	w = s->info;
+	mvwaddstr(w.win, 1, 0, "yetris v0.5");
+	mvwaddstr(w.win, 3, 4, "Ahh yeah");
+	mvwaddstr(w.win, 4, 4, "This is awesome, everything's fine! "
+		                   "you see, this is a multilined string "
+		                   "and i'm still able to print it aligned");
+	wrefresh(w.win);
 }
 
 int engine_init()
@@ -243,7 +305,7 @@ void engine_draw_piece(piece_s* p, WINDOW* w)
 
 void engine_draw_board(board_s* b)
 {
-	WINDOW* w = engine.screen.board;
+	WINDOW* w = engine.screen.board.win;
 
 	int i, j;
 	for (i = 0; i < BOARD_WIDTH; i++)
@@ -258,7 +320,7 @@ void engine_draw_next_pieces(game_s* g)
 	for (i = 1; i < 5; i++) /* starting at the first next piece */
 	{
 		piece_s p = g->piece_next[i];
-		WINDOW* w = engine.screen.next[i - 1];
+		WINDOW* w = engine.screen.next[i - 1].win;
 
 		werase(w);
 
@@ -275,7 +337,7 @@ void engine_draw_next_pieces(game_s* g)
 /** Calls all drawing routines in order */
 void engine_draw(game_s* g)
 {
-	WINDOW* w = engine.screen.board;
+	WINDOW* w = engine.screen.board.win;
 	werase(w);
 
 	engine_draw_board(&(g->board));

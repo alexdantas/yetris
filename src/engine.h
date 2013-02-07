@@ -21,18 +21,29 @@ typedef struct input_s
 	int  pause;
 } input_s;
 
+typedef struct window_s
+{
+	WINDOW* win;
+	int     x;
+	int     y;
+	int     width;
+	int     height;
+} window_s;
+
 /** Info about the console screen */
 typedef struct screen_s
 {
 	int width;
 	int height;
-	WINDOW* main;
-	WINDOW* left;
-	WINDOW* middle;
-	WINDOW* right;
-	WINDOW* board;
-	WINDOW* info;
-	WINDOW* next[4];
+	window_s main;
+	window_s leftmost;
+	window_s middle_left;
+	window_s middle_right;
+	window_s rightmost;
+	window_s next_container;
+	window_s board;
+	window_s info;
+	window_s next[4];
 } screen_s;
 
 /** Container for all info about the game engine */
