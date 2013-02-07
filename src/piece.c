@@ -108,9 +108,10 @@ void piece_move(piece_s* p, direction_e dir)
 }
 
 /** Drops piece as far as possible */
-void piece_hard_drop(piece_s* p)
+void piece_hard_drop(piece_s* p, board_s* b)
 {
-
+	while (piece_can_move(p, b, DIR_DOWN))
+		piece_move(p, DIR_DOWN);
 }
 
 /** Returns a random piece */
@@ -132,14 +133,22 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 	int k;
 	for (k = 0; k < 4; k++)
 	{
+		/* Here we don't confuse our 'ghost' blocks with real ones */
+		new_p.block[k].type = EMPTY;
+
 		/* block's x and y are not relative to the piece -- they're global */
 		int board_x = new_p.block[k].x;
 		int board_y = new_p.block[k].y;
 
+		/* Just in case part of the piece is out of the board */
+		if (board_y < 0) continue;
+
+		/* Off-limits check */
 		if ((board_x >= BOARD_WIDTH) || (board_y >= BOARD_HEIGHT) ||
 			(board_x < 0))
 			return false;
 
+		/* Fellow blocks check */
 		if (b->block[board_x][board_y].type != EMPTY)
 			return false;
 	}

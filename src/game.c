@@ -54,7 +54,8 @@ bool game_is_over(game_s* g)
 
 void game_update(game_s* g)
 {
-
 	board_delete_possible_lines(&(g->board));
+	if (!piece_can_move(g->piece_current, &(g->board), DIR_DOWN))
+		game_drop_piece(g);
 }
 

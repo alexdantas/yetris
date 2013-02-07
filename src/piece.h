@@ -37,7 +37,7 @@ piece_s new_piece(piece_e type);
 void engine_draw_piece(piece_s* p);
 void piece_rotate(piece_s* p, int rotation);
 void piece_move(piece_s* p, direction_e dir);
-void piece_hard_drop(piece_s* p);
+void piece_hard_drop(piece_s* p, board_s* b);
 piece_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
 bool piece_can_rotate(piece_s* p, board_s* b, int rotation);
