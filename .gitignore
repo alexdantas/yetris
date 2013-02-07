@@ -1,0 +1,5 @@
+# Ignoring unnecessary binary files
+
+bin/*
+obj/*
+

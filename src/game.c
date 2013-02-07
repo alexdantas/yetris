@@ -35,8 +35,11 @@ void game_ghost_update(game_s* g)
 	int i;
 	for (i = 0; i < 4; i++)
 	{
-		g->piece_ghost.block[i].type  = EMPTY;
-		g->piece_ghost.block[i].color = WHITE_BLACK;
+		g->piece_ghost.block[i].type     = EMPTY;
+		g->piece_ghost.block[i].color    = WHITE_BLACK;
+		g->piece_ghost.block[i].theme[0] = '[';
+		g->piece_ghost.block[i].theme[1] = ']';
+		g->piece_ghost.block[i].theme[2] = '\0';
 	}
 	g->piece_ghost.color = WHITE_BLACK;
 

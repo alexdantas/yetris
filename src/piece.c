@@ -27,14 +27,16 @@ piece_s new_piece(piece_e type)
 	p.rotation = 0;
 	p.type     = type;
 	p.color    = color;
-	p.theme[0] = '['; p.theme[1] = ']'; p.theme[3] = '\0';
+	p.theme[0] = ' ';
+	p.theme[1] = ' ';
+	p.theme[2] = '\0';
 
 	/* If we're creating a dummy piece, it won't be printed anyway */
 	if (!piece_is_valid(&p))
 		return p;
 
-	p.x        = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
-	p.y        = global_pieces_position[p.type][p.rotation][1];
+	p.x = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
+	p.y = global_pieces_position[p.type][p.rotation][1];
 
 	/* This seems complicated, but it's just starting each
 	 * block of the piece according to it's x and y on the board */
