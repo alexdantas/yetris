@@ -69,13 +69,7 @@ void game_draw(game_s* g)
 /** Tests if the game is over */
 bool game_is_over(game_s* g)
 {
-	/* Currently, we watch the first line for any non-EMPTY blocks */
-	int i;
-	for (i = 0; i < BOARD_WIDTH; i++)
-		if (g->board.block[i][0].type != EMPTY)
-			return true;
-
-	return false;
+	return board_is_full(&(g->board));
 }
 
 /** Perform any updates on the data structures inside #g */

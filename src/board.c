@@ -82,3 +82,14 @@ void board_delete_possible_lines(board_s* b)
 	}
 }
 
+bool board_is_full(board_s* b)
+{
+	/* Currently, we watch the first line for any non-EMPTY blocks */
+	int i;
+	for (i = 0; i < BOARD_WIDTH; i++)
+		if (b->block[i][0].type != EMPTY)
+			return true;
+
+	return false;
+}
+

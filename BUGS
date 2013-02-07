@@ -1,0 +1,15 @@
+Known bugs and issues
+---------------------
+
+If we 'lock' a piece when it's starting right on the limits of the
+board, it hangs there - thus, ending the game.
+
+Like this:
+
+       ####         ####
+    |    ##          |##
+    |    ##     ->   |##
+    |                |
+
+
+

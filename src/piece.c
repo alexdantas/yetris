@@ -8,7 +8,7 @@
 piece_s new_piece(piece_e type)
 {
 	if ((type < 0) || (type >= PIECE_MAX))
-		exit(0);
+		exit(0); /* Isn't that a bit rough? */
 
 	piece_s p;
 	color_e color;
@@ -51,14 +51,9 @@ void engine_draw_piece(piece_s* p)
 {
 	/* WARNING this function assumes there are no more than 4
 	 * blocks for each piece on the #pieces global array! */
-	int i, j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[p->type][p->rotation][j][i] != 0)
-			{
-				engine_draw_block(&(p->block[k]));
-				k++;
-			}
+	int k;
+	for (k = 0; k < 4; k++)
+		engine_draw_block(&(p->block[k]));
 }
 
 /** Rotate piece #p by #rotation times. Negative number rotates backwards */
@@ -96,15 +91,12 @@ void piece_move(piece_s* p, direction_e dir)
 	p->x += delta_x;
 	p->y += delta_y;
 
-	int i,j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[p->type][p->rotation][j][i] != 0)
-			{
-				p->block[k].x += delta_x;
-				p->block[k].y += delta_y;
-				k++;
-			}
+	int k;
+	for (k = 0; k < 4; k++)
+	{
+		p->block[k].x += delta_x;
+		p->block[k].y += delta_y;
+	}
 }
 
 /** Drops piece as far as possible */
