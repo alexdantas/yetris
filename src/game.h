@@ -6,18 +6,20 @@
 #include "piece.h"
 #include "board.h"
 
+#define NEXT_PIECES_NO 5
+
 typedef struct game_s
 {
-	piece_s* piece_current;
-	piece_s  piece_next[5]; /* 1 current and 4 nexts */
-	piece_s  piece_ghost;   /* Indicating where the piece will land */
-	piece_s  piece_hold;
-	board_s  board;
+	piece_s piece_current;
+	piece_s piece_next[NEXT_PIECES_NO]; /* 1 current and 4 nexts */
+	piece_s piece_ghost;   /* Indicating where the piece will land */
+	piece_s piece_hold;
+	board_s board;
 
-	bool     can_hold; /* Tells if user has switched pieces this round */
-	int      score;
-	int      lines; /* how many lines have been cleared yet */
-	int      level;
+	bool can_hold; /* Tells if user has switched pieces this round */
+	int  score;
+	int  lines; /* how many lines have been cleared yet */
+	int  level;
 
 } game_s;
 

@@ -145,7 +145,7 @@ int engine_windows_init()
 	w.width  = s->next_container.width;
 	w.height = 5;
 	w.x      = 0;
-	w.y      = 1;
+	w.y      = 0;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[0] = w;
@@ -173,6 +173,14 @@ int engine_windows_init()
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[3] = w;
+
+	w.width  = s->next_container.width;
+	w.height = 4;
+	w.x      = 0;
+	w.y      = s->next[3].y + s->next[3].height - 1;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[4] = w;
 
 	/* game board */
 	w.width  = s->middle_left.width  - 2;
@@ -275,13 +283,13 @@ int engine_keymap(char keymap[])
 	if ((!keymap) || (strnlen(keymap, 9) != 8))
 	{
 		/* Invalid string, setting default keymap */
-		engine.input.down   = 's';
-		engine.input.right  = 'd';
-		engine.input.left   = 'a';
-		engine.input.rotate = 'w';
-		engine.input.rotate_backw = 'e';
+		engine.input.down   = KEY_DOWN;
+		engine.input.right  = KEY_RIGHT;
+		engine.input.left   = KEY_LEFT;
+		engine.input.rotate = 'z';
+		engine.input.rotate_backw = 'x';
 		engine.input.drop   = ' ';
-		engine.input.pause  = 'p';
+		engine.input.pause  = '\n';
 		engine.input.quit   = 'q';
 		return -1;
 	}
@@ -356,10 +364,10 @@ void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
 	int i, k;
-	for (i = 1; i < 5; i++) /* starting at the first next piece */
+	for (i = 0; i < NEXT_PIECES_NO; i++)
 	{
 		piece_s p = g->piece_next[i];
-		w = engine.screen.next[i - 1].win;
+		w = engine.screen.next[i].win;
 
 		werase(w);
 
@@ -374,6 +382,7 @@ void engine_draw_next_pieces(game_s* g)
 		engine_draw_piece(&p, w);
 		wrefresh(w);
 	}
+
 	w = engine.screen.next_container.win;
 	wattron(w, COLOR_PAIR(WHITE_BLACK));
 	mvwaddstr(w, 0, 1, "Next");
@@ -430,7 +439,7 @@ void engine_draw(game_s* g)
 
 	engine_draw_board(&(g->board));
 	engine_draw_piece(&(g->piece_ghost), w);
-	engine_draw_piece(g->piece_current, w);
+	engine_draw_piece(&(g->piece_current), w);
 	engine_draw_next_pieces(g);
 	engine_draw_hold(g);
 	engine_draw_score(g);

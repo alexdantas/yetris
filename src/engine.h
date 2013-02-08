@@ -5,6 +5,7 @@
 #include <ncurses.h>
 
 #define NUMBER_OF_KEYS 8
+#define NEXT_PIECES_NO 5
 
 /** This holds the game keymap. */
 typedef struct input_s
@@ -43,7 +44,7 @@ typedef struct screen_s
 	window_s next_container;
 	window_s board;
 	window_s info;
-	window_s next[4];
+	window_s next[NEXT_PIECES_NO];
 	window_s hold;
 	window_s leftmost_container;
 	window_s score;

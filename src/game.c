@@ -9,16 +9,17 @@
 game_s new_game()
 {
 	game_s g;
+	int i;
 
 	g.board = new_board();
 
-	int i;
-	for (i = 0; i < 5; i++)
+	g.piece_current = new_piece(piece_get_random());
+	for (i = 0; i < NEXT_PIECES_NO; i++)
 		g.piece_next[i] = new_piece(piece_get_random());
+
 
 	g.can_hold = true;
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
-	g.piece_current = &(g.piece_next[0]);
 	g.score = 0;
 	g.lines = 0;
 	g.level = 0;
@@ -31,7 +32,7 @@ game_s new_game()
 /** Refreshes the ghost piece to the current one on #g */
 void game_ghost_update(game_s* g)
 {
-	g->piece_ghost = *(g->piece_current);
+	g->piece_ghost = g->piece_current;
 
 	int i;
 	for (i = 0; i < 4; i++)
@@ -50,14 +51,14 @@ void game_ghost_update(game_s* g)
 /** Places the current piece on the board and gets a new one. */
 void game_drop_piece(game_s* g)
 {
-	board_save_piece(&(g->board), g->piece_current);
+	board_save_piece(&(g->board), &(g->piece_current));
 
+	g->piece_current = g->piece_next[0];
 	int i;
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < NEXT_PIECES_NO - 1; i++)
 		g->piece_next[i] = g->piece_next[i + 1];
 
 	g->piece_next[i] = new_piece(piece_get_random());
-	g->piece_current = &(g->piece_next[0]);
 
 	game_ghost_update(g);
 
@@ -86,22 +87,22 @@ bool game_hold_piece(game_s* g)
    	g->can_hold = false;
 
 	piece_s tmp = g->piece_hold;
-	g->piece_hold = *(g->piece_current);
+	g->piece_hold = g->piece_current;
 
 	if (tmp.type == PIECE_DUMMY)
 	{
+		g->piece_current = g->piece_next[0];
 		int i;
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < NEXT_PIECES_NO - 1; i++)
 			g->piece_next[i] = g->piece_next[i + 1];
 
 		g->piece_next[i] = new_piece(piece_get_random());
 		game_ghost_update(g);
-
 	}
 	else
 	{
-		(*g->piece_current) = tmp;
-		piece_reset(g->piece_current);
+		g->piece_current = tmp;
+		piece_reset(&(g->piece_current));
 	}
 
 	/* Move the hold piece to fit the hold screen */
