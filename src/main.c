@@ -24,56 +24,21 @@ int main(int argc, char* argv[])
 
 	game_s game = new_game();
 
-	bool quit = false;
-	while (!quit)
+	while (!game.quit)
 	{
-		int c = engine_get_input(300);
+		int c = engine_get_input(game.speed);
 
-		/* Dang it, switch doesn't work with variables! */
-		if (c == engine.input.quit)
-			quit = 1;
-		else if (c == engine.input.left)
-		{
-			if (piece_can_move(&(game.piece_current), &(game.board), DIR_LEFT))
-				piece_move(&(game.piece_current), DIR_LEFT);
-		}
-		else if (c == engine.input.right)
-		{
-			if (piece_can_move(&(game.piece_current), &(game.board), DIR_RIGHT))
-				piece_move(&(game.piece_current), DIR_RIGHT);
-		}
-		else if (c == engine.input.down)
-		{
-			if (piece_can_move(&(game.piece_current), &(game.board), DIR_DOWN))
-				piece_move(&(game.piece_current), DIR_DOWN);
-			else
-				game_drop_piece(&game);
-		}
-		else if (c == engine.input.rotate)
-		{
-			if (piece_can_rotate(&(game.piece_current), &(game.board), 1))
-				piece_rotate(&(game.piece_current), 1);
-		}
-		else if (c == engine.input.rotate_backw)
-		{
-			if (piece_can_rotate(&(game.piece_current), &(game.board), -1))
-				piece_rotate(&(game.piece_current), -1);
-		}
-		else if (c == engine.input.drop)
-		{
-			piece_hard_drop(&(game.piece_current), &(game.board));
-			game_drop_piece(&game);
-		}
-		else if (c == engine.input.pause)
-		{
-			game_hold_piece(&game);
-		}
-
+		game_handle_input(&game, c);
 		game_update(&game);
-		engine_draw(&game);
 
-		if (game_is_over(&game))
-			quit = true;
+		if (game.over)
+		{
+			engine_draw_gameover(&game);
+			engine_wait_for_keypress();
+			game = new_game();
+		}
+
+		engine_draw(&game);
 	}
 	return 0;
 }

@@ -3,7 +3,7 @@
 # Variables
 EXEC   = yetris
 CFLAGS = #-Wall -Wextra
-OBJ    = obj/block.o obj/piece.o  obj/game.o obj/main.o \
+OBJ    = obj/block.o obj/piece.o  obj/game.o obj/main.o obj/timer.o \
          obj/board.o obj/engine.o obj/arguments.o obj/globals.o
 
 # Build instructions

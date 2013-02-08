@@ -6,6 +6,7 @@
 #include <sys/time.h>  /* select() */
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 #include "engine.h"
 #include "game.h"
 #include "globals.h"
@@ -228,6 +229,8 @@ int engine_windows_init()
 	wrefresh(w.win);
 	s->score = w;
 
+	w = s->info;
+	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
 	wrefresh(w.win);
 }
 
@@ -436,11 +439,20 @@ void engine_draw_info(game_s* g)
 {
 	window_s w = engine.screen.info;
 
+	werase(w.win);
+
+	/* Format: Wed Jun 30 21:49:08 1993\n */
 	mvwaddstr(w.win, 0, 0, "yetris v0.5");
 	mvwaddstr(w.win, 1, 0, "('yetris -h' for info)");
 	mvwaddstr(w.win, 7, 0, "0:00");
-	mvwaddstr(w.win, 9, 0, "Speed: 300ms");
-	mvwaddstr(w.win, 11, 0, "8:20AM");
+	mvwprintw(w.win, 9, 0, "Speed: %d", g->speed);
+
+
+	/* This is a little hack to display the time onscreen.
+	 * It's ugly as hell, but I had to make it */
+	time_t cur_time;
+	time(&cur_time);
+	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	wrefresh(w.win);
 }
@@ -469,7 +481,43 @@ int engine_get_color(color_e color, bool is_bold)
 {
 	int col = COLOR_PAIR(color);
 //	if (is_bold)
+	/* TRY TO MAKE THIS WORK */
 		col = col | A_INVIS;
 	return col;
+}
+
+/** Draws a little animation on the board, painting all pieces white. */
+void engine_draw_gameover(game_s* g)
+{
+	board_s* b = &(g->board);
+	WINDOW*  w = engine.screen.board.win;
+
+	int i, j;
+	for (j = 0; j < BOARD_HEIGHT; j++)
+	{
+		for (i = 0; i < BOARD_WIDTH; i++)
+		{
+			if (b->block[i][j].type != EMPTY)
+			{
+				b->block[i][j].color = engine_get_color(BLACK_WHITE, false);
+				engine_draw_block(&(b->block[i][j]), w);
+			}
+		}
+		/* Stop a little (50ms) before painting next line */
+		usleep(50000);
+		wrefresh(w);
+	}
+	/* Now wait a second, to let the feeling of defeat sink in */
+	wrefresh(w);
+	usleep(1000000);
+}
+
+/** Gets a single keypress and them return to normal game. */
+void engine_wait_for_keypress()
+{
+	fflush(stdin); /* discard any characters pressed until now */
+	nodelay(stdscr, FALSE);
+	getch();
+	nodelay(stdscr, TRUE);
 }
 

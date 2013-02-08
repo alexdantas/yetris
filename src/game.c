@@ -19,14 +19,23 @@ game_s new_game()
 
 
 	g.can_hold = true;
+	g.quit = false;
+	g.over = false;
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	g.score = 0;
 	g.lines = 0;
 	g.level = 0;
+	g.speed = INITIAL_SPEED;
 
+	timer_start(&(g.timer));
 	game_ghost_update(&g);
 
 	return g;
+}
+
+void game_update_speed(game_s* g)
+{
+	g->speed = INITIAL_SPEED / (g->level + 1);
 }
 
 /** Refreshes the ghost piece to the current one on #g */
@@ -47,7 +56,7 @@ void game_ghost_update(game_s* g)
 }
 
 /** Places the current piece on the board and gets a new one. */
-void game_drop_piece(game_s* g)
+void game_save_piece(game_s* g)
 {
 	board_save_piece(&(g->board), &(g->piece_current));
 
@@ -64,17 +73,26 @@ void game_drop_piece(game_s* g)
 	g->score += 10;
 }
 
-/** Tests if the game is over */
-bool game_is_over(game_s* g)
-{
-	return board_is_full(&(g->board));
-}
-
 /** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
+	timer_stop(&(g->timer));
+	if (timer_delta(&(g->timer)) / 1000 > g->speed)
+	{
+		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+			piece_move(&(g->piece_current), DIR_DOWN);
+		else
+			game_save_piece(g);
+
+		timer_start(&(g->timer));
+	}
+
 	game_delete_possible_lines(g);
+	game_update_speed(g);
 	game_ghost_update(g);
+
+	if (board_is_full(&(g->board)))
+		g->over = true;
 }
 
 bool game_hold_piece(game_s* g)
@@ -150,5 +168,61 @@ void game_delete_possible_lines(game_s* g)
 
 	board_delete_lines(b, lines);
 	g->score += (count * 30);
+}
+
+/* Updates the time indicator on the right screen */
+void game_update_time(game_s* g)
+{
+
+}
+
+/** Perform actions based on #input.
+ *  It must be 'int' (and not 'char') because of ncurses' stuff.
+ *
+ *  I with it was a big 'switch', but it doesn't work with variables!
+ */
+void game_handle_input(game_s* g, int input)
+{
+	if (input == engine.input.quit)
+	{
+		g->quit = true;
+	}
+	else if (input == engine.input.left)
+	{
+		if (piece_can_move(&(g->piece_current), &(g->board), DIR_LEFT))
+			piece_move(&(g->piece_current), DIR_LEFT);
+	}
+	else if (input == engine.input.right)
+	{
+		if (piece_can_move(&(g->piece_current), &(g->board), DIR_RIGHT))
+			piece_move(&(g->piece_current), DIR_RIGHT);
+	}
+	else if (input == engine.input.down)
+	{
+		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+			piece_move(&(g->piece_current), DIR_DOWN);
+		else
+			game_save_piece(g);
+	}
+	else if (input == engine.input.rotate)
+	{
+		if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
+			piece_rotate(&(g->piece_current), 1);
+	}
+	else if (input == engine.input.rotate_backw)
+	{
+		if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
+			piece_rotate(&(g->piece_current), -1);
+	}
+	else if (input == engine.input.drop)
+	{
+		piece_hard_drop(&(g->piece_current), &(g->board));
+		game_save_piece(g);
+		g->level++;
+	}
+	else if (input == engine.input.pause)
+	{
+		game_hold_piece(g);
+	}
 }
 
