@@ -47,6 +47,8 @@ void args_handle (int argc, char* argv[])
 			/* getopt_long() already printed an error message about
 			 * unrecognized option, so you'll probably want to
 			 * abort the execution now */
+			printf("Use 'yetris --help' for more information\n");
+			exit(EXIT_FAILURE);
 			break;
 
 		case -1:
@@ -55,7 +57,7 @@ void args_handle (int argc, char* argv[])
 			break;
 
 		default:
-			/* Do nothing - i suggest printing the usage and aborting
+			/* Do nothing. I suggest printing the usage and aborting
 			 * execution */
 			break;
 		}
@@ -65,25 +67,22 @@ void args_handle (int argc, char* argv[])
 	 * than needed, you decide what to do. Here, we just ignore them */
 	while (optind < argc)
 		optind++;
-
-	/* Goodbye, hope you liked it! */
 }
 
 void print_help ()
 {
-	printf ("* Arguments Help\n");
-	printf ("* This is an example of a Help text.\n");
-	printf ("* If you want to modify the actions taken by\n");
-	printf ("* the arguments module, please change the \n");
-	printf ("* args_handle() function.\n");
-	printf ("\n");
+	printf("yetris Help\n"
+	       "This is an example of a Help text.\n"
+		   "If you want to see more info, use 'yetris --usage'\n"
+	       "\n");
 }
 
 void print_usage ()
 {
-	printf ("* Arguments Usage\n");
-	printf ("* This is an example of a Usage text.\n");
-	printf ("* Insert what you wish.\n");
-	printf ("\n");
+	printf("yetris Usage\n\n"
+	       "	-c, --center  Center the game on screen.\n"
+	       "	-h, --help    Display help.\n"
+	       "	-u, --usage   Display this text.\n"
+	       "\n");
 }
 

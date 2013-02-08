@@ -7,10 +7,9 @@
 /* I know it's ugly to leave so many global variables >_<
  * please don't sue me */
 
+/** Game-related global variables */
 typedef struct globals_s
 {
-	int  current_width;
-	int  current_height;
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
 

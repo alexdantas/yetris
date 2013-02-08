@@ -59,8 +59,8 @@ int engine_screen_init(int width, int height)
 		endwin();
 		exit(EXIT_FAILURE);
 	}
-	global.current_width  = current_width;
-	global.current_height = current_height;
+	engine.screen.width  = current_width;
+	engine.screen.height = current_height;
 
 	raw ();       /* Character input doesnt require the <enter> key anymore */
 	curs_set (0); /* Makes the blinking cursor invisible */
@@ -78,9 +78,10 @@ int engine_windows_init()
 	int main_x = 0;
 	int main_y = 0;
 	if (global.screen_center_horizontally)
-		main_x = global.current_width/2 - 80/2;
+		main_x = engine.screen.width/2 - 80/2;
+
 	if (global.screen_center_vertically)
-		main_y = global.current_height/2 - 24/2;
+		main_y = engine.screen.height/2 - 24/2;
 
 	/* main */
 	w.width  = 80;
