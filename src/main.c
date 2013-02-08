@@ -9,9 +9,12 @@
 #include "piece.h"
 #include "board.h"
 #include "game.h"
+#include "globals.h"
 
 int main(int argc, char* argv[])
 {
+	global = new_globals();
+
 	/* if i call this after starting the engine, printf doesnt work
 	 * for help and usage */
 	args_handle(argc, argv);

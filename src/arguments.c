@@ -3,6 +3,7 @@
 #include <stdlib.h>     /* For EXIT_SUCCESS and FAILURE */
 #include <getopt.h>     /* For getopt_long() */
 #include "arguments.h"
+#include "globals.h"
 
 /** Handles all the commandline arguments.
  */
@@ -12,6 +13,7 @@ void args_handle (int argc, char* argv[])
 	{
 		{"help",    no_argument, NULL, 'h'},
 		{"version", no_argument, NULL, 'u'},
+		{"center",  no_argument, NULL, 'c'},
 		/* The last element must be all zeroes */
 		{0, 0, 0, 0}
 	};
@@ -24,19 +26,21 @@ void args_handle (int argc, char* argv[])
 	/* We keep checking the arguments untill they run out (c == -1) */
 	while (c != -1)
 	{
-		c = getopt_long (argc, argv, "hu", options, &option_index);
+		c = getopt_long (argc, argv, "huc", options, &option_index);
 
 		switch (c)
 		{
 		case 'h':
-
 			print_help();
 			exit(EXIT_SUCCESS);
 			break;
-
 		case 'u':
 			print_usage();
 			exit(EXIT_SUCCESS);
+			break;
+		case 'c':
+			global.screen_center_vertically   = true;
+			global.screen_center_horizontally = true;
 			break;
 
 		case '?':

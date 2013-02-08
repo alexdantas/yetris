@@ -114,10 +114,17 @@ bool game_hold_piece(game_s* g)
 	return true;
 }
 
-/** Checks all lines, deleting the ones that are full */
+/** Checks all lines, deleting the ones that are full.
+ *
+ *  @note I know this function's ugly...
+ *  @todo Maybe create a 'Line' data structure? To make this simpler?
+ */
 void game_delete_possible_lines(game_s* g)
 {
 	board_s* b = &(g->board);
+
+	bool lines[BOARD_HEIGHT]; /* this will mark lines to be deleted */
+	int  count = 0;
 
 	int j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
@@ -126,14 +133,22 @@ void game_delete_possible_lines(game_s* g)
 		while (i < BOARD_WIDTH)
 		{
 			if (b->block[i][j].type == EMPTY)
+			{
+				lines[j] = false;
 				break;
+			}
 			i++;
 		}
 		if (i == BOARD_WIDTH)
 		{
-			board_delete_line(b, j);
-			g->score += 100;
+			lines[j] = true;
+			count++;
 		}
 	}
+	if (count == 0)
+		return;
+
+	board_delete_lines(b, lines);
+	g->score += (count * 30);
 }
 

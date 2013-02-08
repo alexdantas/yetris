@@ -28,30 +28,46 @@ void board_save_piece(board_s* b, piece_s* p)
 	}
 }
 
-/** Deletes the line specified by #line */
-void board_delete_line(board_s* b, int line)
+/** Deletes all the lines specified by the array #lines.
+ *
+ *  @note I know this function's ugly... I'll fix that later
+ */
+void board_delete_lines(board_s* b, bool lines[])
 {
-	int i, j;
+	int i, j, k;
 
-	/* A nice little animation for destroyed lines */
-	for (i = 0; i < BOARD_WIDTH; i++)
+	/* loop through all lines, doing something only on those marked 'true' */
+	for (k = 0; k < BOARD_HEIGHT; k++)
 	{
-		b->block[i][line].theme[0] = ':';
-		b->block[i][line].theme[1] = ':';
-		b->block[i][line].color    = WHITE_BLACK;
+		if (!lines[k]) continue;
+
+		/* A nice little animation for destroyed lines */
+		for (i = 0; i < BOARD_WIDTH; i++)
+		{
+			b->block[i][k].theme[0] = ':';
+			b->block[i][k].theme[1] = ':';
+			b->block[i][k].color    = WHITE_BLACK;
+		}
 	}
 
 	engine_draw_board(b);
 	wrefresh(engine.screen.board.win);
-	usleep(300 * 1000);
+	usleep(200 * 1000);
 
-	/* Moves all upper lines one row down */
-	for (j = line; j > 0; j--)
-		for (i = 0; i < BOARD_WIDTH; i++)
+	for (k = 0; k < BOARD_HEIGHT; k++)
+	{
+		if (!lines[k]) continue;
+
+		/* Moves all upper lines one row down */
+		for (j = k; j > 0; j--)
 		{
-			b->block[i][j] = b->block[i][j - 1];
-			b->block[i][j].y += 1;
+			for (i = 0; i < BOARD_WIDTH; i++)
+			{
+				b->block[i][j] = b->block[i][j - 1];
+				b->block[i][j].y += 1;
+			}
 		}
+	}
 }
 
 bool board_is_full(board_s* b)

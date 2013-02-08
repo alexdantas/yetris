@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "engine.h"
 #include "game.h"
+#include "globals.h"
 
 /* /\** Definitions for the input keys -- arbitrary numbers *\/ */
 /* enum Input { RIGHT=666, DOWN,  LEFT, ROTATE, ROTATE_BACKW, */
@@ -58,6 +59,8 @@ int engine_screen_init(int width, int height)
 		endwin();
 		exit(EXIT_FAILURE);
 	}
+	global.current_width  = current_width;
+	global.current_height = current_height;
 
 	raw ();       /* Character input doesnt require the <enter> key anymore */
 	curs_set (0); /* Makes the blinking cursor invisible */
@@ -72,11 +75,18 @@ int engine_windows_init()
 	window_s  w;
 	screen_s* s = &(engine.screen);
 
+	int main_x = 0;
+	int main_y = 0;
+	if (global.screen_center_horizontally)
+		main_x = global.current_width/2 - 80/2;
+	if (global.screen_center_vertically)
+		main_y = global.current_height/2 - 24/2;
+
 	/* main */
 	w.width  = 80;
 	w.height = 24;
-	w.x      = 0;
-	w.y      = 0;
+	w.x      = main_x;
+	w.y      = main_y;
 	w.win    = newwin(w.height, w.width, w.y, w.x);
 	box(w.win, 0, 0);
 	wrefresh(w.win);
@@ -87,7 +97,7 @@ int engine_windows_init()
 	w.height = s->main.height - 2; /* borders */
 	w.x      = 2;
 	w.y      = 1;
-	w.win    = newwin(w.height, w.width, w.y, w.x);
+	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->leftmost = w;
@@ -97,7 +107,7 @@ int engine_windows_init()
 	w.height = s->main.height - 2; /* borders */
 	w.x      = s->leftmost.x + s->leftmost.width + 1;
 	w.y      = 1;
-	w.win    = newwin(w.height, w.width, w.y, w.x);
+	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_left = w;
@@ -107,7 +117,7 @@ int engine_windows_init()
 	w.height = s->main.height - 2; /* borders */
 	w.x      = s->middle_left.x + s->middle_left.width + 1;
 	w.y      = 1;
-	w.win    = newwin(w.height, w.width, w.y, w.x);
+	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_right = w;
@@ -117,7 +127,7 @@ int engine_windows_init()
 	w.height = s->main.height - 2; /* borders */
 	w.x      = s->middle_right.x + s->middle_right.width + 1;
 	w.y      = 1;
-	w.win    = newwin(w.height, w.width, w.y, w.x);
+	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->rightmost = w;
