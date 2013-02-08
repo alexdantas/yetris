@@ -27,7 +27,7 @@ typedef struct piece_s
 	piece_e type;
 	int     x;
 	int     y;
-	color_e color;
+	int     color;
 	char    theme[3]; /* the appearance of each block */
 	block_s block[4]; /* the blocks */
 	int     rotation; /* current rotation (0 is none) */

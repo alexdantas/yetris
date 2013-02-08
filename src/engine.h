@@ -89,6 +89,7 @@ void engine_draw_board(board_s* b);
 void engine_draw_hold(game_s* g);
 void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
+int engine_get_color(color_e color, bool is_bold);
 
 #endif /* ENGINE_H_DEFINED */
 

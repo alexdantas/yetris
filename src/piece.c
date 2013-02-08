@@ -12,20 +12,22 @@ piece_s new_piece(piece_e type)
 	piece_s p;
 	color_e color;
 
-	switch(type)
-	{
-	case PIECE_S: color = BLACK_GREEN;   break;
-	case PIECE_Z: color = BLACK_RED;     break;
-	case PIECE_O: color = BLACK_YELLOW | A_BOLD; break;
-	case PIECE_I: color = BLACK_CYAN   | A_BOLD; break;
-	case PIECE_L: color = BLACK_YELLOW;  break;
-	case PIECE_J: color = BLACK_BLUE;    break;
-	case PIECE_T: color = BLACK_MAGENTA; break;
-	default:      color = WHITE_BLACK;
-	}
 
 	p.rotation = 0;
 	p.type     = type;
+
+	switch(type)
+	{
+	case PIECE_S: color = engine_get_color(BLACK_GREEN,   false); break;
+	case PIECE_Z: color = engine_get_color(BLACK_RED,     false); break;
+	case PIECE_O: color = engine_get_color(BLACK_YELLOW,  true);  break;
+	case PIECE_I: color = engine_get_color(BLACK_CYAN,    true);  break;
+	case PIECE_L: color = engine_get_color(BLACK_YELLOW,  false); break;
+	case PIECE_J: color = engine_get_color(BLACK_BLUE,    false); break;
+	case PIECE_T: color = engine_get_color(BLACK_MAGENTA, false); break;
+	default:      color = engine_get_color(WHITE_BLACK,   false); break;
+	}
+
 	p.color    = color;
 	p.theme[0] = ' ';
 	p.theme[1] = ' ';

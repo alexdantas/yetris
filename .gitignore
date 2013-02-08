@@ -3,3 +3,7 @@
 bin/*
 obj/*
 
+# And emacs' backup files
+
+.#*
+

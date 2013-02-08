@@ -13,7 +13,7 @@ typedef struct block_s
 	int     x;
 	int     y;
 	block_e type;
-	color_e color;
+	int     color;
 	char    theme[3];
 } block_s;
 

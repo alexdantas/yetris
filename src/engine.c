@@ -114,7 +114,7 @@ int engine_windows_init()
 	s->middle_left = w;
 
 	/* middle-right */
-	w.width  = 6 * 2 + 2;
+	w.width  = 4 * 2 + 2;
 	w.height = s->main.height - 2; /* borders */
 	w.x      = s->middle_left.x + s->middle_left.width + 1;
 	w.y      = 1;
@@ -211,9 +211,9 @@ int engine_windows_init()
 
 	/* hold */
 	w.width  = s->leftmost_container.width;
-	w.height = 6;
+	w.height = 5;
 	w.x      = 0;
-	w.y      = 1;
+	w.y      = 0;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
 	mvwhline(w.win, w.height - 1, 0, '-', w.width);
 	wrefresh(w.win);
@@ -227,10 +227,6 @@ int engine_windows_init()
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->score = w;
-
-	w = s->leftmost_container;
-	mvwaddstr(w.win, 0, 1, "Hold");
-	wrefresh(w.win);
 
 	wrefresh(w.win);
 }
@@ -335,7 +331,7 @@ int engine_get_input(int delay_ms)
 /* wont call refresh */
 void engine_draw_block(block_s* b, WINDOW* w)
 {
-	wattrset(w, COLOR_PAIR(b->color));
+	wattrset(w, b->color);
 	mvwaddstr(w, b->y, (b->x * 2), b->theme);
 }
 
@@ -360,6 +356,16 @@ void engine_draw_board(board_s* b)
 				engine_draw_block(&(b->block[i][j]), w);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+/* TODO draw next pieces 2-block width -- make them all layed down */
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+
+
 void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
@@ -373,7 +379,7 @@ void engine_draw_next_pieces(game_s* g)
 
 		for (k = 0; k < 4; k++)
 		{
-			p.block[k].x -= p.x;
+			p.block[k].x -= p.x + 1; /* shifting them to the left */
 			p.block[k].y -= p.y;
 
 			if (p.type == PIECE_J) /* Pretty-printing */
@@ -383,9 +389,14 @@ void engine_draw_next_pieces(game_s* g)
 		wrefresh(w);
 	}
 
+	w = engine.screen.next[0].win;
+	wattron(w, COLOR_PAIR(WHITE_BLACK));
+	mvwhline(w, 4, 0, '-', 12);
+	wrefresh(w);
+
 	w = engine.screen.next_container.win;
 	wattron(w, COLOR_PAIR(WHITE_BLACK));
-	mvwaddstr(w, 0, 1, "Next");
+	mvwaddstr(w, 0, 0, "Next");
 	wrefresh(w);
 }
 
@@ -396,6 +407,7 @@ void engine_draw_hold(game_s* g)
 
 	werase(w.win);
 
+	mvwaddstr(w.win, 0, 0, "Hold");
 	engine_draw_piece(&p, w.win);
 	wattrset(w.win, COLOR_PAIR(WHITE_BLACK));
 	mvwhline(w.win, w.height - 1, 0, '-', w.width);
@@ -406,8 +418,7 @@ void engine_draw_hold(game_s* g)
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
-	int offset = 5;
-
+	int offset = 6;
 
 	mvwaddstr(w.win, offset + 0, 1, "Score");
 	mvwprintw(w.win, offset + 1, 1, "%10d", g->score);
@@ -426,7 +437,10 @@ void engine_draw_info(game_s* g)
 	window_s w = engine.screen.info;
 
 	mvwaddstr(w.win, 0, 0, "yetris v0.5");
-	mvwaddstr(w.win, 2, 2, "Debug info:");
+	mvwaddstr(w.win, 1, 0, "('yetris -h' for info)");
+	mvwaddstr(w.win, 7, 0, "0:00");
+	mvwaddstr(w.win, 9, 0, "Speed: 300ms");
+	mvwaddstr(w.win, 11, 0, "8:20AM");
 
 	wrefresh(w.win);
 }
@@ -446,5 +460,16 @@ void engine_draw(game_s* g)
 	engine_draw_info(g);
 
 	wrefresh(w);
+}
+
+/** Returns the color pair associated with #color.
+ *  If #is_bold is true, will make the color brighter.
+ */
+int engine_get_color(color_e color, bool is_bold)
+{
+	int col = COLOR_PAIR(color);
+//	if (is_bold)
+		col = col | A_INVIS;
+	return col;
 }
 
