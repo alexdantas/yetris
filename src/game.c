@@ -21,6 +21,7 @@ game_s new_game()
 	g.piece_current = &(g.piece_next[0]);
 	g.score = 0;
 	g.lines = 0;
+	g.level = 0;
 
 	game_ghost_update(&g);
 

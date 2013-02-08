@@ -224,12 +224,6 @@ int engine_windows_init()
 	mvwaddstr(w.win, 0, 1, "Hold");
 	wrefresh(w.win);
 
-	w = s->info;
-	mvwaddstr(w.win, 0, 0, "yetris v0.5");
-	mvwaddstr(w.win, 1, 4, "Ahh yeah");
-	mvwaddstr(w.win, 3, 4, "This is awesome, everything's fine! "
-		                   "you see, this is a multilined string "
-		                   "and i'm still able to print it aligned");
 	wrefresh(w.win);
 }
 
@@ -403,7 +397,7 @@ void engine_draw_hold(game_s* g)
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
-	int offset = 8;
+	int offset = 5;
 
 
 	mvwaddstr(w.win, offset + 0, 1, "Score");
@@ -411,6 +405,19 @@ void engine_draw_score(game_s* g)
 
 	mvwaddstr(w.win, offset + 3, 1, "Lines");
 	mvwprintw(w.win, offset + 4, 1, "%10d", g->lines);
+
+	mvwaddstr(w.win, offset + 6, 1, "Level");
+	mvwprintw(w.win, offset + 7, 1, "%10d", g->level);
+
+	wrefresh(w.win);
+}
+
+void engine_draw_info(game_s* g)
+{
+	window_s w = engine.screen.info;
+
+	mvwaddstr(w.win, 0, 0, "yetris v0.5");
+	mvwaddstr(w.win, 2, 2, "Debug info:");
 
 	wrefresh(w.win);
 }
@@ -427,6 +434,7 @@ void engine_draw(game_s* g)
 	engine_draw_next_pieces(g);
 	engine_draw_hold(g);
 	engine_draw_score(g);
+	engine_draw_info(g);
 
 	wrefresh(w);
 }
