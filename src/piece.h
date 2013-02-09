@@ -13,7 +13,7 @@
  *  The others are flags for special pieces.
  */
 typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
-               PIECE_J,     PIECE_S, PIECE_Z, PIECE_T,
+               PIECE_J,     PIECE_Z, PIECE_S, PIECE_T,
                PIECE_MAX,   PIECE_DUMMY } piece_e;
 
 /** Possible directions a piece can move */

@@ -15,12 +15,10 @@ int main(int argc, char* argv[])
 {
 	global = new_globals();
 
-	/* if i call this after starting the engine, printf doesnt work
-	 * for help and usage */
 	args_handle(argc, argv);
 
 	engine_init();
-	atexit(engine_exit);
+	atexit(engine_exit); /* no need to call it when quitting */
 
 	game_s game = new_game();
 
@@ -37,9 +35,9 @@ int main(int argc, char* argv[])
 			engine_wait_for_keypress();
 			game = new_game();
 		}
-
 		engine_draw(&game);
 	}
-	return 0;
+
+	return EXIT_SUCCESS;
 }
 

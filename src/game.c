@@ -19,8 +19,8 @@ game_s new_game()
 
 
 	g.can_hold = true;
-	g.quit = false;
-	g.over = false;
+	g.quit     = false;
+	g.over     = false;
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	g.score = 0;
 	g.lines = 0;
@@ -31,11 +31,6 @@ game_s new_game()
 	game_ghost_update(&g);
 
 	return g;
-}
-
-void game_update_speed(game_s* g)
-{
-	g->speed = INITIAL_SPEED / (g->level + 1);
 }
 
 /** Refreshes the ghost piece to the current one on #g */
@@ -88,13 +83,21 @@ void game_update(game_s* g)
 	}
 
 	game_delete_possible_lines(g);
-	game_update_speed(g);
+
+//	g->level = g->lines / 10;
+//	g->speed = INITIAL_SPEED / (g->level + 1);
+	g->speed = INITIAL_SPEED - ((g->level * 30));
+
 	game_ghost_update(g);
 
 	if (board_is_full(&(g->board)))
 		g->over = true;
 }
 
+/** Saves current piece for later use. If there's already one on the
+ *  'hold slot', switch them.
+ *  @note Can only do this once per drop.
+ */
 bool game_hold_piece(game_s* g)
 {
 	if (!g->can_hold)
@@ -105,6 +108,7 @@ bool game_hold_piece(game_s* g)
 	piece_s tmp = g->piece_hold;
 	g->piece_hold = g->piece_current;
 
+	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
 	{
 		g->piece_current = g->piece_next[0];
@@ -121,7 +125,7 @@ bool game_hold_piece(game_s* g)
 		piece_reset(&(g->piece_current));
 	}
 
-	/* Move the hold piece to fit the hold screen */
+	/* Move the hold piece to fit the hold screen. Makes drawing pretty */
 	int k;
 	for (k = 0; k < 4; k++)
 	{
@@ -167,7 +171,17 @@ void game_delete_possible_lines(game_s* g)
 		return;
 
 	board_delete_lines(b, lines);
-	g->score += (count * 30);
+
+	/* this scoring system follows the tetris guideline */
+	switch (count)
+	{
+	case 1: g->score += (100 * g->level); break;
+	case 2: g->score += (300 * g->level); break;
+	case 3: g->score += (500 * g->level); break;
+	case 4: g->score += (800 * g->level); break;
+
+	default: g->score = 0; break; /* someone's cheating... */
+	}
 }
 
 /* Updates the time indicator on the right screen */
@@ -218,11 +232,19 @@ void game_handle_input(game_s* g, int input)
 	{
 		piece_hard_drop(&(g->piece_current), &(g->board));
 		game_save_piece(g);
-		g->level++;
 	}
 	else if (input == engine.input.pause)
 	{
 		game_hold_piece(g);
+	}
+	/* DEBUG KEYS - for development only! */
+	else if (input == '+')
+	{
+		g->level++;
+	}
+	else if (input == '-')
+	{
+		g->level--;
 	}
 }
 

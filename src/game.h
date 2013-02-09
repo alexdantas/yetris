@@ -36,7 +36,6 @@ void game_update(game_s* g);
 void game_ghost_update(game_s* g);
 bool game_hold_piece(game_s* g);
 void game_delete_possible_lines(game_s* g);
-void game_update_speed(game_s* g);
 void game_handle_input(game_s* g, int input);
 
 #endif /* GAME_H_DEFINED */

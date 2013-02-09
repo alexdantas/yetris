@@ -11,12 +11,7 @@
 #include "game.h"
 #include "globals.h"
 
-/* /\** Definitions for the input keys -- arbitrary numbers *\/ */
-/* enum Input { RIGHT=666, DOWN,  LEFT, ROTATE, ROTATE_BACKW, */
-/*              DROP,      PAUSE, QUIT, ERROR,  NONE }; */
-/* typedef enum Input Input; */
-
-
+/** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
 {
 	engine.screen.width  = width;
@@ -49,26 +44,27 @@ int engine_screen_init(int width, int height)
 
 	/* Gets the current width and height */
 	int current_height, current_width;
-	getmaxyx (stdscr, current_height, current_width);
+	getmaxyx(stdscr, current_height, current_width);
 
 	if ((current_width  < engine.screen.width) ||
 	    (current_height < engine.screen.height))
 	{
-		fprintf(stderr, "Your console screen is smaller than %dx%d\n",
-		                 engine.screen.width, engine.screen.height);
-		fprintf(stderr, "Please resize your window and try again\n");
-		endwin();
+		engine_exit();
+		fprintf(stderr, "Error! Your console screen is smaller than %dx%d\n"
+		                "Please resize your window and try again\n",
+		                engine.screen.width, engine.screen.height);
+
 		exit(EXIT_FAILURE);
 	}
 	engine.screen.width  = current_width;
 	engine.screen.height = current_height;
 
-	raw ();       /* Character input doesnt require the <enter> key anymore */
-	curs_set (0); /* Makes the blinking cursor invisible */
-	noecho ();    /* Wont print the keys received through input */
-	nodelay (stdscr, TRUE); /* Wont wait for input */
-	keypad (stdscr, TRUE);  /* Support for extra keys (life F1, F2, ... ) */
-	refresh ();   /* Refresh the screen (prints whats in the screen buffer) */
+	raw();       /* Character input doesnt require the <enter> key anymore */
+	curs_set(0); /* Makes the blinking cursor invisible */
+	noecho();    /* Wont print the keys received through input */
+	nodelay(stdscr, TRUE); /* Wont wait for input */
+	keypad(stdscr, TRUE);  /* Support for extra keys (life F1, F2, ... ) */
+	refresh();   /* Refresh the screen (prints whats in the screen buffer) */
 }
 
 int engine_windows_init()
@@ -234,6 +230,8 @@ int engine_windows_init()
 	wrefresh(w.win);
 }
 
+/** Initializes all ncurses' related stuff (windows, colors...).
+ *  There's no need to call 'engine_exit' */
 int engine_init()
 {
 	/* Block signals while initializing ncurses, otherwise the
