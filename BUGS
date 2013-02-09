@@ -4,6 +4,7 @@ Known bugs and issues
 Current Bugs
 ------------
 
+* If you control the piece, the falling time resets - possible infinite game.
 * When the game ends, the animation leaves some blocks colored.
 * Messy controls.
 * Cannot rotate pieces if it's way's blocked.
