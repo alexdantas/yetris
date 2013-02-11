@@ -20,7 +20,7 @@ game_s new_game()
 
 	g.can_hold  = true;
 	g.quit      = false;
-	g.over      = false;
+	g.is_over   = false;
 	g.show_help = false;
 
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
@@ -31,6 +31,12 @@ game_s new_game()
 	g.speed = INITIAL_SPEED;
 
 	timer_start(&(g.timer));
+	timer_start(&(g.global_timer));
+
+	g.gameplay_s = 0;
+	g.gameplay_m = 0;
+	g.gameplay_h = 0;
+
 	game_ghost_update(&g);
 
 	return g;
@@ -75,7 +81,7 @@ void game_save_piece(game_s* g)
 void game_update(game_s* g)
 {
 	timer_stop(&(g->timer));
-	if (timer_delta(&(g->timer)) / 1000 > g->speed)
+	if ((timer_delta_mseconds(&(g->timer))) > g->speed)
 	{
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
 			piece_move(&(g->piece_current), DIR_DOWN);
@@ -84,6 +90,10 @@ void game_update(game_s* g)
 
 		timer_start(&(g->timer));
 	}
+	timer_stop(&(g->global_timer));
+	g->gameplay_s = timer_delta_seconds(&(g->global_timer));
+	g->gameplay_m = timer_delta_minutes(&(g->global_timer));
+	g->gameplay_h = timer_delta_hours(&(g->global_timer));
 
 	game_delete_possible_lines(g);
 
@@ -94,7 +104,7 @@ void game_update(game_s* g)
 	game_ghost_update(g);
 
 	if (board_is_full(&(g->board)))
-		g->over = true;
+		g->is_over = true;
 }
 
 /** Saves current piece for later use. If there's already one on the
@@ -259,6 +269,10 @@ void game_handle_input(game_s* g, int input)
 	{
 		game_handle_score(g);
 	}
+	else if (input == KEY_F(4))
+	{
+		g->gameplay_m++;
+	}
 
 }
 
@@ -272,5 +286,11 @@ void game_handle_score(game_s* g)
 {
 	if (g->score > g->hscore)
 		g->hscore = g->score;
+}
+
+void game_over(game_s* g)
+{
+	timer_stop(&(g->global_timer));
+	game_handle_score(g);
 }
 

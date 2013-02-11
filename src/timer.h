@@ -26,7 +26,11 @@ struct timert
 };
 
 
-long timer_delta (struct timert* t);
+long timer_delta_useconds (struct timert* t);
+long timer_delta_mseconds(struct timert* t);
+long timer_delta_seconds(struct timert* t);
+long timer_delta_minutes(struct timert* t);
+long timer_delta_hours(struct timert* t);
 int  timer_start (struct timert* t);
 int  timer_stop (struct timert* t);
 

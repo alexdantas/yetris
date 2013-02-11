@@ -18,7 +18,11 @@ typedef struct game_s
 	piece_s piece_hold;
 	board_s board;
 
-	struct timert timer;
+	struct timert global_timer; /** Timer since the beginning of the game */
+	struct timert timer; /** Timer to drop pieces */
+	long gameplay_s; /** How many seconds have passed since game start */
+	long gameplay_m; /** How many minutes have passed since game start */
+	long gameplay_h; /** How many hours have passed since game start */
 
 	bool can_hold; /**< Tells if user has switched pieces this round */
 	int  score;
@@ -28,7 +32,7 @@ typedef struct game_s
 	int  hscore;
 
 	bool quit;
-	bool over; /**< Flag if game is over  */
+	bool is_over; /**< Flag if game is over  */
 	bool show_help;
 
 } game_s;
@@ -42,5 +46,6 @@ bool game_delete_possible_lines(game_s* g);
 void game_handle_input(game_s* g, int input);
 void game_hscore_init(game_s* g);
 void game_handle_score(game_s* g);
+void game_over(game_s* g);
 
 #endif /* GAME_H_DEFINED */

@@ -36,11 +36,11 @@ int main(int argc, char* argv[])
 		/* 	engine_wait_for_keypress(); */
 		/* 	game.show_help = false; */
 		/* } */
-		if (game.over)
+		if (game.is_over)
 		{
+			game_over(&game);
 			engine_draw_gameover(&game);
 			engine_wait_for_keypress();
-			game_handle_score(&game);
 			game = new_game();
 		}
 		engine_draw(&game);
