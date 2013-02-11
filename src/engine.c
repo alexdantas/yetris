@@ -1,15 +1,20 @@
 
-
 #include <stdlib.h>
 #include <ncurses.h>
-
+#include <stdbool.h>
 #include <sys/time.h>  /* select() */
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 #include "engine.h"
 #include "game.h"
 #include "globals.h"
+
+
+/* specific engine functions */
+void window_color(WINDOW* win, int color, bool is_bold);
+
 
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
@@ -22,6 +27,7 @@ int engine_screen_init(int width, int height)
 
 	if (has_colors() == TRUE)
 	{
+		engine.has_colors = true;
 		start_color();
 		/* Colors (Enum Name,     Foreground,    Background) */
 		init_pair(GREEN_BLACK,   COLOR_GREEN,   COLOR_BLACK);
@@ -32,6 +38,7 @@ int engine_screen_init(int width, int height)
 		init_pair(MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
 		init_pair(YELLOW_BLACK,  COLOR_YELLOW,  COLOR_BLACK);
 		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
+		init_pair(BLACK_BLACK,   COLOR_BLACK,   COLOR_BLACK);
 		init_pair(BLACK_GREEN,   COLOR_BLACK,   COLOR_GREEN);
 		init_pair(BLACK_CYAN,    COLOR_BLACK,   COLOR_CYAN);
 		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
@@ -41,6 +48,8 @@ int engine_screen_init(int width, int height)
 		init_pair(BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
 		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
 	}
+	else
+		engine.has_colors = false;
 
 	/* Gets the current width and height */
 	int current_height, current_width;
@@ -65,8 +74,10 @@ int engine_screen_init(int width, int height)
 	nodelay(stdscr, TRUE); /* Wont wait for input */
 	keypad(stdscr, TRUE);  /* Support for extra keys (life F1, F2, ... ) */
 	refresh();   /* Refresh the screen (prints whats in the screen buffer) */
+	return 1;
 }
 
+/** Starts all the subscreens of the game */
 int engine_windows_init()
 {
 	window_s  w;
@@ -86,6 +97,7 @@ int engine_windows_init()
 	w.x      = main_x;
 	w.y      = main_y;
 	w.win    = newwin(w.height, w.width, w.y, w.x);
+	window_color(w.win, BLACK_BLACK, true);
 	box(w.win, 0, 0);
 	wrefresh(w.win);
 	s->main = w;
@@ -96,6 +108,7 @@ int engine_windows_init()
 	w.x      = 2;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
+	window_color(w.win, BLACK_BLACK, true);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->leftmost = w;
@@ -106,6 +119,7 @@ int engine_windows_init()
 	w.x      = s->leftmost.x + s->leftmost.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
+	window_color(w.win, BLACK_BLACK, true);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_left = w;
@@ -116,6 +130,7 @@ int engine_windows_init()
 	w.x      = s->middle_left.x + s->middle_left.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
+	window_color(w.win, BLACK_BLACK, true);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_right = w;
@@ -126,6 +141,7 @@ int engine_windows_init()
 	w.x      = s->middle_right.x + s->middle_right.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
+	window_color(w.win, BLACK_BLACK, true);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->rightmost = w;
@@ -228,11 +244,12 @@ int engine_windows_init()
 	w = s->info;
 	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
 	wrefresh(w.win);
+	return 1;
 }
 
 /** Initializes all ncurses' related stuff (windows, colors...).
  *  There's no need to call 'engine_exit' */
-int engine_init()
+bool engine_init()
 {
 	/* Block signals while initializing ncurses, otherwise the
 	 * console will be screwed up */
@@ -244,16 +261,19 @@ int engine_init()
 	srand(time(NULL));
 
 	restore_signals();
+	return true;
 }
 
-int block_signals()
+bool block_signals()
 {
 //	sigprocmask(SIG_BLOCK);
+	return true;
 }
 
-int restore_signals()
+bool restore_signals()
 {
 //	sigprocmask(SIG_SETMASK);
+	return true;
 }
 
 void engine_exit()
@@ -366,7 +386,6 @@ void engine_draw_board(board_s* b)
 //////////////////////////////////////////////////////////////////////////////
 
 
-
 void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
@@ -391,12 +410,12 @@ void engine_draw_next_pieces(game_s* g)
 	}
 
 	w = engine.screen.next[0].win;
-	wattron(w, COLOR_PAIR(WHITE_BLACK));
+	window_color(w, BLACK_BLACK, true);
 	mvwhline(w, 4, 0, '-', 12);
 	wrefresh(w);
 
 	w = engine.screen.next_container.win;
-	wattron(w, COLOR_PAIR(WHITE_BLACK));
+	window_color(w, BLUE_BLACK, false);
 	mvwaddstr(w, 0, 0, "Next");
 	wrefresh(w);
 }
@@ -408,27 +427,33 @@ void engine_draw_hold(game_s* g)
 
 	werase(w.win);
 
+	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, 0, 0, "Hold");
 	engine_draw_piece(&p, w.win);
-	wattrset(w.win, COLOR_PAIR(WHITE_BLACK));
+
+	window_color(w.win, BLACK_BLACK, true);
 	mvwhline(w.win, w.height - 1, 0, '-', w.width);
 
 	wrefresh(w.win);
 }
 
+
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
-	int offset = 6;
+	int line_offset = 3;
 
-	mvwaddstr(w.win, offset + 0, 1, "Score");
-	mvwprintw(w.win, offset + 1, 1, "%10d", g->score);
+	window_color(w.win, BLUE_BLACK, false);
+	mvwaddstr(w.win, line_offset + 0, 1, "High Score");
+	mvwaddstr(w.win, line_offset + 3, 1, "Score");
+	mvwaddstr(w.win, line_offset + 6, 1, "Lines");
+	mvwaddstr(w.win, line_offset + 9, 1, "Level");
 
-	mvwaddstr(w.win, offset + 3, 1, "Lines");
-	mvwprintw(w.win, offset + 4, 1, "%10d", g->lines);
-
-	mvwaddstr(w.win, offset + 6, 1, "Level");
-	mvwprintw(w.win, offset + 7, 1, "%10d", g->level);
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, line_offset + 1, 1, "%10d", g->hscore);
+	mvwprintw(w.win, line_offset + 4, 1, "%10d", g->score);
+	mvwprintw(w.win, line_offset + 7, 1, "%10d", g->lines);
+	mvwprintw(w.win, line_offset + 10, 1,"%10d", g->level);
 
 	wrefresh(w.win);
 }
@@ -439,17 +464,22 @@ void engine_draw_info(game_s* g)
 
 	werase(w.win);
 
-	/* Format: Wed Jun 30 21:49:08 1993\n */
+	window_color(w.win, CYAN_BLACK, false);
 	mvwaddstr(w.win, 0, 0, "yetris v0.5");
+
+	window_color(w.win, WHITE_BLACK, false);
 	mvwaddstr(w.win, 1, 0, "('yetris -h' for info)");
-	mvwaddstr(w.win, 7, 0, "0:00");
+
+	mvwaddstr(w.win, 7, 0, "Timer: 0:00");
 	mvwprintw(w.win, 9, 0, "Speed: %d", g->speed);
 
 
 	/* This is a little hack to display the time onscreen.
-	 * It's ugly as hell, but I had to make it */
+	 * It's ugly as hell, but I had to make it
+	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
 	time(&cur_time);
+	window_color(w.win, WHITE_BLACK, false);
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	wrefresh(w.win);
@@ -478,9 +508,10 @@ void engine_draw(game_s* g)
 int engine_get_color(color_e color, bool is_bold)
 {
 	int col = COLOR_PAIR(color);
-//	if (is_bold)
-	/* TRY TO MAKE THIS WORK */
-		col = col | A_INVIS;
+	if (is_bold)
+		col = col | A_BOLD;
+		/* TRY TO MAKE THIS WORK */
+
 	return col;
 }
 
@@ -517,5 +548,32 @@ void engine_wait_for_keypress()
 	nodelay(stdscr, FALSE);
 	getch();
 	nodelay(stdscr, TRUE);
+}
+
+/* /\** Pops a window explaining some stuff *\/ */
+/* void engine_draw_help() */
+/* { */
+/* 	screen_s* s = &(engine.screen); */
+/* 	window_s* w; /\* help screen (only shows when requested) *\/ */
+
+/* 	w->width  = 40; */
+/* 	w->height = 10; */
+/* 	w->x      = 0;//s->main.width/2  - 40/2; */
+/* 	w->y      = 0;//s->main.height/2 - 10/2; */
+/* 	w->win    = derwin(s->main.win, w->height, w->width, w->y, w->x); */
+/* 	wborder(w->win, '|', '|', '-', '-', '+', '+', '+', '+'); */
+
+/* //	mvwaddstr(w->win, 0, 4, "Help"); */
+
+/* 	wrefresh(w->win); */
+/* 	delwin(w->win); */
+/* 	wrefresh(s->main.win); */
+/* } */
+
+/** Turns on color #color on window #win. */
+void window_color(WINDOW* win, int color, bool is_bold)
+{
+	if (engine.has_colors)
+		wattron(win, engine_get_color(color, is_bold));
 }
 

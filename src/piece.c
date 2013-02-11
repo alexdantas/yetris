@@ -186,7 +186,8 @@ void piece_reset(piece_s* p)
 /** Tells if a piece is a basic one (one of the 7 original ones) */
 bool piece_is_valid(piece_s* p)
 {
-	if ((p->type < 0) || (p->type >= PIECE_MAX))
+	/* p is always positive */
+	if (p->type >= PIECE_MAX)
 		return false;
 	else
 		return true;

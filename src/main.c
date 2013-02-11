@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 	atexit(engine_exit); /* no need to call it when quitting */
 
 	game_s game = new_game();
+	game_hscore_init(&game);
 
 	while (!game.quit)
 	{
@@ -29,10 +30,17 @@ int main(int argc, char* argv[])
 		game_handle_input(&game, c);
 		game_update(&game);
 
+		/* if (game.show_help) */
+		/* { */
+		/* 	engine_draw_help(); */
+		/* 	engine_wait_for_keypress(); */
+		/* 	game.show_help = false; */
+		/* } */
 		if (game.over)
 		{
 			engine_draw_gameover(&game);
 			engine_wait_for_keypress();
+			game_handle_score(&game);
 			game = new_game();
 		}
 		engine_draw(&game);

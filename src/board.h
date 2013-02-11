@@ -22,5 +22,6 @@ board_s new_board();
 void board_save_piece(board_s* b, piece_s* p);
 void board_delete_line(board_s* b, int line);
 bool board_is_full(board_s* b);
+void board_delete_lines(board_s* b, bool lines[]);
 
 #endif /* BOARD_H_DEFINED */

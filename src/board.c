@@ -1,5 +1,6 @@
 
 #include <stdbool.h>
+#include <unistd.h> /* usleep */
 #include "board.h"
 #include "block.h"
 #include "piece.h"
@@ -46,7 +47,7 @@ void board_delete_lines(board_s* b, bool lines[])
 		{
 			b->block[i][k].theme[0] = ':';
 			b->block[i][k].theme[1] = ':';
-			b->block[i][k].color    = WHITE_BLACK;
+			b->block[i][k].color    = engine_get_color(WHITE_BLACK, true);
 		}
 	}
 

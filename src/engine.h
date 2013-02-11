@@ -55,6 +55,7 @@ typedef struct engine_s
 {
 	input_s  input;
 	screen_s screen;
+	bool     has_colors;
 } engine_s;
 
 engine_s engine;
@@ -66,7 +67,8 @@ typedef enum { BLACK_WHITE = 1, WHITE_BLACK,
                BLACK_RED,       RED_BLACK,
                BLACK_YELLOW,    YELLOW_BLACK,
                BLACK_MAGENTA,   MAGENTA_BLACK,
-               BLACK_GREEN,     GREEN_BLACK} color_e;
+               BLACK_GREEN,     GREEN_BLACK,
+               BLACK_BLACK} color_e;
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
@@ -77,9 +79,9 @@ typedef struct game_s  game_s;
 
 int engine_screen_init(int width, int height);
 int engine_windows_init();
-int engine_init();
-int block_signals();
-int restore_signals();
+bool engine_init();
+bool block_signals();
+bool restore_signals();
 void engine_exit();
 int engine_keymap(char keymap[]);
 int engine_get_input(int delay_ms);
@@ -90,6 +92,9 @@ void engine_draw_hold(game_s* g);
 void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
 int engine_get_color(color_e color, bool is_bold);
+void engine_draw_help();
+void engine_wait_for_keypress();
+void engine_draw_gameover(game_s* g);
 
 #endif /* ENGINE_H_DEFINED */
 

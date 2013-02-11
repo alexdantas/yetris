@@ -56,8 +56,8 @@ SCOREDIR   = $(DESTDIR)/var/games
 SCORE_PATH = $(SCOREDIR)/$(SCORE_FILE)
 
 # Compiling information
-CC	    = gcc
-EXE	    = yetris
+CC	        = gcc
+EXE	        = yetris
 CDEBUG	    =
 CFLAGS	    = $(CDEBUG) -Wall -Wextra -O2
 LIBS	    = -lncurses

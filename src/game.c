@@ -1,5 +1,6 @@
 
 #include <stdbool.h>
+#include <string.h>
 #include "game.h"
 #include "piece.h"
 #include "board.h"
@@ -17,11 +18,13 @@ game_s new_game()
 	for (i = 0; i < NEXT_PIECES_NO; i++)
 		g.piece_next[i] = new_piece(piece_get_random());
 
+	g.can_hold  = true;
+	g.quit      = false;
+	g.over      = false;
+	g.show_help = false;
 
-	g.can_hold = true;
-	g.quit     = false;
-	g.over     = false;
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
+
 	g.score = 0;
 	g.lines = 0;
 	g.level = 0;
@@ -84,7 +87,7 @@ void game_update(game_s* g)
 
 	game_delete_possible_lines(g);
 
-//	g->level = g->lines / 10;
+	g->level = g->lines / 15;
 //	g->speed = INITIAL_SPEED / (g->level + 1);
 	g->speed = INITIAL_SPEED - ((g->level * 30));
 
@@ -125,14 +128,14 @@ bool game_hold_piece(game_s* g)
 		piece_reset(&(g->piece_current));
 	}
 
-	/* Move the hold piece to fit the hold screen. Makes drawing pretty */
+	/* Makes the piece look nice on the hold screen */
+	g->piece_hold.rotation = 0;
 	int k;
 	for (k = 0; k < 4; k++)
 	{
 		g->piece_hold.block[k].x -= g->piece_hold.x;
 		g->piece_hold.block[k].y -= g->piece_hold.y;
 	}
-
 	return true;
 }
 
@@ -141,7 +144,7 @@ bool game_hold_piece(game_s* g)
  *  @note I know this function's ugly...
  *  @todo Maybe create a 'Line' data structure? To make this simpler?
  */
-void game_delete_possible_lines(game_s* g)
+bool game_delete_possible_lines(game_s* g)
 {
 	board_s* b = &(g->board);
 
@@ -168,9 +171,10 @@ void game_delete_possible_lines(game_s* g)
 		}
 	}
 	if (count == 0)
-		return;
+		return false;
 
 	board_delete_lines(b, lines);
+	g->lines += count;
 
 	/* this scoring system follows the tetris guideline */
 	switch (count)
@@ -182,6 +186,7 @@ void game_delete_possible_lines(game_s* g)
 
 	default: g->score = 0; break; /* someone's cheating... */
 	}
+	return true;
 }
 
 /* Updates the time indicator on the right screen */
@@ -221,12 +226,12 @@ void game_handle_input(game_s* g, int input)
 	else if (input == engine.input.rotate)
 	{
 		if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
-			piece_rotate(&(g->piece_current), 1);
+			piece_rotate(&(g->piece_current), -1);
 	}
 	else if (input == engine.input.rotate_backw)
 	{
 		if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
-			piece_rotate(&(g->piece_current), -1);
+			piece_rotate(&(g->piece_current), 1);
 	}
 	else if (input == engine.input.drop)
 	{
@@ -246,5 +251,26 @@ void game_handle_input(game_s* g, int input)
 	{
 		g->level--;
 	}
+	else if (input == KEY_F(2))
+	{
+		g->show_help = true;
+	}
+	else if (input == KEY_F(3))
+	{
+		game_handle_score(g);
+	}
+
+}
+
+/** Starts the high score list with default values  */
+void game_hscore_init(game_s* g)
+{
+	g->hscore = 10;
+}
+
+void game_handle_score(game_s* g)
+{
+	if (g->score > g->hscore)
+		g->hscore = g->score;
 }
 

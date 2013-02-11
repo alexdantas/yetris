@@ -25,9 +25,12 @@ typedef struct game_s
 	int  lines; /**< How many lines have been cleared yet */
 	int  level;
 	int  speed; /**< Time in miliseconds between each piece step */
+	int  hscore;
 
 	bool quit;
 	bool over; /**< Flag if game is over  */
+	bool show_help;
+
 } game_s;
 
 game_s new_game();
@@ -35,7 +38,9 @@ void game_save_piece(game_s* g);
 void game_update(game_s* g);
 void game_ghost_update(game_s* g);
 bool game_hold_piece(game_s* g);
-void game_delete_possible_lines(game_s* g);
+bool game_delete_possible_lines(game_s* g);
 void game_handle_input(game_s* g, int input);
+void game_hscore_init(game_s* g);
+void game_handle_score(game_s* g);
 
 #endif /* GAME_H_DEFINED */
