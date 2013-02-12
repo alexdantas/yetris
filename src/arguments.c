@@ -84,9 +84,10 @@ void print_help ()
 void print_usage ()
 {
 	printf("yetris Usage\n\n"
-	       "	-c, --center  Center the game on screen.\n"
-	       "	-h, --help    Display help.\n"
-	       "	-u, --usage   Display this text.\n"
+	       "	-c, --center   Center the game on screen.\n"
+	       "	-h, --help     Display help.\n"
+	       "	-u, --usage    Display this text.\n"
+	       "	-n, --no-color Runs the game without colors.\n"
 	       "\n");
 }
 
