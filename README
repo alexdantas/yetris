@@ -1,6 +1,6 @@
 yetris README
 =============
-yetris is a console clone of the famous Tetris(tm) game.
+yetris is a console clone of Tetris(tm).
 
 README Index
 ------------
@@ -20,12 +20,21 @@ Note:  Make sure you have libncurses5-dev. See 'Dependences' for more details.
 
 1) Introduction
 ---------------
-yetris does the same thing as any Tetris(tm)-based game around there.
+yetris is Tetris(tm) on the console. It has colors and highscore, along with
+many features found on modern Tetris(tm) implementations.
+It's made with C and runs on (most) Linux terminals.
 
-Here's the features:
-	* Textual interface - playable on the console
-	* Hold piece
-	* Combo and Back-to-back sequences
+Some of it's features:
+	* Colored textual interface - playable on the console.
+	* Hold and up to 5 next pieces.
+	* Combo and back-to-back sequences
+	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
+
+For now it attempts to be as close as any modern Tetris(tm) game as possible.
+It lacks some expected features but it's on active development.
+
+Also, the source code is clean and commented, allowing much better
+understanding and easing feature-implementation.
 
 2) Controls
 -----------
@@ -103,7 +112,7 @@ I'd appreciate any commentary - even if it's just "Hello, I play your game!".
 
 10) Credits
 -----------
-Firstly, I'd like to thank you for playing this game. Hope you liked it!
+I'd like to thank you for playing this game. Hope you liked it!
 Every download is an honour to me.
 
 11) License
@@ -124,6 +133,6 @@ Every download is an honour to me.
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- homepage: http://www.alexdantas.net/projects/yetris/
+ homepage: http://www.github.com/alexdantas/yetris/
  mailto:   alex.dantas92@gmail.com
 

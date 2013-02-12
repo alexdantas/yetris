@@ -1,3 +1,24 @@
+/* yetris - Tetris(tm) on the console.
+ * Copyright (C) 2013 Alexandre Dantas (kure)
+ *
+ * This file is part of yetris.
+ *
+ * yetris is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * homepage: http://www.github.com/alexdantas/yetris/
+ * mailto:   alex.dantas92@gmail.com
+ */
 
 #include <stdlib.h>
 #include <ncurses.h>
@@ -231,7 +252,7 @@ int engine_windows_init()
 
 	/* score screen */
 	w.width  = s->leftmost_container.width;
-	w.height = s->leftmost_container.height - (s->hold.height + 1);
+	w.height = s->leftmost_container.height - (s->hold.height);
 	w.x      = 0;
 	w.y      = s->hold.y + s->hold.height;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
@@ -497,7 +518,7 @@ void engine_draw_info(game_s* g)
 	werase(w.win);
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 0, 0, "yetris v0.5");
+	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
 
 	window_color(w.win, BLUE_BLACK, true);
 	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");

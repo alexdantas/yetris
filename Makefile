@@ -29,7 +29,7 @@ SHELL	= /bin/sh
 
 # General Info
 PACKAGE = yetris
-VERSION = 0.7
+VERSION = 1.0
 DATE	= Feb2013
 
 # Local source code information
@@ -71,9 +71,9 @@ OBJ         = obj/block.o     obj/piece.o  \
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)
 
-DEFINES	= -DVERSION=\"$(VERSION)\"        \
-          -DDATE=\"$(DATE)\"              \
-          -DSCORE_PATH=\"$(SCORE_PATH)\"
+DEFINES	= -DVERSION=\"$(VERSION)\"      \
+              -DDATE=\"$(DATE)\"            \
+              -DSCORE_PATH=\"$(SCORE_PATH)\"
 
 # Distribution tarball
 TARNAME = $(PACKAGE)
@@ -104,7 +104,7 @@ install: all
 	$(MUTE)install -d --mode=755 $(BINDIR)
 	$(MUTE)install --mode=755 $(LBIN)/$(EXE) $(BINDIR)
 #	$(ROOT)$(MUTE)chown root:games $(BINDIR)/$(EXE)
-#	$(ROOT)$(MUTE)chmod u+s $(BINDIR)/$(EXE)
+	$(ROOT)$(MUTE)chmod u+s $(BINDIR)/$(EXE)
 	-$(MUTE)chown root:games $(BINDIR)/$(EXE)
 	-$(MUTE)chmod u+s $(BINDIR)/$(EXE)
 	$(MUTE)install -d $(MAN6DIR)

@@ -1,14 +1,13 @@
+Things I must do later
+======================
 
-scores!
-highscores!
-improve coding style!
-globals - lots of flags!
+* Save and restore game state
+  (binary file with info on all major game data structures)
+  (save with, idk, F10, and restore with --restore commandline)
 
-save and restore game state
+* Improve coding style
+  (document even more and clean stupid hacks on the code)
 
-
-
-
-
-
+* Give tons of flags to the 'global' data structure
+  (must know exactly what's happening through bool flags)
 

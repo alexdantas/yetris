@@ -1,5 +1,12 @@
 All the changes are documented on the git history, so here's just the major ones
 
+12-02-13 v1.0:
+	* Gameplay: added highscore, combo, back-to-back, and some other
+	            stuff. It's pretty much functional now.
+	* Interface: cleaned up a bit. It displays everything that need
+	             to be displayed.
+	* Released!
+
 07-02-13 v0.7:
 	* Interface: layout redesigned. 80 x 24 chars and can center the screen.
 	* Gameplay: score, 5 next pieces, hold and improved ghost.

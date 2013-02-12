@@ -1,3 +1,24 @@
+/* yetris - Tetris(tm) on the console.
+ * Copyright (C) 2013 Alexandre Dantas (kure)
+ *
+ * This file is part of yetris.
+ *
+ * yetris is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * homepage: http://www.github.com/alexdantas/yetris/
+ * mailto:   alex.dantas92@gmail.com
+ */
 
 #include <stdio.h>      /* For printf() */
 #include <stdlib.h>     /* For EXIT_SUCCESS and FAILURE */
@@ -12,7 +33,7 @@ void args_handle (int argc, char* argv[])
 	static struct option options[] =
 	{
 		{"help",      no_argument, NULL, 'h'},
-		{"version",   no_argument, NULL, 'u'},
+		{"usage",     no_argument, NULL, 'u'},
 		{"center",    no_argument, NULL, 'c'},
 		{"no-colors", no_argument, NULL, 'n'},
 		/* The last element must be all zeroes */
@@ -75,25 +96,23 @@ void args_handle (int argc, char* argv[])
 
 void print_help ()
 {
-	printf("yetris Help\n"
+	printf("yetris v" VERSION " Help\n"
 	       "Controls:\n"
-		   "Left, Right   Controls the piece\n"
-	       "Down          Soft-drop\n"
-	       "Space         Hard-drop\n"
-	       "c             Holds the piece\n"
-	       "z, x          Rotates the piece counter-clockwise and clockwise\n"
-	       "q             Quits the game at any time\n"
-		   "For more info, use 'yetris --usage'\n"
-	       "\n");
+		   "\tLeft, Right Controls the piece\n"
+	       "\tDown        Soft-drop\n"
+	       "\tSpace       Hard-drop\n"
+	       "\tc           Holds the piece\n"
+	       "\tz, x        Rotates the piece counter-clockwise and clockwise\n"
+	       "\tq           Quits the game at any time\n"
+		   "For more info, use 'yetris --usage'\n");
 }
 
 void print_usage ()
 {
-	printf("yetris Usage\n\n"
+	printf("yetris v" VERSION " Usage\n"
 	       "	-c, --center   Center the game on screen.\n"
 	       "	-h, --help     Display help.\n"
 	       "	-u, --usage    Display this text.\n"
-	       "	-n, --no-color Runs the game without colors.\n"
-	       "\n");
+	       "	-n, --no-color Runs the game without colors.\n");
 }
 
