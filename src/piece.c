@@ -106,12 +106,54 @@ void piece_hard_drop(piece_s* p, board_s* b)
 		piece_move(p, DIR_DOWN);
 }
 
-/** Returns a random piece */
+/** Returns a random integer between #min and #max */
+int random_number_between(int min, int max)
+{
+	if (min > max) { int tmp = min; min = max; max = tmp; }
+
+	return rand() % (max - min + 1) + min;
+}
+
+/** Returns a random piece enum.
+ *  The logic is to keep a bag with one of each piece (7 pieces total).
+ *  Then we take one after another in a random order.
+ *  As soon as we took them all, place them back on the bag and redo it.
+ *  This way, we avoid long sequences of the same piece and guarantee
+ *  a certain degree of piece rotativity (I WANT TEH LINES!11!!).
+ *
+ *  @note The old way was to really randomly return a piece.
+ */
 piece_e piece_get_random()
 {
-	int min = 0;
-	int max = PIECE_MAX - 1;
-	return rand() % (max - min + 1) + min;
+ 	int i,j;
+ 	int size = PIECE_MAX;
+
+ 	static int bag[PIECE_MAX];
+	static int piece = PIECE_MAX;
+
+	if (piece >= PIECE_MAX)
+	{
+		piece = 0;
+
+		bag[0] = random_number_between(0, size - 1);
+		for (i = 1; i < size; i++)
+		{
+			bag[i] = random_number_between(0, size - 1);
+			j = 0;
+			do {				///for (j = 0; j < i; j++)
+
+				if (bag[j] == bag[i])
+				{
+					bag[i] = random_number_between(0, size - 1);
+					j = 0;
+				}
+				else
+					j++;
+			} while (j < i);
+		}
+	}
+	piece++;
+	return bag[piece - 1];
 }
 
 /** Checks if the piece #p can move to direction #dir.

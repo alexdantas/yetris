@@ -1,6 +1,7 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "game.h"
 #include "piece.h"
 #include "board.h"
@@ -12,6 +13,7 @@ game_s new_game()
 	game_s g;
 	int i;
 
+ 	srand(time(NULL));
 	g.board = new_board();
 
 	g.piece_current = new_piece(piece_get_random());
@@ -59,10 +61,10 @@ void game_ghost_update(game_s* g)
 	piece_hard_drop(&(g->piece_ghost), &(g->board));
 }
 
-/** Places the current piece on the board and gets a new one. */
-void game_save_piece(game_s* g)
+/** Locks the current piece on the board and gets a new one */
+void game_lock_piece(game_s* g)
 {
-	board_save_piece(&(g->board), &(g->piece_current));
+	board_lock_piece(&(g->board), &(g->piece_current));
 
 	g->piece_current = g->piece_next[0];
 	int i;
@@ -80,31 +82,52 @@ void game_save_piece(game_s* g)
 /** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
+	game_update_gameplay_time(g);
+	game_delete_possible_lines(g);
+	game_update_level(g);
+	game_ghost_update(g);
+
+	if (board_is_full(&(g->board)))
+		g->is_over = true;
+}
+
+/** Updates piece position on screen. */
+void game_update_piece(game_s* g)
+{
 	timer_stop(&(g->timer));
 	if ((timer_delta_mseconds(&(g->timer))) > g->speed)
 	{
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
 			piece_move(&(g->piece_current), DIR_DOWN);
 		else
-			game_save_piece(g);
+			game_lock_piece(g);
 
 		timer_start(&(g->timer));
 	}
-	timer_stop(&(g->global_timer));
-	g->gameplay_s = timer_delta_seconds(&(g->global_timer));
-	g->gameplay_m = timer_delta_minutes(&(g->global_timer));
-	g->gameplay_h = timer_delta_hours(&(g->global_timer));
+}
 
-	game_delete_possible_lines(g);
-
-	g->level = g->lines / 15;
+/** Updates level and speed based on the number of lines cleared. */
+void game_update_level(game_s* g)
+{
+// OLD WAY, DEPRECATED
+//	g->level = g->lines / 15;
 //	g->speed = INITIAL_SPEED / (g->level + 1);
-	g->speed = INITIAL_SPEED - ((g->level * 30));
+//	g->speed = INITIAL_SPEED - ((g->level * 30));
 
-	game_ghost_update(g);
-
-	if (board_is_full(&(g->board)))
-		g->is_over = true;
+	switch (g->lines)
+	{
+	case 0:   g->level = 0;  g->speed = 1000; break;
+	case 5:   g->level = 1;  g->speed = 950;  break;
+	case 10:  g->level = 2;  g->speed = 900;  break;
+	case 20:  g->level = 3;  g->speed = 850;  break;
+	case 30:  g->level = 4;  g->speed = 800;  break;
+	case 50:  g->level = 5;  g->speed = 700;  break;
+	case 70:  g->level = 6;  g->speed = 500;  break;
+	case 100: g->level = 7;  g->speed = 400;  break;
+	case 140: g->level = 8;  g->speed = 300;  break;
+	case 170: g->level = 9;  g->speed = 200;  break;
+	case 200: g->level = 10; g->speed = 100;  break;
+	}
 }
 
 /** Saves current piece for later use. If there's already one on the
@@ -132,6 +155,7 @@ bool game_hold_piece(game_s* g)
 		g->piece_next[i] = new_piece(piece_get_random());
 		game_ghost_update(g);
 	}
+	/* All right, switching pieces */
 	else
 	{
 		g->piece_current = tmp;
@@ -200,9 +224,12 @@ bool game_delete_possible_lines(game_s* g)
 }
 
 /* Updates the time indicator on the right screen */
-void game_update_time(game_s* g)
+void game_update_gameplay_time(game_s* g)
 {
-
+	timer_stop(&(g->global_timer));
+	g->gameplay_s = timer_delta_seconds(&(g->global_timer));
+	g->gameplay_m = timer_delta_minutes(&(g->global_timer));
+	g->gameplay_h = timer_delta_hours(&(g->global_timer));
 }
 
 /** Perform actions based on #input.
@@ -231,7 +258,7 @@ void game_handle_input(game_s* g, int input)
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
 			piece_move(&(g->piece_current), DIR_DOWN);
 		else
-			game_save_piece(g);
+			game_lock_piece(g);
 	}
 	else if (input == engine.input.rotate)
 	{
@@ -246,7 +273,7 @@ void game_handle_input(game_s* g, int input)
 	else if (input == engine.input.drop)
 	{
 		piece_hard_drop(&(g->piece_current), &(g->board));
-		game_save_piece(g);
+		game_lock_piece(g);
 	}
 	else if (input == engine.input.pause)
 	{

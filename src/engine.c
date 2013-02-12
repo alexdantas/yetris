@@ -453,7 +453,7 @@ void engine_draw_score(game_s* g)
 	mvwprintw(w.win, line_offset + 1, 1, "%10d", g->hscore);
 	mvwprintw(w.win, line_offset + 4, 1, "%10d", g->score);
 	mvwprintw(w.win, line_offset + 7, 1, "%10d", g->lines);
-	mvwprintw(w.win, line_offset + 10, 1,"%10d", g->level);
+	mvwprintw(w.win, line_offset + 10, 9,"%02d", g->level);
 
 	wrefresh(w.win);
 }

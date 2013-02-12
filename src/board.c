@@ -17,8 +17,8 @@ board_s new_board()
 	return b;
 }
 
-/** Puts the piece #p on the board */
-void board_save_piece(board_s* b, piece_s* p)
+/** Locks all the blocks from piece #p on the board #b */
+void board_lock_piece(board_s* b, piece_s* p)
 {
 	int k;
 	for (k = 0; k < 4; k++)

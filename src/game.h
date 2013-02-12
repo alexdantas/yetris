@@ -38,7 +38,7 @@ typedef struct game_s
 } game_s;
 
 game_s new_game();
-void game_save_piece(game_s* g);
+void game_lock_piece(game_s* g);
 void game_update(game_s* g);
 void game_ghost_update(game_s* g);
 bool game_hold_piece(game_s* g);
@@ -47,5 +47,7 @@ void game_handle_input(game_s* g, int input);
 void game_hscore_init(game_s* g);
 void game_handle_score(game_s* g);
 void game_over(game_s* g);
+void game_update_gameplay_time(game_s* g);
+void game_update_level(game_s* g);
 
 #endif /* GAME_H_DEFINED */
