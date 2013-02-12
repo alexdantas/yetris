@@ -24,22 +24,22 @@ game_s new_game()
 	g.quit      = false;
 	g.is_over   = false;
 	g.show_help = false;
+	g.moved_piece_down = false;
 
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
+	game_ghost_update(&g);
 
 	g.score = 0;
 	g.lines = 0;
 	g.level = 0;
 	g.speed = INITIAL_SPEED;
 
-	timer_start(&(g.timer));
-	timer_start(&(g.global_timer));
-
 	g.gameplay_s = 0;
 	g.gameplay_m = 0;
 	g.gameplay_h = 0;
 
-	game_ghost_update(&g);
+	timer_start(&(g.piece_timer));
+	timer_start(&(g.global_timer));
 
 	return g;
 }
@@ -82,6 +82,7 @@ void game_lock_piece(game_s* g)
 /** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
+	game_update_piece(g);
 	game_update_gameplay_time(g);
 	game_delete_possible_lines(g);
 	game_update_level(g);
@@ -94,15 +95,18 @@ void game_update(game_s* g)
 /** Updates piece position on screen. */
 void game_update_piece(game_s* g)
 {
-	timer_stop(&(g->timer));
-	if ((timer_delta_mseconds(&(g->timer))) > g->speed)
+	timer_stop(&(g->piece_timer));
+	if (timer_delta_mseconds(&(g->piece_timer)) >= g->speed)
 	{
-		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
-			piece_move(&(g->piece_current), DIR_DOWN);
-		else
-			game_lock_piece(g);
+		if (!g->moved_piece_down)
+		{
+			if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+				piece_move(&(g->piece_current), DIR_DOWN);
+			else
+				game_lock_piece(g);
+		}
 
-		timer_start(&(g->timer));
+		timer_start(&(g->piece_timer));
 	}
 }
 
@@ -244,19 +248,28 @@ void game_handle_input(game_s* g, int input)
 		g->quit = true;
 	}
 	else if (input == engine.input.left)
-	{
+ 	{
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_LEFT))
+		{
 			piece_move(&(g->piece_current), DIR_LEFT);
+			g->moved_piece_down = false;
+		}
 	}
 	else if (input == engine.input.right)
 	{
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_RIGHT))
+		{
 			piece_move(&(g->piece_current), DIR_RIGHT);
+			g->moved_piece_down = false;
+		}
 	}
 	else if (input == engine.input.down)
 	{
 		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+		{
 			piece_move(&(g->piece_current), DIR_DOWN);
+			g->moved_piece_down = true;
+		}
 		else
 			game_lock_piece(g);
 	}

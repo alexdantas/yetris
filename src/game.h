@@ -19,7 +19,7 @@ typedef struct game_s
 	board_s board;
 
 	struct timert global_timer; /** Timer since the beginning of the game */
-	struct timert timer; /** Timer to drop pieces */
+	struct timert piece_timer; /** Timer to drop current piece */
 	long gameplay_s; /** How many seconds have passed since game start */
 	long gameplay_m; /** How many minutes have passed since game start */
 	long gameplay_h; /** How many hours have passed since game start */
@@ -34,6 +34,7 @@ typedef struct game_s
 	bool quit;
 	bool is_over; /**< Flag if game is over  */
 	bool show_help;
+	bool moved_piece_down; /**< Player forced to move down - wont drop it */
 
 } game_s;
 
@@ -49,5 +50,6 @@ void game_handle_score(game_s* g);
 void game_over(game_s* g);
 void game_update_gameplay_time(game_s* g);
 void game_update_level(game_s* g);
+void game_update_piece(game_s* g);
 
 #endif /* GAME_H_DEFINED */
