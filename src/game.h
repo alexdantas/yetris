@@ -30,11 +30,16 @@ typedef struct game_s
 	int  level;
 	int  speed; /**< Time in miliseconds between each piece step */
 	int  hscore;
+	int  combo_count;
+	int  back_to_back_lines; /* How many lines have you cleared last round */
+	int  back_to_back_count; /* How many of the same lines have been cleared */
 
 	bool quit;
 	bool is_over; /**< Flag if game is over  */
 	bool show_help;
 	bool moved_piece_down; /**< Player forced to move down - wont drop it */
+	bool is_combo;
+	bool is_back_to_back;
 
 } game_s;
 

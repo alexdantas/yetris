@@ -24,7 +24,9 @@ game_s new_game()
 	g.quit      = false;
 	g.is_over   = false;
 	g.show_help = false;
+	g.is_combo  = false;
 	g.moved_piece_down = false;
+	g.is_back_to_back  = false;
 
 	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	game_ghost_update(&g);
@@ -34,6 +36,7 @@ game_s new_game()
 	g.level = 0;
 	g.speed = INITIAL_SPEED;
 	g.hscore = 0;
+	g.combo_count = 0;
 	game_hscore_init(&g);
 
 	g.gameplay_s = 0;
@@ -76,6 +79,7 @@ void game_lock_piece(game_s* g)
 	g->piece_next[i] = new_piece(piece_get_random());
 
 	game_ghost_update(g);
+	game_delete_possible_lines(g);
 
 	g->can_hold = true; /* now we can switch pieces! */
 	g->score += 10;
@@ -86,7 +90,6 @@ void game_update(game_s* g)
 {
 	game_update_piece(g);
 	game_update_gameplay_time(g);
-	game_delete_possible_lines(g);
 	game_update_level(g);
 	game_ghost_update(g);
 
@@ -221,21 +224,71 @@ bool game_delete_possible_lines(game_s* g)
 		}
 	}
 	if (count == 0)
+	{
+		g->is_combo    = false;
+		g->combo_count = 0;
+		g->is_back_to_back    = false;
+		g->back_to_back_count = 0;
 		return false;
+	}
 
 	board_delete_lines(b, lines);
 	g->lines += count;
 
-	/* this scoring system follows the tetris guideline */
+	/* Dealing with score - following the Tetris Guidelines */
+	/* Combo Score */
+	if (g->is_combo)
+	{
+		g->combo_count++;
+	}
+	else
+	{
+		g->is_combo    = true;
+		g->combo_count = 0;
+	}
+
+	int combo_score = 0;
+	if (g->is_combo)
+		combo_score = 50 * g->combo_count * g->level;
+
+	/* Piece Score */
+	int piece_score = 0;
+
 	switch (count)
 	{
-	case 1: g->score += (100 * g->level); break;
-	case 2: g->score += (300 * g->level); break;
-	case 3: g->score += (500 * g->level); break;
-	case 4: g->score += (800 * g->level); break;
+	case 1:  piece_score = 100; break;
+	case 2:  piece_score = 300; break;
+	case 3:  piece_score = 500; break;
+	case 4:  piece_score = 800; break;
 
-	default: g->score = 0; break; /* someone's cheating... */
+	default: piece_score = -1;   break; /* someone's cheating... */
 	}
+
+	/* Back-to-Back Lines */
+	if (g->is_back_to_back)
+	{
+		g->back_to_back_count++;
+	}
+	else
+	{
+		if ((g->back_to_back_lines == count) && (count >= 2))
+		{
+			g->is_back_to_back = true;
+			g->back_to_back_count = 1;
+			piece_score = (piece_score * 3) / 2;
+		}
+		else
+		{
+			g->is_back_to_back    = false;
+			g->back_to_back_count = false;
+		}
+	}
+	g->back_to_back_lines = count;
+
+
+	/* Apllying Everything */
+	g->score += (piece_score * g->level) + combo_score;
+
 	return true;
 }
 
@@ -325,7 +378,6 @@ void game_handle_input(game_s* g, int input)
 	{
 		g->gameplay_m++;
 	}
-
 }
 
 /** Starts the high score list with default values  */

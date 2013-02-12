@@ -442,19 +442,50 @@ void engine_draw_hold(game_s* g)
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
-	int line_offset = 3;
+
+	werase(w.win);
+
+	/* If user has combo, let's show it to him */
+	if ((g->is_combo) && (g->combo_count > 0))
+	{
+		if (g->combo_count > 3)
+			window_color(w.win, RED_BLACK, false);
+		else
+			window_color(w.win, YELLOW_BLACK, false);
+
+		mvwaddstr(w.win, 0, 1, "Combo!");
+		mvwprintw(w.win, 0, 9, "%2d", g->combo_count);
+	}
+
+	/* If user has back-to-back lines, let's show it to him */
+	if (g->is_back_to_back)
+	{
+		if (g->back_to_back_lines < 4)
+			window_color(w.win, RED_BLACK, true);
+		else
+			window_color(w.win, YELLOW_BLACK, true);
+
+		mvwaddstr(w.win, 1, 0, "Back-to-back");
+
+		switch (g->back_to_back_lines)
+		{
+		case 2: mvwaddstr(w.win, 2, 3, "Double"); break;
+		case 3: mvwaddstr(w.win, 2, 3, "Triple"); break;
+		case 4: mvwaddstr(w.win, 2, 3, "Tetris"); break;
+		}
+	}
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, line_offset + 0, 1, "High Score");
-	mvwaddstr(w.win, line_offset + 3, 1, "Score");
-	mvwaddstr(w.win, line_offset + 6, 1, "Lines");
-	mvwaddstr(w.win, line_offset + 9, 1, "Level");
+	mvwaddstr(w.win, 4,  1, "High Score");
+	mvwaddstr(w.win, 7,  1, "Score");
+	mvwaddstr(w.win, 10, 1, "Lines");
+	mvwaddstr(w.win, 13, 1, "Level");
 
 	window_color(w.win, WHITE_BLACK, false);
-	mvwprintw(w.win, line_offset + 1, 1, "%10d", g->hscore);
-	mvwprintw(w.win, line_offset + 4, 1, "%10d", g->score);
-	mvwprintw(w.win, line_offset + 7, 1, "%10d", g->lines);
-	mvwprintw(w.win, line_offset + 10, 9,"%02d", g->level);
+	mvwprintw(w.win, 5,  1, "%10d", g->hscore);
+	mvwprintw(w.win, 8,  1, "%10d", g->score);
+	mvwprintw(w.win, 11, 1, "%10d", g->lines);
+	mvwprintw(w.win, 14, 9, "%02d", g->level);
 
 	wrefresh(w.win);
 }
