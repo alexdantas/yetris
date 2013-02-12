@@ -37,6 +37,8 @@ game_s new_game()
 	g.speed = INITIAL_SPEED;
 	g.hscore = 0;
 	g.combo_count = 0;
+	g.back_to_back_count = 0;
+	g.back_to_back_lines = 0;
 	game_hscore_init(&g);
 
 	g.gameplay_s = 0;
@@ -229,6 +231,7 @@ bool game_delete_possible_lines(game_s* g)
 		g->combo_count = 0;
 		g->is_back_to_back    = false;
 		g->back_to_back_count = 0;
+		g->back_to_back_lines = 0;
 		return false;
 	}
 

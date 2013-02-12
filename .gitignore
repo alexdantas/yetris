@@ -7,3 +7,7 @@ obj/*
 
 .#*
 
+
+# Also, the high score file
+
+yetris.hscore

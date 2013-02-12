@@ -516,6 +516,13 @@ void engine_draw_info(game_s* g)
 	window_color(w.win, WHITE_BLACK, false);
 	mvwprintw(w.win, 5, 7, "%dms", g->speed);
 
+	/** DEBUG */
+	window_color(w.win, BLUE_BLACK, false);
+	mvwprintw(w.win, 7, 0, "Back-To-Back: %d", g->is_back_to_back);
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 8, 0, "Count:        %d", g->back_to_back_count);
+	mvwprintw(w.win, 9, 0, "Lines:        %d", g->back_to_back_lines);
+
 
 	/* This is a little hack to display the time onscreen.
 	 * It's ugly as hell, but I had to make it
