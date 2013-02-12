@@ -471,18 +471,18 @@ void engine_draw_info(game_s* g)
 	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 7, 0, "Timer:");
+	mvwaddstr(w.win, 3, 0, "Timer:");
 
 	window_color(w.win, WHITE_BLACK, false);
 	if (g->gameplay_h) /* Wow.. will someone really play this game for hours? */
-		mvwprintw(w.win, 7, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
+		mvwprintw(w.win, 3, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
 	else
-		mvwprintw(w.win, 7, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
+		mvwprintw(w.win, 3, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 9, 0, "Speed:");
+	mvwaddstr(w.win, 5, 0, "Speed:");
 	window_color(w.win, WHITE_BLACK, false);
-	mvwprintw(w.win, 9, 7, "%dms", g->speed);
+	mvwprintw(w.win, 5, 7, "%dms", g->speed);
 
 
 	/* This is a little hack to display the time onscreen.

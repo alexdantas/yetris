@@ -21,7 +21,6 @@ int main(int argc, char* argv[])
 	atexit(engine_exit); /* no need to call it when quitting */
 
 	game_s game = new_game();
-	game_hscore_init(&game);
 
 	while (!game.quit)
 	{

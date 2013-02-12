@@ -51,5 +51,6 @@ void game_over(game_s* g);
 void game_update_gameplay_time(game_s* g);
 void game_update_level(game_s* g);
 void game_update_piece(game_s* g);
+void game_hscore_save(game_s* g);
 
 #endif /* GAME_H_DEFINED */

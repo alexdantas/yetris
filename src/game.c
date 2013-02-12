@@ -33,6 +33,8 @@ game_s new_game()
 	g.lines = 0;
 	g.level = 0;
 	g.speed = INITIAL_SPEED;
+	g.hscore = 0;
+	game_hscore_init(&g);
 
 	g.gameplay_s = 0;
 	g.gameplay_m = 0;
@@ -92,7 +94,13 @@ void game_update(game_s* g)
 		g->is_over = true;
 }
 
-/** Updates piece position on screen. */
+/** Updates piece position on screen.
+ *
+ *  I need the g->moved_piece_down because if the player moved the
+ *  piece down, I must reset the piece timer (it wont double-drop it).
+ *  But if the player moved the piece sideways, must avoid infinite
+ *  floating.
+ */
 void game_update_piece(game_s* g)
 {
 	timer_stop(&(g->piece_timer));
@@ -104,6 +112,10 @@ void game_update_piece(game_s* g)
 				piece_move(&(g->piece_current), DIR_DOWN);
 			else
 				game_lock_piece(g);
+		}
+		else
+		{
+			g->moved_piece_down = false;
 		}
 
 		timer_start(&(g->piece_timer));
@@ -319,18 +331,38 @@ void game_handle_input(game_s* g, int input)
 /** Starts the high score list with default values  */
 void game_hscore_init(game_s* g)
 {
-	g->hscore = 10;
-}
-
-void game_handle_score(game_s* g)
-{
-	if (g->score > g->hscore)
-		g->hscore = g->score;
+	FILE* fp = fopen("yetris.hscore", "rb");
+	if (!fp)
+	{
+		g->hscore = 100;
+		game_hscore_save(g);
+	}
+	else
+		fread(&(g->hscore), sizeof(g->hscore), 1, fp);
 }
 
 void game_over(game_s* g)
 {
 	timer_stop(&(g->global_timer));
 	game_handle_score(g);
+}
+
+void game_handle_score(game_s* g)
+{
+	if (g->score > g->hscore)
+	{
+		g->hscore = g->score;
+		game_hscore_save(g);
+	}
+}
+
+void game_hscore_save(game_s* g)
+{
+	FILE* fp = fopen("yetris.hscore", "wb");
+	if (fp)
+	{
+		fwrite(&(g->hscore), sizeof(g->hscore), 1, fp);
+		fflush(fp);
+	}
 }
 
