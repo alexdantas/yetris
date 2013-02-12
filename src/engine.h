@@ -55,7 +55,6 @@ typedef struct engine_s
 {
 	input_s  input;
 	screen_s screen;
-	bool     has_colors;
 } engine_s;
 
 engine_s engine;

@@ -12,6 +12,7 @@ typedef struct globals_s
 {
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
+	bool screen_use_colors;
 
 } globals_s;
 

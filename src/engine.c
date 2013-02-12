@@ -25,9 +25,8 @@ int engine_screen_init(int width, int height)
 	/* Starting ncurses! */
 	initscr();
 
-	if (has_colors() == TRUE)
+	if ((has_colors() == TRUE) && (global.screen_use_colors))
 	{
-		engine.has_colors = true;
 		start_color();
 		/* Colors (Enum Name,     Foreground,    Background) */
 		init_pair(GREEN_BLACK,   COLOR_GREEN,   COLOR_BLACK);
@@ -48,8 +47,6 @@ int engine_screen_init(int width, int height)
 		init_pair(BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
 		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
 	}
-	else
-		engine.has_colors = false;
 
 	/* Gets the current width and height */
 	int current_height, current_width;
@@ -352,7 +349,11 @@ int engine_get_input(int delay_ms)
 /* wont call refresh */
 void engine_draw_block(block_s* b, WINDOW* w)
 {
-	wattrset(w, b->color);
+	if (global.screen_use_colors)
+		wattrset(w, b->color);
+	else
+		wattrset(w, BLACK_WHITE);
+
 	mvwaddstr(w, b->y, (b->x * 2), b->theme);
 }
 
@@ -584,7 +585,7 @@ void engine_wait_for_keypress()
 /** Turns on color #color on window #win. */
 void window_color(WINDOW* win, int color, bool is_bold)
 {
-	if (engine.has_colors)
-		wattron(win, engine_get_color(color, is_bold));
+	if (global.screen_use_colors)
+		wattrset(win, engine_get_color(color, is_bold));
 }
 

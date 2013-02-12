@@ -11,9 +11,10 @@ void args_handle (int argc, char* argv[])
 {
 	static struct option options[] =
 	{
-		{"help",    no_argument, NULL, 'h'},
-		{"version", no_argument, NULL, 'u'},
-		{"center",  no_argument, NULL, 'c'},
+		{"help",      no_argument, NULL, 'h'},
+		{"version",   no_argument, NULL, 'u'},
+		{"center",    no_argument, NULL, 'c'},
+		{"no-colors", no_argument, NULL, 'n'},
 		/* The last element must be all zeroes */
 		{0, 0, 0, 0}
 	};
@@ -26,7 +27,7 @@ void args_handle (int argc, char* argv[])
 	/* We keep checking the arguments untill they run out (c == -1) */
 	while (c != -1)
 	{
-		c = getopt_long (argc, argv, "huc", options, &option_index);
+		c = getopt_long (argc, argv, "hucn", options, &option_index);
 
 		switch (c)
 		{
@@ -41,6 +42,9 @@ void args_handle (int argc, char* argv[])
 		case 'c':
 			global.screen_center_vertically   = true;
 			global.screen_center_horizontally = true;
+			break;
+		case 'n':
+			global.screen_use_colors = false;
 			break;
 
 		case '?':

@@ -7,6 +7,7 @@ globals_s new_globals()
 
 	g.screen_center_vertically   = false;
 	g.screen_center_horizontally = false;
+	g.screen_use_colors = true;
 
 	return g;
 }
