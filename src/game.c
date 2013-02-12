@@ -246,13 +246,11 @@ bool game_delete_possible_lines(game_s* g)
 			count++;
 		}
 	}
+	/* No lines to be deleted */
 	if (count == 0)
 	{
 		g->is_combo    = false;
 		g->combo_count = 0;
-		g->is_back_to_back    = false;
-		g->back_to_back_count = 0;
-		g->back_to_back_lines = 0;
 		return false;
 	}
 
@@ -289,24 +287,14 @@ bool game_delete_possible_lines(game_s* g)
 	}
 
 	/* Back-to-Back Lines */
-	if (g->is_back_to_back)
+	if ((g->back_to_back_lines == count) && (count >= 2))
 	{
 		g->back_to_back_count++;
+		piece_score = (piece_score * 3) / 2;
 	}
 	else
-	{
-		if ((g->back_to_back_lines == count) && (count >= 2))
-		{
-			g->is_back_to_back = true;
-			g->back_to_back_count = 1;
-			piece_score = (piece_score * 3) / 2;
-		}
-		else
-		{
-			g->is_back_to_back    = false;
-			g->back_to_back_count = false;
-		}
-	}
+		g->back_to_back_count = 0;
+
 	g->back_to_back_lines = count;
 
 

@@ -39,7 +39,6 @@ typedef struct block_s
 } block_s;
 
 block_s new_block(int x, int y, char theme[], color_e color);
-void block_copy(block_s* a, block_s* b);
 
 #endif /* BLOCK_H_DEFINED */
 

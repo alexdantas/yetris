@@ -479,7 +479,7 @@ void engine_draw_score(game_s* g)
 	}
 
 	/* If user has back-to-back lines, let's show it to him */
-	if (g->is_back_to_back)
+	if (g->back_to_back_count > 0)
 	{
 		if (g->back_to_back_lines < 4)
 			window_color(w.win, RED_BLACK, true);
@@ -487,12 +487,14 @@ void engine_draw_score(game_s* g)
 			window_color(w.win, YELLOW_BLACK, true);
 
 		mvwaddstr(w.win, 1, 0, "Back-to-back");
+		if (g->back_to_back_count > 1)
+			mvwprintw(w.win, 2, 10, "x%d", g->back_to_back_count);
 
 		switch (g->back_to_back_lines)
 		{
-		case 2: mvwaddstr(w.win, 2, 3, "Double"); break;
-		case 3: mvwaddstr(w.win, 2, 3, "Triple"); break;
-		case 4: mvwaddstr(w.win, 2, 3, "Tetris"); break;
+		case 2: mvwaddstr(w.win, 2, 2, "Double"); break;
+		case 3: mvwaddstr(w.win, 2, 2, "Triple"); break;
+		case 4: mvwaddstr(w.win, 2, 2, "Tetris"); break;
 		}
 	}
 

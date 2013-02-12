@@ -63,11 +63,12 @@ CFLAGS	    = $(CDEBUG) -Wall -Wextra -O2
 LIBS	    = -lncurses
 INCLUDESDIR =
 LIBSDIR     =
-OBJ         = obj/block.o     obj/piece.o  \
-              obj/game.o      obj/main.o   \
-              obj/timer.o     obj/board.o  \
-              obj/engine.o    obj/globals.o\
+OBJ        = obj/engine.o    obj/piece.o   \
+              obj/game.o      obj/main.o    \
+              obj/timer.o     obj/board.o   \
+              obj/block.o     obj/globals.o \
               obj/arguments.o
+
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)
 
