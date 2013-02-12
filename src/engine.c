@@ -303,7 +303,7 @@ int engine_keymap(char keymap[])
 		engine.input.rotate = 'z';
 		engine.input.rotate_backw = 'x';
 		engine.input.drop   = ' ';
-		engine.input.pause  = '\n';
+		engine.input.pause  = 'c';
 		engine.input.quit   = 'q';
 		return -1;
 	}

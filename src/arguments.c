@@ -76,8 +76,14 @@ void args_handle (int argc, char* argv[])
 void print_help ()
 {
 	printf("yetris Help\n"
-	       "This is an example of a Help text.\n"
-		   "If you want to see more info, use 'yetris --usage'\n"
+	       "Controls:\n"
+		   "Left, Right   Controls the piece\n"
+	       "Down          Soft-drop\n"
+	       "Space         Hard-drop\n"
+	       "c             Holds the piece\n"
+	       "z, x          Rotates the piece counter-clockwise and clockwise\n"
+	       "q             Quits the game at any time\n"
+		   "For more info, use 'yetris --usage'\n"
 	       "\n");
 }
 

@@ -21,14 +21,18 @@ Note:  Make sure you have libncurses5-dev. See 'Dependences' for more details.
 1) Introduction
 ---------------
 yetris does the same thing as any Tetris(tm)-based game around there.
-(I should write about this)
+
+Here's the features:
+	* Textual interface - playable on the console
+	* Hold piece
+	* Combo and Back-to-back sequences
 
 2) Controls
 -----------
 	Left, Right         Controls the piece
 	Down                Soft-drop
 	Space               Hard-drop
-	Enter               Hold the piece
+	c                   Holds the piece
 	z, x                Rotates the piece counter-clockwise and clockwise
 	q                   Quits the game at any time
 
