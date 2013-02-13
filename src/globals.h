@@ -34,6 +34,9 @@ typedef struct globals_s
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
 	bool screen_use_colors;
+	bool game_has_ghost;
+	bool game_can_hold;
+	char screen_next_no; /**< How many next pieces the user can see */
 
 } globals_s;
 

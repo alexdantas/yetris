@@ -29,6 +29,9 @@ globals_s new_globals()
 	g.screen_center_vertically   = false;
 	g.screen_center_horizontally = false;
 	g.screen_use_colors = true;
+	g.game_has_ghost = true;
+	g.game_can_hold = true;
+	g.screen_next_no = 5;
 
 	return g;
 }

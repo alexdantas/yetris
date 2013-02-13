@@ -145,6 +145,7 @@ $(DISTDIR):
 	-$(MUTE)cp -r $(LSRC)/* $(DISTDIR)/$(LSRC)
 	-$(MUTE)cp -r $(LBIN)/* $(DISTDIR)/$(LBIN)
 	-$(MUTE)cp -r $(LDOC)/* $(DISTDIR)/$(LDOC)
+	-$(MUTE)cp -r .git $(DISTDIR)/
 
 # Phony targets
 dirs:
