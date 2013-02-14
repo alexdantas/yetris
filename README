@@ -51,7 +51,7 @@ Briefly, the following shell commands should configure, build and install
 this package on the default directories:
 
 	$ make
-	$ sudo make install
+	$ make install
 
 If you want to test the game before installing, do:
 
