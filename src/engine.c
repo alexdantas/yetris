@@ -174,7 +174,7 @@ int engine_windows_init()
 	s->next_container = w;
 
 	w.width  = s->next_container.width;
-	w.height = 5;
+	w.height = 3;
 	w.x      = 0;
 	w.y      = 0;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
@@ -182,36 +182,52 @@ int engine_windows_init()
 	s->next[0] = w;
 
 	w.width  = s->next_container.width;
-	w.height = 5;
+	w.height = 3;
 	w.x      = 0;
-	w.y      = s->next[0].y + s->next[0].height - 1;
+	w.y      = s->next[0].y + s->next[0].height;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[1] = w;
 
 	w.width  = s->next_container.width;
-	w.height = 5;
+	w.height = 3;
 	w.x      = 0;
-	w.y      = s->next[1].y + s->next[1].height - 1;
+	w.y      = s->next[1].y + s->next[1].height;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[2] = w;
 
 	w.width  = s->next_container.width;
-	w.height = 5;
+	w.height = 3;
 	w.x      = 0;
-	w.y      = s->next[2].y + s->next[2].height - 1;
+	w.y      = s->next[2].y + s->next[2].height;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[3] = w;
 
 	w.width  = s->next_container.width;
-	w.height = 4;
+	w.height = 3;
 	w.x      = 0;
-	w.y      = s->next[3].y + s->next[3].height - 1;
+	w.y      = s->next[3].y + s->next[3].height;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[4] = w;
+
+	w.width  = s->next_container.width;
+	w.height = 3;
+	w.x      = 0;
+	w.y      = s->next[4].y + s->next[4].height;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[5] = w;
+
+	w.width  = s->next_container.width;
+	w.height = 2;
+	w.x      = 0;
+	w.y      = s->next[5].y + s->next[5].height;
+	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+	wrefresh(w.win);
+	s->next[6] = w;
 
 	/* game board */
 	w.width  = s->middle_left.width  - 2;
@@ -424,8 +440,12 @@ void engine_draw_next_pieces(game_s* g)
 			p.block[k].x -= p.x + 1; /* shifting them to the left */
 			p.block[k].y -= p.y;
 
-			if (p.type == PIECE_J) /* Pretty-printing */
-				p.block[k].x += 1;
+			p.block[k].y--;
+			/* Pretty-printing pieces */
+//			if (p.type == PIECE_J)
+//				p.block[k].x += 1;
+			if (p.type == PIECE_O)
+				p.block[k].y -= 1;
 		}
 		engine_draw_piece(&p, w);
 		wrefresh(w);
@@ -433,13 +453,15 @@ void engine_draw_next_pieces(game_s* g)
 
 	w = engine.screen.next[0].win;
 	window_color(w, BLACK_BLACK, true);
-	mvwhline(w, 4, 0, '-', 12);
+	mvwhline(w, 2, 0, '-', 12);
 	wrefresh(w);
 
-	w = engine.screen.next_container.win;
-	window_color(w, BLUE_BLACK, false);
-	mvwaddstr(w, 0, 0, "Next");
-	wrefresh(w);
+// Is it really necessary to print 'Next'?
+//	w = engine.screen.next_container.win;
+//	window_color(w, BLUE_BLACK, false);
+//	mvwaddstr(w, 2, 2, "Next");
+//	wrefresh(w);
+
 }
 
 void engine_draw_hold(game_s* g)

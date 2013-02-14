@@ -27,7 +27,7 @@
 #include <ncurses.h>
 
 #define NUMBER_OF_KEYS 8
-#define NEXT_PIECES_NO 5
+#define NEXT_PIECES_NO 7 /* We have 1 Next piece and 6 on the line */
 
 /** This holds the game keymap. */
 typedef struct input_s
