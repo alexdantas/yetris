@@ -20,13 +20,16 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
+/* I know it's ugly to leave so many global variables >_<
+ * please don't sue me */
+
 #ifndef GLOBALS_H_DEFINED
 #define GLOBALS_H_DEFINED
 
 #include <stdbool.h>
 
-/* I know it's ugly to leave so many global variables >_<
- * please don't sue me */
+#define NEXT_PIECES_NO 7 /* by default how many next pieces will be shown
+						  * (1 on the top and 6 others) */
 
 /** Game-related global variables */
 typedef struct globals_s
@@ -36,7 +39,7 @@ typedef struct globals_s
 	bool screen_use_colors;
 	bool game_has_ghost;
 	bool game_can_hold;
-	char screen_next_no; /**< How many next pieces the user can see */
+	char game_next_no; /**< How many next pieces the user can see */
 
 } globals_s;
 

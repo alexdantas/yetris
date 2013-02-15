@@ -28,7 +28,6 @@
 #include "board.h"
 #include "timer.h"
 
-#define NEXT_PIECES_NO 7 /* We have 1 Next piece and 6 on the line */
 #define INITIAL_SPEED  1000 /* miliseconds */
 
 typedef struct game_s
@@ -78,5 +77,6 @@ void game_update_gameplay_time(game_s* g);
 void game_update_level(game_s* g);
 void game_update_piece(game_s* g);
 void game_hscore_save(game_s* g);
+piece_s game_get_next_piece(game_s* g);
 
 #endif /* GAME_H_DEFINED */

@@ -20,9 +20,9 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
-#include <stdio.h>      /* For printf() */
-#include <stdlib.h>     /* For EXIT_SUCCESS and FAILURE */
-#include <getopt.h>     /* For getopt_long() */
+#include <stdio.h> /* printf() */
+#include <stdlib.h> /* EXIT_SUCCESS and FAILURE */
+#include <getopt.h> /* getopt_long() */
 #include "arguments.h"
 #include "globals.h"
 
@@ -32,10 +32,14 @@ void args_handle (int argc, char* argv[])
 {
 	static struct option options[] =
 	{
+		/* NULL tells getopt_long to return the short option */
 		{"help",      no_argument, NULL, 'h'},
 		{"usage",     no_argument, NULL, 'u'},
 		{"center",    no_argument, NULL, 'c'},
 		{"no-colors", no_argument, NULL, 'n'},
+		{"no-ghost",  no_argument, NULL, 'g'},
+		{"no-hold",   no_argument, NULL, 'o'},
+		{"next",      required_argument, NULL, 'x'},
 		/* The last element must be all zeroes */
 		{0, 0, 0, 0}
 	};
@@ -43,36 +47,48 @@ void args_handle (int argc, char* argv[])
 	int option_index;
 	/* The character for comparison */
 	int c = 0;
-
+	/* All short options - place a colon after it if requires argument */
+	char short_options[] = "hucngox:";
 
 	/* We keep checking the arguments untill they run out (c == -1) */
 	while (c != -1)
 	{
-		c = getopt_long (argc, argv, "hucn", options, &option_index);
+		c = getopt_long (argc, argv, short_options, options, &option_index);
 
 		switch (c)
 		{
-		case 'h':
-			print_help();
-			exit(EXIT_SUCCESS);
-			break;
-		case 'u':
-			print_usage();
-			exit(EXIT_SUCCESS);
-			break;
+		/* Local functions that print stuff */
+		case 'h': print_help();  exit(EXIT_SUCCESS); break;
+		case 'u': print_usage(); exit(EXIT_SUCCESS); break;
+
+		/* Game flags */
+		case 'n': global.screen_use_colors = false; break;
+		case 'g': global.game_has_ghost    = false; break;
+		case 'o': global.game_can_hold     = false; break;
 		case 'c':
 			global.screen_center_vertically   = true;
 			global.screen_center_horizontally = true;
 			break;
-		case 'n':
-			global.screen_use_colors = false;
+		case 'x':
+			{
+			char num = atoi(optarg);
+
+			if ((num >= 0) && (num <= NEXT_PIECES_NO))
+				global.game_next_no = atoi(optarg);
+			else
+			{
+				fprintf(stderr, "Invalid number '%s': use something between "
+				                "1 and %d.\n", optarg, NEXT_PIECES_NO);
+				exit(EXIT_FAILURE);
+			}
+			}
 			break;
 
 		case '?':
-			/* getopt_long() already printed an error message about
-			 * unrecognized option, so you'll probably want to
-			 * abort the execution now */
-			printf("Use 'yetris --help' for more information\n");
+			/* Unexistant option or non-supplied argument.
+			 * getopt_long() already printed an error message about
+			 * this, so you'll probably want to abort the execution now */
+			fprintf(stderr, "Use 'yetris --usage' for more information\n");
 			exit(EXIT_FAILURE);
 			break;
 
@@ -110,9 +126,14 @@ void print_help ()
 void print_usage ()
 {
 	printf("yetris v" VERSION " Usage\n"
-	       "	-c, --center   Center the game on screen.\n"
-	       "	-h, --help     Display help.\n"
-	       "	-u, --usage    Display this text.\n"
-	       "	-n, --no-color Runs the game without colors.\n");
+		   "	yetris [options]\n"
+		   "\n"
+	       "	-c, --center     Center the game on screen.\n"
+	       "	-h, --help       Display help.\n"
+	       "	-u, --usage      Display this text.\n"
+	       "	-n, --no-color   Runs the game without colors.\n"
+	       "	-o, --no-hold    Disable hold.\n"
+	       "	-g, --no-ghost   Disable ghost piece.\n"
+	       "	-x, --next (num) Show (num) next pieces\n");
 }
 

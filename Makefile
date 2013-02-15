@@ -149,7 +149,7 @@ $(DISTDIR):
 
 # Phony targets
 dirs:
-	-mkdir -p $(LOBJ) $(LBIN)
+	@-mkdir -p $(LOBJ) $(LBIN)
 
 run: all
 	@echo "* Running..."

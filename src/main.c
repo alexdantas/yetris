@@ -32,6 +32,8 @@
 #include "game.h"
 #include "globals.h"
 
+/** Main entry point for the game.
+ *  I tried to keep it as simple as I could. */
 int main(int argc, char* argv[])
 {
 	global = new_globals();
@@ -50,6 +52,7 @@ int main(int argc, char* argv[])
 		game_handle_input(&game, c);
 		game_update(&game);
 
+		/* THIS WILL BE UNCOMMENTED SOON */
 		/* if (game.show_help) */
 		/* { */
 		/* 	engine_draw_help(); */

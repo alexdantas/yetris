@@ -26,8 +26,8 @@ It's made with C and runs on (most) Linux terminals.
 
 Some of it's features:
 	* Colored textual interface - playable on the console.
-	* Hold and up to 5 next pieces.
-	* Combo and back-to-back sequences
+	* Up to 7 next pieces.
+	* Hold, Combo and back-to-back sequences
 	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
 
 For now it attempts to be as close as any modern Tetris(tm) game as possible.
@@ -38,6 +38,8 @@ understanding and easing feature-implementation.
 
 2) Controls
 -----------
+To see more info, run 'yetris --help' and 'yetris --usage'.
+
 	Left, Right         Controls the piece
 	Down                Soft-drop
 	Space               Hard-drop

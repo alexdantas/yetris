@@ -262,7 +262,6 @@ int engine_windows_init()
 	w.x      = 0;
 	w.y      = 0;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
-	mvwhline(w.win, w.height - 1, 0, '-', w.width);
 	wrefresh(w.win);
 	s->hold = w;
 
@@ -428,7 +427,7 @@ void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
 	int i, k;
-	for (i = 0; i < NEXT_PIECES_NO; i++)
+	for (i = 0; i < global.game_next_no; i++)
 	{
 		piece_s p = g->piece_next[i];
 		w = engine.screen.next[i].win;
@@ -589,8 +588,10 @@ void engine_draw(game_s* g)
 	engine_draw_board(&(g->board));
 	engine_draw_piece(&(g->piece_ghost), w);
 	engine_draw_piece(&(g->piece_current), w);
-	engine_draw_next_pieces(g);
-	engine_draw_hold(g);
+	if (global.game_next_no > 0)
+		engine_draw_next_pieces(g);
+	if (global.game_can_hold)
+		engine_draw_hold(g);
 	engine_draw_score(g);
 	engine_draw_info(g);
 

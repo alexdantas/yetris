@@ -27,6 +27,7 @@
 #include "piece.h"
 #include "board.h"
 #include "engine.h"
+#include "globals.h"
 
 /** Initializes and returns a new game structure with all it's dependencies */
 game_s new_game()
@@ -38,10 +39,11 @@ game_s new_game()
 	g.board = new_board();
 
 	g.piece_current = new_piece(piece_get_random());
-	for (i = 0; i < NEXT_PIECES_NO; i++)
-		g.piece_next[i] = new_piece(piece_get_random());
 
-	g.can_hold  = true;
+	if (global.game_next_no > 0)
+		for (i = 0; i < global.game_next_no; i++)
+			g.piece_next[i] = new_piece(piece_get_random());
+
 	g.quit      = false;
 	g.is_over   = false;
 	g.show_help = false;
@@ -49,13 +51,19 @@ game_s new_game()
 	g.moved_piece_down = false;
 	g.is_back_to_back  = false;
 
-	g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
-	game_ghost_update(&g);
+	if (global.game_can_hold)
+	{
+		g.can_hold   = true;
+		g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
+	}
 
-	g.score = 0;
-	g.lines = 0;
-	g.level = 0;
-	g.speed = INITIAL_SPEED;
+	if (global.game_has_ghost)
+		game_ghost_update(&g);
+
+	g.score  = 0;
+	g.lines  = 0;
+	g.level  = 0;
+	g.speed  = INITIAL_SPEED;
 	g.hscore = 0;
 	g.combo_count = 0;
 	g.back_to_back_count = 0;
@@ -94,18 +102,31 @@ void game_lock_piece(game_s* g)
 {
 	board_lock_piece(&(g->board), &(g->piece_current));
 
-	g->piece_current = g->piece_next[0];
+	g->piece_current = game_get_next_piece(g);
+	if (global.game_has_ghost)
+		game_ghost_update(g);
+
+	game_delete_possible_lines(g);
+
+	if (global.game_can_hold)
+		g->can_hold = true; /* now we can switch pieces! */
+
+	g->score += 10;
+}
+
+/** Returns the next piece and refreshes the piece_next array */
+piece_s game_get_next_piece(game_s* g)
+{
+	if (global.game_next_no == 0)
+		return new_piece(piece_get_random());
+
+	piece_s next = g->piece_next[0];
 	int i;
-	for (i = 0; i < NEXT_PIECES_NO - 1; i++)
+	for (i = 0; i < global.game_next_no - 1; i++)
 		g->piece_next[i] = g->piece_next[i + 1];
 
 	g->piece_next[i] = new_piece(piece_get_random());
-
-	game_ghost_update(g);
-	game_delete_possible_lines(g);
-
-	g->can_hold = true; /* now we can switch pieces! */
-	g->score += 10;
+	return next;
 }
 
 /** Perform any updates on the data structures inside #g */
@@ -114,7 +135,9 @@ void game_update(game_s* g)
 	game_update_piece(g);
 	game_update_gameplay_time(g);
 	game_update_level(g);
-	game_ghost_update(g);
+
+	if (global.game_has_ghost)
+		game_ghost_update(g);
 
 	if (board_is_full(&(g->board)))
 		g->is_over = true;
@@ -189,13 +212,9 @@ bool game_hold_piece(game_s* g)
 	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
 	{
-		g->piece_current = g->piece_next[0];
-		int i;
-		for (i = 0; i < NEXT_PIECES_NO - 1; i++)
-			g->piece_next[i] = g->piece_next[i + 1];
-
-		g->piece_next[i] = new_piece(piece_get_random());
-		game_ghost_update(g);
+		g->piece_current = game_get_next_piece(g);
+		if (global.game_has_ghost)
+			game_ghost_update(g);
 	}
 	/* All right, switching pieces */
 	else
@@ -367,7 +386,8 @@ void game_handle_input(game_s* g, int input)
 	}
 	else if (input == engine.input.pause)
 	{
-		game_hold_piece(g);
+		if (global.game_can_hold)
+			game_hold_piece(g);
 	}
 	/* DEBUG KEYS - for development only! */
 	else if (input == '+')
