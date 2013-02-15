@@ -67,7 +67,7 @@ OBJ        = obj/engine.o    obj/piece.o   \
               obj/game.o      obj/main.o    \
               obj/timer.o     obj/board.o   \
               obj/block.o     obj/globals.o \
-              obj/arguments.o
+              obj/arguments.o obj/config.o
 
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)
@@ -76,12 +76,16 @@ DEFINES	= -DVERSION=\"$(VERSION)\"      \
               -DDATE=\"$(DATE)\"            \
               -DSCORE_PATH=\"$(SCORE_PATH)\"
 
+# iniparser stuff
+INIDIR     = src/iniparser
+INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra
+INI_OBJS   = obj/iniparser.o obj/inidictionary.o
+
 # Distribution tarball
 TARNAME = $(PACKAGE)
 DISTDIR = $(TARNAME)-$(VERSION)
 
 # Verbose mode check
-
 ifdef V
 MUTE =
 VTAG = -v
@@ -95,8 +99,9 @@ else
 ROOT =
 endif
 
+#############################################################################
 # Make targets
-all: dirs $(EXE)
+all: dirs ini $(EXE)
 	@echo "* Build successful!"
 
 install: all
@@ -122,9 +127,9 @@ purge: uninstall
 	$(MUTE)rm -f $(SCORE_PATH)
 	$(MUTE)rm -f $(MAN6DIR)/$(MANFILE)
 
-$(EXE): $(OBJ)
+$(EXE): $(OBJ) $(INI_OBJS)
 	@echo "* Linking..."
-	$(MUTE)$(CC) $(OBJ) -o $(LBIN)/$(EXE) $(LIBSDIR) $(LIBS)
+	$(MUTE)$(CC) $(OBJ) $(INI_OBJS) -o $(LBIN)/$(EXE) $(LIBSDIR) $(LIBS)
 
 $(LOBJ)/%.o: $(LSRC)/%.c
 	@echo "* Compiling $<..."
@@ -168,7 +173,15 @@ docclean:
 	@echo "* Removing documentation..."
 	-$(MUTE)rm $(VTAG) -rf $(LDOC)/html
 
-.PHONY: clean doc docclean uninstall
+.PHONY: clean doc docclean uninstall dirs ini
 
 #------------------------------------------------------------------------------
+# iniparser stuff
+
+obj/iniparser.o: $(INIDIR)/iniparser.c
+	@echo "* Compiling iniparser..."
+	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/iniparser.c  -c -o obj/iniparser.o
+
+obj/inidictionary.o: $(INIDIR)/dictionary.c
+	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/dictionary.c -c -o obj/inidictionary.o
 
