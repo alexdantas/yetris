@@ -63,7 +63,6 @@ void piece_hard_drop(piece_s* p, board_s* b);
 piece_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
 bool piece_can_rotate(piece_s* p, board_s* b, int rotation);
-void piece_reset(piece_s* p);
 bool piece_is_valid(piece_s* p);
 
 #endif /* PIECE_H_DEFINED */

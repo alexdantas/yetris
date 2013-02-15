@@ -173,61 +173,27 @@ int engine_windows_init()
 	wrefresh(w.win);
 	s->next_container = w;
 
+	/* first next piece */
 	w.width  = s->next_container.width;
-	w.height = 3;
+	w.height = 2;
 	w.x      = 0;
 	w.y      = 0;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->next[0] = w;
 
-	w.width  = s->next_container.width;
-	w.height = 3;
-	w.x      = 0;
-	w.y      = s->next[0].y + s->next[0].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[1] = w;
-
-	w.width  = s->next_container.width;
-	w.height = 3;
-	w.x      = 0;
-	w.y      = s->next[1].y + s->next[1].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[2] = w;
-
-	w.width  = s->next_container.width;
-	w.height = 3;
-	w.x      = 0;
-	w.y      = s->next[2].y + s->next[2].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[3] = w;
-
-	w.width  = s->next_container.width;
-	w.height = 3;
-	w.x      = 0;
-	w.y      = s->next[3].y + s->next[3].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[4] = w;
-
-	w.width  = s->next_container.width;
-	w.height = 3;
-	w.x      = 0;
-	w.y      = s->next[4].y + s->next[4].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[5] = w;
-
-	w.width  = s->next_container.width;
-	w.height = 2;
-	w.x      = 0;
-	w.y      = s->next[5].y + s->next[5].height;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->next[6] = w;
+	/* the rest */
+	int i;
+	for (i = 1; i <= global.game_next_no; i++)
+	{
+		w.width  = s->next_container.width;
+		w.height = 2;
+		w.x      = 0;
+		w.y      = s->next[i - 1].y + s->next[i - 1].height + 1;
+		w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
+		wrefresh(w.win);
+		s->next[i] = w;
+	}
 
 	/* game board */
 	w.width  = s->middle_left.width  - 2;
@@ -414,15 +380,6 @@ void engine_draw_board(board_s* b)
 				engine_draw_block(&(b->block[i][j]), w);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-/* TODO draw next pieces 2-block width -- make them all layed down */
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
-
 void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
@@ -434,15 +391,16 @@ void engine_draw_next_pieces(game_s* g)
 
 		werase(w);
 
+		/* This is a little hack to pretty-print pieces
+		 * TODO somehow manage to fix this */
 		for (k = 0; k < 4; k++)
 		{
-			p.block[k].x -= p.x + 1; /* shifting them to the left */
+			/* shifting them to the left */
+			p.block[k].x -= p.x + 1;
 			p.block[k].y -= p.y;
 
 			p.block[k].y--;
-			/* Pretty-printing pieces */
-//			if (p.type == PIECE_J)
-//				p.block[k].x += 1;
+
 			if (p.type == PIECE_O)
 				p.block[k].y -= 1;
 		}
@@ -450,28 +408,28 @@ void engine_draw_next_pieces(game_s* g)
 		wrefresh(w);
 	}
 
-	w = engine.screen.next[0].win;
+	w = engine.screen.middle_right.win;
+
 	window_color(w, BLACK_BLACK, true);
-	mvwhline(w, 2, 0, '-', 12);
+	mvwhline(w, 3, 1, '-', 8);
+
+	window_color(w, BLUE_BLACK, false);
+	mvwaddstr(w, 0, 1, "Next");
 	wrefresh(w);
-
-// Is it really necessary to print 'Next'?
-//	w = engine.screen.next_container.win;
-//	window_color(w, BLUE_BLACK, false);
-//	mvwaddstr(w, 2, 2, "Next");
-//	wrefresh(w);
-
 }
 
 void engine_draw_hold(game_s* g)
 {
-	window_s w = engine.screen.hold;
 	piece_s  p = g->piece_hold;
 
+	window_s w = engine.screen.leftmost;
+	window_color(w.win, BLUE_BLACK, false);
+	mvwaddstr(w.win, 0, 1, "Hold");
+	wrefresh(w.win);
+
+	w = engine.screen.hold;
 	werase(w.win);
 
-	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 0, 0, "Hold");
 	engine_draw_piece(&p, w.win);
 
 	window_color(w.win, BLACK_BLACK, true);
@@ -495,8 +453,8 @@ void engine_draw_score(game_s* g)
 		else
 			window_color(w.win, YELLOW_BLACK, false);
 
-		mvwaddstr(w.win, 0, 1, "Combo!");
-		mvwprintw(w.win, 0, 9, "%2d", g->combo_count);
+		mvwaddstr(w.win, 0, 2, "Combo!");
+		mvwprintw(w.win, 0, 8, "x%d", g->combo_count);
 	}
 
 	/* If user has back-to-back lines, let's show it to him */
@@ -508,15 +466,14 @@ void engine_draw_score(game_s* g)
 			window_color(w.win, YELLOW_BLACK, true);
 
 		mvwaddstr(w.win, 1, 0, "Back-to-back");
-		if (g->back_to_back_count > 1)
-			mvwprintw(w.win, 2, 10, "x%d", g->back_to_back_count);
-
 		switch (g->back_to_back_lines)
 		{
 		case 2: mvwaddstr(w.win, 2, 2, "Double"); break;
 		case 3: mvwaddstr(w.win, 2, 2, "Triple"); break;
 		case 4: mvwaddstr(w.win, 2, 2, "Tetris"); break;
 		}
+		if (g->back_to_back_count > 1)
+			mvwprintw(w.win, 2, 8, "x%d", g->back_to_back_count);
 	}
 
 	window_color(w.win, BLUE_BLACK, false);

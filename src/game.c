@@ -206,8 +206,8 @@ bool game_hold_piece(game_s* g)
 
    	g->can_hold = false;
 
-	piece_s tmp = g->piece_hold;
-	g->piece_hold = g->piece_current;
+	piece_s tmp   = g->piece_hold;
+	g->piece_hold = new_piece(g->piece_current.type);
 
 	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
@@ -218,10 +218,7 @@ bool game_hold_piece(game_s* g)
 	}
 	/* All right, switching pieces */
 	else
-	{
 		g->piece_current = tmp;
-		piece_reset(&(g->piece_current));
-	}
 
 	/* Makes the piece look nice on the hold screen */
 	g->piece_hold.rotation = 0;
@@ -237,7 +234,7 @@ bool game_hold_piece(game_s* g)
 /** Checks all lines, deleting the ones that are full.
  *
  *  @note I know this function's ugly...
- *  @todo Maybe create a 'Line' data structure? To make this simpler?
+ *  @todo Maybe create a 'Line' data structure? To make this ?
  */
 bool game_delete_possible_lines(game_s* g)
 {
