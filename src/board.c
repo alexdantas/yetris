@@ -57,6 +57,19 @@ void board_lock_piece(board_s* b, piece_s* p)
 void board_delete_lines(board_s* b, bool lines[])
 {
 	int i, j, k;
+	char clear1, clear2;
+
+	/* The appearance of the line just before it's deleted */
+	if (global.theme_clear_line[0] != '\0')
+	{
+		clear1 = global.theme_clear_line[0];
+		clear2 = global.theme_clear_line[1];
+	}
+	else
+	{
+		clear1 = ':';
+		clear2 = ':';
+	}
 
 	/* loop through all lines, doing something only on those marked 'true' */
 	for (k = 0; k < BOARD_HEIGHT; k++)
@@ -66,8 +79,8 @@ void board_delete_lines(board_s* b, bool lines[])
 		/* A nice little animation for destroyed lines */
 		for (i = 0; i < BOARD_WIDTH; i++)
 		{
-			b->block[i][k].theme[0] = ':';
-			b->block[i][k].theme[1] = ':';
+			b->block[i][k].theme[0] = clear1;
+			b->block[i][k].theme[1] = clear2;
 			b->block[i][k].color    = engine_get_color(WHITE_BLACK, true);
 		}
 	}

@@ -80,6 +80,12 @@ void config_parse(char* filename)
 	if (ghost_theme[0] != '\0')
 		strncpy(global.theme_ghost, ghost_theme, 2);
 
+	/* copying custom clear line theme */
+	char clear_theme[3] = {};
+	strncpy(clear_theme, iniparser_getstring(ini, "theming:clear_line", NULL), 3);
+	if (clear_theme[0] != '\0')
+		strncpy(global.theme_clear_line, clear_theme, 2);
+
 	iniparser_freedict(ini);
 }
 

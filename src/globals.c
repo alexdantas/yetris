@@ -42,6 +42,7 @@ globals_s new_globals()
 	{
 		g.theme_piece[i] = '\0';
 		g.theme_ghost[i] = '\0';
+		g.theme_clear_line[i] = '\0';
 	}
 	g.theme_piece_has_colors = true;
 	g.theme_ghost_has_colors = false;
