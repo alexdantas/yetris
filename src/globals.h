@@ -42,8 +42,8 @@
 
 #include <stdbool.h>
 
-#define NEXT_PIECES_NO 7 /* by default how many next pieces will be shown
-						  * (1 on the top and 6 others) */
+#define NEXT_PIECES_NO 6 /* by default how many next pieces will be shown
+						  * (1 on the top and 5 others) */
 
 /** Game-related global variables */
 typedef struct globals_s

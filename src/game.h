@@ -24,6 +24,7 @@
 #define GAME_H_DEFINED
 
 #include <stdbool.h> /* bool type in C */
+#include "globals.h"
 #include "piece.h"
 #include "board.h"
 #include "timer.h"

@@ -35,7 +35,8 @@
 
 /* specific engine functions */
 void window_color(WINDOW* win, int color, bool is_bold);
-
+void window_fancy_borders(WINDOW* win);
+void window_normal_borders(WINDOW* win);
 
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
@@ -119,18 +120,11 @@ int engine_windows_init()
 	if (global.screen_show_outer_border)
 	{
 		if (global.screen_fancy_borders)
-			wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
-					ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-					ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
-					ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-					ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
-					ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
-					ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
-					ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-
+			window_fancy_borders(w.win);
 		else
-			wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+			window_normal_borders(w.win);
 	}
+
 	wrefresh(w.win);
 	s->main = w;
 
@@ -140,33 +134,27 @@ int engine_windows_init()
 	w.x      = 2;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	window_color(w.win, BLACK_BLACK, true);
+
 	if (global.screen_fancy_borders)
 	{
-		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-
+		window_fancy_borders(w.win);
 		/* making the top line between hold and score windows */
-		mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
-		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
-		mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
-		/* making the bottom line between hold and score windows */
 		mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
 		mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
 		mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-	}
+		/* making the bottom line between hold and score windows */
+		mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+		mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 
+	}
 	else
 	{
-		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+		window_normal_borders(w.win);
+		window_color(w.win, BLACK_BLACK, true);
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
 	}
+
 	wrefresh(w.win);
 	s->leftmost = w;
 
@@ -178,17 +166,9 @@ int engine_windows_init()
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
-		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-
+		window_fancy_borders(w.win);
 	else
-		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+		window_normal_borders(w.win);
 	wrefresh(w.win);
 	s->middle_left = w;
 
@@ -200,17 +180,25 @@ int engine_windows_init()
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
-		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+	{
+		window_fancy_borders(w.win);
+		/* making the top line between 1st next and the rest */
+		mvwaddch(w.win, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+		mvwhline(w.win, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+		mvwaddch(w.win, 3, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+		/* making the bottom line between 1st next and the rest */
+		mvwaddch(w.win, 4, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+		mvwhline(w.win, 4, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+		mvwaddch(w.win, 4, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 
+	}
 	else
-		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	{
+		window_normal_borders(w.win);
+		window_color(w.win, BLACK_BLACK, true);
+		mvwhline(w.win, 3, 1, '-', w.width - 2);
+
+	}
 	wrefresh(w.win);
 	s->middle_right = w;
 
@@ -222,17 +210,9 @@ int engine_windows_init()
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
-		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
-		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
-		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
-		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-
+		window_fancy_borders(w.win);
 	else
-		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+		window_normal_borders(w.win);
 	wrefresh(w.win);
 	s->rightmost = w;
 
@@ -255,13 +235,17 @@ int engine_windows_init()
 	s->next[0] = w;
 
 	/* the rest */
-	int i;
+	int i; int y_offset = 1;
 	for (i = 1; i <= global.game_next_no; i++)
 	{
+		/* making all the next pieces 1 line lower */
+		if (i != 1)
+			y_offset = 0;
+
 		w.width  = s->next_container.width;
 		w.height = 2;
 		w.x      = 0;
-		w.y      = s->next[i - 1].y + s->next[i - 1].height + 1;
+		w.y      = s->next[i - 1].y + s->next[i - 1].height + 1 + y_offset;
 		w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
 		wrefresh(w.win);
 		s->next[i] = w;
@@ -721,10 +705,31 @@ void engine_wait_for_keypress()
 /* 	wrefresh(s->main.win); */
 /* } */
 
+/* ENGINE-SPECIFIC FUNCTIONS
+ * (invisible to the external world)
+ */
+
 /** Turns on color #color on window #win. */
 void window_color(WINDOW* win, int color, bool is_bold)
 {
 	if (global.screen_use_colors)
 		wattrset(win, engine_get_color(color, is_bold));
+}
+
+void window_fancy_borders(WINDOW* win)
+{
+	wborder(win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+			ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+			ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+			ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+			ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD,
+			ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+			ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+			ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+}
+
+void window_normal_borders(WINDOW* win)
+{
+	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 

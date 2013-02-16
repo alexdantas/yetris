@@ -27,7 +27,7 @@ and please both casual players and Tetris(tm) enthusiasts.
 It has full textual interface, with colors and many features:
 	* Customizable by commandline arguments and config file.
 	* High score.
-	* Up to 7 next pieces.
+	* Up to 6 next pieces.
 	* Hold, Combo and back-to-back sequences.
 	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
 

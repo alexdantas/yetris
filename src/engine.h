@@ -25,9 +25,9 @@
 
 #include <stdlib.h>
 #include <ncurses.h>
+#include "globals.h"
 
 #define NUMBER_OF_KEYS 9
-#define NEXT_PIECES_NO 7 /* We have 1 Next piece and 6 on the line */
 
 /** This holds the game keymap. They all need to be int because of ncurses */
 typedef struct input_s
