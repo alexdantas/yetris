@@ -45,6 +45,7 @@ int main(int argc, char* argv[])
 	atexit(engine_exit); /* no need to call it when quitting */
 
 	game_s game = new_game();
+	engine_draw(&game);
 
 	while (!game.quit)
 	{

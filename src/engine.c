@@ -315,7 +315,6 @@ bool engine_init()
 	engine_screen_init(80, 24);
 	engine_windows_init();
 	engine_keymap(NULL);
-	srand(time(NULL));
 
 	restore_signals();
 	return true;
