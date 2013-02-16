@@ -223,6 +223,7 @@ bool game_hold_piece(game_s* g)
 
 	piece_s tmp   = g->piece_hold;
 	g->piece_hold = new_piece(g->piece_current.type);
+	// if we were working with malloc(), we'd free() piece_current now
 
 	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
@@ -233,7 +234,10 @@ bool game_hold_piece(game_s* g)
 	}
 	/* All right, switching pieces */
 	else
-		g->piece_current = tmp;
+	{
+		g->piece_current = new_piece(tmp.type);
+		// we'd also free() tmp
+	}
 
 	/* Makes the piece look nice on the hold screen */
 	g->piece_hold.rotation = 0;

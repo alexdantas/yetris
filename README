@@ -1,6 +1,6 @@
 yetris README
 =============
-yetris is a console clone of Tetris(tm).
+Customizable Tetris(tm) on the console.
 
 README Index
 ------------
@@ -20,18 +20,19 @@ Note:  Make sure you have libncurses5-dev. See 'Dependences' for more details.
 
 1) Introduction
 ---------------
-yetris is Tetris(tm) on the console. It has colors and highscore, along with
-many features found on modern Tetris(tm) implementations.
-It's made with C and runs on (most) Linux terminals.
+yetris is a customizable Tetris(tm) clone for the console.
+It aims to follow modern implementations with lots of features
+and please both casual players and Tetris(tm) enthusiasts.
 
-Some of it's features:
-	* Colored textual interface - playable on the console.
+It has full textual interface, with colors and many features:
+	* Customizable by commandline arguments and config file.
+	* High score.
 	* Up to 7 next pieces.
-	* Hold, Combo and back-to-back sequences
+	* Hold, Combo and back-to-back sequences.
 	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
 
-For now it attempts to be as close as any modern Tetris(tm) game as possible.
-It lacks some expected features but it's on active development.
+yetris is developed on C and ncurses, running on (most) Linux terminals.
+It currently lacks some expected features but is on active development.
 
 Also, the source code is clean and commented, allowing much better
 understanding and easing feature-implementation.
@@ -45,6 +46,7 @@ To see more info, run 'yetris --help' and 'yetris --usage'.
 	Space               Hard-drop
 	c                   Holds the piece
 	z, x                Rotates the piece counter-clockwise and clockwise
+	p                   Pauses the game
 	q                   Quits the game at any time
 
 3) Installation
@@ -119,8 +121,8 @@ Every download is an honour to me.
 
 11) License
 -----------
- yetris - The classic snake game with ncurses.
- Copyright (C) 2011  Alexandre Dantas (kure)
+ yetris - Customizable Tetris(tm) on the console.
+ Copyright (C) 2013  Alexandre Dantas (kure)
 
  yetris is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

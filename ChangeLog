@@ -1,5 +1,11 @@
 All the changes are documented on the git history, so here's just the major ones
 
+16-02-13 v1.4:
+	* Gameplay: config file support! Also, we can pause the game now.
+	* Interface: the player can customize some layout parts.
+	* Licensing: yetris is now Free Software (GPLv3)!
+	* Bugs: lots of minor ones killed.
+
 12-02-13 v1.0:
 	* Gameplay: added highscore, combo, back-to-back, and some other
 	            stuff. It's pretty much functional now.

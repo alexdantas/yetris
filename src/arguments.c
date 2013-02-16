@@ -122,7 +122,7 @@ void print_help()
 {
 	printf("yetris v" VERSION " Help\n"
 		   "\n"
-		   "yetris is a customizable Tetris(tm) clone for console.\n"
+		   "yetris is a customizable Tetris(tm) clone for the console.\n"
 		   "It aims to follow modern implementations with lots of features\n"
 		   "and please both casual players and Tetris(tm) enthusiasts.\n"
 		   "\n"
@@ -143,6 +143,7 @@ void print_help()
 	       "Space       Hard-drop\n"
 	       "c           Holds the piece\n"
 	       "z, x        Rotates the piece counter-clockwise and clockwise\n"
+	       "p           Pauses the game\n"
 	       "q           Quits the game at any time\n");
 }
 
@@ -183,7 +184,7 @@ void print_version()
 void print_license ()
 {
 	/* preamble of the GNU GPLv3 */
-	printf("yetris - Tetris(tm) on the console.\n"
+	printf("yetris - Customizable Tetris(tm) on the console.\n"
 	       "Copyright (C) 2013 Alexandre Dantas (kure)\n"
 	       "\n"
 	       "yetris is free software: you can redistribute it and/or modify\n"
