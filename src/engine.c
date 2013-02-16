@@ -142,6 +142,7 @@ int engine_windows_init()
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
+	{
 		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
 		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
 		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
@@ -151,8 +152,21 @@ int engine_windows_init()
 		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
 		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 
+		/* making the top line between hold and score windows */
+		mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+		mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
+		/* making the bottom line between hold and score windows */
+		mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+		mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+		mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+	}
+
 	else
+	{
 		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+		mvwhline(w.win, 5, 1, '-', w.width - 2);
+	}
 	wrefresh(w.win);
 	s->leftmost = w;
 
@@ -282,7 +296,7 @@ int engine_windows_init()
 
 	/* hold */
 	w.width  = s->leftmost_container.width;
-	w.height = 5;
+	w.height = 4;
 	w.x      = 0;
 	w.y      = 0;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
@@ -291,9 +305,9 @@ int engine_windows_init()
 
 	/* score screen */
 	w.width  = s->leftmost_container.width;
-	w.height = s->leftmost_container.height - (s->hold.height) - 1;
+	w.height = s->leftmost_container.height - (s->hold.height) - 2;
 	w.x      = 0;
-	w.y      = s->hold.y + s->hold.height + 1;
+	w.y      = s->hold.y + s->hold.height + 2;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->score = w;
@@ -502,18 +516,6 @@ void engine_draw_hold(game_s* g)
 	window_s w = engine.screen.leftmost;
 	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, 0, 1, "Hold");
-
-	if (global.screen_fancy_borders)
-	{
-		mvwaddch(w.win, 6, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
-		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
-		mvwaddch(w.win, 6, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-	}
-	else
-	{
-		window_color(w.win, BLACK_BLACK, true);
-		mvwhline(w.win, 6, 1, '-', w.width - 2);
-	}
 	wrefresh(w.win);
 
 	w = engine.screen.hold;
@@ -561,16 +563,16 @@ void engine_draw_score(game_s* g)
 	}
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 4,  1, "High Score");
-	mvwaddstr(w.win, 7,  1, "Score");
-	mvwaddstr(w.win, 10, 1, "Lines");
-	mvwaddstr(w.win, 13, 1, "Level");
+	mvwaddstr(w.win, 3,  1, "High Score");
+	mvwaddstr(w.win, 6,  1, "Score");
+	mvwaddstr(w.win, 9, 1, "Lines");
+	mvwaddstr(w.win, 12, 1, "Level");
 
 	window_color(w.win, WHITE_BLACK, false);
-	mvwprintw(w.win, 5,  1, "%10d", g->hscore);
-	mvwprintw(w.win, 8,  1, "%10d", g->score);
-	mvwprintw(w.win, 11, 1, "%10d", g->lines);
-	mvwprintw(w.win, 14, 9, "%02d", g->level);
+	mvwprintw(w.win, 4,  1, "%10d", g->hscore);
+	mvwprintw(w.win, 7,  1, "%10d", g->score);
+	mvwprintw(w.win, 10, 1, "%10d", g->lines);
+	mvwprintw(w.win, 13, 9, "%02d", g->level);
 
 	wrefresh(w.win);
 }

@@ -225,6 +225,14 @@ bool game_hold_piece(game_s* g)
 	g->piece_hold = new_piece(g->piece_current.type);
 	// if we were working with malloc(), we'd free() piece_current now
 
+	/* little hack to pretty-print square pieces */
+	if (g->piece_hold.type == PIECE_O)
+	{
+		int i;
+		for (i = 0; i < 4; i++)
+			g->piece_hold.block[i].y--;
+	}
+
 	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
 	{
