@@ -33,14 +33,13 @@
 #include "globals.h"
 #include "config.h"
 
-/** Main entry point for the game.
- *  I tried to keep it as simple as I could. */
+/** Main entry point for the game. I kept it as simple as I could. */
 int main(int argc, char* argv[])
 {
 	global = new_globals();
 
-	args_handle(argc, argv);
 	config_handle();
+	args_handle(argc, argv);
 
 	engine_init();
 	atexit(engine_exit); /* no need to call it when quitting */

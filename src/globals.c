@@ -20,6 +20,7 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
+#include <stdlib.h>
 #include "globals.h"
 
 globals_s new_globals()
@@ -32,6 +33,7 @@ globals_s new_globals()
 	g.game_has_ghost = true;
 	g.game_can_hold = true;
 	g.game_next_no = NEXT_PIECES_NO;
+	g.config_filename = NULL;
 
 	return g;
 }

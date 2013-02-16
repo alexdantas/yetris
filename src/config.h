@@ -20,17 +20,28 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
+
+/* @file config.h
+ * This file defines stuff related to the configuration file.
+ * It can read customizations on it and set the global variables.
+ *
+ * If the user specifies options at commandline, they have higher
+ * precedence over the config file.
+ *
+ * Remember, DEFAULT_CONFIG_FILE is defined on the Makefile.
+ * By default, it's '/home/<user>/.yetrisrc.ini'
+ *
+ */
+
 #ifndef CONFIG_H_DEFINED
 #define CONFIG_H_DEFINED
 
 #include <stdbool.h>
 #include "iniparser/iniparser.h"
 
-#define DEFAULT_CONFIG_FILE "default.ini"
-
 void config_handle();
 bool config_file_exists(char* filename);
-void config_create_default();
+void config_create_default(char* filename);
 void config_parse(char* filename);
 
 #endif /* CONFIG_H_DEFINED */

@@ -51,9 +51,14 @@ BINDIR	= $(EXEC_PREFIX)/$(LBIN)
 MAN6DIR = $(MANDIR)/man6
 
 # Package configuration files
-SCORE_FILE = yetris.scores
-SCOREDIR   = $(DESTDIR)/var/games
-SCORE_PATH = $(SCOREDIR)/$(SCORE_FILE)
+# Default scores file: /var/games/yetris.scores
+SCORE_FILE  = yetris.scores
+SCOREDIR    = $(DESTDIR)/var/games
+SCORE_PATH  = $(SCOREDIR)/$(SCORE_FILE)
+# Default config file: /home/<user>/.yetrisrc.ini
+CONFIG_FILE = .yetrisrc.ini
+CONFIGDIR   = $(HOME)
+CONFIG_PATH = $(CONFIGDIR)/$(CONFIG_FILE)
 
 # Compiling information
 CC	        = gcc
@@ -72,9 +77,10 @@ OBJ        = obj/engine.o    obj/piece.o   \
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)
 
-DEFINES	= -DVERSION=\"$(VERSION)\"      \
-              -DDATE=\"$(DATE)\"            \
-              -DSCORE_PATH=\"$(SCORE_PATH)\"
+DEFINES	= -DVERSION=\"$(VERSION)\"                \
+              -DDATE=\"$(DATE)\"                      \
+              -DSCORE_PATH=\"$(SCORE_PATH)\"          \
+              -DDEFAULT_CONFIG_FILE=\"$(CONFIG_PATH)\"
 
 # iniparser stuff
 INIDIR     = src/iniparser

@@ -41,6 +41,8 @@ typedef struct globals_s
 	bool game_can_hold;
 	char game_next_no; /**< How many next pieces the user can see */
 
+	char* config_filename; /**< The user-specified configuration file */
+
 } globals_s;
 
 /* global struct containing all global variables.. wow  */
