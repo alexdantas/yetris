@@ -160,6 +160,10 @@ void config_create_default(char* filename)
 		"# would have.\n"
 		"# default: false\n"
 		"ghost_has_color = false\n"
+		"\n"
+		"# The appearance of the line we clear, just before it disappears\n"
+		"# default: \"::\"\n"
+		"clear_line = \"::\"\n"
 		"\n";
 
 	fprintf(file, text);
