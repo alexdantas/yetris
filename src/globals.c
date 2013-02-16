@@ -30,9 +30,13 @@ globals_s new_globals()
 	g.screen_center_vertically   = false;
 	g.screen_center_horizontally = false;
 	g.screen_use_colors = true;
+	g.screen_fancy_borders = true;
+	g.screen_show_outer_border = true;
+
 	g.game_has_ghost = true;
 	g.game_can_hold = true;
 	g.game_next_no = NEXT_PIECES_NO;
+
 	g.config_filename = NULL;
 
 	return g;

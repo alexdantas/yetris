@@ -20,8 +20,22 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
-/* I know it's ugly to leave so many global variables >_<
- * please don't sue me */
+/** @file globals.h
+ * Definitions of global variables that will rule the game.
+ *
+ * I know it's ugly to leave so many global variables >_<
+ *
+ * HOW-TO add customization
+ * 1- decide what it does on the game
+ * 2- make a global in globals.h that defines it
+ * 3- initialize it on globals.c -> new_globals() with default value
+ * 4- put it on config.c -> config_parse()
+ * 5- put it on config.c -> config_create_default() with default value
+ * 6- finally, make use of it on the game
+ * 7- dont forget to:
+ *    put it on arguments.c -> args_handle() and print_usage()
+ *    put it on the man page
+ */
 
 #ifndef GLOBALS_H_DEFINED
 #define GLOBALS_H_DEFINED
@@ -37,6 +51,9 @@ typedef struct globals_s
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
 	bool screen_use_colors;
+	bool screen_fancy_borders;
+	bool screen_show_outer_border;
+
 	bool game_has_ghost;
 	bool game_can_hold;
 	char game_next_no; /**< How many next pieces the user can see */

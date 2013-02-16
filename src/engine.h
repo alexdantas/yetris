@@ -45,6 +45,7 @@ typedef struct input_s
 	int  hold;
 } input_s;
 
+/** Stores information about a ncurses' window */
 typedef struct window_s
 {
 	WINDOW* win;
@@ -54,7 +55,7 @@ typedef struct window_s
 	int     height;
 } window_s;
 
-/** Info about the console screen */
+/** Info about the console screen. Mostly ncurse' specific stuff */
 typedef struct screen_s
 {
 	int width;
@@ -78,19 +79,22 @@ typedef struct engine_s
 {
 	input_s  input;
 	screen_s screen;
+
 } engine_s;
 
+/** Global engine structure */
 engine_s engine;
 
 /** Defining the game color pairs (background_foreground) -- arbitrary numbers */
 typedef enum { BLACK_WHITE = 1, WHITE_BLACK,
-               BLACK_CYAN,      CYAN_BLACK,
-               BLACK_BLUE,      BLUE_BLACK,
-               BLACK_RED,       RED_BLACK,
-               BLACK_YELLOW,    YELLOW_BLACK,
-               BLACK_MAGENTA,   MAGENTA_BLACK,
-               BLACK_GREEN,     GREEN_BLACK,
-               BLACK_BLACK} color_e;
+                BLACK_CYAN,      CYAN_BLACK,
+                BLACK_BLUE,      BLUE_BLACK,
+                BLACK_RED,       RED_BLACK,
+                BLACK_YELLOW,    YELLOW_BLACK,
+                BLACK_MAGENTA,   MAGENTA_BLACK,
+                BLACK_GREEN,     GREEN_BLACK,
+                BLACK_BLACK} color_e;
+
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
@@ -98,6 +102,7 @@ typedef struct block_s block_s;
 typedef struct piece_s piece_s;
 typedef struct board_s board_s;
 typedef struct game_s  game_s;
+
 
 int engine_screen_init(int width, int height);
 int engine_windows_init();

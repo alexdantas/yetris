@@ -116,7 +116,21 @@ int engine_windows_init()
 	w.y      = main_y;
 	w.win    = newwin(w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
-	box(w.win, 0, 0);
+	if (global.screen_show_outer_border)
+	{
+		if (global.screen_fancy_borders)
+			wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+					ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+					ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+					ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+					ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
+					ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+					ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+					ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+		else
+			wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	}
 	wrefresh(w.win);
 	s->main = w;
 
@@ -127,7 +141,18 @@ int engine_windows_init()
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	if (global.screen_fancy_borders)
+		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+	else
+		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->leftmost = w;
 
@@ -138,7 +163,18 @@ int engine_windows_init()
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	if (global.screen_fancy_borders)
+		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+	else
+		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_left = w;
 
@@ -149,7 +185,18 @@ int engine_windows_init()
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	if (global.screen_fancy_borders)
+		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+	else
+		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->middle_right = w;
 
@@ -160,7 +207,18 @@ int engine_windows_init()
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
 	window_color(w.win, BLACK_BLACK, true);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	if (global.screen_fancy_borders)
+		wborder(w.win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_VLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_HLINE|COLOR_PAIR(WHITE_BLACK),
+		               ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD,
+		               ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_URCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK),
+		               ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+	else
+		wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(w.win);
 	s->rightmost = w;
 
@@ -233,9 +291,9 @@ int engine_windows_init()
 
 	/* score screen */
 	w.width  = s->leftmost_container.width;
-	w.height = s->leftmost_container.height - (s->hold.height);
+	w.height = s->leftmost_container.height - (s->hold.height) - 1;
 	w.x      = 0;
-	w.y      = s->hold.y + s->hold.height;
+	w.y      = s->hold.y + s->hold.height + 1;
 	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
 	wrefresh(w.win);
 	s->score = w;
@@ -421,8 +479,17 @@ void engine_draw_next_pieces(game_s* g)
 
 	w = engine.screen.middle_right.win;
 
-	window_color(w, BLACK_BLACK, true);
-	mvwhline(w, 3, 1, '-', 8);
+	if (global.screen_fancy_borders)
+	{
+		mvwaddch(w, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+		mvwhline(w, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, 8);
+		mvwaddch(w, 3, 9, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+	}
+	else
+	{
+		window_color(w, BLACK_BLACK, true);
+		mvwhline(w, 3, 1, '-', 8);
+	}
 
 	window_color(w, BLUE_BLACK, false);
 	mvwaddstr(w, 0, 1, "Next");
@@ -436,16 +503,23 @@ void engine_draw_hold(game_s* g)
 	window_s w = engine.screen.leftmost;
 	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, 0, 1, "Hold");
+
+	if (global.screen_fancy_borders)
+	{
+		mvwaddch(w.win, 6, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+		mvwaddch(w.win, 6, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+	}
+	else
+	{
+		window_color(w.win, BLACK_BLACK, true);
+		mvwhline(w.win, 6, 1, '-', w.width - 2);
+	}
 	wrefresh(w.win);
 
 	w = engine.screen.hold;
 	werase(w.win);
-
 	engine_draw_piece(&p, w.win);
-
-	window_color(w.win, BLACK_BLACK, true);
-	mvwhline(w.win, w.height - 1, 0, '-', w.width);
-
 	wrefresh(w.win);
 }
 

@@ -56,6 +56,8 @@ void config_parse(char* filename)
 	global.screen_use_colors = iniparser_getboolean(ini, "interface:colors", -1);
 	global.screen_center_vertically   = iniparser_getboolean(ini, "interface:center_vertical", -1);
 	global.screen_center_horizontally = iniparser_getboolean(ini, "interface:center_horizontal", -1);
+	global.screen_fancy_borders       = iniparser_getboolean(ini, "interface:fancy_borders", -1);
+	global.screen_show_outer_border   = iniparser_getboolean(ini, "interface:outer_border", -1);
 
 	global.game_can_hold  = iniparser_getboolean(ini, "gameplay:hold",  -1);
 	global.game_has_ghost = iniparser_getboolean(ini, "gameplay:ghost", -1);
@@ -110,6 +112,10 @@ void config_create_default(char* filename)
 		"# If the game boxes have fancy borders\n"
         "# default: true\n"
 		"fancy_borders = true\n"
+		"\n"
+		"# Show/hide outer border on the game screen\n"
+		"# default: true\n"
+		"outer_border = true\n"
 		"\n"
 		"[theming]\n"
 		"\n"

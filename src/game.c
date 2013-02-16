@@ -440,7 +440,7 @@ void game_handle_input(game_s* g, int input)
 
 		break;
 
-	default: /* Welp... Do nothing, I guess... */break;
+	default: /* Welp... Do nothing, I guess... */ break;
 	}
 }
 
