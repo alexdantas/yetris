@@ -23,8 +23,10 @@ void config_handle()
 //		config_parse(global.config_filename)
 //	else
 	if (!config_file_exists(DEFAULT_CONFIG_FILE))
-//		config_create_default(DEFAULT_CONFIG_FILE);
+	{
+		config_create_default(DEFAULT_CONFIG_FILE);
 		return;
+	}
 
 	config_parse(DEFAULT_CONFIG_FILE);
 }
@@ -71,19 +73,53 @@ void config_create_default(char* filename)
 		return;
 
 	const char text[] =
+		"# This is the default yetris configuration file.\n"
+		"# Remember that commandline options take precedence over this file.\n"
 		"#\n"
-		"# This is the default yetris configuration file\n"
+		"# Everything after '#' is ignored by the game.\n"
+		"# Options are categorized like [this] and have 'key = value' pairs.\n"
+		"# If some value is mistyped or left blank, the default value will be used.\n"
 		"#\n"
+		"# Boolean values accepted are case-insensitive (true, TRUE, tRuE...)\n"
 		"\n"
 		"[gameplay]\n"
 		"\n"
+		"# Enable/disable ghost piece (indication of where the piece will land)\n"
+		"# default: true\n"
 		"ghost = true\n"
-		"hold = true\n"
-		"next = 7\n"
+		"\n"
+		"# Enable/disable holding a piece (saving current piece for later use)\n"
+		"# default: true\n"
+		"hold  = true\n"
+		"\n"
+		"# How many next pieces are shown\n"
+		"# default: 7\n"
+		"next  = 7\n"
 		"\n"
 		"[interface]\n"
 		"\n"
+		"# Enable/disable colors on the game.\n"
+		"# default: true\n"
 		"colors = true\n"
+		"\n"
+		"# Center vertically/horizontally the game screen.\n"
+		"# default: false/false\n"
+		"center_vertical   = false\n"
+		"center_horizontal = false\n"
+		"\n"
+		"# If the game boxes have fancy borders\n"
+        "# default: true\n"
+		"fancy_borders = true\n"
+		"\n"
+		"[theming]\n"
+		"\n"
+		"# The appearance of a normal piece (two-char string)\n"
+		"# default: \"  \"\n"
+		"piece = \"  \"\n"
+		"\n"
+		"# The appearance of the ghost piece (two-char string)\n"
+		"# default: \"[]\"\n"
+		"ghost = \"[]\"\n"
 		"\n";
 
 	fprintf(file, text);

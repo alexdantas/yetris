@@ -1,16 +1,20 @@
 Known bugs and issues
 ---------------------
 
+They're given a 5-star rating based on their importance.
+If you ever find any bug on yetris, please message me! Contact info at README.
+
 Current Bugs
 ------------
 
-* If force the piece down, the falling time doubles.
-* When the game ends, the animation leaves some blocks colored.
-* Cannot rotate pieces if it's way's blocked or on the corner.
+***   If force the piece down, the falling time doubles.
+**    When the game ends, the animation leaves some blocks colored.
+****  Cannot rotate pieces if it's way's blocked or on the corner.
+***** While the game is paused, the game timer keeps counting!
 
 Fixed Bugs
 ----------
 
-* Piece hanging on the sides when above ceiling.
-* Bad timer.
+***   Piece hanging on the sides when above ceiling.
+****  Bad timer.
 
