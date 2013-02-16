@@ -36,10 +36,12 @@ game_s new_game()
 	int i;
 
  	srand(time(NULL));
-	g.board = new_board();
+	g.state = PLAYING;
 
+	g.board = new_board();
 	g.piece_current = new_piece(piece_get_random());
 
+	/* filling next pieces if possible */
 	if (global.game_next_no > 0)
 		for (i = 0; i < global.game_next_no; i++)
 			g.piece_next[i] = new_piece(piece_get_random());
@@ -60,20 +62,21 @@ game_s new_game()
 	if (global.game_has_ghost)
 		game_ghost_update(&g);
 
-	g.score  = 0;
-	g.lines  = 0;
-	g.level  = 0;
-	g.speed  = INITIAL_SPEED;
-	g.hscore = 0;
+	/* player info */
+	g.score       = 0;
+	g.lines       = 0;
+	g.level       = 0;
+	g.speed       = INITIAL_SPEED;
+	g.hscore      = 0;
 	g.combo_count = 0;
 	g.back_to_back_count = 0;
 	g.back_to_back_lines = 0;
 	game_hscore_init(&g);
 
+	/* timer info */
 	g.gameplay_s = 0;
 	g.gameplay_m = 0;
 	g.gameplay_h = 0;
-
 	timer_start(&(g.piece_timer));
 	timer_start(&(g.global_timer));
 
@@ -132,15 +135,27 @@ piece_s game_get_next_piece(game_s* g)
 /** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
-	game_update_piece(g);
-	game_update_gameplay_time(g);
-	game_update_level(g);
+	switch (g->state)
+	{
+	case PLAYING:
+		game_update_piece(g);
+		game_update_gameplay_time(g);
+		game_update_level(g);
 
-	if (global.game_has_ghost)
-		game_ghost_update(g);
+		if (global.game_has_ghost)
+			game_ghost_update(g);
 
-	if (board_is_full(&(g->board)))
-		g->is_over = true;
+		if (board_is_full(&(g->board)))
+			g->is_over = true;
+		break;
+
+	case PAUSED:
+		break;
+
+	case QUITTING:
+		g->quit = true;
+		break;
+	}
 }
 
 /** Updates piece position on screen.
@@ -336,76 +351,96 @@ void game_update_gameplay_time(game_s* g)
  */
 void game_handle_input(game_s* g, int input)
 {
-	if (input == engine.input.quit)
+	switch (g->state)
 	{
-		g->quit = true;
-	}
-	else if (input == engine.input.left)
- 	{
-		if (piece_can_move(&(g->piece_current), &(g->board), DIR_LEFT))
+	case PLAYING:
+		if (input == engine.input.quit)
 		{
-			piece_move(&(g->piece_current), DIR_LEFT);
-			g->moved_piece_down = false;
+			g->state = QUITTING;
 		}
-	}
-	else if (input == engine.input.right)
-	{
-		if (piece_can_move(&(g->piece_current), &(g->board), DIR_RIGHT))
+		else if (input == engine.input.left)
 		{
-			piece_move(&(g->piece_current), DIR_RIGHT);
-			g->moved_piece_down = false;
+			if (piece_can_move(&(g->piece_current), &(g->board), DIR_LEFT))
+			{
+				piece_move(&(g->piece_current), DIR_LEFT);
+				g->moved_piece_down = false;
+			}
 		}
-	}
-	else if (input == engine.input.down)
-	{
-		if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+		else if (input == engine.input.right)
 		{
-			piece_move(&(g->piece_current), DIR_DOWN);
-			g->moved_piece_down = true;
+			if (piece_can_move(&(g->piece_current), &(g->board), DIR_RIGHT))
+			{
+				piece_move(&(g->piece_current), DIR_RIGHT);
+				g->moved_piece_down = false;
+			}
 		}
-		else
+		else if (input == engine.input.down)
+		{
+			if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
+			{
+				piece_move(&(g->piece_current), DIR_DOWN);
+				g->moved_piece_down = true;
+			}
+			else
+				game_lock_piece(g);
+		}
+		else if (input == engine.input.rotate)
+		{
+			if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
+				piece_rotate(&(g->piece_current), -1);
+		}
+		else if (input == engine.input.rotate_backw)
+		{
+			if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
+				piece_rotate(&(g->piece_current), 1);
+		}
+		else if (input == engine.input.drop)
+		{
+			piece_hard_drop(&(g->piece_current), &(g->board));
 			game_lock_piece(g);
-	}
-	else if (input == engine.input.rotate)
-	{
-		if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
-			piece_rotate(&(g->piece_current), -1);
-	}
-	else if (input == engine.input.rotate_backw)
-	{
-		if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
-			piece_rotate(&(g->piece_current), 1);
-	}
-	else if (input == engine.input.drop)
-	{
-		piece_hard_drop(&(g->piece_current), &(g->board));
-		game_lock_piece(g);
-	}
-	else if (input == engine.input.pause)
-	{
-		if (global.game_can_hold)
-			game_hold_piece(g);
-	}
-	/* DEBUG KEYS - for development only! */
-	else if (input == '+')
-	{
-		g->level++;
-	}
-	else if (input == '-')
-	{
-		g->level--;
-	}
-	else if (input == KEY_F(2))
-	{
-		g->show_help = true;
-	}
-	else if (input == KEY_F(3))
-	{
-		game_handle_score(g);
-	}
-	else if (input == KEY_F(4))
-	{
-		g->gameplay_m++;
+		}
+		else if (input == engine.input.pause)
+		{
+   			g->state = PAUSED;
+		}
+		else if (input == engine.input.hold)
+		{
+			if (global.game_can_hold)
+				game_hold_piece(g);
+		}
+		/* DEBUG KEYS - for development only! */
+		else if (input == '+')
+		{
+			g->level++;
+		}
+		else if (input == '-')
+		{
+			g->level--;
+		}
+		else if (input == KEY_F(2))
+		{
+			g->show_help = true;
+		}
+		else if (input == KEY_F(3))
+		{
+			game_handle_score(g);
+		}
+		else if (input == KEY_F(4))
+		{
+			g->gameplay_m++;
+		}
+		break;
+
+	case PAUSED:
+		if (input == engine.input.quit)
+			g->state = QUITTING;
+
+		else if (input == engine.input.pause)
+			g->state = PLAYING;
+
+		break;
+
+	default: /* Welp... Do nothing, I guess... */break;
 	}
 }
 

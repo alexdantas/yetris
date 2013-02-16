@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
-#define NUMBER_OF_KEYS 8
+#define NUMBER_OF_KEYS 9
 #define NEXT_PIECES_NO 7 /* We have 1 Next piece and 6 on the line */
 
-/** This holds the game keymap. */
+/** This holds the game keymap. They all need to be int because of ncurses */
 typedef struct input_s
 {
 	char keys[NUMBER_OF_KEYS];
@@ -42,6 +42,7 @@ typedef struct input_s
 	int  rotate_backw;
 	int  quit;
 	int  pause;
+	int  hold;
 } input_s;
 
 typedef struct window_s
@@ -116,6 +117,7 @@ int engine_get_color(color_e color, bool is_bold);
 void engine_draw_help();
 void engine_wait_for_keypress();
 void engine_draw_gameover(game_s* g);
+void engine_draw_pause();
 
 #endif /* ENGINE_H_DEFINED */
 

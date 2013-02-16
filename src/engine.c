@@ -283,11 +283,11 @@ void engine_exit()
 }
 
 /** This defines the keymap according to the string #keymap.
- *  Each char represents the key to be pressed for the following
- *  commands (on that order):
- *    down, right, left, rotate, rotate backwards, drop, pause, quit
- *  For example:
- *    "sdawe pq"
+ *   Each char represents the key to be pressed for the following
+ *   commands (on that order):
+ *     down, right, left, rotate, rotate backwards, drop, pause, quit, hold
+ *   For example:
+ *     "sdawe pqu"
  */
 int engine_keymap(char keymap[])
 {
@@ -296,7 +296,7 @@ int engine_keymap(char keymap[])
 	/* ncurses' constants */
 	engine.input.none = ERR;
 
-	if ((!keymap) || (strnlen(keymap, 9) != 8))
+	if ((!keymap) || (strnlen(keymap, NUMBER_OF_KEYS + 1) != NUMBER_OF_KEYS))
 	{
 		/* Invalid string, setting default keymap */
 		engine.input.down   = KEY_DOWN;
@@ -305,7 +305,8 @@ int engine_keymap(char keymap[])
 		engine.input.rotate = 'z';
 		engine.input.rotate_backw = 'x';
 		engine.input.drop   = ' ';
-		engine.input.pause  = 'c';
+		engine.input.hold   = 'c';
+		engine.input.pause  = 'p';
 		engine.input.quit   = 'q';
 		return -1;
 	}
@@ -318,6 +319,7 @@ int engine_keymap(char keymap[])
 	engine.input.drop   = keymap[5];
 	engine.input.pause  = keymap[6];
 	engine.input.quit   = keymap[7];
+	engine.input.hold   = keymap[8];
 	return 0;
 }
 
@@ -378,6 +380,15 @@ void engine_draw_board(board_s* b)
 		for (j = 0; j < BOARD_HEIGHT; j++)
 			if (b->block[i][j].type != EMPTY)
 				engine_draw_block(&(b->block[i][j]), w);
+}
+
+void engine_draw_pause()
+{
+	window_s* w = &(engine.screen.board);
+
+	window_color(w->win, BLUE_BLACK, false);
+	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
+	wrefresh(w->win);
 }
 
 void engine_draw_next_pieces(game_s* g)
@@ -536,25 +547,6 @@ void engine_draw_info(game_s* g)
 	wrefresh(w.win);
 }
 
-/** Calls all drawing routines in order */
-void engine_draw(game_s* g)
-{
-	WINDOW* w = engine.screen.board.win;
-	werase(w);
-
-	engine_draw_board(&(g->board));
-	engine_draw_piece(&(g->piece_ghost), w);
-	engine_draw_piece(&(g->piece_current), w);
-	if (global.game_next_no > 0)
-		engine_draw_next_pieces(g);
-	if (global.game_can_hold)
-		engine_draw_hold(g);
-	engine_draw_score(g);
-	engine_draw_info(g);
-
-	wrefresh(w);
-}
-
 /** Returns the color pair associated with #color.
  *  If #is_bold is true, will make the color brighter.
  */
@@ -566,6 +558,37 @@ int engine_get_color(color_e color, bool is_bold)
 		/* TRY TO MAKE THIS WORK */
 
 	return col;
+}
+
+/** Calls all drawing routines in order */
+void engine_draw(game_s* g)
+{
+	WINDOW* w = engine.screen.board.win;
+	werase(w);
+
+	switch (g->state)
+	{
+	case PLAYING:
+		engine_draw_board(&(g->board));
+		engine_draw_piece(&(g->piece_ghost), w);
+		engine_draw_piece(&(g->piece_current), w);
+		if (global.game_next_no > 0)
+			engine_draw_next_pieces(g);
+		if (global.game_can_hold)
+			engine_draw_hold(g);
+		engine_draw_score(g);
+		engine_draw_info(g);
+		break;
+	case PAUSED:
+		engine_draw_board(&(g->board));
+		engine_draw_pause();
+		engine_draw_info(g); /* refresh the current time */
+		break;
+
+	default: /* Umm... Nothing, I guess...? */ break;
+	}
+
+	wrefresh(w);
 }
 
 /** Draws a little animation on the board, painting all pieces white. */

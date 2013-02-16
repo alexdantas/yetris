@@ -23,43 +23,53 @@
 #ifndef GAME_H_DEFINED
 #define GAME_H_DEFINED
 
-#include <stdbool.h>
+#include <stdbool.h> /* bool type in C */
 #include "piece.h"
 #include "board.h"
 #include "timer.h"
 
 #define INITIAL_SPEED  1000 /* miliseconds */
 
+/** All the possible game states */
+typedef enum { PLAYING, PAUSED, QUITTING } game_state;
+
+/** The main game structure. Controls all the actions related to game logic */
 typedef struct game_s
 {
+	/* piece and board stuff */
 	piece_s piece_current;
-	piece_s piece_next[NEXT_PIECES_NO]; /* 1 current and 4 nexts */
-	piece_s piece_ghost;   /* Indicating where the piece will land */
+	piece_s piece_next[NEXT_PIECES_NO];
+	piece_s piece_ghost;
 	piece_s piece_hold;
 	board_s board;
 
+	/* timer-related stuff */
 	struct timert global_timer; /** Timer since the beginning of the game */
 	struct timert piece_timer; /** Timer to drop current piece */
 	long gameplay_s; /** How many seconds have passed since game start */
 	long gameplay_m; /** How many minutes have passed since game start */
 	long gameplay_h; /** How many hours have passed since game start */
 
-	bool can_hold; /**< Tells if user has switched pieces this round */
-	int  score;
-	int  lines; /**< How many lines have been cleared yet */
-	int  level;
-	int  speed; /**< Time in miliseconds between each piece step */
-	int  hscore;
-	int  combo_count;
-	int  back_to_back_lines; /* How many lines have you cleared last round */
-	int  back_to_back_count; /* How many of the same lines have been cleared */
+	/* player info */
+	int  score;              /**< How many points the user has right now */
+	int  lines;              /**< How many lines have been cleared yet */
+	int  level;              /**< Current level of the game (determines speed) */
+	int  speed;              /**< Time in miliseconds between each piece step */
+	int  hscore;             /**< Top high score on the list */
+	int  combo_count;        /**< How many combos the used currently have */
+	int  back_to_back_lines; /**< How many lines have you cleared previously */
+	int  back_to_back_count; /**< How many of the same lines have been cleared */
 
-	bool quit;
-	bool is_over; /**< Flag if game is over  */
-	bool show_help;
-	bool moved_piece_down; /**< Player forced to move down - wont drop it */
-	bool is_combo;
-	bool is_back_to_back;
+	/* flags */
+	bool can_hold;         /**< Has the user switched pieces this round? */
+	bool quit;             /**< Will we quit the game */
+	bool is_over;          /**< Is the game over */
+	bool show_help;        /**< Will the help screen pop up */
+	bool moved_piece_down; /**< Player forced to move down - reset drop timer */
+	bool is_combo;         /**< Is the player currently doing a combo */
+	bool is_back_to_back;  /**< Is the player currently doing a back-to-back */
+
+	game_state state; /**< Current game state (paused, running, menu...) */
 
 } game_s;
 

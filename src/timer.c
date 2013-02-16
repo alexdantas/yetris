@@ -21,24 +21,39 @@
  */
 
 /** @file timer.c
- *  Definition of the timer functions.
+ *  Implements stuff related to the timer.
+ *
+ *  Basically, it starts a timer, stops it and returns the delta between
+ *  them in several time units.
+ *
+ *  @note If both timer_start() and timer_stop() don't get called
+ *        before any timer_delta_*() function, the results are unpredictable.
  */
 
 #include <stdio.h>
 #include <sys/time.h>
 #include "timer.h"
 
-
-
-/** Returns the delta between the start and end of the timer in microseconds.
+ /** Save the current time as a start point.
  *
- *  @note If timer_start() and timer_stop() doesn't get called
- *        before this, the results are unpredictable.
+ *  @note Remember to call timer_stop() to record the diff.
  */
+int timer_start (struct timert* t)
+{
+	return gettimeofday (&(t->start), NULL);
+}
 
 
-/** Returns the difference between the start and the end points of 't'.
+/** Save the current time as a stop point.
+ *
+ *  @note Remember to call timer_delta() to retrieve the timer diff.
  */
+int timer_stop (struct timert* t)
+{
+	return gettimeofday (&(t->end), NULL);
+}
+
+ /** Returns the time diff in microseconds (1/1000000 seconds) */
 long timer_delta_useconds (struct timert* t)
 {
 	time_t      delta_seconds = (t->end.tv_sec  - t->start.tv_sec);
@@ -47,43 +62,27 @@ long timer_delta_useconds (struct timert* t)
 	return (delta_seconds * 1000000 + delta_micro);
 }
 
+ /** Returns the time diff in mili (1/1000 seconds) */
 long timer_delta_mseconds(struct timert* t)
 {
 	return timer_delta_useconds(t) / 1000;
 }
 
+ /** Returns the time diff in seconds */
 long timer_delta_seconds(struct timert* t)
 {
 	return timer_delta_useconds(t) / 1000000;
 }
 
+ /** Returns the time diff in minutes (60 seconds) */
 long timer_delta_minutes(struct timert* t)
 {
 	return timer_delta_seconds(t) / 60;
 }
 
+ /** Returns the time diff in hours (3600 seconds) */
 long timer_delta_hours(struct timert* t)
 {
 	return timer_delta_minutes(t) / 60;
 }
-
-/** Records the current time as a start polong.
- *
- *  Remember to call timer_stop() to record the diff.
- */
-int timer_start (struct timert* t)
-{
-	return gettimeofday (&(t->start), NULL);
-}
-
-
-/** Records the current time as a stop point.
- *
- *  Remember to call timer_delta() to retrieve the timer diff.
- */
-int timer_stop (struct timert* t)
-{
-	return gettimeofday (&(t->end), NULL);
-}
-
 
