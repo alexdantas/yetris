@@ -58,6 +58,11 @@ typedef struct globals_s
 	bool game_can_hold;
 	char game_next_no; /**< How many next pieces the user can see */
 
+	char theme_piece[3];
+	char theme_ghost[3];
+	bool theme_piece_has_colors;
+	bool theme_ghost_has_colors;
+
 	char* config_filename; /**< The user-specified configuration file */
 
 } globals_s;

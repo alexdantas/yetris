@@ -93,8 +93,14 @@ typedef enum { BLACK_WHITE = 1, WHITE_BLACK,
                 BLACK_YELLOW,    YELLOW_BLACK,
                 BLACK_MAGENTA,   MAGENTA_BLACK,
                 BLACK_GREEN,     GREEN_BLACK,
-                BLACK_BLACK} color_e;
-
+ 			    BLACK_BLACK,
+                WHITE_CYAN,
+                WHITE_BLUE,
+                WHITE_RED,
+                WHITE_YELLOW,
+                WHITE_MAGENTA,
+			    WHITE_GREEN,
+                WHITE_WHITE} color_e;
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */

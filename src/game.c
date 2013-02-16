@@ -87,14 +87,30 @@ game_s new_game()
 void game_ghost_update(game_s* g)
 {
 	g->piece_ghost = g->piece_current;
-	g->piece_ghost.color = engine_get_color(WHITE_BLACK, false);
+
+	if (!global.theme_ghost_has_colors)
+		g->piece_ghost.color = piece_get_color(PIECE_DUMMY);
+	else
+		g->piece_ghost.color = piece_get_color(g->piece_current.type);
+
 	int i;
 	for (i = 0; i < 4; i++)
 	{
 		g->piece_ghost.block[i].type     = EMPTY;
 		g->piece_ghost.block[i].color    = g->piece_ghost.color;
-		g->piece_ghost.block[i].theme[0] = '[';
-		g->piece_ghost.block[i].theme[1] = ']';
+
+		/* custom theme defined by player */
+		if (global.theme_ghost[0] != '\0')
+		{
+			g->piece_ghost.block[i].theme[0] = global.theme_ghost[0];
+			g->piece_ghost.block[i].theme[1] = global.theme_ghost[1];
+		}
+		else
+		{
+			g->piece_ghost.block[i].theme[0] = '[';
+			g->piece_ghost.block[i].theme[1] = ']';
+		}
+
 		g->piece_ghost.block[i].theme[2] = '\0';
 	}
 	piece_hard_drop(&(g->piece_ghost), &(g->board));

@@ -68,6 +68,15 @@ int engine_screen_init(int width, int height)
 		init_pair(BLACK_MAGENTA, COLOR_BLACK,   COLOR_MAGENTA);
 		init_pair(BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
 		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
+		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
+		init_pair(WHITE_GREEN,   COLOR_WHITE,   COLOR_GREEN);
+		init_pair(WHITE_CYAN,    COLOR_WHITE,   COLOR_CYAN);
+		init_pair(WHITE_WHITE,   COLOR_WHITE,   COLOR_WHITE);
+		init_pair(WHITE_RED,     COLOR_WHITE,   COLOR_RED);
+		init_pair(WHITE_BLUE,    COLOR_WHITE,   COLOR_BLUE);
+		init_pair(WHITE_MAGENTA, COLOR_WHITE,   COLOR_MAGENTA);
+		init_pair(WHITE_YELLOW,  COLOR_WHITE,   COLOR_YELLOW);
+		init_pair(WHITE_WHITE,   COLOR_WHITE,   COLOR_WHITE);
 	}
 
 	/* Gets the current width and height */
@@ -235,7 +244,7 @@ int engine_windows_init()
 	s->next[0] = w;
 
 	/* the rest */
-	int i; int y_offset = 1;
+	int i; int y_offset = 2;
 	for (i = 1; i <= global.game_next_no; i++)
 	{
 		/* making all the next pieces 1 line lower */

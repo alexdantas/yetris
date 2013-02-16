@@ -37,6 +37,15 @@ globals_s new_globals()
 	g.game_can_hold = true;
 	g.game_next_no = NEXT_PIECES_NO;
 
+	int i;
+	for (i = 0; i < 3; i++)
+	{
+		g.theme_piece[i] = '\0';
+		g.theme_ghost[i] = '\0';
+	}
+	g.theme_piece_has_colors = true;
+	g.theme_ghost_has_colors = false;
+
 	g.config_filename = NULL;
 
 	return g;

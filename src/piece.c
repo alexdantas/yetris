@@ -37,21 +37,22 @@ piece_s new_piece(piece_e type)
 	p.rotation = 0;
 	p.type     = type;
 
-	switch(type)
-	{
-	case PIECE_S: color = engine_get_color(BLACK_GREEN,   false); break;
-	case PIECE_Z: color = engine_get_color(BLACK_RED,     false); break;
-	case PIECE_O: color = engine_get_color(BLACK_YELLOW,  true);  break;
-	case PIECE_I: color = engine_get_color(BLACK_CYAN,    true);  break;
-	case PIECE_L: color = engine_get_color(BLACK_YELLOW,  false); break;
-	case PIECE_J: color = engine_get_color(BLACK_BLUE,    false); break;
-	case PIECE_T: color = engine_get_color(BLACK_MAGENTA, false); break;
-	default:      color = engine_get_color(WHITE_BLACK,   false); break;
-	}
+	if (global.theme_piece_has_colors)
+		color = piece_get_color(type);
+	else
+		color = engine_get_color(WHITE_BLACK, false);
 
-	p.color    = color;
-	p.theme[0] = ' ';
-	p.theme[1] = ' ';
+	p.color = color;
+	if (global.theme_piece[0] != '\0')
+	{
+		p.theme[0] = global.theme_piece[0];
+		p.theme[1] = global.theme_piece[1];
+	}
+	else
+	{
+		p.theme[0] = ' ';
+		p.theme[1] = ' ';
+	}
 	p.theme[2] = '\0';
 
 	/* If we're creating a dummy piece, it won't be printed anyway */
@@ -229,5 +230,22 @@ bool piece_is_valid(piece_s* p)
 		return false;
 	else
 		return true;
+}
+
+int piece_get_color(piece_e type)
+{
+	int color;
+	switch(type)
+	{
+	case PIECE_S: color = engine_get_color(WHITE_GREEN,   false); break;
+	case PIECE_Z: color = engine_get_color(WHITE_RED,     false); break;
+	case PIECE_O: color = engine_get_color(WHITE_YELLOW,  true);  break;
+	case PIECE_I: color = engine_get_color(WHITE_CYAN,    true);  break;
+	case PIECE_L: color = engine_get_color(WHITE_YELLOW,  false); break;
+	case PIECE_J: color = engine_get_color(WHITE_BLUE,    false); break;
+	case PIECE_T: color = engine_get_color(WHITE_MAGENTA, false); break;
+	default:      color = engine_get_color(WHITE_BLACK,   false); break;
+	}
+	return color;
 }
 

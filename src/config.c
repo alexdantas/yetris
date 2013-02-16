@@ -10,6 +10,7 @@
  *
  */
 
+#include <string.h>
 #include "config.h"
 #include "globals.h"
 
@@ -53,6 +54,7 @@ void config_parse(char* filename)
 	if (!ini)
 		return; /* couldnt parse */
 
+	/* defining some boolean flags */
 	global.screen_use_colors = iniparser_getboolean(ini, "interface:colors", -1);
 	global.screen_center_vertically   = iniparser_getboolean(ini, "interface:center_vertical", -1);
 	global.screen_center_horizontally = iniparser_getboolean(ini, "interface:center_horizontal", -1);
@@ -62,6 +64,21 @@ void config_parse(char* filename)
 	global.game_can_hold  = iniparser_getboolean(ini, "gameplay:hold",  -1);
 	global.game_has_ghost = iniparser_getboolean(ini, "gameplay:ghost", -1);
 	global.game_next_no   = iniparser_getint(ini,     "gameplay:next",  -1);
+
+	global.theme_piece_has_colors = iniparser_getboolean(ini, "theming:piece_has_color",  -1);
+	global.theme_ghost_has_colors = iniparser_getboolean(ini, "theming:ghost_has_color",  -1);
+
+	/* copying custom piece theme */
+	char piece_theme[3] = {};
+	strncpy(piece_theme, iniparser_getstring(ini, "theming:piece", NULL), 3);
+	if (piece_theme[0] != '\0')
+		strncpy(global.theme_piece, piece_theme, 2);
+
+	/* copying custom ghost theme */
+	char ghost_theme[3] = {};
+	strncpy(ghost_theme, iniparser_getstring(ini, "theming:ghost", NULL), 3);
+	if (ghost_theme[0] != '\0')
+		strncpy(global.theme_ghost, ghost_theme, 2);
 
 	iniparser_freedict(ini);
 }
@@ -126,6 +143,17 @@ void config_create_default(char* filename)
 		"# The appearance of the ghost piece (two-char string)\n"
 		"# default: \"[]\"\n"
 		"ghost = \"[]\"\n"
+		"\n"
+		"# If normal pieces have colors (each individual color is defined by default)\n"
+		"# default: true\n"
+		"piece_has_color = true\n"
+		"\n"
+		"# If the ghost color has color\n"
+		"# (it's color would be the same as the current piece's).\n"
+		"# If 'piece_has_color' is false, the ghost gets the color the current piece\n"
+		"# would have.\n"
+		"# default: false\n"
+		"ghost_has_color = false\n"
 		"\n";
 
 	fprintf(file, text);
