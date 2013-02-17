@@ -52,18 +52,20 @@ typedef struct piece_s
 	int     color;
 	char    theme[3]; /* the appearance of each block */
 	block_s block[4]; /* the blocks */
-	int     rotation; /* current rotation (0 is none) */
+	short   rotation; /* current rotation (0 is none) */
 
 } piece_s;
 
 piece_s new_piece(piece_e type);
+bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation);
 void piece_rotate(piece_s* p, int rotation);
+bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir);
 void piece_move(piece_s* p, direction_e dir);
 void piece_hard_drop(piece_s* p, board_s* b);
 piece_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
-bool piece_can_rotate(piece_s* p, board_s* b, int rotation);
 bool piece_is_valid(piece_s* p);
 int piece_get_color(piece_e type);
+bool piece_is_on_valid_position(piece_s* p, board_s* b);
 
 #endif /* PIECE_H_DEFINED */

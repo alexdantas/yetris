@@ -33,16 +33,14 @@ piece_s new_piece(piece_e type)
 	piece_s p;
 	color_e color;
 
-
-	p.rotation = 0;
-	p.type     = type;
-
+	/* user specifies if the piece has colors */
 	if (global.theme_piece_has_colors)
 		color = piece_get_color(type);
 	else
 		color = engine_get_color(WHITE_BLACK, false);
-
 	p.color = color;
+
+	/* user specifies the piece appearance */
 	if (global.theme_piece[0] != '\0')
 	{
 		p.theme[0] = global.theme_piece[0];
@@ -55,15 +53,22 @@ piece_s new_piece(piece_e type)
 	}
 	p.theme[2] = '\0';
 
-	/* If we're creating a dummy piece, it won't be printed anyway */
+	p.rotation = 0;
+	p.type     = type;
+
+	/* If we're creating a dummy piece, stop. It won't be printed anyway */
 	if (!piece_is_valid(&p))
 		return p;
 
+	/* The starting positions are derived from the SRS */
 	p.x = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
 	p.y = global_pieces_position[p.type][p.rotation][1];
 
-	/* This seems complicated, but it's just starting each
-	 * block of the piece according to it's x and y on the board */
+	/* This seems complicated, but its just initializing each
+	 * block of the piece according to it's X and Y on the board.
+	 * Remember that each block has its X and Y relative to the start
+	 * of the board.
+	 */
 	int i,j, k = 0;
 	for (i = 0; i < PIECE_BLOCKS; i++)
 		for (j = 0; j < PIECE_BLOCKS; j++)
@@ -81,10 +86,14 @@ piece_s new_piece(piece_e type)
 /** Rotate piece #p by #rotation times. Negative number rotates backwards */
 void piece_rotate(piece_s* p, int rotation)
 {
+	/* rotating to the negative side (counter-clockwise) */
 	if (rotation < 0)
 		rotation += 4;
-	p->rotation = (p->rotation + rotation) % 4; /* keep it under 4 */
 
+	/* keep it under 4 */
+	p->rotation = (p->rotation + rotation) % 4;
+
+	/* refreshing the piece's blocks */
 	int i,j, k = 0;
 	for (i = 0; i < PIECE_BLOCKS; i++)
 		for (j = 0; j < PIECE_BLOCKS; j++)
@@ -93,6 +102,90 @@ void piece_rotate(piece_s* p, int rotation)
 				p->block[k] = new_block(p->x + i, p->y + j, p->theme, p->color);
 				k++;
 			}
+}
+
+
+/** Tries to rotate the piece, doing nothing if cant.
+ *  @return true if succeeded, false if failed
+ *
+ *  This function acts according to the SRS (super rotation system).
+ *  It's described on http://tetrisconcept.net/wiki/SRS
+ */
+bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
+{
+	piece_s tmp = *p;
+
+	piece_rotate(&tmp, rotation);
+	if (piece_is_on_valid_position(&tmp, b))
+	{
+		piece_rotate(p, rotation);
+		return true;
+	}
+
+	/* the SRS depends on several informations about the piece */
+	/* first, the type */
+	int type;
+	if (p->type == PIECE_I)
+		type = 1;
+	else
+		type = 0;
+
+	/* then if the player wants to rotate it clockwise or counter */
+	int rot_way;
+	if (rotation > 0)
+		rot_way = 0;
+	else
+		rot_way = 1;
+
+	/* And it will make 5 tests, trying to move the piece around.
+	 * If any of them pass, the piece is immediately moved.
+	 * If none of them pass, well... Lets say we're out of luck.
+	 */
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		char delta_x = srs_possible_positions[type][rot_way][tmp.rotation][i][0];
+		char delta_y = srs_possible_positions[type][rot_way][tmp.rotation][i][1];
+		/* try moving the piece to see if it can go there */
+		tmp.x += delta_x;
+		tmp.y += delta_y;
+
+		int k;
+		for (k = 0; k < 4; k++)
+		{
+			tmp.block[k].x += delta_x;
+			tmp.block[k].y += delta_y;
+		}
+
+		if (piece_is_on_valid_position(&tmp, b))
+		{
+			piece_rotate(p, rotation);
+			p->x += delta_x;
+			p->y += delta_y;
+
+			int k;
+			for (k = 0; k < 4; k++)
+			{
+				p->block[k].x += delta_x;
+				p->block[k].y += delta_y;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+/** Tries to move the piece, doing nothing if cant.
+ *  @return true if succeeded, false if failed
+ */
+bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir)
+{
+	if (piece_can_move(p, b, dir))
+	{
+		piece_move(p, dir);
+		return true;
+	}
+	return false;
 }
 
 /** Moves piece according to #direction. 0 is right and 1 is left */
@@ -184,20 +277,25 @@ piece_e piece_get_random()
  */
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 {
-	piece_s new_p = *p;
+	piece_s tmp = *p;
 
-	piece_move(&new_p, dir);
+	piece_move(&tmp, dir);
+	return piece_is_on_valid_position(&tmp, b);
+}
 
-	/* Going through the board only on the positions of the piece's blocks */
+/** Returns if the piece is colliding with something or if it's off-limits */
+bool piece_is_on_valid_position(piece_s* p, board_s* b)
+{
+	/* Going through the board only where the piece's at */
 	int k;
 	for (k = 0; k < 4; k++)
 	{
 		/* Here we don't confuse our 'dummy' blocks with real ones */
-		new_p.block[k].type = EMPTY;
+		p->block[k].type = EMPTY;
 
 		/* block's x and y are not relative to the piece -- they're global */
-		int block_x = new_p.block[k].x;
-		int block_y = new_p.block[k].y;
+		int block_x = p->block[k].x;
+		int block_y = p->block[k].y;
 
 		/* Off-limits check */
 		if ((block_x >= BOARD_WIDTH) || (block_y >= BOARD_HEIGHT) ||
@@ -212,14 +310,6 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 			return false;
 	}
 	return true;
-}
-
-bool piece_can_rotate(piece_s* p, board_s* b, int rotation)
-{
-	piece_s new_p = *p;
-
-	piece_rotate(&new_p, rotation);
-	return piece_can_move(&new_p, b, DIR_NONE);
 }
 
 /** Tells if a piece is a basic one (one of the 7 original ones) */

@@ -122,13 +122,15 @@ void game_lock_piece(game_s* g)
 	board_lock_piece(&(g->board), &(g->piece_current));
 
 	g->piece_current = game_get_next_piece(g);
+	timer_start(&(g->piece_timer)); /* reset piece falling timer */
 	if (global.game_has_ghost)
 		game_ghost_update(g);
 
 	game_delete_possible_lines(g);
 
+	/* now we can switch pieces! */
 	if (global.game_can_hold)
-		g->can_hold = true; /* now we can switch pieces! */
+		g->can_hold = true;
 
 	g->score += 10;
 }
@@ -386,41 +388,38 @@ void game_handle_input(game_s* g, int input)
 		{
 			g->state = QUITTING;
 		}
+		if (input == engine.input.restart)
+		{
+			g->is_over = true;
+		}
 		else if (input == engine.input.left)
 		{
-			if (piece_can_move(&(g->piece_current), &(g->board), DIR_LEFT))
-			{
-				piece_move(&(g->piece_current), DIR_LEFT);
+			if (piece_move_if_possible(&(g->piece_current), &(g->board), DIR_LEFT))
 				g->moved_piece_down = false;
-			}
 		}
 		else if (input == engine.input.right)
 		{
-			if (piece_can_move(&(g->piece_current), &(g->board), DIR_RIGHT))
-			{
-				piece_move(&(g->piece_current), DIR_RIGHT);
+			if (piece_move_if_possible(&(g->piece_current), &(g->board), DIR_RIGHT))
 				g->moved_piece_down = false;
-			}
 		}
 		else if (input == engine.input.down)
 		{
-			if (piece_can_move(&(g->piece_current), &(g->board), DIR_DOWN))
-			{
-				piece_move(&(g->piece_current), DIR_DOWN);
+			if (piece_move_if_possible(&(g->piece_current), &(g->board), DIR_DOWN))
 				g->moved_piece_down = true;
-			}
 			else
 				game_lock_piece(g);
 		}
 		else if (input == engine.input.rotate)
 		{
-			if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
-				piece_rotate(&(g->piece_current), -1);
+			piece_rotate_if_possible(&(g->piece_current), &(g->board), 1);
+//			if (piece_can_rotate(&(g->piece_current), &(g->board), 1))
+//				piece_rotate(&(g->piece_current), -1);
 		}
 		else if (input == engine.input.rotate_backw)
 		{
-			if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
-				piece_rotate(&(g->piece_current), 1);
+			piece_rotate_if_possible(&(g->piece_current), &(g->board), -1);
+//			if (piece_can_rotate(&(g->piece_current), &(g->board), -1))
+//				piece_rotate(&(g->piece_current), 1);
 		}
 		else if (input == engine.input.drop)
 		{

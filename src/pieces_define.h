@@ -254,24 +254,25 @@ char global_pieces[7][4][5][5] =
 
 /** The initial position of every piece (how they'll show up on top)
  *
- *  We have 7 pieces, each have 4 rotations and each have a x anf y offset
- *
+ *  We have 7 pieces, each have 4 rotations and each have a x anf y offset.
+ *  When we initialize the pieces, we add the first value to the x and
+ *  the second to the y.
  */
-int global_pieces_position[7][4][2] =
+char global_pieces_position[7][4][2] =
 {
 	/* O */
 	{
-		{-2, -3},
-		{-2, -3},
-		{-2, -3},
-		{-2, -3}
+		{-2, -4},
+		{-2, -4},
+		{-2, -4},
+		{-2, -4}
 	},
 	/* I */
 	{
-		{-2, -2},
 		{-2, -3},
-		{-2, -2},
-		{-2, -3}
+		{-2, -4},
+		{-2, -3},
+		{-2, -4}
 	},
 	/* L */
 	{
@@ -308,6 +309,172 @@ int global_pieces_position[7][4][2] =
 		{-2, -3},
 		{-2, -2}
 	}
+};
+
+/** 2 piece types,
+ *   2 rotation ways (clock and counter),
+ *   4 rotations,
+ *   5 tests,
+ *   2 axes
+ *
+ *   WARNING: the tests specified on the SRS has the Y axis inverted
+ *            (mine is from top to bottom, theirs is from bottom to top)
+ *
+ *   The possible rotations are:
+ *     0 -> R -> 2 -> L -> 0
+ */
+char srs_possible_positions[2][2][4][5][2] =
+{
+	/* J, L, S, T, Z */
+	{
+		/* clockwise */
+		{
+			/* 0 -> R */
+			{
+				{ 0,  0},
+				{-1,  0},
+				{-1, -1},
+				{ 0,  2},
+				{-1,  2},
+			},
+			/* R -> 2 */
+			{
+				{ 0,  0},
+				{ 1,  0},
+				{ 1,  1},
+				{ 0, -2},
+				{ 1, -2}
+			},
+			/* 2 -> L */
+			{
+				{ 0,  0},
+				{ 1,  0},
+				{ 1, -1},
+				{ 0,  2},
+				{ 1,  2}
+			},
+			/* L -> 0 */
+			{
+				{ 0,  0},
+				{-1,  0},
+				{-1,  1},
+				{ 0, -2},
+				{-1, -2}
+			}
+		},
+		/* counter-clockwise */
+		{
+			/* 0 -> L */
+			{
+				{ 0,  0},
+				{ 1,  0},
+				{ 1, -1},
+				{ 0,  2},
+				{ 1,  2}
+			},
+			/* L -> 2 */
+			{
+				{ 0,  0},
+				{-1,  0},
+				{-1,  1},
+				{ 0, -2},
+				{-1, -2}
+			},
+			/* 2 -> R */
+			{
+				{ 0,  0},
+				{-1,  0},
+				{-1, -1},
+				{ 0,  2},
+				{-1,  2}
+			},
+			/* R -> 0 */
+			{
+				{ 0,  0},
+				{ 1,  0},
+				{ 1,  1},
+				{ 0, -2},
+				{ 1, -2}
+			}
+		}
+	},
+	/* I */
+	{
+		/* clockwise */
+		{
+			/* 0 -> R */
+			{
+				{-1,  0},
+				{ 1,  0},
+				{-2,  0},
+				{ 1, -1},
+				{-2,  2}
+			},
+			/* R -> 2 */
+			{
+				{-1,  0},
+				{ 1, -1},
+				{-2, -1},
+				{ 1,  1},
+				{-2,  2}
+
+			},
+			/* 2 -> L */
+			{
+				{ 1,  0},
+				{-1,  0},
+				{-2,  0},
+				{-1,  1},
+				{-2, -2}
+			},
+			/* L -> 0 */
+			{
+				{ 0,  1},
+				{-1,  1},
+				{ 2,  1},
+				{-1, -1},
+				{ 2,  2}
+			}
+		},
+		/* counter-clockwise */
+		{
+			/* 0 -> L */
+			{
+				{ 0, -1},
+				{ 1, -1},
+//				{-2, -1},
+				{ 2,  3},
+				{ 1,  1},
+				{-2, -2}
+			},
+			/* L -> 2 */
+			{
+				{-1,  0},
+				{ 1,  0},
+				{-2,  0},
+				{ 1, -1},
+				{-2,  2}
+			},
+			/* 2 -> R */
+			{
+				{ 0,  1},
+				{-1, -1},
+				{-2,  1},
+				{-1, -1},
+				{ 2,  2}
+			},
+			/* R -> 0 */
+			{
+				{ 1,  1},
+				{-1,  1},
+				{ 2,  2},
+				{-2,  2},
+				{0,  0}
+//				{ 2, -2}
+			}
+		}
+	}
+	/* O doesnt spin */
 };
 
 #endif /* PIECES_DEFINITIONS_H_DEFINED */

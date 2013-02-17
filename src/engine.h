@@ -27,7 +27,7 @@
 #include <ncurses.h>
 #include "globals.h"
 
-#define NUMBER_OF_KEYS 9
+#define NUMBER_OF_KEYS 10
 
 /** This holds the game keymap. They all need to be int because of ncurses */
 typedef struct input_s
@@ -43,6 +43,7 @@ typedef struct input_s
 	int  quit;
 	int  pause;
 	int  hold;
+	int  restart;
 } input_s;
 
 /** Stores information about a ncurses' window */

@@ -147,14 +147,19 @@ int engine_windows_init()
 	if (global.screen_fancy_borders)
 	{
 		window_fancy_borders(w.win);
-		/* making the top line between hold and score windows */
-		mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
-		mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
-		mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
-		/* making the bottom line between hold and score windows */
-		mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
-		mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
-		mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
+
+		/* If the player has no hold, doesnt make sense printing these parts */
+		if (global.game_can_hold)
+		{
+			/* making the top line between hold and score windows */
+			mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+			mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+			mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+			/* making the bottom line between hold and score windows */
+			mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+			mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+			mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
+		}
 
 	}
 	else
@@ -366,12 +371,13 @@ int engine_keymap(char keymap[])
 		engine.input.down   = KEY_DOWN;
 		engine.input.right  = KEY_RIGHT;
 		engine.input.left   = KEY_LEFT;
-		engine.input.rotate = 'z';
-		engine.input.rotate_backw = 'x';
-		engine.input.drop   = ' ';
-		engine.input.hold   = 'c';
-		engine.input.pause  = 'p';
-		engine.input.quit   = 'q';
+		engine.input.rotate = 'x';
+		engine.input.rotate_backw = 'z';
+		engine.input.drop    = ' ';
+		engine.input.hold    = 'c';
+		engine.input.pause   = 'p';
+		engine.input.quit    = 'q';
+		engine.input.restart = 'r';
 		return -1;
 	}
 
@@ -384,6 +390,7 @@ int engine_keymap(char keymap[])
 	engine.input.pause  = keymap[6];
 	engine.input.quit   = keymap[7];
 	engine.input.hold   = keymap[8];
+	engine.input.restart = keymap[8];
 	return 0;
 }
 
