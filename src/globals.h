@@ -63,6 +63,8 @@ typedef struct globals_s
 	bool theme_piece_has_colors;
 	bool theme_ghost_has_colors;
 	char theme_clear_line[3];
+	bool theme_show_pivot_block;
+	bool theme_lock_piece_color;
 
 	char* config_filename; /**< The user-specified configuration file */
 

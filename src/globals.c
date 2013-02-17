@@ -46,6 +46,8 @@ globals_s new_globals()
 	}
 	g.theme_piece_has_colors = true;
 	g.theme_ghost_has_colors = false;
+	g.theme_show_pivot_block = false;
+	g.theme_lock_piece_color = false;
 
 	g.config_filename = NULL;
 

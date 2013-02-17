@@ -417,6 +417,7 @@ char srs_possible_positions[2][2][4][5][2] =
 				{-2, -1},
 				{ 1,  1},
 				{-2,  2}
+//				{ 2,  0}
 
 			},
 			/* 2 -> L */
@@ -442,8 +443,7 @@ char srs_possible_positions[2][2][4][5][2] =
 			{
 				{ 0, -1},
 				{ 1, -1},
-//				{-2, -1},
-				{ 2,  3},
+				{-2, -1},
 				{ 1,  1},
 				{-2, -2}
 			},
@@ -469,8 +469,7 @@ char srs_possible_positions[2][2][4][5][2] =
 				{-1,  1},
 				{ 2,  2},
 				{-2,  2},
-				{0,  0}
-//				{ 2, -2}
+				{ 2, -2}
 			}
 		}
 	}
@@ -478,4 +477,5 @@ char srs_possible_positions[2][2][4][5][2] =
 };
 
 #endif /* PIECES_DEFINITIONS_H_DEFINED */
+
 

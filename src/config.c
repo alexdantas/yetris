@@ -67,6 +67,8 @@ void config_parse(char* filename)
 
 	global.theme_piece_has_colors = iniparser_getboolean(ini, "theming:piece_has_color",  -1);
 	global.theme_ghost_has_colors = iniparser_getboolean(ini, "theming:ghost_has_color",  -1);
+	global.theme_show_pivot_block = iniparser_getboolean(ini, "theming:show_pivot", -1);
+	global.theme_lock_piece_color = iniparser_getboolean(ini, "theming:locked_piece_color", -1);
 
 	/* copying custom piece theme */
 	char piece_theme[3] = {};
@@ -164,6 +166,14 @@ void config_create_default(char* filename)
 		"# The appearance of the line we clear, just before it disappears\n"
 		"# default: \"::\"\n"
 		"clear_line = \"::\"\n"
+		"\n"
+		"# Show/hide the pivot block (the center of the piece's rotation axis)\n"
+		"# default: false\n"
+		"show_pivot = true\n"
+		"\n"
+		"# When the piece locks on the board, will it have a custom color?\n"
+		"# default: false\n"
+		"locked_piece_color = true\n"
 		"\n";
 
 	fprintf(file, text);

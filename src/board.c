@@ -47,6 +47,8 @@ void board_lock_piece(board_s* b, piece_s* p)
 		int block_x = p->block[k].x;
 		int block_y = p->block[k].y;
 		b->block[block_x][block_y] = p->block[k];
+		if (global.theme_lock_piece_color)
+			b->block[block_x][block_y].color = engine_get_color(WHITE_WHITE, false);
 	}
 }
 
