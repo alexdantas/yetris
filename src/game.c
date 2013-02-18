@@ -88,6 +88,7 @@ game_s new_game()
 	g.S_count = 0;
 	g.Z_count = 0;
 	g.O_count = 0;
+	g.piece_count = 0;
 
 	return g;
 }
@@ -142,6 +143,7 @@ void game_lock_piece(game_s* g)
 		case PIECE_O: g->O_count++; break;
 		default: break;
 		}
+		g->piece_count++;
 	}
 
 	board_lock_piece(&(g->board), &(g->piece_current));

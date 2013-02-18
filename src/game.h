@@ -80,6 +80,7 @@ typedef struct game_s
 	int S_count;
 	int Z_count;
 	int O_count;
+	int piece_count; /* total count */
 } game_s;
 
 game_s new_game();

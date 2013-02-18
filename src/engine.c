@@ -674,6 +674,8 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 16, 1, "%10d   Total", g->piece_count);
 //	wrefresh(w.win);
 }
 

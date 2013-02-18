@@ -55,16 +55,16 @@ void config_parse(char* filename)
 		return; /* couldnt parse */
 
 	/* defining some boolean flags */
-	global.screen_use_colors = iniparser_getboolean(ini, "interface:colors", -1);
+	global.screen_use_colors          = iniparser_getboolean(ini, "interface:colors", -1);
 	global.screen_center_vertically   = iniparser_getboolean(ini, "interface:center_vertical", -1);
 	global.screen_center_horizontally = iniparser_getboolean(ini, "interface:center_horizontal", -1);
 	global.screen_fancy_borders       = iniparser_getboolean(ini, "interface:fancy_borders", -1);
 	global.screen_show_outer_border   = iniparser_getboolean(ini, "interface:outer_border", -1);
 	global.game_has_statistics        = iniparser_getboolean(ini, "interface:statistics", -1);
 
-	global.game_can_hold  = iniparser_getboolean(ini,    "gameplay:hold",  -1);
-	global.game_has_ghost = iniparser_getboolean(ini,    "gameplay:ghost", -1);
-	global.game_next_no = iniparser_getint(ini, "gameplay:next",  -1);
+	global.game_can_hold  = iniparser_getboolean(ini, "gameplay:hold",  -1);
+	global.game_has_ghost = iniparser_getboolean(ini, "gameplay:ghost", -1);
+	global.game_next_no   = iniparser_getint(ini,     "gameplay:next",  -1);
 	global.game_random_algorithm = iniparser_getint(ini, "gameplay:random",  -1);
 
 	global.theme_piece_has_colors = iniparser_getboolean(ini, "theming:piece_has_color",  -1);
