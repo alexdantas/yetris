@@ -130,6 +130,7 @@ void engine_draw_help();
 void engine_wait_for_keypress();
 void engine_draw_gameover(game_s* g);
 void engine_draw_pause();
+void engine_draw_statistics(game_s* g);
 
 #endif /* ENGINE_H_DEFINED */
 

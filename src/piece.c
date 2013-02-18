@@ -273,35 +273,45 @@ int random_number_between(int min, int max)
  */
 piece_e piece_get_random()
 {
- 	int i,j;
- 	int size = PIECE_MAX;
-
- 	static int bag[PIECE_MAX];
-	static int piece = PIECE_MAX;
-
-	if (piece >= PIECE_MAX)
+	/* default 'smart' algorithm */
+	if (global.game_random_algorithm == 1)
 	{
-		piece = 0;
+		int i,j;
+		int size = PIECE_MAX;
 
-		bag[0] = random_number_between(0, size - 1);
-		for (i = 1; i < size; i++)
+		static int bag[PIECE_MAX];
+		static int piece = PIECE_MAX;
+
+		if (piece >= PIECE_MAX)
 		{
-			bag[i] = random_number_between(0, size - 1);
-			j = 0;
-			do {				///for (j = 0; j < i; j++)
+			piece = 0;
 
-				if (bag[j] == bag[i])
-				{
-					bag[i] = random_number_between(0, size - 1);
-					j = 0;
-				}
-				else
-					j++;
-			} while (j < i);
+			bag[0] = random_number_between(0, size - 1);
+			for (i = 1; i < size; i++)
+			{
+				bag[i] = random_number_between(0, size - 1);
+				j = 0;
+				do {				///for (j = 0; j < i; j++)
+
+					if (bag[j] == bag[i])
+					{
+						bag[i] = random_number_between(0, size - 1);
+						j = 0;
+					}
+					else
+						j++;
+				} while (j < i);
+			}
 		}
+		piece++;
+		return bag[piece - 1];
 	}
-	piece++;
-	return bag[piece - 1];
+//	else if (global.game_random_algorithm == 2)
+	/* dummy random algorithm */
+	else
+	{
+		return random_number_between(0, PIECE_MAX - 1);
+	}
 }
 
 /** Checks if the piece #p can move to direction #dir.

@@ -57,6 +57,8 @@ typedef struct globals_s
 	bool game_has_ghost;
 	bool game_can_hold;
 	char game_next_no; /**< How many next pieces the user can see */
+	bool game_has_statistics;
+	char game_random_algorithm;
 
 	char theme_piece[3];
 	char theme_ghost[3];

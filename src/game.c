@@ -80,6 +80,15 @@ game_s new_game()
 	timer_start(&(g.piece_timer));
 	timer_start(&(g.global_timer));
 
+	/* piece statistics */
+	g.I_count = 0;
+	g.T_count = 0;
+	g.L_count = 0;
+	g.J_count = 0;
+	g.S_count = 0;
+	g.Z_count = 0;
+	g.O_count = 0;
+
 	return g;
 }
 
@@ -119,6 +128,22 @@ void game_ghost_update(game_s* g)
 /** Locks the current piece on the board and gets a new one */
 void game_lock_piece(game_s* g)
 {
+	/* before locking, lets add to the statistics */
+	if (global.game_has_statistics)
+	{
+		switch (g->piece_current.type)
+		{
+		case PIECE_I: g->I_count++; break;
+		case PIECE_T: g->T_count++; break;
+		case PIECE_L: g->L_count++; break;
+		case PIECE_J: g->J_count++; break;
+		case PIECE_S: g->S_count++; break;
+		case PIECE_Z: g->Z_count++; break;
+		case PIECE_O: g->O_count++; break;
+		default: break;
+		}
+	}
+
 	board_lock_piece(&(g->board), &(g->piece_current));
 
 	g->piece_current = game_get_next_piece(g);

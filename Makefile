@@ -29,7 +29,7 @@ SHELL	= /bin/sh
 
 # General Info
 PACKAGE = yetris
-VERSION = 1.0
+VERSION = 1.4
 DATE	= Feb2013
 
 # Local source code information
@@ -156,7 +156,8 @@ $(DISTDIR):
 	-$(MUTE)cp -r $(LSRC)/* $(DISTDIR)/$(LSRC)
 	-$(MUTE)cp -r $(LBIN)/* $(DISTDIR)/$(LBIN)
 	-$(MUTE)cp -r $(LDOC)/* $(DISTDIR)/$(LDOC)
-	-$(MUTE)cp -r .git $(DISTDIR)/
+# Not copying git info - unnecessary MBs!
+#	-$(MUTE)cp -r .git $(DISTDIR)/
 
 # Phony targets
 dirs:

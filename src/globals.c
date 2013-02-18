@@ -36,6 +36,8 @@ globals_s new_globals()
 	g.game_has_ghost = true;
 	g.game_can_hold = true;
 	g.game_next_no = NEXT_PIECES_NO;
+	g.game_has_statistics = true;
+	g.game_random_algorithm = 1;
 
 	int i;
 	for (i = 0; i < 3; i++)

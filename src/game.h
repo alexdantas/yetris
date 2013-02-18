@@ -72,6 +72,14 @@ typedef struct game_s
 
 	game_state state; /**< Current game state (paused, running, menu...) */
 
+	/* piece statistics */
+	int I_count;
+	int T_count;
+	int L_count;
+	int J_count;
+	int S_count;
+	int Z_count;
+	int O_count;
 } game_s;
 
 game_s new_game();

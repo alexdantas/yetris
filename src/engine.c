@@ -577,11 +577,114 @@ void engine_draw_score(game_s* g)
 	wrefresh(w.win);
 }
 
+/** This is a very ugly function that draws blocks on the
+ *  info window for statistical purposes.
+ *  It uses several position hacks that i need to fix later.
+ *  The problem is that pieces always start relative to the
+ *  middle of the board, independent of the screen.
+ *  So im repositioning them according to it, on the info screen.
+ */
+void engine_draw_statistics(game_s* g)
+{
+	window_s w = engine.screen.info;
+	int k;
+	int x_offset = 3;
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 3, 1, "%10d x", g->I_count);
+	piece_s  p = new_piece(PIECE_I);
+	p.x = x_offset;
+	p.y = 4;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 5, 1, "%10d x", g->T_count);
+	p = new_piece(PIECE_T);
+	p.x = x_offset;
+	p.y = 6;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 7, 1, "%10d x", g->L_count);
+	p = new_piece(PIECE_L);
+	p.x = x_offset;
+	p.y = 8;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 9, 1, "%10d x", g->J_count);
+	p = new_piece(PIECE_J);
+	p.x = x_offset;
+	p.y = 10;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 11, 1, "%10d x", g->S_count);
+	p = new_piece(PIECE_S);
+	p.x = x_offset;
+	p.y = 12;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 13, 1, "%10d x", g->Z_count);
+	p = new_piece(PIECE_Z);
+	p.x = x_offset;
+	p.y = 14;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+	window_color(w.win, WHITE_BLACK, false);
+	mvwprintw(w.win, 15, 1, "%10d x", g->O_count);
+	p = new_piece(PIECE_O);
+	p.x = x_offset - 1;
+	p.y = 16;
+	for (k = 0; k < 4; k++)
+	{
+		p.block[k].x += p.x;
+		p.block[k].y += p.y;
+	}
+	engine_draw_piece(&p, w.win);
+
+//	wrefresh(w.win);
+}
+
 void engine_draw_info(game_s* g)
 {
 	window_s w = engine.screen.info;
 
 	werase(w.win);
+
+	if (global.game_has_statistics)
+		engine_draw_statistics(g);
 
 	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
@@ -590,18 +693,18 @@ void engine_draw_info(game_s* g)
 	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 3, 0, "Timer:");
+	mvwaddstr(w.win, w.height - 1, 0, "Timer:");
 
 	window_color(w.win, WHITE_BLACK, false);
 	if (g->gameplay_h) /* Wow.. will someone really play this game for hours? */
-		mvwprintw(w.win, 3, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
+		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
 	else
-		mvwprintw(w.win, 3, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
+		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
 
 	window_color(w.win, BLUE_BLACK, false);
-	mvwaddstr(w.win, 5, 0, "Speed:");
+	mvwaddstr(w.win, w.height - 2, 0, "Speed:");
 	window_color(w.win, WHITE_BLACK, false);
-	mvwprintw(w.win, 5, 7, "%dms", g->speed);
+	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
 	/** DEBUG INFO */
 	/* window_color(w.win, BLUE_BLACK, false); */
@@ -616,7 +719,7 @@ void engine_draw_info(game_s* g)
 	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
 	time(&cur_time);
-	window_color(w.win, WHITE_BLACK, false);
+	window_color(w.win, BLACK_BLACK, true);
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	wrefresh(w.win);
