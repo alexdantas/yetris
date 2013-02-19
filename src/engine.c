@@ -50,33 +50,34 @@ int engine_screen_init(int width, int height)
 	if ((has_colors() == TRUE) && (global.screen_use_colors))
 	{
 		start_color();
-		/* Colors (Enum Name,     Foreground,    Background) */
-		init_pair(GREEN_BLACK,   COLOR_GREEN,   COLOR_BLACK);
-		init_pair(CYAN_BLACK,    COLOR_CYAN,    COLOR_BLACK);
-		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
-		init_pair(RED_BLACK,     COLOR_RED,     COLOR_BLACK);
-		init_pair(BLUE_BLACK,    COLOR_BLUE,    COLOR_BLACK);
-		init_pair(MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
-		init_pair(YELLOW_BLACK,  COLOR_YELLOW,  COLOR_BLACK);
-		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
-		init_pair(BLACK_BLACK,   COLOR_BLACK,   COLOR_BLACK);
-		init_pair(BLACK_GREEN,   COLOR_BLACK,   COLOR_GREEN);
-		init_pair(BLACK_CYAN,    COLOR_BLACK,   COLOR_CYAN);
-		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
-		init_pair(BLACK_RED,     COLOR_BLACK,   COLOR_RED);
-		init_pair(BLACK_BLUE,    COLOR_BLACK,   COLOR_BLUE);
-		init_pair(BLACK_MAGENTA, COLOR_BLACK,   COLOR_MAGENTA);
-		init_pair(BLACK_YELLOW,  COLOR_BLACK,   COLOR_YELLOW);
-		init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
-		init_pair(WHITE_BLACK,   COLOR_WHITE,   COLOR_BLACK);
-		init_pair(WHITE_GREEN,   COLOR_WHITE,   COLOR_GREEN);
-		init_pair(WHITE_CYAN,    COLOR_WHITE,   COLOR_CYAN);
-		init_pair(WHITE_WHITE,   COLOR_WHITE,   COLOR_WHITE);
-		init_pair(WHITE_RED,     COLOR_WHITE,   COLOR_RED);
-		init_pair(WHITE_BLUE,    COLOR_WHITE,   COLOR_BLUE);
-		init_pair(WHITE_MAGENTA, COLOR_WHITE,   COLOR_MAGENTA);
-		init_pair(WHITE_YELLOW,  COLOR_WHITE,   COLOR_YELLOW);
-		init_pair(WHITE_WHITE,   COLOR_WHITE,   COLOR_WHITE);
+
+		/* This is a big hack to initialize all possible colors
+		 * in ncurses. The thing is, all colors are between
+		 * COLOR_BLACK and COLOR_WHITE.
+		 * Since I've set a large number of enums covering
+		 * all possibilities, I can do it all in a for loop.
+		 * Check 'man init_pair' for more details.
+		 *
+		 * This was taken straight from <curses.h>
+		 *
+		 * #define COLOR_BLACK	 0
+		 * #define COLOR_RED	 1
+		 * #define COLOR_GREEN	 2
+		 * #define COLOR_YELLOW	 3
+		 * #define COLOR_BLUE	 4
+		 * #define COLOR_MAGENTA 5
+		 * #define COLOR_CYAN	 6
+		 * #define COLOR_WHITE	 7
+		 */
+		int i, j, k = 1;
+		for (i = COLOR_BLACK; i <= COLOR_WHITE; i++)
+		{
+			for (j = COLOR_BLACK; j <= COLOR_WHITE; j++)
+			{
+				init_pair(k, i, j);
+				k++;
+			}
+		}
 	}
 
 	/* Gets the current width and height */
@@ -88,7 +89,8 @@ int engine_screen_init(int width, int height)
 	{
 		engine_exit();
 
-#if OS_IS_WINDOWS /* for now i must keep this - windows doesnt handle stderr */
+/* for now i must keep this - windows doesnt handle stderr */
+#if OS_IS_WINDOWS
 		printf(
 #else
 		fprintf(stderr,
@@ -159,12 +161,16 @@ int engine_windows_init()
 		{
 			/* making the top line between hold and score windows */
 			mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 			mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
 #endif
 			mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 			/* making the bottom line between hold and score windows */
 			mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 			mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
 #endif
@@ -176,6 +182,8 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		window_color(w.win, BLACK_BLACK, true);
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
 #endif
@@ -210,12 +218,16 @@ int engine_windows_init()
 		window_fancy_borders(w.win);
 		/* making the top line between 1st next and the rest */
 		mvwaddch(w.win, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
 #endif
 		mvwaddch(w.win, 3, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 		/* making the bottom line between 1st next and the rest */
 		mvwaddch(w.win, 4, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w.win, 4, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
 #endif
@@ -226,6 +238,8 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		window_color(w.win, BLACK_BLACK, true);
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
 #endif
@@ -521,6 +535,8 @@ void engine_draw_next_pieces(game_s* g)
 	if (global.screen_fancy_borders)
 	{
 		mvwaddch(w, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, 8);
 #endif
@@ -529,6 +545,8 @@ void engine_draw_next_pieces(game_s* g)
 	else
 	{
 		window_color(w, BLACK_BLACK, true);
+
+/* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, '-', 8);
 #endif
@@ -832,9 +850,12 @@ void engine_draw_gameover(game_s* g)
 /** Gets a single keypress and them return to normal game. */
 void engine_wait_for_keypress()
 {
+
+/* windows doesnt recognize stdin */
 #if !OS_IS_WINDOWS
 	fflush(stdin); /* discard any characters pressed until now */
 #endif
+
 	nodelay(stdscr, FALSE);
 	getch();
 	nodelay(stdscr, TRUE);

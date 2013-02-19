@@ -24,9 +24,10 @@
 #include <stdbool.h>
 #include <time.h>
 
-#if !OS_IS_WINDOWS /* for now i must keep this - windows doesnt have getopt */
+/* for now i must keep this - windows doesnt have getopt */
+#if !OS_IS_WINDOWS
 	#include "arguments.h"
-#else
+#endif
 
 #include "engine.h"
 #include "block.h"

@@ -23,14 +23,18 @@
 #ifndef ENGINE_H_DEFINED
 #define ENGINE_H_DEFINED
 
-/** My little hack to make yetris work on windows.
- *  Watch out for this define - it makes things ugly */
+/** My little hack to make yetris work on Windows. Watch out for
+ *  parts where I use this define - it makes things ugly
+ */
 #define OS_IS_WINDOWS ((defined __WIN32__) && (!defined __CYGWIN__))
+
 
 #include <stdlib.h>
 #include <ncurses.h>
 #include "globals.h"
 
+
+/** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
 
 /** This holds the game keymap. They all need to be int because of ncurses */
@@ -53,18 +57,18 @@ typedef struct input_s
 /** Stores information about a ncurses' window */
 typedef struct window_s
 {
-	WINDOW* win;
-	int     x;
-	int     y;
-	int     width;
-	int     height;
+	WINDOW* win; /**< ncurses' internal representation of a screen */
+	short   x;
+	short   y;
+	short   width;
+	short   height;
 } window_s;
 
-/** Info about the console screen. Mostly ncurse' specific stuff */
+/** Info about the console screen. Mostly ncurses' specific stuff */
 typedef struct screen_s
 {
-	int width;
-	int height;
+	short width;
+	short height;
 	window_s main;
 	window_s leftmost;
 	window_s middle_left;
@@ -90,22 +94,22 @@ typedef struct engine_s
 /** Global engine structure */
 engine_s engine;
 
-/** Defining the game color pairs (background_foreground) -- arbitrary numbers */
-typedef enum { BLACK_WHITE = 1, WHITE_BLACK,
-                BLACK_CYAN,      CYAN_BLACK,
-                BLACK_BLUE,      BLUE_BLACK,
-                BLACK_RED,       RED_BLACK,
-                BLACK_YELLOW,    YELLOW_BLACK,
-                BLACK_MAGENTA,   MAGENTA_BLACK,
-                BLACK_GREEN,     GREEN_BLACK,
- 			    BLACK_BLACK,
-                WHITE_CYAN,
-                WHITE_BLUE,
-                WHITE_RED,
-                WHITE_YELLOW,
-                WHITE_MAGENTA,
-			    WHITE_GREEN,
-                WHITE_WHITE} color_e;
+/** Possible engine color pairs (FOREGROUND_BACKGROUND).
+ *  This defines all possible combinations of color pairs on ncurses.
+ *  Note that the order of definition is important, also the intial value
+ *  of 1.
+ */
+typedef enum
+{
+	BLACK_BLACK = 1, BLACK_RED,   BLACK_GREEN,   BLACK_YELLOW,   BLACK_BLUE,   BLACK_MAGENTA,   BLACK_CYAN,   BLACK_WHITE,
+	RED_BLACK,       RED_RED,     RED_GREEN,     RED_YELLOW,     RED_BLUE,     RED_MAGENTA,     RED_CYAN,     RED_WHITE,
+	GREEN_BLACK,     GREEN_RED,   GREEN_GREEN,   GREEN_YELLOW,   GREEN_BLUE,   GREEN_MAGENTA,   GREEN_CYAN,   GREEN_WHITE,
+	YELLOW_BLACK,    YELLOW_RED,  YELLOW_GREEN,  YELLOW_YELLOW,  YELLOW_BLUE,  YELLOW_MAGENTA,  YELLOW_CYAN,  YELLOW_WHITE,
+	BLUE_BLACK,      BLUE_RED,    BLUE_GREEN,    BLUE_YELLOW,    BLUE_BLUE,    BLUE_MAGENTA,    BLUE_CYAN,    BLUE_WHITE,
+	MAGENTA_BLACK,   MAGENTA_RED, MAGENTA_GREEN, MAGENTA_YELLOW, MAGENTA_BLUE, MAGENTA_MAGENTA, MAGENTA_CYAN, MAGENTA_WHITE,
+	CYAN_BLACK,      CYAN_RED,    CYAN_GREEN,    CYAN_YELLOW,    CYAN_BLUE,    CYAN_MAGENTA,    CYAN_CYAN,    CYAN_WHITE,
+	WHITE_BLACK,     WHITE_RED,   WHITE_GREEN,   WHITE_YELLOW,   WHITE_BLUE,   WHITE_MAGENTA,   WHITE_CYAN,  WHITE_WHITE
+} color_e;
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
