@@ -99,15 +99,15 @@ void game_ghost_update(game_s* g)
 	g->piece_ghost = g->piece_current;
 
 	if (!global.theme_ghost_has_colors)
-		g->piece_ghost.color = piece_get_color(PIECE_DUMMY);
+		g->piece_ghost.color = global.theme_ghost_color;
 	else
 		g->piece_ghost.color = piece_get_color(g->piece_current.type);
 
 	int i;
 	for (i = 0; i < 4; i++)
 	{
-		g->piece_ghost.block[i].type     = EMPTY;
-		g->piece_ghost.block[i].color    = g->piece_ghost.color;
+		g->piece_ghost.block[i].type  = EMPTY;
+		g->piece_ghost.block[i].color = g->piece_ghost.color;
 
 		/* custom theme defined by player */
 		if (global.theme_ghost[0] != '\0')

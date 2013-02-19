@@ -38,7 +38,7 @@ piece_s new_piece(piece_e type)
 	if (global.theme_piece_has_colors)
 		color = piece_get_color(type);
 	else
-		color = engine_get_color(WHITE_BLACK, false);
+		color = global.theme_piece_no_color;
 	p.color = color;
 
 	/* user specifies the piece appearance */
@@ -82,7 +82,7 @@ piece_s new_piece(piece_e type)
 
 				if (global.theme_show_pivot_block)
 					if (global_pieces[p.type][p.rotation][j][i] == 2)
-						p.block[k] = new_block(block_x, block_y, p.theme, engine_get_color(WHITE_WHITE, true));
+						p.block[k] = new_block(block_x, block_y, p.theme, engine_get_color(COLOR_WHITE, COLOR_WHITE, true));
 				k++;
 			}
 	return p;
@@ -113,7 +113,7 @@ void piece_rotate(piece_s* p, int rotation)
 
 				if (global.theme_show_pivot_block)
 					if (global_pieces[p->type][p->rotation][j][i] == 2)
-						p->block[k] = new_block(block_x, block_y, p->theme, engine_get_color(WHITE_WHITE, true));
+						p->block[k] = new_block(block_x, block_y, p->theme, engine_get_color(COLOR_WHITE, COLOR_WHITE, true));
 				k++;
 			}
 }
@@ -368,18 +368,18 @@ bool piece_is_valid(piece_s* p)
 /** Returns the color according to the piece type */
 int piece_get_color(piece_e type)
 {
-	int color;
 	switch(type)
 	{
-	case PIECE_S: color = engine_get_color(WHITE_GREEN,   false); break;
-	case PIECE_Z: color = engine_get_color(WHITE_RED,     false); break;
-	case PIECE_O: color = engine_get_color(WHITE_YELLOW,  true);  break;
-	case PIECE_I: color = engine_get_color(WHITE_CYAN,    true);  break;
-	case PIECE_L: color = engine_get_color(WHITE_YELLOW,  false); break;
-	case PIECE_J: color = engine_get_color(WHITE_BLUE,    false); break;
-	case PIECE_T: color = engine_get_color(WHITE_MAGENTA, false); break;
-	default:      color = engine_get_color(WHITE_BLACK,   false); break;
+	case PIECE_S: return global.theme_piece_S_color;  break;
+	case PIECE_Z: return global.theme_piece_Z_color;  break;
+	case PIECE_O: return global.theme_piece_O_color;  break;
+	case PIECE_I: return global.theme_piece_I_color;  break;
+	case PIECE_L: return global.theme_piece_L_color;  break;
+	case PIECE_J: return global.theme_piece_J_color;  break;
+	case PIECE_T: return global.theme_piece_T_color;  break;
+	default:      return global.theme_piece_no_color; break;
 	}
-	return color;
+	/* will never get here */
+	return 666;
 }
 

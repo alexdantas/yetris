@@ -42,7 +42,9 @@ bool config_file_exists(char* filename)
 }
 
 /** Reads the config file and stores It's contents in memory
- *  This is the main interface with the iniparser library
+ *  This is the main interface with the iniparser library.
+ *
+ *  Warning, macros ahead!
  */
 void config_parse(char* filename)
 {
@@ -227,6 +229,7 @@ void config_create_default(char* filename)
 		"locked_piece_color = false\n"
 		"\n";
 
+	/* well, that was easy, wasn't it? */
 	fprintf(file, text);
 }
 

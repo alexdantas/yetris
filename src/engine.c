@@ -58,7 +58,7 @@ int engine_screen_init(int width, int height)
 		 * all possibilities, I can do it all in a for loop.
 		 * Check 'man init_pair' for more details.
 		 *
-		 * This was taken straight from <curses.h>
+		 * This was taken straight from <curses.h>:
 		 *
 		 * #define COLOR_BLACK	 0
 		 * #define COLOR_RED	 1
@@ -133,7 +133,6 @@ int engine_windows_init()
 	w.x      = main_x;
 	w.y      = main_y;
 	w.win    = newwin(w.height, w.width, w.y, w.x);
-	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_show_outer_border)
 	{
 		if (global.screen_fancy_borders)
@@ -181,7 +180,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		window_color(w.win, BLACK_BLACK, true);
+		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 
 /* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
@@ -198,7 +197,6 @@ int engine_windows_init()
 	w.x      = s->leftmost.x + s->leftmost.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
@@ -212,7 +210,6 @@ int engine_windows_init()
 	w.x      = s->middle_left.x + s->middle_left.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
 	{
 		window_fancy_borders(w.win);
@@ -237,7 +234,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		window_color(w.win, BLACK_BLACK, true);
+		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 
 /* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
@@ -254,7 +251,6 @@ int engine_windows_init()
 	w.x      = s->middle_right.x + s->middle_right.width + 1;
 	w.y      = 1;
 	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	window_color(w.win, BLACK_BLACK, true);
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
@@ -497,7 +493,7 @@ void engine_draw_pause()
 {
 	window_s* w = &(engine.screen.board);
 
-	window_color(w->win, BLUE_BLACK, false);
+	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
 	wrefresh(w->win);
 }
@@ -544,7 +540,7 @@ void engine_draw_next_pieces(game_s* g)
 	}
 	else
 	{
-		window_color(w, BLACK_BLACK, true);
+		wattron(w, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 
 /* dang, PDCurses (windows) doesnt have mvwhline */
 #if !OS_IS_WINDOWS
@@ -552,7 +548,7 @@ void engine_draw_next_pieces(game_s* g)
 #endif
 	}
 
-	window_color(w, BLUE_BLACK, false);
+	wattron(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w, 0, 1, "Next");
 	wrefresh(w);
 }
@@ -563,7 +559,7 @@ void engine_draw_hold(game_s* g)
 
 	window_s w = engine.screen.leftmost;
 
-	window_color(w.win, BLUE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 1, "Hold");
 	wrefresh(w.win);
 
@@ -584,9 +580,9 @@ void engine_draw_score(game_s* g)
 	if ((g->is_combo) && (g->combo_count > 0))
 	{
 		if (g->combo_count > 3)
-			window_color(w.win, RED_BLACK, false);
+			wattron(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, false));
 		else
-			window_color(w.win, YELLOW_BLACK, false);
+			wattron(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, false));
 
 		mvwaddstr(w.win, 0, 2, "Combo!");
 		mvwprintw(w.win, 0, 8, "x%d", g->combo_count);
@@ -596,9 +592,9 @@ void engine_draw_score(game_s* g)
 	if (g->back_to_back_count > 0)
 	{
 		if (g->back_to_back_lines < 4)
-			window_color(w.win, RED_BLACK, true);
+			wattron(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, true));
 		else
-			window_color(w.win, YELLOW_BLACK, true);
+			wattron(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, true));
 
 		mvwaddstr(w.win, 1, 0, "Back-to-back");
 		switch (g->back_to_back_lines)
@@ -611,13 +607,13 @@ void engine_draw_score(game_s* g)
 			mvwprintw(w.win, 2, 8, "x%d", g->back_to_back_count);
 	}
 
-	window_color(w.win, BLUE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 3,  1, "High Score");
 	mvwaddstr(w.win, 6,  1, "Score");
 	mvwaddstr(w.win, 9, 1, "Lines");
 	mvwaddstr(w.win, 12, 1, "Level");
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 4,  1, "%10d", g->hscore);
 	mvwprintw(w.win, 7,  1, "%10d", g->score);
 	mvwprintw(w.win, 10, 1, "%10d", g->lines);
@@ -639,7 +635,7 @@ void engine_draw_statistics(game_s* g)
 	int k;
 	int x_offset = 3;
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 3, 1, "%10d x", g->I_count);
 	piece_s  p = new_piece(PIECE_I);
 	p.x = x_offset;
@@ -651,7 +647,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 5, 1, "%10d x", g->T_count);
 	p = new_piece(PIECE_T);
 	p.x = x_offset;
@@ -663,7 +659,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 7, 1, "%10d x", g->L_count);
 	p = new_piece(PIECE_L);
 	p.x = x_offset;
@@ -675,7 +671,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 9, 1, "%10d x", g->J_count);
 	p = new_piece(PIECE_J);
 	p.x = x_offset;
@@ -687,7 +683,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 11, 1, "%10d x", g->S_count);
 	p = new_piece(PIECE_S);
 	p.x = x_offset;
@@ -699,7 +695,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 13, 1, "%10d x", g->Z_count);
 	p = new_piece(PIECE_Z);
 	p.x = x_offset;
@@ -711,7 +707,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 15, 1, "%10d x", g->O_count);
 	p = new_piece(PIECE_O);
 	p.x = x_offset - 1;
@@ -723,9 +719,8 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 16, 1, "%10d   Total", g->piece_count);
-//	wrefresh(w.win);
 }
 
 /** Draws everything that's on the info window (the rightmost one) */
@@ -738,24 +733,20 @@ void engine_draw_info(game_s* g)
 	if (global.game_has_statistics)
 		engine_draw_statistics(g);
 
-	window_color(w.win, BLUE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
-
-	window_color(w.win, BLUE_BLACK, true);
 	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");
-
-	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, w.height - 1, 0, "Timer:");
 
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	if (g->gameplay_h) /* Wow.. will someone really play this game for hours? */
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
 	else
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
 
-	window_color(w.win, BLUE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, w.height - 2, 0, "Speed:");
-	window_color(w.win, WHITE_BLACK, false);
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
 	/** DEBUG INFO */
@@ -771,7 +762,7 @@ void engine_draw_info(game_s* g)
 	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
 	time(&cur_time);
-	window_color(w.win, BLACK_BLACK, true);
+	wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	wrefresh(w.win);
@@ -780,14 +771,21 @@ void engine_draw_info(game_s* g)
 /** Returns the color pair associated with #color.
  *  If #is_bold is true, will make the color brighter.
  */
-int engine_get_color(color_e color, bool is_bold)
+//int engine_get_color(color_e color, bool is_bold)
+int engine_get_color(short foreground, short background, bool is_bold)
 {
-	int col = COLOR_PAIR(color);
+	color_e c = (foreground * 8) + (background + 1);
 	if (is_bold)
-		col = col | A_BOLD;
-		/* TRY TO MAKE THIS WORK */
+		return (COLOR_PAIR(c) | A_BOLD);
+	else
+		return COLOR_PAIR(c);
 
-	return col;
+	/* int col = COLOR_PAIR(color); */
+	/* if (is_bold) */
+	/* 	col = col | A_BOLD; */
+	/* 	/\* TRY TO MAKE THIS WORK *\/ */
+
+	/* return col; */
 }
 
 /** Calls all drawing routines in order */
@@ -834,7 +832,7 @@ void engine_draw_gameover(game_s* g)
 		{
 			if (b->block[i][j].type != EMPTY)
 			{
-				b->block[i][j].color = engine_get_color(BLACK_WHITE, false);
+				b->block[i][j].color = engine_get_color(COLOR_BLACK, COLOR_WHITE, false);
 				engine_draw_block(&(b->block[i][j]), w);
 			}
 		}
@@ -886,12 +884,12 @@ void engine_wait_for_keypress()
  * (invisible to the external world)
  * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/** Turns on color #color on window #win. */
-void window_color(WINDOW* win, int color, bool is_bold)
-{
-	if (global.screen_use_colors)
-		wattrset(win, engine_get_color(color, is_bold));
-}
+/* /\** Turns on color #color on window #win. *\/ */
+/* void window_color(WINDOW* win, int color, bool is_bold) */
+/* { */
+/* 	if (global.screen_use_colors) */
+/* 		wattrset(win, engine_get_color(color, is_bold)); */
+/* } */
 
 /** Draws fancy borders on window #win */
 void window_fancy_borders(WINDOW* win)
@@ -909,6 +907,7 @@ void window_fancy_borders(WINDOW* win)
 /** Draws normal borders on window #win */
 void window_normal_borders(WINDOW* win)
 {
+	wattron(win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 

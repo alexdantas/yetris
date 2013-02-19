@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include "globals.h"
+#include "engine.h"
 
 globals_s new_globals()
 {
@@ -50,6 +51,16 @@ globals_s new_globals()
 	g.theme_ghost_has_colors = false;
 	g.theme_show_pivot_block = false;
 	g.theme_lock_piece_color = false;
+
+	g.theme_piece_no_color = engine_get_color(COLOR_BLACK, COLOR_WHITE,   false);
+	g.theme_ghost_color    = engine_get_color(COLOR_WHITE, COLOR_BLACK,   true);
+	g.theme_piece_S_color  = engine_get_color(COLOR_WHITE, COLOR_GREEN,   false);
+	g.theme_piece_Z_color  = engine_get_color(COLOR_WHITE, COLOR_RED,     false);
+	g.theme_piece_O_color  = engine_get_color(COLOR_WHITE, COLOR_YELLOW,  false);
+	g.theme_piece_I_color  = engine_get_color(COLOR_WHITE, COLOR_CYAN,    true);
+	g.theme_piece_L_color  = engine_get_color(COLOR_WHITE, COLOR_YELLOW,  false);
+	g.theme_piece_J_color  = engine_get_color(COLOR_WHITE, COLOR_BLUE,    false);
+	g.theme_piece_T_color  = engine_get_color(COLOR_WHITE, COLOR_MAGENTA, false);
 
 	g.config_filename = NULL;
 

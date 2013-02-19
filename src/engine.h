@@ -98,6 +98,12 @@ engine_s engine;
  *  This defines all possible combinations of color pairs on ncurses.
  *  Note that the order of definition is important, also the intial value
  *  of 1.
+ *
+ *  To access a specific color pair, use this formula:
+ *    pair(n) = (foreground * 8) + background
+ *
+ *  Just like
+ *    pair    = (COLOR_RED * 8) + COLOR_BLUE
  */
 typedef enum
 {
@@ -133,7 +139,7 @@ void engine_draw_board(board_s* b);
 void engine_draw_hold(game_s* g);
 void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
-int engine_get_color(color_e color, bool is_bold);
+int engine_get_color(short foreground, short background, bool is_bold);
 void engine_draw_help();
 void engine_wait_for_keypress();
 void engine_draw_gameover(game_s* g);

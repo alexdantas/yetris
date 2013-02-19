@@ -48,7 +48,7 @@ void board_lock_piece(board_s* b, piece_s* p)
 		int block_y = p->block[k].y;
 		b->block[block_x][block_y] = p->block[k];
 		if (global.theme_lock_piece_color)
-			b->block[block_x][block_y].color = engine_get_color(WHITE_WHITE, false);
+			b->block[block_x][block_y].color = engine_get_color(COLOR_WHITE, COLOR_WHITE, false);
 	}
 }
 
@@ -83,7 +83,7 @@ void board_delete_lines(board_s* b, bool lines[])
 		{
 			b->block[i][k].theme[0] = clear1;
 			b->block[i][k].theme[1] = clear2;
-			b->block[i][k].color    = engine_get_color(WHITE_BLACK, true);
+			b->block[i][k].color    = engine_get_color(COLOR_WHITE, COLOR_BLACK, true);
 		}
 	}
 
