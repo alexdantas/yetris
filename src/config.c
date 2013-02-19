@@ -16,13 +16,11 @@
 
 
 /** Deals with the config file, storing each option in memory.
- *  @see globals.h
+ *   @see globals.h
  */
 void config_handle()
 {
-//	if (global.config_filename != NULL)
-//		config_parse(global.config_filename)
-//	else
+	// try to deal with custom config name specified by the player
 	if (!config_file_exists(DEFAULT_CONFIG_FILE))
 	{
 		config_create_default(DEFAULT_CONFIG_FILE);
@@ -48,54 +46,75 @@ bool config_file_exists(char* filename)
  */
 void config_parse(char* filename)
 {
-	dictionary* ini;
-	int n;
+	globals_s*  g = &global; /* simple alias */
 
-	ini = iniparser_load(filename);
-	if (!ini)
-		return; /* couldnt parse */
+	/* Actually starting the parser */
+	dictionary* ini = iniparser_load(filename);
+	if (!ini) return; /* couldn't parse */
 
-	/* defining some boolean flags */
-	global.screen_use_colors          = iniparser_getboolean(ini, "interface:colors", -1);
-	global.screen_center_vertically   = iniparser_getboolean(ini, "interface:center_vertical", -1);
-	global.screen_center_horizontally = iniparser_getboolean(ini, "interface:center_horizontal", -1);
-	global.screen_fancy_borders       = iniparser_getboolean(ini, "interface:fancy_borders", -1);
-	global.screen_show_outer_border   = iniparser_getboolean(ini, "interface:outer_border", -1);
-	global.game_has_statistics        = iniparser_getboolean(ini, "interface:statistics", -1);
+/* This macro sets the boolean variable ONLY if it's valid (0 or 1).
+ * It'll look on the config file and search for the config string.
+ * I know it's kinda ugly, but it avoid code repetition.
+ *
+ * Note that it depends on the 'bool b' variable!
+ */
+	bool b;
+#define set_bool_if_valid(var, string)              \
+	{                                               \
+		b = iniparser_getboolean(ini, string, -1);	\
+		if ((b != -1) && ((b == 0) || (b == 1)))	\
+			var = b;                                \
+	}
+	set_bool_if_valid(g->screen_use_colors,          "interface:colors");
+	set_bool_if_valid(g->screen_center_vertically,   "interface:center_vertical");
+	set_bool_if_valid(g->screen_center_horizontally, "interface:center_horizontal");
+	set_bool_if_valid(g->screen_fancy_borders,       "interface:fancy_borders");
+	set_bool_if_valid(g->screen_show_outer_border,   "interface:outer_border");
+	set_bool_if_valid(g->game_has_statistics,        "interface:statistics");
 
-	global.game_can_hold  = iniparser_getboolean(ini, "gameplay:hold",  -1);
-	global.game_has_ghost = iniparser_getboolean(ini, "gameplay:ghost", -1);
+	set_bool_if_valid(g->game_can_hold,  "gameplay:hold");
+	set_bool_if_valid(g->game_has_ghost, "gameplay:ghost");
 
-	n = iniparser_getint(ini, "gameplay:next", -1);
-	if ((n >= 0) && (n <= NEXT_PIECES_NO))
-		global.game_next_no = n;
+	set_bool_if_valid(g->theme_piece_has_colors, "theming:piece_has_color");
+	set_bool_if_valid(g->theme_ghost_has_colors, "theming:ghost_has_color");
+	set_bool_if_valid(g->theme_show_pivot_block, "theming:show_pivot");
+	set_bool_if_valid(g->theme_lock_piece_color, "theming:locked_piece_color");
 
-	n = iniparser_getint(ini, "gameplay:random", -1);
-	if ((n >= 1) && (n <= 2))
-		global.game_random_algorithm = n;
+/* This other macro sets the integer variable ONLY if
+ * specified condition checks.
+ * It'll look on the config file and search for the config string.
+ * This one is even uglier than the boolean one.
+ *
+ * Note that it depends on the 'int i' variable!
+ */
+	int i;
+#define set_int_if(condition, var, string)     \
+	{                                          \
+		i = iniparser_getint(ini, string, -1); \
+		if (condition)                         \
+			var = i;                           \
+	}
+	set_int_if((i >= 0) && (i <= NEXT_PIECES_NO), g->game_next_no, "gameplay:next");
+	set_int_if((i >= 1) && (i <= 2), g->game_random_algorithm, "gameplay:random");
 
-	global.theme_piece_has_colors = iniparser_getboolean(ini, "theming:piece_has_color",  -1);
-	global.theme_ghost_has_colors = iniparser_getboolean(ini, "theming:ghost_has_color",  -1);
-	global.theme_show_pivot_block = iniparser_getboolean(ini, "theming:show_pivot", -1);
-	global.theme_lock_piece_color = iniparser_getboolean(ini, "theming:locked_piece_color", -1);
-
-	/* copying custom piece theme */
-	char piece_theme[3] = {};
-	strncpy(piece_theme, iniparser_getstring(ini, "theming:piece", NULL), 3);
-	if (piece_theme[0] != '\0')
-		strncpy(global.theme_piece, piece_theme, 2);
-
-	/* copying custom ghost theme */
-	char ghost_theme[3] = {};
-	strncpy(ghost_theme, iniparser_getstring(ini, "theming:ghost", NULL), 3);
-	if (ghost_theme[0] != '\0')
-		strncpy(global.theme_ghost, ghost_theme, 2);
-
-	/* copying custom clear line theme */
-	char clear_theme[3] = {};
-	strncpy(clear_theme, iniparser_getstring(ini, "theming:clear_line", NULL), 3);
-	if (clear_theme[0] != '\0')
-		strncpy(global.theme_clear_line, clear_theme, 2);
+/* Finally, this one's way more specific than the others.
+ * It only works to get the piece's theme, which consists of a
+ * 2-char string and a trailing null byte.
+ * So, if I try to get a string from the config and it's null,
+ * I won't add to the theme. Just like that.
+ *
+ * I dont even have to say that 'char s[3]' is essential.
+ */
+	char s[3] = {};
+#define set_3_char_string_if_not_null(dest, config_string)            \
+	{                                                                 \
+		strncpy(s, iniparser_getstring(ini, config_string, NULL), 3); \
+		if (s[0] != '\0')                                             \
+			strncpy(dest, s, 2);                                      \
+	}
+	set_3_char_string_if_not_null(g->theme_piece, "theming:piece");
+	set_3_char_string_if_not_null(g->theme_ghost, "theming:ghost");
+	set_3_char_string_if_not_null(g->theme_clear_line, "theming:clear_line");
 
 	//attempt to parse colors
 /* 	/\* getting colors *\/ */
@@ -107,7 +126,7 @@ void config_parse(char* filename)
 /* 	color = iniparser_getint(ini, "theming:color_titles_fg", -1); */
 /* 	if (is_valid(color)) global */
 
-
+	/* finishing parsing */
 	iniparser_freedict(ini);
 }
 
