@@ -13,7 +13,23 @@
 #include <string.h>
 #include "config.h"
 #include "globals.h"
+#include "engine.h"
 
+int get_color_from_string(char* string)
+{
+	if (!string) return -1;
+
+	if (strcasecmp(string, "black")   == 0) return COLOR_BLACK;
+	if (strcasecmp(string, "red")     == 0) return COLOR_RED;
+	if (strcasecmp(string, "green")   == 0) return COLOR_GREEN;
+	if (strcasecmp(string, "yellow")  == 0) return COLOR_YELLOW;
+	if (strcasecmp(string, "blue")    == 0) return COLOR_BLUE;
+	if (strcasecmp(string, "magenta") == 0) return COLOR_MAGENTA;
+	if (strcasecmp(string, "cyan")    == 0) return COLOR_CYAN;
+	if (strcasecmp(string, "white")   == 0) return COLOR_WHITE;
+
+	return -1;
+}
 
 /** Deals with the config file, storing each option in memory.
  *   @see globals.h
@@ -128,6 +144,26 @@ void config_parse(char* filename)
 /* 	color = iniparser_getint(ini, "theming:color_titles_fg", -1); */
 /* 	if (is_valid(color)) global */
 
+	int fg , bg;
+
+#define get_colors_if_valid(var, string_fg, string_bg, default_fg, default_bg) \
+{                                                                              \
+	fg = default_fg;                                                           \
+	bg = default_bg;                                                           \
+	fg = get_color_from_string(iniparser_getstring(ini, string_fg, NULL));     \
+	bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL));     \
+	                                                                           \
+		var = engine_get_color(fg, bg, false);                                 \
+}
+	get_colors_if_valid(g->theme_ghost_color,   "theming:ghost_fg",   "theming:ghost_bg",   COLOR_WHITE, COLOR_BLACK)
+	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED)
+	get_colors_if_valid(g->theme_piece_Z_color, "theming:piece_Z_fg", "theming:piece_Z_bg", COLOR_WHITE, COLOR_GREEN)
+	get_colors_if_valid(g->theme_piece_O_color, "theming:piece_O_fg", "theming:piece_O_bg", COLOR_WHITE, COLOR_YELLOW)
+	get_colors_if_valid(g->theme_piece_I_color, "theming:piece_I_fg", "theming:piece_I_bg", COLOR_WHITE, COLOR_CYAN)
+	get_colors_if_valid(g->theme_piece_L_color, "theming:piece_L_fg", "theming:piece_L_bg", COLOR_WHITE, COLOR_YELLOW)
+	get_colors_if_valid(g->theme_piece_J_color, "theming:piece_J_fg", "theming:piece_J_bg", COLOR_WHITE, COLOR_BLUE)
+	get_colors_if_valid(g->theme_piece_T_color, "theming:piece_T_fg", "theming:piece_T_bg", COLOR_WHITE, COLOR_MAGENTA)
+
 	/* finishing parsing */
 	iniparser_freedict(ini);
 }
@@ -232,4 +268,5 @@ void config_create_default(char* filename)
 	/* well, that was easy, wasn't it? */
 	fprintf(file, text);
 }
+
 
