@@ -183,11 +183,11 @@ void config_create_default(char* filename)
 		"\n"
 		"# Show/hide the pivot block (the center of the piece's rotation axis)\n"
 		"# default: false\n"
-		"show_pivot = true\n"
+		"show_pivot = false\n"
 		"\n"
 		"# When the piece locks on the board, will it have a custom color?\n"
 		"# default: false\n"
-		"locked_piece_color = true\n"
+		"locked_piece_color = false\n"
 		"\n";
 
 	fprintf(file, text);

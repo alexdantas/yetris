@@ -23,6 +23,10 @@
 #ifndef ENGINE_H_DEFINED
 #define ENGINE_H_DEFINED
 
+/** My little hack to make yetris work on windows.
+ *  Watch out for this define - it makes things ugly */
+#define OS_IS_WINDOWS ((defined __WIN32__) && (!defined __CYGWIN__))
+
 #include <stdlib.h>
 #include <ncurses.h>
 #include "globals.h"

@@ -107,7 +107,7 @@ endif
 
 #############################################################################
 # Make targets
-all: dirs ini $(EXE)
+all: dirs $(EXE)
 	@echo "* Build successful!"
 
 install: all
@@ -180,7 +180,7 @@ docclean:
 	@echo "* Removing documentation..."
 	-$(MUTE)rm $(VTAG) -rf $(LDOC)/html
 
-.PHONY: clean doc docclean uninstall dirs ini
+.PHONY: clean doc docclean uninstall dirs
 
 #------------------------------------------------------------------------------
 # iniparser stuff

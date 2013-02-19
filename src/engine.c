@@ -87,7 +87,13 @@ int engine_screen_init(int width, int height)
 	    (current_height < engine.screen.height))
 	{
 		engine_exit();
-		fprintf(stderr, "Error! Your console screen is smaller than %dx%d\n"
+
+#if OS_IS_WINDOWS /* for now i must keep this - windows doesnt handle stderr */
+		printf(
+#else
+		fprintf(stderr,
+#endif
+		                "Error! Your console screen is smaller than %dx%d\n"
 		                "Please resize your window and try again\n",
 		                engine.screen.width, engine.screen.height);
 
@@ -153,11 +159,15 @@ int engine_windows_init()
 		{
 			/* making the top line between hold and score windows */
 			mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+#if !OS_IS_WINDOWS
 			mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+#endif
 			mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 			/* making the bottom line between hold and score windows */
 			mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+#if !OS_IS_WINDOWS
 			mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+#endif
 			mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 		}
 
@@ -166,7 +176,9 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		window_color(w.win, BLACK_BLACK, true);
+#if !OS_IS_WINDOWS
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
+#endif
 	}
 
 	wrefresh(w.win);
@@ -198,11 +210,15 @@ int engine_windows_init()
 		window_fancy_borders(w.win);
 		/* making the top line between 1st next and the rest */
 		mvwaddch(w.win, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+#if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
+#endif
 		mvwaddch(w.win, 3, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 		/* making the bottom line between 1st next and the rest */
 		mvwaddch(w.win, 4, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+#if !OS_IS_WINDOWS
 		mvwhline(w.win, 4, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
+#endif
 		mvwaddch(w.win, 4, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 
 	}
@@ -210,7 +226,9 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		window_color(w.win, BLACK_BLACK, true);
+#if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
+#endif
 
 	}
 	wrefresh(w.win);
@@ -320,8 +338,7 @@ int engine_windows_init()
  *  There's no need to call 'engine_exit' */
 bool engine_init()
 {
-	/* Block signals while initializing ncurses, otherwise the
-	 * console will be screwed up */
+	/* signals during initialization */
 	block_signals();
 
 	engine_screen_init(80, 24);
@@ -332,18 +349,24 @@ bool engine_init()
 	return true;
 }
 
+/** This function blocks any signals the player might send during
+ *  the game's initialization.
+ *  That's because ncurses leaves the terminal in a broken state.
+ */
 bool block_signals()
 {
 //	sigprocmask(SIG_BLOCK);
 	return true;
 }
 
+/** Now the player's allowed to interrupt the program it he wishes so. */
 bool restore_signals()
 {
 //	sigprocmask(SIG_SETMASK);
 	return true;
 }
 
+/** This stops ncurses on a sweet, gentle way. */
 void engine_exit()
 {
 	erase();
@@ -421,7 +444,7 @@ int engine_get_input(int delay_ms)
 	return c;
 }
 
-/* wont call refresh */
+/** Draws a single block */
 void engine_draw_block(block_s* b, WINDOW* w)
 {
 	if (global.screen_use_colors)
@@ -432,6 +455,7 @@ void engine_draw_block(block_s* b, WINDOW* w)
 	mvwaddstr(w, b->y, (b->x * 2), b->theme);
 }
 
+/** Draws a whole piece, calling #engine_draw_block */
 void engine_draw_piece(piece_s* p, WINDOW* w)
 {
 	if (!piece_is_valid(p))
@@ -442,6 +466,7 @@ void engine_draw_piece(piece_s* p, WINDOW* w)
 		engine_draw_block(&(p->block[k]), w);
 }
 
+/** Draws the board #b, calling #engine_draw_block */
 void engine_draw_board(board_s* b)
 {
 	WINDOW* w = engine.screen.board.win;
@@ -453,6 +478,7 @@ void engine_draw_board(board_s* b)
 				engine_draw_block(&(b->block[i][j]), w);
 }
 
+/** Prints 'pause' on the board */
 void engine_draw_pause()
 {
 	window_s* w = &(engine.screen.board);
@@ -495,13 +521,17 @@ void engine_draw_next_pieces(game_s* g)
 	if (global.screen_fancy_borders)
 	{
 		mvwaddch(w, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+#if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, 8);
+#endif
 		mvwaddch(w, 3, 9, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 	}
 	else
 	{
 		window_color(w, BLACK_BLACK, true);
+#if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, '-', 8);
+#endif
 	}
 
 	window_color(w, BLUE_BLACK, false);
@@ -514,6 +544,7 @@ void engine_draw_hold(game_s* g)
 	piece_s  p = g->piece_hold;
 
 	window_s w = engine.screen.leftmost;
+
 	window_color(w.win, BLUE_BLACK, false);
 	mvwaddstr(w.win, 0, 1, "Hold");
 	wrefresh(w.win);
@@ -679,6 +710,7 @@ void engine_draw_statistics(game_s* g)
 //	wrefresh(w.win);
 }
 
+/** Draws everything that's on the info window (the rightmost one) */
 void engine_draw_info(game_s* g)
 {
 	window_s w = engine.screen.info;
@@ -800,7 +832,9 @@ void engine_draw_gameover(game_s* g)
 /** Gets a single keypress and them return to normal game. */
 void engine_wait_for_keypress()
 {
+#if !OS_IS_WINDOWS
 	fflush(stdin); /* discard any characters pressed until now */
+#endif
 	nodelay(stdscr, FALSE);
 	getch();
 	nodelay(stdscr, TRUE);
@@ -826,9 +860,10 @@ void engine_wait_for_keypress()
 /* 	wrefresh(s->main.win); */
 /* } */
 
-/* ENGINE-SPECIFIC FUNCTIONS
+/* * * * * * * * * * * * * * * * * * * * * * * * * *
+ * ENGINE-SPECIFIC FUNCTIONS
  * (invisible to the external world)
- */
+ * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /** Turns on color #color on window #win. */
 void window_color(WINDOW* win, int color, bool is_bold)
@@ -837,6 +872,7 @@ void window_color(WINDOW* win, int color, bool is_bold)
 		wattrset(win, engine_get_color(color, is_bold));
 }
 
+/** Draws fancy borders on window #win */
 void window_fancy_borders(WINDOW* win)
 {
 	wborder(win, ACS_VLINE|COLOR_PAIR(WHITE_BLACK),
@@ -849,6 +885,7 @@ void window_fancy_borders(WINDOW* win)
 			ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 }
 
+/** Draws normal borders on window #win */
 void window_normal_borders(WINDOW* win)
 {
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
