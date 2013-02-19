@@ -90,6 +90,17 @@ void config_parse(char* filename)
 	if (clear_theme[0] != '\0')
 		strncpy(global.theme_clear_line, clear_theme, 2);
 
+	//attempt to parse colors
+/* 	/\* getting colors *\/ */
+/* 	int color; */
+/* #define apply_if_valid(string, ok) { (color = iniparser_getint(ini, string, -1)        \ */
+/* 		                             if ((color >= 0) && (color < 8)) { ok = color } } */
+
+/* 	apply_if_valid("theming:color_titles_fg", global. */
+/* 	color = iniparser_getint(ini, "theming:color_titles_fg", -1); */
+/* 	if (is_valid(color)) global */
+
+
 	iniparser_freedict(ini);
 }
 

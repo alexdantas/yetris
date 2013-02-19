@@ -43,7 +43,11 @@ int main(int argc, char* argv[])
 	global = new_globals();
 
 	config_handle();
+
+/* Windows doesnt support getopt_long(). Ill need to work around this somehow */
+#if !OS_IS_WINDOWS
 	args_handle(argc, argv);
+#endif
 
 	engine_init();
 	atexit(engine_exit); /* no need to call it when quitting */
