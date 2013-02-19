@@ -49,6 +49,7 @@ bool config_file_exists(char* filename)
 void config_parse(char* filename)
 {
 	dictionary* ini;
+	int n;
 
 	ini = iniparser_load(filename);
 	if (!ini)
@@ -64,8 +65,14 @@ void config_parse(char* filename)
 
 	global.game_can_hold  = iniparser_getboolean(ini, "gameplay:hold",  -1);
 	global.game_has_ghost = iniparser_getboolean(ini, "gameplay:ghost", -1);
-	global.game_next_no   = iniparser_getint(ini,     "gameplay:next",  -1);
-	global.game_random_algorithm = iniparser_getint(ini, "gameplay:random",  -1);
+
+	n = iniparser_getint(ini, "gameplay:next", -1);
+	if ((n >= 0) && (n <= NEXT_PIECES_NO))
+		global.game_next_no = n;
+
+	n = iniparser_getint(ini, "gameplay:random", -1);
+	if ((n >= 1) && (n <= 2))
+		global.game_random_algorithm = n;
 
 	global.theme_piece_has_colors = iniparser_getboolean(ini, "theming:piece_has_color",  -1);
 	global.theme_ghost_has_colors = iniparser_getboolean(ini, "theming:ghost_has_color",  -1);
