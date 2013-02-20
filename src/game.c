@@ -28,7 +28,7 @@
 #include "board.h"
 #include "engine.h"
 #include "globals.h"
-
+			#include "config.h"
 /** Initializes and returns a new game structure with all it's dependencies */
 game_s new_game()
 {
@@ -505,6 +505,11 @@ void game_handle_input(game_s* g, int input)
 		{
 			g->gameplay_m++;
 		}
+		else if (input == KEY_F(5))
+		{
+			config_handle();
+		}
+		/* END debug keys */
 		break;
 
 	case PAUSED:

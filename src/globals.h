@@ -60,11 +60,8 @@ typedef struct globals_s
 	bool game_has_statistics;
 	char game_random_algorithm;
 
-	char theme_piece[3];
-	char theme_ghost[3];
 	bool theme_piece_has_colors;
 	bool theme_ghost_has_colors;
-	char theme_clear_line[3];
 	bool theme_show_pivot_block;
 	bool theme_lock_piece_color;
 	int  theme_piece_no_color;
@@ -77,6 +74,9 @@ typedef struct globals_s
 	int  theme_piece_J_color;
 	int  theme_piece_T_color;
 
+	char theme_piece[2];
+	char theme_ghost[2];
+	char theme_clear_line[2];
 	char theme_piece_S[2];
 	char theme_piece_Z[2];
 	char theme_piece_O[2];

@@ -82,6 +82,7 @@ void config_parse(char* filename)
 	bool b;
 #define set_bool_if_valid(var, string)              \
 	{                                               \
+		b = -1;                                     \
 		b = iniparser_getboolean(ini, string, -1);  \
 		if ((b != -1) && ((b == 0) || (b == 1)))    \
 			var = b;                                \
@@ -112,6 +113,7 @@ void config_parse(char* filename)
 	int i;
 #define set_int_if(condition, var, string)     \
 	{                                          \
+		i = 0;                                 \
 		i = iniparser_getint(ini, string, -1); \
 		if (condition)                         \
 			var = i;                           \
@@ -128,9 +130,10 @@ void config_parse(char* filename)
  *
  * I dont even have to say that 'char* s' is essential.
  */
-	char* s = NULL;
-#define set_theme_if_not_null(dest, config_string)         \
+	char* s;
+#define set_theme_if_valid(dest, config_string)            \
 	{                                                      \
+		s = NULL;                                          \
 		s = iniparser_getstring(ini, config_string, NULL); \
 		if ((s) && (s[0] != '\0'))                         \
 		{                                                  \
@@ -138,9 +141,9 @@ void config_parse(char* filename)
 			dest[1] = s[1];                                \
 		}                                                  \
 	}
-	set_theme_if_not_null(g->theme_piece, "theming:piece");
-	set_theme_if_not_null(g->theme_ghost, "theming:ghost");
-	set_theme_if_not_null(g->theme_clear_line, "theming:clear_line");
+	set_theme_if_valid(g->theme_piece, "theming:piece");
+	set_theme_if_valid(g->theme_ghost, "theming:ghost");
+	set_theme_if_valid(g->theme_clear_line, "theming:clear_line");
 
 	/* I'm doing this so if the player doesn't specify
 	 * a piece's theme, it'll fallback to the one
@@ -162,13 +165,13 @@ void config_parse(char* filename)
 	}
 
 	/* Finally I'll get the piece-specific theme from the config */
-	set_theme_if_not_null(g->theme_piece_S,    "theming:piece_S");
-	set_theme_if_not_null(g->theme_piece_Z,    "theming:piece_Z");
-	set_theme_if_not_null(g->theme_piece_O,    "theming:piece_O");
-	set_theme_if_not_null(g->theme_piece_I,    "theming:piece_I");
-	set_theme_if_not_null(g->theme_piece_L,    "theming:piece_L");
-	set_theme_if_not_null(g->theme_piece_J,    "theming:piece_J");
-	set_theme_if_not_null(g->theme_piece_T,    "theming:piece_T");
+	set_theme_if_valid(g->theme_piece_S, "theming:piece_S");
+	set_theme_if_valid(g->theme_piece_Z, "theming:piece_Z");
+	set_theme_if_valid(g->theme_piece_O, "theming:piece_O");
+	set_theme_if_valid(g->theme_piece_I, "theming:piece_I");
+	set_theme_if_valid(g->theme_piece_L, "theming:piece_L");
+	set_theme_if_valid(g->theme_piece_J, "theming:piece_J");
+	set_theme_if_valid(g->theme_piece_T, "theming:piece_T");
 
 
 	/* This gets all piece-specific colors from the config file.
@@ -186,14 +189,14 @@ void config_parse(char* filename)
 	                                                                           \
 		var = engine_get_color(fg, bg, false);                                 \
 }
-	get_colors_if_valid(g->theme_ghost_color,   "theming:ghost_fg",   "theming:ghost_bg",   COLOR_WHITE, COLOR_BLACK)
-	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED)
-	get_colors_if_valid(g->theme_piece_Z_color, "theming:piece_Z_fg", "theming:piece_Z_bg", COLOR_WHITE, COLOR_GREEN)
-	get_colors_if_valid(g->theme_piece_O_color, "theming:piece_O_fg", "theming:piece_O_bg", COLOR_WHITE, COLOR_YELLOW)
-	get_colors_if_valid(g->theme_piece_I_color, "theming:piece_I_fg", "theming:piece_I_bg", COLOR_WHITE, COLOR_CYAN)
-	get_colors_if_valid(g->theme_piece_L_color, "theming:piece_L_fg", "theming:piece_L_bg", COLOR_WHITE, COLOR_YELLOW)
-	get_colors_if_valid(g->theme_piece_J_color, "theming:piece_J_fg", "theming:piece_J_bg", COLOR_WHITE, COLOR_BLUE)
-	get_colors_if_valid(g->theme_piece_T_color, "theming:piece_T_fg", "theming:piece_T_bg", COLOR_WHITE, COLOR_MAGENTA)
+	get_colors_if_valid(g->theme_ghost_color,   "theming:ghost_fg",   "theming:ghost_bg",   COLOR_WHITE, COLOR_BLACK);
+	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED);
+	get_colors_if_valid(g->theme_piece_Z_color, "theming:piece_Z_fg", "theming:piece_Z_bg", COLOR_WHITE, COLOR_GREEN);
+	get_colors_if_valid(g->theme_piece_O_color, "theming:piece_O_fg", "theming:piece_O_bg", COLOR_WHITE, COLOR_YELLOW);
+	get_colors_if_valid(g->theme_piece_I_color, "theming:piece_I_fg", "theming:piece_I_bg", COLOR_WHITE, COLOR_CYAN);
+	get_colors_if_valid(g->theme_piece_L_color, "theming:piece_L_fg", "theming:piece_L_bg", COLOR_WHITE, COLOR_YELLOW);
+	get_colors_if_valid(g->theme_piece_J_color, "theming:piece_J_fg", "theming:piece_J_bg", COLOR_WHITE, COLOR_BLUE);
+	get_colors_if_valid(g->theme_piece_T_color, "theming:piece_T_fg", "theming:piece_T_bg", COLOR_WHITE, COLOR_MAGENTA);
 
 	/* finishing parsing */
 	iniparser_freedict(ini);
@@ -313,29 +316,42 @@ void config_create_default(char* filename)
 		"# For default, leave blank\n"
 		"\n"
 		"# default: white/black\n"
-		"ghost_fg   = white\n"
-		"ghost_bg   = black\n"
+		"#ghost_fg   = white\n"
+		"#ghost_bg   = black\n"
 		"# default: white/red\n"
-		"piece_S_fg = red\n"
-		"piece_S_bg = black\n"
+		"#piece_S_fg = red\n"
+		"#piece_S_bg = black\n"
 		"# default: white/green\n"
-		"piece_Z_fg = green\n"
-		"piece_Z_bg = black\n"
+		"#piece_Z_fg = green\n"
+		"#piece_Z_bg = black\n"
 		"# default: white/yellow\n"
-		"piece_O_fg = yellow\n"
-		"piece_O_bg = black\n"
+		"#piece_O_fg = yellow\n"
+		"#piece_O_bg = black\n"
 		"# default: white/cyan\n"
-		"piece_I_fg = cyan\n"
-		"piece_I_bg = black\n"
+		"#piece_I_fg = cyan\n"
+		"#piece_I_bg = black\n"
 		"# default: white/yellow\n"
-		"piece_L_fg = yellow\n"
-		"piece_L_bg = black\n"
+		"#piece_L_fg = yellow\n"
+		"#piece_L_bg = black\n"
 		"# default: white/blue\n"
-		"piece_J_fg = blue\n"
-		"piece_J_bg = black\n"
+		"#piece_J_fg = blue\n"
+		"#piece_J_bg = black\n"
 		"# default: white/magenta\n"
-		"piece_T_fg = magenta\n"
-		"piece_T_bg = black\n"
+		"#piece_T_fg = magenta\n"
+		"#piece_T_bg = black\n"
+		"\n"
+		"# The specific appearance of each piece.\n"
+		"# Note that they must come between quotes ("").\n"
+		"#\n"
+		"# If invalid or not specified, will use the one on 'piece'.\n"
+		"# If that one's not specified, will use default.\n"
+		"#piece_S = \"SS\"\n"
+		"#piece_Z = \"ZZ\"\n"
+		"#piece_O = \"OO\"\n"
+		"#piece_I = \"II\"\n"
+		"#piece_L = \"LL\"\n"
+		"#piece_J = \"JJ\"\n"
+		"#piece_T = \"TT\"\n"
 		"\n";
 
 	/* well, that was easy, wasn't it? */
