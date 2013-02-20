@@ -105,7 +105,7 @@ int engine_screen_init(int width, int height)
 	engine.screen.width  = current_width;
 	engine.screen.height = current_height;
 
-	raw();       /* Character input doesnt require the <enter> key anymore */
+	cbreak();    /* Character input doesnt require the <enter> key anymore */
 	curs_set(0); /* Makes the blinking cursor invisible */
 	noecho();    /* Wont print the keys received through input */
 	nodelay(stdscr, TRUE); /* Wont wait for input */
@@ -357,6 +357,12 @@ bool engine_init()
 	engine_keymap(NULL);
 
 	restore_signals();
+
+	/* Whenever the player does Ctrl+C (or the game's interrupted),
+	 * we're calling engine_safe_exit */
+	struct sigaction sigint_handler;
+	sigint_handler.sa_handler = engine_safe_exit;
+	sigaction(SIGINT, &sigint_handler, NULL);
 	return true;
 }
 
@@ -366,14 +372,18 @@ bool engine_init()
  */
 bool block_signals()
 {
-	signal(SIGINT, SIG_IGN);
+	struct sigaction sigint_handler;
+	sigint_handler.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sigint_handler, NULL);
 	return true;
 }
 
 /** Now the player's allowed to interrupt the program it he wishes so. */
 bool restore_signals()
 {
-	signal(SIGINT, SIG_DFL);
+	struct sigaction sigint_handler;
+	sigint_handler.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &sigint_handler, NULL);
 	return true;
 }
 
@@ -383,6 +393,28 @@ void engine_exit()
 	erase();
 	refresh();
 	endwin();
+}
+
+/** Function called when receiving an interrupt signal.
+ *  It restores the terminal to it's initial state and
+ *  frees whatever memory might be allocated from the game.
+ */
+void engine_safe_exit(int sig)
+{
+	engine_exit();
+
+	/* since the game doesn't deal with malloc (yet) we're
+	 * pretty much safe quitting like this.
+	 * I've already set that when we call exit() we quit
+	 * from the engine, anyway.
+	 */
+#if OS_IS_WINDOWS
+		printf(
+#else
+		fprintf(stderr,
+#endif
+				"Bad game, no donut for you!\n", sig);
+	abort();
 }
 
 /** This defines the keymap according to the string #keymap.

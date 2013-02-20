@@ -145,6 +145,7 @@ void engine_wait_for_keypress();
 void engine_draw_gameover(game_s* g);
 void engine_draw_pause();
 void engine_draw_statistics(game_s* g);
+void engine_safe_exit(int sig);
 
 #endif /* ENGINE_H_DEFINED */
 
