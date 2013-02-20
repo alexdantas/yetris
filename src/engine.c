@@ -34,10 +34,13 @@
 #include "globals.h"
 
 
-/* specific engine functions */
-void window_color(WINDOW* win, int color, bool is_bold);
+/* Functions specific to this module
+ * (engine-specific functions)
+ */
+void register_signal_handler();
 void window_fancy_borders(WINDOW* win);
 void window_normal_borders(WINDOW* win);
+
 
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
@@ -88,7 +91,7 @@ int engine_screen_init(int width, int height)
 	if ((current_width  < engine.screen.width) ||
 	    (current_height < engine.screen.height))
 	{
-		engine_exit();
+		endwin();
 
 /* for now i must keep this - windows doesnt handle stderr */
 #if OS_IS_WINDOWS
@@ -357,13 +360,26 @@ bool engine_init()
 	engine_keymap(NULL);
 
 	restore_signals();
+	register_signal_handler();
+	return true;
+}
 
-	/* Whenever the player does Ctrl+C (or the game's interrupted),
-	 * we're calling engine_safe_exit */
+/** Whenever we get a signal from the player or the system,
+ *  we're calling engine_safe_exit to safely exit ncurses
+ */
+void register_signal_handler()
+{
 	struct sigaction sigint_handler;
 	sigint_handler.sa_handler = engine_safe_exit;
-	sigaction(SIGINT, &sigint_handler, NULL);
-	return true;
+
+	sigaction(SIGHUP,  &sigint_handler, NULL);
+	sigaction(SIGINT,  &sigint_handler, NULL);
+	sigaction(SIGQUIT, &sigint_handler, NULL);
+	sigaction(SIGILL,  &sigint_handler, NULL);
+	sigaction(SIGABRT, &sigint_handler, NULL);
+	sigaction(SIGFPE,  &sigint_handler, NULL);
+	sigaction(SIGSEGV, &sigint_handler, NULL);
+	sigaction(SIGTERM, &sigint_handler, NULL);
 }
 
 /** This function blocks the interrupt signal (Ctrl+C) during
@@ -413,8 +429,11 @@ void engine_safe_exit(int sig)
 #else
 		fprintf(stderr,
 #endif
-				"Bad game, no donut for you!\n", sig);
-	abort();
+		        "Interrupted (signal %d).\n"
+		        "Bad game, no donut for you!\n", sig);
+
+	/* won't call functions registered with atexit() */
+	_exit(EXIT_FAILURE);
 }
 
 /** This defines the keymap according to the string #keymap.
