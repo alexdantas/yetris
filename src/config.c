@@ -144,14 +144,16 @@ void config_parse(char* filename)
 /* 	color = iniparser_getint(ini, "theming:color_titles_fg", -1); */
 /* 	if (is_valid(color)) global */
 
-	int fg , bg;
+	int fg , bg, new_fg, new_bg;
 
 #define get_colors_if_valid(var, string_fg, string_bg, default_fg, default_bg) \
 {                                                                              \
 	fg = default_fg;                                                           \
 	bg = default_bg;                                                           \
-	fg = get_color_from_string(iniparser_getstring(ini, string_fg, NULL));     \
-	bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL));     \
+	new_fg = get_color_from_string(iniparser_getstring(ini, string_fg, NULL)); \
+	if (new_fg != -1) fg = new_fg;                                             \
+	new_bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL)); \
+	if (new_bg != -1) bg = new_bg;                                             \
 	                                                                           \
 		var = engine_get_color(fg, bg, false);                                 \
 }
@@ -263,6 +265,31 @@ void config_create_default(char* filename)
 		"# When the piece locks on the board, will it have a custom color?\n"
 		"# default: false\n"
 		"locked_piece_color = false\n"
+		"\n"
+		"# Colors of the pieces.\n"
+		"# They're divided into foreground (fg) and background (bg).\n"
+		"#\n"
+		"# Options accepted (case-insensitive) are:\n"
+		"#\n"
+		"#     black, red, green, yellow, blue, magenta, cyan, white\n"
+		"#\n"
+		"# For default, comment or leave blank\n"
+		"#ghost_fg   = white\n"
+		"#ghost_bg   = black\n"
+		"#piece_S_fg = red\n"
+		"#piece_S_bg = black\n"
+		"#piece_Z_fg = green\n"
+		"#piece_Z_bg = black\n"
+		"#piece_O_fg = yellow\n"
+		"#piece_O_bg = black\n"
+		"#piece_I_fg = cyan\n"
+		"#piece_I_bg = black\n"
+		"#piece_L_fg = yellow\n"
+		"#piece_L_bg = black\n"
+		"#piece_J_fg = blue\n"
+		"#piece_J_bg = black\n"
+		"#piece_T_fg = magenta\n"
+		"#piece_T_bg = black\n"
 		"\n";
 
 	/* well, that was easy, wasn't it? */
