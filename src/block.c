@@ -33,7 +33,6 @@ block_s new_block(int x, int y, char theme[], color_e color)
 	b.type     = BLOCK;
 	b.theme[0] = theme[0];
 	b.theme[1] = theme[1];
-	b.theme[2] = '\0';
 
 	return b;
 }

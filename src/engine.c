@@ -455,15 +455,19 @@ int engine_get_input(int delay_ms)
 	return c;
 }
 
-/** Draws a single block */
+/** Draws a single block.
+ *  It prints on the screen the two chars that represents
+ *  the block. They're stored on #b under 'theme'.
+ */
 void engine_draw_block(block_s* b, WINDOW* w)
 {
 	if (global.screen_use_colors)
 		wattrset(w, b->color);
 	else
-		wattrset(w, BLACK_WHITE);
+		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
 
-	mvwaddstr(w, b->y, (b->x * 2), b->theme);
+	mvwaddch(w, b->y, (b->x * 2),     b->theme[0]);
+	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme[1]);
 }
 
 /** Draws a whole piece, calling #engine_draw_block */

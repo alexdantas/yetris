@@ -50,9 +50,9 @@ typedef struct piece_s
 	int     x;
 	int     y;
 	int     color;
-	char    theme[3]; /* the appearance of each block */
-	block_s block[4]; /* the blocks */
-	short   rotation; /* current rotation (0 is none) */
+	char    theme[2]; /* the appearance of each block */
+	block_s block[4]; /* all the piece's blocks */
+	short   rotation; /* current rotation number (0 is none) */
 
 } piece_s;
 
@@ -67,5 +67,6 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
 bool piece_is_valid(piece_s* p);
 int piece_get_color(piece_e type);
 bool piece_is_on_valid_position(piece_s* p, board_s* b);
+void piece_reset_theme(piece_s* p);
 
 #endif /* PIECE_H_DEFINED */

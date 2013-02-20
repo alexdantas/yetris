@@ -77,6 +77,14 @@ typedef struct globals_s
 	int  theme_piece_J_color;
 	int  theme_piece_T_color;
 
+	char theme_piece_S[2];
+	char theme_piece_Z[2];
+	char theme_piece_O[2];
+	char theme_piece_I[2];
+	char theme_piece_L[2];
+	char theme_piece_J[2];
+	char theme_piece_T[2];
+
 	char* config_filename; /**< The user-specified configuration file */
 
 } globals_s;

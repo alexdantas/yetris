@@ -59,16 +59,19 @@ bool config_file_exists(char* filename)
 
 /** Reads the config file and stores It's contents in memory
  *  This is the main interface with the iniparser library.
+ *  Watch out, this function's big and scary, but you can do it
+ *  if you take your time and go step-by-step.
  *
  *  Warning, macros ahead!
  */
 void config_parse(char* filename)
 {
-	globals_s*  g = &global; /* simple alias */
+	globals_s* g = &global;
 
 	/* Actually starting the parser */
 	dictionary* ini = iniparser_load(filename);
 	if (!ini) return; /* couldn't parse */
+
 
 /* This macro sets the boolean variable ONLY if it's valid (0 or 1).
  * It'll look on the config file and search for the config string.
@@ -79,8 +82,8 @@ void config_parse(char* filename)
 	bool b;
 #define set_bool_if_valid(var, string)              \
 	{                                               \
-		b = iniparser_getboolean(ini, string, -1);	\
-		if ((b != -1) && ((b == 0) || (b == 1)))	\
+		b = iniparser_getboolean(ini, string, -1);  \
+		if ((b != -1) && ((b == 0) || (b == 1)))    \
 			var = b;                                \
 	}
 	set_bool_if_valid(g->screen_use_colors,          "interface:colors");
@@ -97,6 +100,7 @@ void config_parse(char* filename)
 	set_bool_if_valid(g->theme_ghost_has_colors, "theming:ghost_has_color");
 	set_bool_if_valid(g->theme_show_pivot_block, "theming:show_pivot");
 	set_bool_if_valid(g->theme_lock_piece_color, "theming:locked_piece_color");
+
 
 /* This other macro sets the integer variable ONLY if
  * specified condition checks.
@@ -115,37 +119,62 @@ void config_parse(char* filename)
 	set_int_if((i >= 0) && (i <= NEXT_PIECES_NO), g->game_next_no, "gameplay:next");
 	set_int_if((i >= 1) && (i <= 2), g->game_random_algorithm, "gameplay:random");
 
+
 /* Finally, this one's way more specific than the others.
  * It only works to get the piece's theme, which consists of a
- * 2-char string and a trailing null byte.
+ * 2-char string.
  * So, if I try to get a string from the config and it's null,
  * I won't add to the theme. Just like that.
  *
- * I dont even have to say that 'char s[3]' is essential.
+ * I dont even have to say that 'char* s' is essential.
  */
-	char s[3] = {};
-#define set_3_char_string_if_not_null(dest, config_string)            \
-	{                                                                 \
-		strncpy(s, iniparser_getstring(ini, config_string, NULL), 3); \
-		if (s[0] != '\0')                                             \
-			strncpy(dest, s, 2);                                      \
+	char* s = NULL;
+#define set_theme_if_not_null(dest, config_string)         \
+	{                                                      \
+		s = iniparser_getstring(ini, config_string, NULL); \
+		if ((s) && (s[0] != '\0'))                         \
+		{                                                  \
+			dest[0] = s[0];                                \
+			dest[1] = s[1];                                \
+		}                                                  \
 	}
-	set_3_char_string_if_not_null(g->theme_piece, "theming:piece");
-	set_3_char_string_if_not_null(g->theme_ghost, "theming:ghost");
-	set_3_char_string_if_not_null(g->theme_clear_line, "theming:clear_line");
+	set_theme_if_not_null(g->theme_piece, "theming:piece");
+	set_theme_if_not_null(g->theme_ghost, "theming:ghost");
+	set_theme_if_not_null(g->theme_clear_line, "theming:clear_line");
 
-	//attempt to parse colors
-/* 	/\* getting colors *\/ */
-/* 	int color; */
-/* #define apply_if_valid(string, ok) { (color = iniparser_getint(ini, string, -1)        \ */
-/* 		                             if ((color >= 0) && (color < 8)) { ok = color } } */
+	/* I'm doing this so if the player doesn't specify
+	 * a piece's theme, it'll fallback to the one
+	 * he specified to be the default for all pieces.
+	 *
+	 * If he doesn't specify one at all, it'll be the
+	 * hardcoded default, anyway.
+	 */
+	int j;
+	for (j = 0; j < 3; j++)
+	{
+		g->theme_piece_S[j] = g->theme_piece[j];
+		g->theme_piece_Z[j] = g->theme_piece[j];
+		g->theme_piece_O[j] = g->theme_piece[j];
+		g->theme_piece_I[j] = g->theme_piece[j];
+		g->theme_piece_L[j] = g->theme_piece[j];
+		g->theme_piece_J[j] = g->theme_piece[j];
+		g->theme_piece_T[j] = g->theme_piece[j];
+	}
 
-/* 	apply_if_valid("theming:color_titles_fg", global. */
-/* 	color = iniparser_getint(ini, "theming:color_titles_fg", -1); */
-/* 	if (is_valid(color)) global */
+	/* Finally I'll get the piece-specific theme from the config */
+	set_theme_if_not_null(g->theme_piece_S,    "theming:piece_S");
+	set_theme_if_not_null(g->theme_piece_Z,    "theming:piece_Z");
+	set_theme_if_not_null(g->theme_piece_O,    "theming:piece_O");
+	set_theme_if_not_null(g->theme_piece_I,    "theming:piece_I");
+	set_theme_if_not_null(g->theme_piece_L,    "theming:piece_L");
+	set_theme_if_not_null(g->theme_piece_J,    "theming:piece_J");
+	set_theme_if_not_null(g->theme_piece_T,    "theming:piece_T");
 
+
+	/* This gets all piece-specific colors from the config file.
+	 * I get the string ("black") and convert it to my color value
+	 */
 	int fg , bg, new_fg, new_bg;
-
 #define get_colors_if_valid(var, string_fg, string_bg, default_fg, default_bg) \
 {                                                                              \
 	fg = default_fg;                                                           \
@@ -187,6 +216,14 @@ void config_create_default(char* filename)
 		"# If some value is mistyped or left blank, the default value will be used.\n"
 		"#\n"
 		"# Boolean values accepted are case-insensitive (true, TRUE, tRuE...)\n"
+		"#\n"
+		"# Each piece is referred by names resembling it's appearance:\n"
+		"#\n"
+		"#                       []\n"
+		"#                       []  []      []\n"
+		"#   [][]  [][]    [][]  []  []      []    []\n"
+		"# [][]      [][]  [][]  []  [][]  [][]  [][][]\n"
+		"#   S        Z     O     I    L    J      T\n"
 		"\n"
 		"[gameplay]\n"
 		"\n"
@@ -222,7 +259,7 @@ void config_create_default(char* filename)
 		"center_horizontal = false\n"
 		"\n"
 		"# If the game boxes have fancy borders\n"
-        "# default: true\n"
+		"# default: true\n"
 		"fancy_borders = true\n"
 		"\n"
 		"# Show/hide outer border on the game screen\n"
@@ -273,27 +310,35 @@ void config_create_default(char* filename)
 		"#\n"
 		"#     black, red, green, yellow, blue, magenta, cyan, white\n"
 		"#\n"
-		"# For default, comment or leave blank\n"
-		"#ghost_fg   = white\n"
-		"#ghost_bg   = black\n"
-		"#piece_S_fg = red\n"
-		"#piece_S_bg = black\n"
-		"#piece_Z_fg = green\n"
-		"#piece_Z_bg = black\n"
-		"#piece_O_fg = yellow\n"
-		"#piece_O_bg = black\n"
-		"#piece_I_fg = cyan\n"
-		"#piece_I_bg = black\n"
-		"#piece_L_fg = yellow\n"
-		"#piece_L_bg = black\n"
-		"#piece_J_fg = blue\n"
-		"#piece_J_bg = black\n"
-		"#piece_T_fg = magenta\n"
-		"#piece_T_bg = black\n"
+		"# For default, leave blank\n"
+		"\n"
+		"# default: white/black\n"
+		"ghost_fg   = white\n"
+		"ghost_bg   = black\n"
+		"# default: white/red\n"
+		"piece_S_fg = red\n"
+		"piece_S_bg = black\n"
+		"# default: white/green\n"
+		"piece_Z_fg = green\n"
+		"piece_Z_bg = black\n"
+		"# default: white/yellow\n"
+		"piece_O_fg = yellow\n"
+		"piece_O_bg = black\n"
+		"# default: white/cyan\n"
+		"piece_I_fg = cyan\n"
+		"piece_I_bg = black\n"
+		"# default: white/yellow\n"
+		"piece_L_fg = yellow\n"
+		"piece_L_bg = black\n"
+		"# default: white/blue\n"
+		"piece_J_fg = blue\n"
+		"piece_J_bg = black\n"
+		"# default: white/magenta\n"
+		"piece_T_fg = magenta\n"
+		"piece_T_bg = black\n"
 		"\n";
 
 	/* well, that was easy, wasn't it? */
 	fprintf(file, text);
 }
-
 

@@ -34,28 +34,16 @@ piece_s new_piece(piece_e type)
 	piece_s p;
 	color_e color;
 
-	/* user specifies if the piece has colors */
+	p.rotation = 0;
+	p.type     = type;
+
 	if (global.theme_piece_has_colors)
-		color = piece_get_color(type);
+		color = piece_get_color(p.type);
 	else
 		color = global.theme_piece_no_color;
 	p.color = color;
 
-	/* user specifies the piece appearance */
-	if (global.theme_piece[0] != '\0')
-	{
-		p.theme[0] = global.theme_piece[0];
-		p.theme[1] = global.theme_piece[1];
-	}
-	else
-	{
-		p.theme[0] = ' ';
-		p.theme[1] = ' ';
-	}
-	p.theme[2] = '\0';
-
-	p.rotation = 0;
-	p.type     = type;
+	piece_reset_theme(&p);
 
 	/* If we're creating a dummy piece, stop. It won't be printed anyway */
 	if (!piece_is_valid(&p))
@@ -381,5 +369,49 @@ int piece_get_color(piece_e type)
 	}
 	/* will never get here */
 	return 666;
+}
+
+/** Copies the piece's theme based on the global variable
+ *  holding all the piece's themes.
+ *  A theme is the appearance of the piece on the screen.
+ *  It can be defined on the config file or set by default.
+ *  Anyway, you should @see globals.h
+ */
+void piece_reset_theme(piece_s* p)
+{
+	globals_s* g = &global;
+
+	switch (p->type)
+	{
+	case PIECE_S:
+		p->theme[0] = g->theme_piece_S[0];
+		p->theme[1] = g->theme_piece_S[1];
+		break;
+	case PIECE_Z:
+		p->theme[0] = g->theme_piece_Z[0];
+		p->theme[1] = g->theme_piece_Z[1];
+		break;
+	case PIECE_O:
+		p->theme[0] = g->theme_piece_O[0];
+		p->theme[1] = g->theme_piece_O[1];
+		break;
+	case PIECE_I:
+		p->theme[0] = g->theme_piece_I[0];
+		p->theme[1] = g->theme_piece_I[1];
+		break;
+	case PIECE_L:
+		p->theme[0] = g->theme_piece_L[0];
+		p->theme[1] = g->theme_piece_L[1];
+		break;
+	case PIECE_J:
+		p->theme[0] = g->theme_piece_J[0];
+		p->theme[1] = g->theme_piece_J[1];
+		break;
+	case PIECE_T:
+		p->theme[0] = g->theme_piece_T[0];
+		p->theme[1] = g->theme_piece_T[1];
+		break;
+	default: break;
+	}
 }
 
