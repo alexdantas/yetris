@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <signal.h>
 #include "engine.h"
 #include "game.h"
 #include "globals.h"
@@ -359,20 +360,20 @@ bool engine_init()
 	return true;
 }
 
-/** This function blocks any signals the player might send during
+/** This function blocks the interrupt signal (Ctrl+C) during
  *  the game's initialization.
  *  That's because ncurses leaves the terminal in a broken state.
  */
 bool block_signals()
 {
-//	sigprocmask(SIG_BLOCK);
+	signal(SIGINT, SIG_IGN);
 	return true;
 }
 
 /** Now the player's allowed to interrupt the program it he wishes so. */
 bool restore_signals()
 {
-//	sigprocmask(SIG_SETMASK);
+	signal(SIGINT, SIG_DFL);
 	return true;
 }
 
@@ -592,7 +593,7 @@ void engine_draw_score(game_s* g)
 	if (g->back_to_back_count > 0)
 	{
 		if (g->back_to_back_lines < 4)
-			wattron(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, true));
+			wattron(w.win, engine_get_color(COLOR_RED,    COLOR_BLACK, true));
 		else
 			wattron(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, true));
 
@@ -610,7 +611,7 @@ void engine_draw_score(game_s* g)
 	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 3,  1, "High Score");
 	mvwaddstr(w.win, 6,  1, "Score");
-	mvwaddstr(w.win, 9, 1, "Lines");
+	mvwaddstr(w.win, 9,  1, "Lines");
 	mvwaddstr(w.win, 12, 1, "Level");
 
 	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));

@@ -65,7 +65,7 @@ game_s new_game()
 	/* player info */
 	g.score       = 0;
 	g.lines       = 0;
-	g.level       = 0;
+	g.level       = 1;
 	g.speed       = INITIAL_SPEED;
 	g.hscore      = 0;
 	g.combo_count = 0;
@@ -154,6 +154,8 @@ void game_lock_piece(game_s* g)
 		game_ghost_update(g);
 
 	game_delete_possible_lines(g);
+	game_update_level(g);
+	game_update_speed(g);
 
 	/* now we can switch pieces! */
 	if (global.game_can_hold)
@@ -185,7 +187,6 @@ void game_update(game_s* g)
 	case PLAYING:
 		game_update_piece(g);
 		game_update_gameplay_time(g);
-		game_update_level(g);
 
 		if (global.game_has_ghost)
 			game_ghost_update(g);
@@ -239,19 +240,53 @@ void game_update_level(game_s* g)
 //	g->speed = INITIAL_SPEED / (g->level + 1);
 //	g->speed = INITIAL_SPEED - ((g->level * 30));
 
+// this is getting too long - need to create a math function
 	switch (g->lines)
 	{
-	case 0:   g->level = 0;  g->speed = 1000; break;
-	case 5:   g->level = 1;  g->speed = 950;  break;
-	case 10:  g->level = 2;  g->speed = 900;  break;
-	case 20:  g->level = 3;  g->speed = 850;  break;
-	case 30:  g->level = 4;  g->speed = 800;  break;
-	case 50:  g->level = 5;  g->speed = 700;  break;
-	case 70:  g->level = 6;  g->speed = 500;  break;
-	case 100: g->level = 7;  g->speed = 400;  break;
-	case 140: g->level = 8;  g->speed = 300;  break;
-	case 170: g->level = 9;  g->speed = 200;  break;
-	case 200: g->level = 10; g->speed = 100;  break;
+	case 0:   g->level = 1;  break; /* 1000ms */
+	case 5:   g->level = 2;  break;
+	case 10:  g->level = 3;  break;
+	case 15:  g->level = 4;  break;
+	case 20:  g->level = 5;  break;
+	case 25:  g->level = 6;  break;
+	case 30:  g->level = 7;  break;
+	case 40:  g->level = 8;  break;
+	case 50:  g->level = 9;  break;
+	case 60:  g->level = 10; break;
+	case 70:  g->level = 11; break;
+	case 100: g->level = 12; break;
+	case 120: g->level = 13; break;
+	case 140: g->level = 14; break;
+	case 160: g->level = 15; break;
+	case 180: g->level = 16; break;
+	case 210: g->level = 17; break;
+	case 240: g->level = 18; break;
+	}
+}
+
+void game_update_speed(game_s* g)
+{
+	switch (g->level)
+	{
+	case 1:  g->speed = INITIAL_SPEED; break; /* 1000ms */
+	case 2:  g->speed = 900;  break;
+	case 3:  g->speed = 850;  break;
+	case 4:  g->speed = 800;  break;
+	case 5:  g->speed = 750;  break;
+	case 6:  g->speed = 700;  break;
+	case 7:  g->speed = 650;  break;
+	case 8:  g->speed = 600;  break;
+	case 9:  g->speed = 550;  break;
+	case 10: g->speed = 500;  break;
+	case 11: g->speed = 450;  break;
+	case 12: g->speed = 400;  break;
+	case 13: g->speed = 350;  break;
+	case 14: g->speed = 300;  break;
+	case 15: g->speed = 250;  break;
+	case 16: g->speed = 200;  break;
+	case 17: g->speed = 150;  break;
+	case 18: g->speed = 100;  break;
+	default: g->speed = g->speed; break;
 	}
 }
 
@@ -313,7 +348,7 @@ bool game_delete_possible_lines(game_s* g)
 	board_s* b = &(g->board);
 
 	bool lines[BOARD_HEIGHT]; /* this will mark lines to be deleted */
-	int  count = 0;
+	int  count = 0; /* how many lines have been cleared */
 
 	int j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
@@ -366,12 +401,12 @@ bool game_delete_possible_lines(game_s* g)
 
 	switch (count)
 	{
-	case 1:  piece_score = 100; break;
-	case 2:  piece_score = 300; break;
-	case 3:  piece_score = 500; break;
-	case 4:  piece_score = 800; break;
+	case 1: piece_score = 100; break;
+	case 2: piece_score = 300; break;
+	case 3: piece_score = 500; break;
+	case 4: piece_score = 800; break;
 
-	default: piece_score = -1;   break; /* someone's cheating... */
+	default: piece_score = -1; break; /* someone's cheating... */
 	}
 
 	/* Back-to-Back Lines */
@@ -384,7 +419,6 @@ bool game_delete_possible_lines(game_s* g)
 		g->back_to_back_count = 0;
 
 	g->back_to_back_lines = count;
-
 
 	/* Apllying Everything */
 	g->score += (piece_score * g->level) + combo_score;
@@ -466,10 +500,12 @@ void game_handle_input(game_s* g, int input)
 		else if (input == '+')
 		{
 			g->level++;
+			game_update_speed(g);
 		}
 		else if (input == '-')
 		{
 			g->level--;
+			game_update_speed(g);
 		}
 		else if (input == KEY_F(2))
 		{

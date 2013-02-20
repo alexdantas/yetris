@@ -98,5 +98,6 @@ void game_update_level(game_s* g);
 void game_update_piece(game_s* g);
 void game_hscore_save(game_s* g);
 piece_s game_get_next_piece(game_s* g);
+void game_update_speed(game_s* g);
 
 #endif /* GAME_H_DEFINED */
