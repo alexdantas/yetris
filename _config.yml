@@ -4,6 +4,12 @@
 
 permalink: /:categories/:year/:month/:day/:title
 
+safe: true
+source: http://alexdantas.github.com/yetris
+#destination: _site
+lsi: false
+pygments: true
+
 exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md"]
 auto: true
 pygments: true
