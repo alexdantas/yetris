@@ -77,6 +77,7 @@ typedef struct globals_s
 	char theme_piece[2];
 	char theme_ghost[2];
 	char theme_clear_line[2];
+
 	char theme_piece_S[2];
 	char theme_piece_Z[2];
 	char theme_piece_O[2];

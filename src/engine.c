@@ -343,6 +343,7 @@ int engine_windows_init()
 	s->score = w;
 
 	w = s->info;
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
 	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
 	wrefresh(w.win);
 	return 1;
@@ -513,9 +514,9 @@ int engine_get_input(int delay_ms)
 void engine_draw_block(block_s* b, WINDOW* w)
 {
 	if (global.screen_use_colors)
-		wattrset(w, b->color);
+		wattron(w, b->color);
 	else
-		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
+		wattron(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
 
 	mvwaddch(w, b->y, (b->x * 2),     b->theme[0]);
 	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme[1]);
@@ -944,7 +945,7 @@ void engine_wait_for_keypress()
 /* void window_color(WINDOW* win, int color, bool is_bold) */
 /* { */
 /* 	if (global.screen_use_colors) */
-/* 		wattrset(win, engine_get_color(color, is_bold)); */
+/* 		wattron(win, engine_get_color(color, is_bold)); */
 /* } */
 
 /** Draws fancy borders on window #win */

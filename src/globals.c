@@ -64,7 +64,7 @@ globals_s new_globals()
 	g.theme_piece_T_color  = engine_get_color(COLOR_WHITE, COLOR_MAGENTA, false);
 
 	int i;
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 2; i++)
 	{
 		g.theme_piece_S[i] = ' ';
 		g.theme_piece_Z[i] = ' ';

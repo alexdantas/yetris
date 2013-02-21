@@ -153,7 +153,7 @@ void config_parse(char* filename)
 	 * hardcoded default, anyway.
 	 */
 	int j;
-	for (j = 0; j < 3; j++)
+	for (j = 0; j < 2; j++)
 	{
 		g->theme_piece_S[j] = g->theme_piece[j];
 		g->theme_piece_Z[j] = g->theme_piece[j];
