@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title> {% if page.title %} {{page.title}} | {% endif %} yetris </title>
+	<link rel="stylesheet" href="css/styles.css" type="text/css" media="screen" />
+  </head>
+  <body>
+<div id="main">
+  <header>
+	<h1>yetris</h1>
+  </header>
+  <nav role="navigation">
+	<ul>
+	  <li><a href="/">Home</a></li>
+	</ul>
+  </nav>
+
+  <!-- This is the content -->
+  {{ content }}
+
+  <footer>
+	<p>@copy; yetris</p>
+  </footer>
+</div>
+
+  </body>
+</html>
+
+
