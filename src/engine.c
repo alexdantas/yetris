@@ -33,14 +33,19 @@
 #include "game.h"
 #include "globals.h"
 
+/* dag-nabbit, PDCurses (windows) doesnt have mvwhline */
+#if OS_IS_WINDOWS
+#define mvwhline my_mvwhline
+#endif
 
 /* Functions specific to this module
  * (engine-specific functions)
  */
 void register_signal_handler();
+window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y);
 void window_fancy_borders(WINDOW* win);
 void window_normal_borders(WINDOW* win);
-
+void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num);
 
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
@@ -164,19 +169,12 @@ int engine_windows_init()
 		{
 			/* making the top line between hold and score windows */
 			mvwaddch(w.win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
-			mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
-#endif
+			my_mvwhline(w.win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
 			mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
 			/* making the bottom line between hold and score windows */
 			mvwaddch(w.win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
-			mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
-#endif
+			my_mvwhline(w.win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
 			mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 		}
 
@@ -185,11 +183,7 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
-#endif
 	}
 
 	wrefresh(w.win);
@@ -219,19 +213,12 @@ int engine_windows_init()
 		window_fancy_borders(w.win);
 		/* making the top line between 1st next and the rest */
 		mvwaddch(w.win, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w.width - 2);
-#endif
 		mvwaddch(w.win, 3, w.width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
 		/* making the bottom line between 1st next and the rest */
 		mvwaddch(w.win, 4, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w.win, 4, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w.width - 2);
-#endif
 		mvwaddch(w.win, 4, w.width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
 
 	}
@@ -239,12 +226,7 @@ int engine_windows_init()
 	{
 		window_normal_borders(w.win);
 		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
-#endif
-
 	}
 	wrefresh(w.win);
 	s->middle_right = w;
@@ -297,50 +279,35 @@ int engine_windows_init()
 		s->next[i] = w;
 	}
 
-	/* game board */
-	w.width  = s->middle_left.width  - 2;
-	w.height = s->middle_left.height - 2;
-	w.x      = 1;
-	w.y      = 1;
-	w.win    = derwin(s->middle_left.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->board = w;
+	s->board = new_sub_win_from(s->middle_left.win, (s->middle_left.width - 2), (s->middle_left.height - 2), 1, 1);
 
-	/* info */
-	w.width  = s->rightmost.width  - 4;
-	w.height = s->rightmost.height - 2;
-	w.x      = 2;
-	w.y      = 1;
-	w.win    = derwin(s->rightmost.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->info = w;
+	s->info  = new_sub_win_from(s->rightmost.win,   (s->rightmost.width - 4),   (s->rightmost.height - 2),   2, 1);
 
-	/* leftmost container */
-	w.width  = s->leftmost.width  - 2;
-	w.height = s->leftmost.height - 2;
-	w.x      = 1;
-	w.y      = 1;
-	w.win    = derwin(s->leftmost.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->leftmost_container = w;
+	s->leftmost_container = new_sub_win_from(s->leftmost.win,
+											 (s->leftmost.width - 2),
+											 (s->leftmost.height - 2),
+											 1,
+											 1);
 
-	/* hold */
-	w.width  = s->leftmost_container.width;
-	w.height = 4;
-	w.x      = 0;
-	w.y      = 0;
-	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->hold = w;
+	s->hold = new_sub_win_from(s->leftmost_container.win,
+							   s->leftmost_container.width,
+							   4,
+							   0,
+							   0);
 
-	/* score screen */
-	w.width  = s->leftmost_container.width;
-	w.height = s->leftmost_container.height - (s->hold.height) - 2;
-	w.x      = 0;
-	w.y      = s->hold.y + s->hold.height + 2;
-	w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
-	s->score = w;
+	s->score = new_sub_win_from(s->leftmost_container.win,
+								s->leftmost_container.width,
+								s->leftmost_container.height - (s->hold.height) - 2,
+								0,
+								s->hold.y + s->hold.height + 2);
+
+	/* w.width  = s->leftmost_container.width; */
+	/* w.height = s->leftmost_container.height - (s->hold.height) - 2; */
+	/* w.x      = 0; */
+	/* w.y      = s->hold.y + s->hold.height + 2; */
+	/* w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x); */
+	/* wrefresh(w.win); */
+	/* s->score = w; */
 
 	w = s->info;
 	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
@@ -588,21 +555,13 @@ void engine_draw_next_pieces(game_s* g)
 	if (global.screen_fancy_borders)
 	{
 		mvwaddch(w, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, 8);
-#endif
 		mvwaddch(w, 3, 9, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
 	}
 	else
 	{
 		wattron(w, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
-
-/* dang, PDCurses (windows) doesnt have mvwhline */
-#if !OS_IS_WINDOWS
 		mvwhline(w, 3, 1, '-', 8);
-#endif
 	}
 
 	wattron(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
@@ -916,37 +875,68 @@ void engine_wait_for_keypress()
 	nodelay(stdscr, TRUE);
 }
 
-/* /\** Pops a window explaining some stuff *\/ */
-/* void engine_draw_help() */
-/* { */
-/* 	screen_s* s = &(engine.screen); */
-/* 	window_s* w; /\* help screen (only shows when requested) *\/ */
+void engine_refresh_all_windows()
+{
+	screen_s* s = &(engine.screen);
 
-/* 	w->width  = 40; */
-/* 	w->height = 10; */
-/* 	w->x      = 0;//s->main.width/2  - 40/2; */
-/* 	w->y      = 0;//s->main.height/2 - 10/2; */
-/* 	w->win    = derwin(s->main.win, w->height, w->width, w->y, w->x); */
-/* 	wborder(w->win, '|', '|', '-', '-', '+', '+', '+', '+'); */
+#define fancy_borders_and_refresh(window)  \
+	{                                      \
+		if (global.screen_fancy_borders)   \
+			window_fancy_borders(window);  \
+		else                               \
+			window_normal_borders(window); \
+		wrefresh(window);                  \
+	}
+	wrefresh(stdscr);
+	delwin(s->main.win);
+	delwin(s->leftmost.win);
+	delwin(s->middle_left.win);
+	delwin(s->middle_right.win);
+	delwin(s->rightmost.win);
+	engine_windows_init();
+}
 
-/* //	mvwaddstr(w->win, 0, 4, "Help"); */
+/** Pops a window explaining some stuff */
+void engine_draw_help()
+{
+	window_s w; /* help screen (only shows when requested) */
 
-/* 	wrefresh(w->win); */
-/* 	delwin(w->win); */
-/* 	wrefresh(s->main.win); */
-/* } */
+	w.width  = engine.screen.main.width/2;
+	w.height = engine.screen.main.height/2;
+	w.x      = engine.screen.main.width/4;
+	w.y      = engine.screen.main.height/4;
+	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
+	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wbkgd(w.win, ' ');
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * *
- * ENGINE-SPECIFIC FUNCTIONS
- * (invisible to the external world)
- * * * * * * * * * * * * * * * * * * * * * * * * * */
+	mvwaddstr(w.win, 0, 1, "Help");
+	wrefresh(w.win);
 
-/* /\** Turns on color #color on window #win. *\/ */
-/* void window_color(WINDOW* win, int color, bool is_bold) */
-/* { */
-/* 	if (global.screen_use_colors) */
-/* 		wattron(win, engine_get_color(color, is_bold)); */
-/* } */
+	usleep(300000);
+
+	// refresh all other windows
+	delwin(w.win);
+//	wrefresh(engine.screen.main.win);
+	engine_refresh_all_windows();
+}
+
+/******************************************************************************
+ * This module's internal functions - hidden from the external world
+ ******************************************************************************
+ */
+
+window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
+{
+	window_s w;
+	w.width  = width;
+	w.height = height;
+	w.x      = x;
+	w.y      = y;
+	w.win    = derwin(main, height, width, y, x);
+	wrefresh(w.win);
+	return w;
+}
 
 /** Draws fancy borders on window #win */
 void window_fancy_borders(WINDOW* win)
@@ -966,5 +956,16 @@ void window_normal_borders(WINDOW* win)
 {
 	wattron(win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
+}
+
+/** PDCurses (on Windows) doesn't have this function, so I need
+ *  to re-implement it.
+ *  TODO: implement more features - see 'man mvwhline'
+ */
+void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
+{
+	int i;
+	for (i = 0; i < num; i++)
+		mvwaddch(win, y, (x + i), ch);
 }
 

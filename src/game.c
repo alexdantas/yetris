@@ -509,6 +509,10 @@ void game_handle_input(game_s* g, int input)
 		{
 			config_handle();
 		}
+		else if (input == 'h')
+		{
+			engine_draw_help();
+		}
 		/* END debug keys */
 		break;
 
