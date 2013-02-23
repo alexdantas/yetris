@@ -20,6 +20,16 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
+/* @file engine.c Implementations of graphical stuff.
+ *
+ * This module deals with ncurses and how to print the game
+ * onscreen.
+ *
+ * On Micro$oft Windows systems, I use PDCurses, which has
+ * less functionalities than ncurses. So I need to make a
+ * few #defines to fix this.
+ */
+
 #include <stdlib.h>
 #include <ncurses.h>
 #include <stdbool.h>
@@ -33,19 +43,27 @@
 #include "game.h"
 #include "globals.h"
 
-/* dag-nabbit, PDCurses (windows) doesnt have mvwhline */
+
+/* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
 #if OS_IS_WINDOWS
 #define mvwhline my_mvwhline
 #endif
 
-/* Functions specific to this module
- * (engine-specific functions)
- */
+/* Windows can't handle 'stdin' or 'stdout'.
+ * So for now i must keep this */
+#if OS_IS_WINDOWS
+#define fprintf(stderr, printf(
+#endif
+
+
+/* Local functions (functions specific to this module) */
 void register_signal_handler();
 window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y);
 void window_fancy_borders(WINDOW* win);
 void window_normal_borders(WINDOW* win);
 void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num);
+/* End of Local functions (functions specific to this module) */
+
 
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
@@ -97,14 +115,7 @@ int engine_screen_init(int width, int height)
 	    (current_height < engine.screen.height))
 	{
 		endwin();
-
-/* for now i must keep this - windows doesnt handle stderr */
-#if OS_IS_WINDOWS
-		printf(
-#else
-		fprintf(stderr,
-#endif
-		                "Error! Your console screen is smaller than %dx%d\n"
+		fprintf(stderr, "Error! Your console screen is smaller than %dx%d\n"
 		                "Please resize your window and try again\n",
 		                engine.screen.width, engine.screen.height);
 
@@ -182,7 +193,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
 	}
 
@@ -225,7 +236,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
 	}
 	wrefresh(w.win);
@@ -310,7 +321,7 @@ int engine_windows_init()
 	/* s->score = w; */
 
 	w = s->info;
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
 	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
 	wrefresh(w.win);
 	return 1;
@@ -392,13 +403,8 @@ void engine_safe_exit(int sig)
 	 * I've already set that when we call exit() we quit
 	 * from the engine, anyway.
 	 */
-#if OS_IS_WINDOWS
-		printf(
-#else
-		fprintf(stderr,
-#endif
-		        "Interrupted (signal %d).\n"
-		        "Bad game, no donut for you!\n", sig);
+		fprintf(stderr, "Interrupted (signal %d).\n"
+				        "Bad game, no donut for you!\n", sig);
 
 	/* won't call functions registered with atexit() */
 	_exit(EXIT_FAILURE);
@@ -481,9 +487,9 @@ int engine_get_input(int delay_ms)
 void engine_draw_block(block_s* b, WINDOW* w)
 {
 	if (global.screen_use_colors)
-		wattron(w, b->color);
+		wattrset(w, b->color);
 	else
-		wattron(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
+		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
 
 	mvwaddch(w, b->y, (b->x * 2),     b->theme[0]);
 	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme[1]);
@@ -517,7 +523,7 @@ void engine_draw_pause()
 {
 	window_s* w = &(engine.screen.board);
 
-	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
 	wrefresh(w->win);
 }
@@ -560,32 +566,35 @@ void engine_draw_next_pieces(game_s* g)
 	}
 	else
 	{
-		wattron(w, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w, 3, 1, '-', 8);
 	}
 
-	wattron(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w, 0, 1, "Next");
 	wrefresh(w);
 }
 
+/** Draws the window where we keep the hold piece */
 void engine_draw_hold(game_s* g)
 {
-	piece_s  p = g->piece_hold;
+	window_s* w = NULL;
+	piece_s*  p = &(g->piece_hold);
 
-	window_s w = engine.screen.leftmost;
+	w = &(engine.screen.leftmost);
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 0, 1, "Hold");
+	wrefresh(w->win);
 
-	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
-	mvwaddstr(w.win, 0, 1, "Hold");
-	wrefresh(w.win);
-
-	w = engine.screen.hold;
-	werase(w.win);
-	engine_draw_piece(&p, w.win);
-	wrefresh(w.win);
+	w = &(engine.screen.hold);
+	werase(w->win);
+	engine_draw_piece(p, w->win);
+	wrefresh(w->win);
 }
 
-
+/** Draws the score, high score and warn the player if he has any
+ *  combo or back-to-back sequences.
+ */
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
@@ -596,9 +605,9 @@ void engine_draw_score(game_s* g)
 	if ((g->is_combo) && (g->combo_count > 0))
 	{
 		if (g->combo_count > 3)
-			wattron(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, false));
+			wattrset(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, false));
 		else
-			wattron(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, false));
+			wattrset(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, false));
 
 		mvwaddstr(w.win, 0, 2, "Combo!");
 		mvwprintw(w.win, 0, 8, "x%d", g->combo_count);
@@ -608,9 +617,9 @@ void engine_draw_score(game_s* g)
 	if (g->back_to_back_count > 0)
 	{
 		if (g->back_to_back_lines < 4)
-			wattron(w.win, engine_get_color(COLOR_RED,    COLOR_BLACK, true));
+			wattrset(w.win, engine_get_color(COLOR_RED,    COLOR_BLACK, true));
 		else
-			wattron(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, true));
+			wattrset(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, true));
 
 		mvwaddstr(w.win, 1, 0, "Back-to-back");
 		switch (g->back_to_back_lines)
@@ -623,13 +632,13 @@ void engine_draw_score(game_s* g)
 			mvwprintw(w.win, 2, 8, "x%d", g->back_to_back_count);
 	}
 
-	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 3,  1, "High Score");
 	mvwaddstr(w.win, 6,  1, "Score");
 	mvwaddstr(w.win, 9,  1, "Lines");
 	mvwaddstr(w.win, 12, 1, "Level");
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 4,  1, "%10d", g->hscore);
 	mvwprintw(w.win, 7,  1, "%10d", g->score);
 	mvwprintw(w.win, 10, 1, "%10d", g->lines);
@@ -651,7 +660,7 @@ void engine_draw_statistics(game_s* g)
 	int k;
 	int x_offset = 3;
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 3, 1, "%10d x", g->I_count);
 	piece_s  p = new_piece(PIECE_I);
 	p.x = x_offset;
@@ -663,7 +672,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 5, 1, "%10d x", g->T_count);
 	p = new_piece(PIECE_T);
 	p.x = x_offset;
@@ -675,7 +684,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 7, 1, "%10d x", g->L_count);
 	p = new_piece(PIECE_L);
 	p.x = x_offset;
@@ -687,7 +696,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 9, 1, "%10d x", g->J_count);
 	p = new_piece(PIECE_J);
 	p.x = x_offset;
@@ -699,7 +708,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 11, 1, "%10d x", g->S_count);
 	p = new_piece(PIECE_S);
 	p.x = x_offset;
@@ -711,7 +720,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 13, 1, "%10d x", g->Z_count);
 	p = new_piece(PIECE_Z);
 	p.x = x_offset;
@@ -723,7 +732,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 15, 1, "%10d x", g->O_count);
 	p = new_piece(PIECE_O);
 	p.x = x_offset - 1;
@@ -735,7 +744,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 16, 1, "%10d   Total", g->piece_count);
 }
 
@@ -749,20 +758,20 @@ void engine_draw_info(game_s* g)
 	if (global.game_has_statistics)
 		engine_draw_statistics(g);
 
-	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
 	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");
 	mvwaddstr(w.win, w.height - 1, 0, "Timer:");
 
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	if (g->gameplay_h) /* Wow.. will someone really play this game for hours? */
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
 	else
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
 
-	wattron(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, w.height - 2, 0, "Speed:");
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
 	/** DEBUG INFO */
@@ -778,7 +787,7 @@ void engine_draw_info(game_s* g)
 	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
 	time(&cur_time);
-	wattron(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+	wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	wrefresh(w.win);
@@ -864,12 +873,10 @@ void engine_draw_gameover(game_s* g)
 /** Gets a single keypress and them return to normal game. */
 void engine_wait_for_keypress()
 {
-
 /* windows doesnt recognize stdin */
 #if !OS_IS_WINDOWS
 	fflush(stdin); /* discard any characters pressed until now */
 #endif
-
 	nodelay(stdscr, FALSE);
 	getch();
 	nodelay(stdscr, TRUE);
@@ -907,7 +914,7 @@ void engine_draw_help()
 	w.y      = engine.screen.main.height/4;
 	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
 	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
-	wattron(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	wbkgd(w.win, ' ');
 
 	mvwaddstr(w.win, 0, 1, "Help");
@@ -921,11 +928,12 @@ void engine_draw_help()
 	engine_refresh_all_windows();
 }
 
-/******************************************************************************
- * This module's internal functions - hidden from the external world
- ******************************************************************************
- */
+/* Local functions (functions specific to this module) */
 
+/** This creates a sub window based on #main.
+ *  The new window will have #width and #height and it's #x and #y
+ *  will be relative to #main.
+ */
 window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
 {
 	window_s w;
@@ -954,7 +962,7 @@ void window_fancy_borders(WINDOW* win)
 /** Draws normal borders on window #win */
 void window_normal_borders(WINDOW* win)
 {
-	wattron(win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+	wattrset(win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 
@@ -968,4 +976,6 @@ void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
 	for (i = 0; i < num; i++)
 		mvwaddch(win, y, (x + i), ch);
 }
+
+/* End of Local functions (functions specific to this module) */
 

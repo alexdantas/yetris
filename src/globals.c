@@ -34,13 +34,14 @@ globals_s new_globals()
 	g.screen_fancy_borders       = true;
 	g.screen_show_outer_border   = true;
 
-	g.game_has_ghost        = true;
-	g.game_can_hold         = true;
-	g.game_next_no          = NEXT_PIECES_NO;
-	g.game_has_statistics   = true;
-	g.game_random_algorithm = 1;
+	g.game_has_ghost          = true;
+	g.game_can_hold           = true;
+	g.game_next_no            = NEXT_PIECES_NO;
+	g.game_has_statistics     = true;
+	g.game_random_algorithm   = 1;
+	g.game_line_clear_timeout = 200000;
 
-	/* the hard-coded defaults */
+	/* the hard-coded default appearances */
 	g.theme_piece[0]      = ' ';
 	g.theme_piece[1]      = ' ';
 	g.theme_ghost[0]      = '[';
@@ -53,7 +54,8 @@ globals_s new_globals()
 	g.theme_show_pivot_block = false;
 	g.theme_lock_piece_color = false;
 
-	g.theme_piece_no_color = engine_get_color(COLOR_WHITE, COLOR_WHITE,   false);
+	g.theme_clear_line_color = engine_get_color(COLOR_WHITE, COLOR_BLACK, true);
+	g.theme_piece_no_color = engine_get_color(COLOR_BLACK, COLOR_WHITE,   false);
 	g.theme_ghost_color    = engine_get_color(COLOR_WHITE, COLOR_BLACK,   true);
 	g.theme_piece_S_color  = engine_get_color(COLOR_WHITE, COLOR_GREEN,   false);
 	g.theme_piece_Z_color  = engine_get_color(COLOR_WHITE, COLOR_RED,     false);

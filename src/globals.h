@@ -59,11 +59,13 @@ typedef struct globals_s
 	char game_next_no; /**< How many next pieces the user can see */
 	bool game_has_statistics;
 	char game_random_algorithm;
+	int  game_line_clear_timeout; /**< Pause (microseconds) during line clear */
 
 	bool theme_piece_has_colors;
 	bool theme_ghost_has_colors;
 	bool theme_show_pivot_block;
 	bool theme_lock_piece_color;
+	int  theme_clear_line_color;
 	int  theme_piece_no_color;
 	int  theme_ghost_color;
 	int  theme_piece_S_color;
