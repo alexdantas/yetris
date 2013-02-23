@@ -66,6 +66,8 @@ game_s new_game()
 	g.is_combo  = false;
 	g.moved_piece_down = false;
 	g.is_back_to_back  = false;
+	g.show_score_delta = false;
+	g.score_delta = 0;
 
 	if (global.game_can_hold)
 	{
@@ -358,6 +360,16 @@ bool game_hold_piece(game_s* g)
  *
  *  @note I know this function's ugly...
  *  @todo Maybe create a 'Line' data structure? To make this ?
+ *
+ *  This function also deals with score. These are the rules:
+ *
+ *  line_score:         single: 100, double: 300, triple: 500, tetris: 800
+ *  combo_score:        50 * combo_count * current_level
+ *  back_to_back_score: (line_score * 3) / 2
+ *
+ *  score: (line_score * current_level) + combo_score
+ *  Also, when you hard drop a piece, it's 10 points for free.
+ *  Soft drops are the same (although they should be based on height.
  */
 bool game_delete_possible_lines(game_s* g)
 {
@@ -365,6 +377,9 @@ bool game_delete_possible_lines(game_s* g)
 
 	bool lines[BOARD_HEIGHT]; /* this will mark lines to be deleted */
 	int  count = 0; /* how many lines have been cleared */
+
+	g->show_score_delta = false;
+	g->score_delta = 0;
 
 	int j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
@@ -412,6 +427,9 @@ bool game_delete_possible_lines(game_s* g)
 	if (g->is_combo)
 		combo_score = 50 * g->combo_count * g->level;
 
+	if (g->combo_count > 2)
+		g->show_score_delta = true;
+
 	/* Piece Score */
 	int piece_score = 0;
 
@@ -430,14 +448,17 @@ bool game_delete_possible_lines(game_s* g)
 	{
 		g->back_to_back_count++;
 		piece_score = (piece_score * 3) / 2;
+
+		g->show_score_delta = true;
 	}
 	else
 		g->back_to_back_count = 0;
 
 	g->back_to_back_lines = count;
 
-	/* Apllying Everything */
-	g->score += (piece_score * g->level) + combo_score;
+	/* Applying Everything */
+	g->score_delta = (piece_score * g->level) + combo_score;
+	g->score += g->score_delta;
 
 	return true;
 }

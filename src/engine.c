@@ -703,6 +703,12 @@ void engine_draw_score(game_s* g)
 	mvwprintw(w.win, 10, 1, "%10d", g->lines);
 	mvwprintw(w.win, 13, 9, "%02d", g->level);
 
+	if (g->show_score_delta)
+	{
+		wattrset(w.win, engine_get_color(COLOR_GREEN, COLOR_BLACK, true));
+		mvwprintw(w.win,  8, 1, "%10d", g->score_delta);
+	}
+
 	wrefresh(w.win);
 }
 
@@ -992,16 +998,16 @@ void engine_draw_help()
 	else
 		window_normal_borders(w->win);
 
-	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Help");
 	wrefresh(w->win);
 
 	w = &(engine.screen.help);
 	werase(w->win);
 
-	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
 	mvwaddstr(w->win, 0, 2, "Controls:\n");
-	wattron(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 1, 0,
 		   "    Enter        Return to the game\n"
 	       "    q            Quits game at any time\n"

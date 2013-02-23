@@ -60,6 +60,7 @@ typedef struct game_s
 	int  combo_count;        /**< How many combos the used currently have */
 	int  back_to_back_lines; /**< How many lines have you cleared previously */
 	int  back_to_back_count; /**< How many of the same lines have been cleared */
+	int  score_delta;        /**< How much score the player won at last lines */
 
 	/* flags */
 	bool can_hold;         /**< Has the user switched pieces this round? */
@@ -69,6 +70,7 @@ typedef struct game_s
 	bool moved_piece_down; /**< Player forced to move down - reset drop timer */
 	bool is_combo;         /**< Is the player currently doing a combo */
 	bool is_back_to_back;  /**< Is the player currently doing a back-to-back */
+	bool show_score_delta; /**< Should we show the score delta onscreen? */
 
 	game_state state; /**< Current game state (paused, running, menu...) */
 
