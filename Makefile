@@ -77,9 +77,9 @@ OBJ        = obj/engine.o    obj/piece.o   \
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)
 
-DEFINES	= -DVERSION=\"$(VERSION)\"                \
-              -DDATE=\"$(DATE)\"                      \
-              -DSCORE_PATH=\"$(SCORE_PATH)\"          \
+DEFINES	= -DVERSION=\"$(VERSION)\"                 \
+              -DDATE=\"$(DATE)\"                       \
+              -DSCORE_PATH=\"$(SCORE_PATH)\"           \
               -DDEFAULT_CONFIG_FILE=\"$(CONFIG_PATH)\"
 
 # iniparser stuff
@@ -103,6 +103,12 @@ ifdef DESTDIR
 ROOT = -
 else
 ROOT =
+endif
+
+ifdef DEBUG
+CDEBUG = -D_YETRIS_DEBUG
+else
+CDEBUG =
 endif
 
 #############################################################################
@@ -139,7 +145,7 @@ $(EXE): $(OBJ) $(INI_OBJS)
 
 $(LOBJ)/%.o: $(LSRC)/%.c
 	@echo "* Compiling $<..."
-	$(MUTE)$(CC) $(CFLAGS) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
+	$(MUTE)$(CC) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
 dist: $(DISTDIR).tar.gz
 

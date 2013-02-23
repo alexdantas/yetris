@@ -127,21 +127,21 @@ typedef struct board_s board_s;
 typedef struct game_s  game_s;
 
 
-int engine_screen_init(int width, int height);
-int engine_windows_init();
+int  engine_screen_init(int width, int height);
+int  engine_windows_init();
 bool engine_init();
 bool block_signals();
 bool restore_signals();
 void engine_exit();
-int engine_keymap(char keymap[]);
-int engine_get_input(int delay_ms);
+int  engine_keymap(char keymap[]);
+int  engine_get_input(int delay_ms);
 void engine_draw_block(block_s* b, WINDOW* w);
 void engine_draw_piece(piece_s* p, WINDOW* w);
 void engine_draw_board(board_s* b);
 void engine_draw_hold(game_s* g);
 void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
-int engine_get_color(short foreground, short background, bool is_bold);
+int  engine_get_color(short foreground, short background, bool is_bold);
 void engine_draw_help();
 void engine_draw_gameover(game_s* g);
 void engine_draw_pause();
@@ -149,6 +149,7 @@ void engine_draw_statistics(game_s* g);
 void engine_safe_exit(int sig);
 void engine_create_help();
 void engine_delete_help();
+void engine_draw_line_statistics(game_s* g);
 
 #endif /* ENGINE_H_DEFINED */
 

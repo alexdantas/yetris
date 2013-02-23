@@ -106,6 +106,13 @@ game_s new_game()
 	g.O_count = 0;
 	g.piece_count = 0;
 
+	/* lines statistics */
+	g.single_count = 0;
+	g.double_count = 0;
+	g.triple_count = 0;
+	g.tetris_count = 0;
+	g.lines_count  = 0;
+
 	return g;
 }
 
@@ -435,13 +442,26 @@ bool game_delete_possible_lines(game_s* g)
 
 	switch (count)
 	{
-	case 1: piece_score = 100; break;
-	case 2: piece_score = 300; break;
-	case 3: piece_score = 500; break;
-	case 4: piece_score = 800; break;
+	case 1:
+		piece_score = 100;
+		g->single_count++;
+		break;
+	case 2:
+		piece_score = 300;
+		g->double_count++;
+		break;
+	case 3:
+		piece_score = 500;
+		g->triple_count++;
+		break;
+	case 4:
+		piece_score = 800;
+		g->tetris_count++;
+		break;
 
 	default: piece_score = -1; break; /* someone's cheating... */
 	}
+	g->lines_count++;
 
 	/* Back-to-Back Lines */
 	if ((g->back_to_back_lines == count) && (count >= 2))
@@ -533,7 +553,33 @@ void game_handle_input(game_s* g, int input)
 			if (global.game_can_hold)
 				game_hold_piece(g);
 		}
-		/* DEBUG KEYS - for development only! */
+		/* A nice way to alternate statistics! */
+		else if (input == KEY_F(2))
+		{
+			if (global.game_has_statistics)
+			{
+				global.game_has_statistics = false;
+				global.game_has_line_statistics = true;
+			}
+			else
+			{
+				global.game_has_statistics = true;
+				global.game_has_line_statistics = false;
+			}
+		}
+		/* Refreshing config file! */
+		else if (input == KEY_F(5))
+		{
+			config_handle();
+		}
+		else if (input == 'h')
+		{
+			engine_create_help();
+			g->state = HELP;
+		}
+
+/* DEBUG KEYS - for development tests only! */
+#ifdef _YETRIS_DEBUG
 		else if (input == '+')
 		{
 			g->level++;
@@ -544,10 +590,6 @@ void game_handle_input(game_s* g, int input)
 			g->level--;
 			game_update_speed(g);
 		}
-		else if (input == KEY_F(2))
-		{
-			g->show_help = true;
-		}
 		else if (input == KEY_F(3))
 		{
 			game_handle_score(g);
@@ -556,16 +598,7 @@ void game_handle_input(game_s* g, int input)
 		{
 			g->gameplay_m++;
 		}
-		else if (input == KEY_F(5))
-		{
-			config_handle();
-		}
-		else if (input == 'h')
-		{
-			engine_create_help();
-			g->state = HELP;
-		}
-		/* END debug keys */
+#endif
 		break;
 
 	case PAUSED:

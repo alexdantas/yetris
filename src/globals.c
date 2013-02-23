@@ -38,6 +38,7 @@ globals_s new_globals()
 	g.game_can_hold           = true;
 	g.game_next_no            = NEXT_PIECES_NO;
 	g.game_has_statistics     = true;
+	g.game_has_line_statistics= false;
 	g.game_random_algorithm   = 1;
 	g.game_line_clear_timeout = 200000;
 

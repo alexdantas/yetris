@@ -83,6 +83,13 @@ typedef struct game_s
 	int Z_count;
 	int O_count;
 	int piece_count; /* total count */
+
+	/* line statistics */
+	int single_count;
+	int double_count;
+	int triple_count;
+	int tetris_count;
+	int lines_count;
 } game_s;
 
 game_s new_game();

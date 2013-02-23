@@ -813,6 +813,25 @@ void engine_draw_statistics(game_s* g)
 	mvwprintw(w.win, 16, 1, "%10d   Total", g->piece_count);
 }
 
+void engine_draw_line_statistics(game_s* g)
+{
+	window_s* w = &(engine.screen.info);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	mvwaddstr(w->win, 3, 1, "Single:");
+	mvwaddstr(w->win, 4, 1, "Double:");
+	mvwaddstr(w->win, 5, 1, "Triple:");
+	mvwaddstr(w->win, 6, 1, "Tetris:");
+	mvwaddstr(w->win, 7, 1, "Total:");
+
+	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	mvwprintw(w->win, 3, 9, "%10d", g->single_count);
+	mvwprintw(w->win, 4, 9, "%10d", g->double_count);
+	mvwprintw(w->win, 5, 9, "%10d", g->triple_count);
+	mvwprintw(w->win, 6, 9, "%10d", g->tetris_count);
+	mvwprintw(w->win, 7, 9, "%10d", g->lines_count);
+}
+
 /** Draws everything that's on the info window (the rightmost one) */
 void engine_draw_info(game_s* g)
 {
@@ -820,8 +839,12 @@ void engine_draw_info(game_s* g)
 
 	werase(w.win);
 
+	/* Can only draw one at a time D: */
 	if (global.game_has_statistics)
 		engine_draw_statistics(g);
+
+	else if (global.game_has_line_statistics)
+		engine_draw_line_statistics(g);
 
 	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
