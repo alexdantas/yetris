@@ -81,6 +81,8 @@ typedef struct screen_s
 	window_s hold;
 	window_s leftmost_container;
 	window_s score;
+	window_s help_container;
+	window_s help;
 } screen_s;
 
 /** Container for all info about the game engine */
@@ -141,11 +143,12 @@ void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
 int engine_get_color(short foreground, short background, bool is_bold);
 void engine_draw_help();
-void engine_wait_for_keypress();
 void engine_draw_gameover(game_s* g);
 void engine_draw_pause();
 void engine_draw_statistics(game_s* g);
 void engine_safe_exit(int sig);
+void engine_create_help();
+void engine_delete_help();
 
 #endif /* ENGINE_H_DEFINED */
 

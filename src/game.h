@@ -32,7 +32,7 @@
 #define INITIAL_SPEED  1000 /* miliseconds */
 
 /** All the possible game states */
-typedef enum { PLAYING, PAUSED, QUITTING, GAME_OVER } game_state;
+typedef enum { PLAYING, PAUSED, QUITTING, GAME_OVER, HELP } game_state;
 
 /** The main game structure. Controls all the actions related to game logic */
 typedef struct game_s

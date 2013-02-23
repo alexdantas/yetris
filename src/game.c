@@ -199,6 +199,7 @@ void game_update(game_s* g)
 	/** Will only respond to input */
 	case PAUSED:    break;
 	case GAME_OVER:	break;
+	case HELP:      break;
 
 	case QUITTING:
 		g->quit = true;
@@ -540,7 +541,8 @@ void game_handle_input(game_s* g, int input)
 		}
 		else if (input == 'h')
 		{
-			engine_draw_help();
+			engine_create_help();
+			g->state = HELP;
 		}
 		/* END debug keys */
 		break;
@@ -561,6 +563,19 @@ void game_handle_input(game_s* g, int input)
 		else if (input == '\n')
 			g->is_over = true; /* warns main() to restart the game */
 
+		break;
+
+	case HELP:
+		if (input == '\n')
+		{
+			engine_delete_help(g);
+			g->state = PLAYING;
+			engine_draw(g);
+		}
+		else if (input == engine.input.quit)
+		{
+			g->state = QUITTING;
+		}
 		break;
 
 	default: /* Welp... Do nothing, I guess... */ break;

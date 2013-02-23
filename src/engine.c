@@ -65,6 +65,22 @@ void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num);
 /* End of Local functions (functions specific to this module) */
 
 
+/** Initializes all ncurses' related stuff (windows, colors...).
+ *  There's no need to call 'engine_exit' */
+bool engine_init()
+{
+	/* signals during initialization */
+	block_signals();
+
+	engine_screen_init(80, 24);
+	engine_windows_init();
+	engine_keymap(NULL);
+
+	restore_signals();
+	register_signal_handler();
+	return true;
+}
+
 /** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
 {
@@ -147,7 +163,7 @@ int engine_windows_init()
 	if (global.screen_center_vertically)
 		main_y = engine.screen.height/2 - 24/2;
 
-	/* main */
+	/* main window, wrapper of all others */
 	w.width  = 80;
 	w.height = 24;
 	w.x      = main_x;
@@ -327,22 +343,6 @@ int engine_windows_init()
 	return 1;
 }
 
-/** Initializes all ncurses' related stuff (windows, colors...).
- *  There's no need to call 'engine_exit' */
-bool engine_init()
-{
-	/* signals during initialization */
-	block_signals();
-
-	engine_screen_init(80, 24);
-	engine_windows_init();
-	engine_keymap(NULL);
-
-	restore_signals();
-	register_signal_handler();
-	return true;
-}
-
 /** Whenever we get a signal from the player or the system,
  *  we're calling engine_safe_exit to safely exit ncurses
  */
@@ -516,6 +516,12 @@ void engine_draw_board(board_s* b)
 		for (j = 0; j < BOARD_HEIGHT; j++)
 			if (b->block[i][j].type != EMPTY)
 				engine_draw_block(&(b->block[i][j]), w);
+
+	if (global.screen_fancy_borders)
+		window_fancy_borders(engine.screen.middle_left.win);
+	else
+		window_normal_borders(engine.screen.middle_left.win);
+	wrefresh(engine.screen.middle_left.win);
 }
 
 /** Prints 'pause' on the board */
@@ -573,6 +579,31 @@ void engine_draw_next_pieces(game_s* g)
 	wattrset(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w, 0, 1, "Next");
 	wrefresh(w);
+
+	window_s* win = &(engine.screen.middle_right);
+
+	/* RE-DRAWING BORDERS (damn this sucks) */
+	if (global.screen_fancy_borders)
+	{
+		window_fancy_borders(win->win);
+		/* making the top line between 1st next and the rest */
+		mvwaddch(win->win, 3, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+		mvwhline(win->win, 3, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, win->width - 2);
+		mvwaddch(win->win, 3, win->width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+		/* making the bottom line between 1st next and the rest */
+		mvwaddch(win->win, 4, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+		mvwhline(win->win, 4, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), win->width - 2);
+		mvwaddch(win->win, 4, win->width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
+
+	}
+	else
+	{
+		window_normal_borders(win->win);
+		wattrset(win->win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		mvwhline(win->win, 3, 1, '-', win->width - 2);
+	}
+
 }
 
 /** Draws the window where we keep the hold piece */
@@ -590,6 +621,34 @@ void engine_draw_hold(game_s* g)
 	werase(w->win);
 	engine_draw_piece(p, w->win);
 	wrefresh(w->win);
+
+	w = &(engine.screen.leftmost);
+	/* DRAWING BORDERS, AGGGHW */
+	if (global.screen_fancy_borders)
+	{
+		window_fancy_borders(w->win);
+
+		/* If the player has no hold, doesnt make sense printing these parts */
+		if (global.game_can_hold)
+		{
+			/* making the top line between hold and score windows */
+			mvwaddch(w->win, 5, 0, ACS_LLCORNER|COLOR_PAIR(WHITE_BLACK));
+			my_mvwhline(w->win, 5, 1, ACS_HLINE|COLOR_PAIR(BLACK_BLACK)|A_BOLD, w->width - 2);
+			mvwaddch(w->win, 5, w->width - 1, ACS_LRCORNER|COLOR_PAIR(BLACK_BLACK)|A_BOLD);
+
+			/* making the bottom line between hold and score windows */
+			mvwaddch(w->win, 6, 0, ACS_ULCORNER|COLOR_PAIR(WHITE_BLACK)|A_BOLD);
+			my_mvwhline(w->win, 6, 1, ACS_HLINE|COLOR_PAIR(WHITE_BLACK), w->width - 2);
+			mvwaddch(w->win, 6, w->width - 1, ACS_URCORNER|COLOR_PAIR(WHITE_BLACK));
+		}
+
+	}
+	else
+	{
+		window_normal_borders(w->win);
+		wattrset(w->win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		mvwhline(w->win, 5, 1, '-', w->width - 2);
+	}
 }
 
 /** Draws the score, high score and warn the player if he has any
@@ -760,7 +819,7 @@ void engine_draw_info(game_s* g)
 
 	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
-	mvwaddstr(w.win, 1, 1, "('yetris -h' for info)");
+	mvwaddstr(w.win, 1, 1, "(press 'h' for info)");
 	mvwaddstr(w.win, w.height - 1, 0, "Timer:");
 
 	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
@@ -774,14 +833,6 @@ void engine_draw_info(game_s* g)
 	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
-	/** DEBUG INFO */
-	/* window_color(w.win, BLUE_BLACK, false); */
-	/* mvwprintw(w.win, 7, 0, "Back-To-Back: %d", g->is_back_to_back); */
-	/* window_color(w.win, WHITE_BLACK, false); */
-	/* mvwprintw(w.win, 8, 0, "Count:        %d", g->back_to_back_count); */
-	/* mvwprintw(w.win, 9, 0, "Lines:        %d", g->back_to_back_lines); */
-
-
 	/* This is a little hack to display the time onscreen.
 	 * It's ugly as hell, but I had to make it
 	 * Format: Wed Jun 30 21:49:08 1993\n */
@@ -790,13 +841,19 @@ void engine_draw_info(game_s* g)
 	wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
+	/* DRAW BORDERS AGGHWW */
+	w = engine.screen.rightmost;
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w.win);
+	else
+		window_normal_borders(w.win);
+
 	wrefresh(w.win);
 }
 
 /** Returns the color pair associated with #color.
  *  If #is_bold is true, will make the color brighter.
  */
-//int engine_get_color(color_e color, bool is_bold)
 int engine_get_color(short foreground, short background, bool is_bold)
 {
 	color_e c = (foreground * 8) + (background + 1);
@@ -804,13 +861,6 @@ int engine_get_color(short foreground, short background, bool is_bold)
 		return (COLOR_PAIR(c) | A_BOLD);
 	else
 		return COLOR_PAIR(c);
-
-	/* int col = COLOR_PAIR(color); */
-	/* if (is_bold) */
-	/* 	col = col | A_BOLD; */
-	/* 	/\* TRY TO MAKE THIS WORK *\/ */
-
-	/* return col; */
 }
 
 /** Calls all drawing routines in order */
@@ -832,6 +882,7 @@ void engine_draw(game_s* g)
 		engine_draw_score(g);
 		engine_draw_info(g);
 		break;
+
 	case PAUSED:
 		engine_draw_board(&(g->board));
 		engine_draw_pause();
@@ -841,6 +892,12 @@ void engine_draw(game_s* g)
 	case GAME_OVER:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
+		break;
+
+	case HELP:
+		engine_draw_board(&(g->board));
+		engine_draw_info(g);
+		engine_draw_help();
 		break;
 
 	default: /* Umm... Nothing, I guess...? */ break;
@@ -875,18 +932,6 @@ void engine_draw_gameover(game_s* g)
 	usleep(1000000);
 }
 
-/** Gets a single keypress and them return to normal game. */
-void engine_wait_for_keypress()
-{
-/* windows doesnt recognize stdin */
-#if !OS_IS_WINDOWS
-	fflush(stdin); /* discard any characters pressed until now */
-#endif
-	nodelay(stdscr, FALSE);
-	getch();
-	nodelay(stdscr, TRUE);
-}
-
 void engine_refresh_all_windows()
 {
 	screen_s* s = &(engine.screen);
@@ -900,37 +945,88 @@ void engine_refresh_all_windows()
 		wrefresh(window);                  \
 	}
 	wrefresh(stdscr);
-	delwin(s->main.win);
-	delwin(s->leftmost.win);
-	delwin(s->middle_left.win);
-	delwin(s->middle_right.win);
-	delwin(s->rightmost.win);
-	engine_windows_init();
+	wrefresh(s->main.win);
+	/* delwin(s->main.win); */
+	/* delwin(s->leftmost.win); */
+	/* delwin(s->middle_left.win); */
+	/* delwin(s->middle_right.win); */
+	/* delwin(s->rightmost.win); */
+	/* engine_windows_init(); */
+
+
+}
+
+void engine_create_help()
+{
+	window_s w;
+
+	w.width  = engine.screen.main.width - engine.screen.main.width/8;
+	w.height = engine.screen.main.height/2 + 2;
+	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.screen.main.height/2 - w.height/2;
+	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w.win);
+	else
+		window_normal_borders(w.win);
+
+	engine.screen.help_container = w;
+
+	w.width  = engine.screen.help_container.width - 2;
+	w.height = engine.screen.help_container.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(engine.screen.help_container.win, w.height, w.width, w.y, w.x);
+	engine.screen.help = w;
 }
 
 /** Pops a window explaining some stuff */
 void engine_draw_help()
 {
-	window_s w; /* help screen (only shows when requested) */
+	window_s* w = NULL;
 
-	w.width  = engine.screen.main.width/2;
-	w.height = engine.screen.main.height/2;
-	w.x      = engine.screen.main.width/4;
-	w.y      = engine.screen.main.height/4;
-	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
-	wborder(w.win, '|', '|', '-', '-', '+', '+', '+', '+');
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
-	wbkgd(w.win, ' ');
+	w = &(engine.screen.help_container);
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w->win);
+	else
+		window_normal_borders(w->win);
 
-	mvwaddstr(w.win, 0, 1, "Help");
-	wrefresh(w.win);
+	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 0, 1, "Help");
+	wrefresh(w->win);
 
-	usleep(300000);
+	w = &(engine.screen.help);
+	werase(w->win);
 
-	// refresh all other windows
-	delwin(w.win);
-//	wrefresh(engine.screen.main.win);
-	engine_refresh_all_windows();
+	wattron(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	mvwaddstr(w->win, 0, 2, "Controls:\n");
+	wattron(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 1, 0,
+		   "    Enter        Return to the game\n"
+	       "    q            Quits game at any time\n"
+		   "    Left, Right  Controls the piece\n"
+	       "    Down         Soft-drop\n"
+	       "    Space        Hard-drop\n"
+	       "    c            Holds the piece\n"
+	       "    z, x         Rotates piece counter-clockwise and clockwise\n"
+	       "    p            Pauses/unpauses the game\n"
+	       "    r            Restarts the game\n");
+
+	mvwaddstr(w->win,w->height - 1, 0, "For fun, check config file '~/.yetrisrc.ini'");
+	wrefresh(w->win);
+}
+
+/** Deletes the help window.
+ *  @note This leaves the game screen on a messed-up state. Please
+ *        redraw it by calling engine_draw(g) afterwards!
+ */
+void engine_delete_help()
+{
+	delwin(engine.screen.help.win);
+
+	werase(engine.screen.main.win);
+	wrefresh(engine.screen.main.win);
 }
 
 /* Local functions (functions specific to this module) */
