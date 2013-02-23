@@ -62,20 +62,9 @@ int main(int argc, char* argv[])
 		game_handle_input(&game, c);
 		game_update(&game);
 
-		/* THIS WILL BE UNCOMMENTED SOON */
-		/* if (game.show_help) */
-		/* { */
-		/* 	engine_draw_help(); */
-		/* 	engine_wait_for_keypress(); */
-		/* 	game.show_help = false; */
-		/* } */
 		if (game.is_over)
-		{
-			game_over(&game);
-			engine_draw_gameover(&game);
-			engine_wait_for_keypress();
 			game = new_game();
-		}
+
 		engine_draw(&game);
 	}
 

@@ -28,7 +28,21 @@
 #include "board.h"
 #include "engine.h"
 #include "globals.h"
-			#include "config.h"
+#include "config.h"
+
+/* Here's the order of game termination:
+ * The player loses (board is full, on game_update()):
+ *
+ *    we call game_over()
+ *    game_over() does one-time settings
+ *    game_over() sets the game state to GAME_OVER
+ *    while the state is GAME_OVER, we wait for a specific keypress
+ *      via game_handle_input()
+ *    when we get the keypress we wanted, we set game.is_over to
+ *      true, so the main() can see the game has ended.
+ *    main() then restarts the game
+ */
+
 /** Initializes and returns a new game structure with all it's dependencies */
 game_s new_game()
 {
@@ -178,16 +192,31 @@ void game_update(game_s* g)
 			game_ghost_update(g);
 
 		if (board_is_full(&(g->board)))
-			g->is_over = true;
+			game_over(g);
+
 		break;
 
-	case PAUSED:
-		break;
+	/** Will only respond to input */
+	case PAUSED:    break;
+	case GAME_OVER:	break;
 
 	case QUITTING:
 		g->quit = true;
 		break;
 	}
+}
+
+/** Called once when the player loses.
+ *  Will set a state GAME_OVER, from where the game should
+ *  know how to react.
+ *  Usually it respawns itself or sends to the main menu.*/
+void game_over(game_s* g)
+{
+	timer_stop(&(g->global_timer));
+	game_handle_score(g);
+	engine_draw_gameover(g);
+
+	g->state = GAME_OVER;
 }
 
 /** Updates piece position on screen.
@@ -437,7 +466,7 @@ void game_handle_input(game_s* g, int input)
 		}
 		if (input == engine.input.restart)
 		{
-			g->is_over = true;
+			game_over(g);
 		}
 		else if (input == engine.input.left)
 		{
@@ -523,6 +552,15 @@ void game_handle_input(game_s* g, int input)
 		else if (input == engine.input.pause)
 			g->state = PLAYING;
 
+ 		break;
+
+	case GAME_OVER:
+		if (input == engine.input.quit)
+			g->state = QUITTING;
+
+		else if (input == '\n')
+			g->is_over = true; /* warns main() to restart the game */
+
 		break;
 
 	default: /* Welp... Do nothing, I guess... */ break;
@@ -541,12 +579,6 @@ void game_hscore_init(game_s* g)
 	}
 	else
 		fread(&(g->hscore), sizeof(g->hscore), 1, fp);
-}
-
-void game_over(game_s* g)
-{
-	timer_stop(&(g->global_timer));
-	game_handle_score(g);
 }
 
 void game_handle_score(game_s* g)

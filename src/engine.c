@@ -838,6 +838,11 @@ void engine_draw(game_s* g)
 		engine_draw_info(g); /* refresh the current time */
 		break;
 
+	case GAME_OVER:
+		engine_draw_board(&(g->board));
+		engine_draw_info(g);
+		break;
+
 	default: /* Umm... Nothing, I guess...? */ break;
 	}
 
