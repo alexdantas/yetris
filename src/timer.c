@@ -38,7 +38,7 @@
  *
  *  @note Remember to call timer_stop() to record the diff.
  */
-int timer_start (struct timert* t)
+int timer_start (timer_s* t)
 {
 	return gettimeofday (&(t->start), NULL);
 }
@@ -48,13 +48,13 @@ int timer_start (struct timert* t)
  *
  *  @note Remember to call timer_delta() to retrieve the timer diff.
  */
-int timer_stop (struct timert* t)
+int timer_stop (timer_s* t)
 {
 	return gettimeofday (&(t->end), NULL);
 }
 
  /** Returns the time diff in microseconds (1/1000000 seconds) */
-long timer_delta_useconds (struct timert* t)
+long timer_delta_useconds (timer_s* t)
 {
 	time_t      delta_seconds = (t->end.tv_sec  - t->start.tv_sec);
 	suseconds_t delta_micro   = (t->end.tv_usec - t->start.tv_usec);
@@ -63,25 +63,25 @@ long timer_delta_useconds (struct timert* t)
 }
 
  /** Returns the time diff in mili (1/1000 seconds) */
-long timer_delta_mseconds(struct timert* t)
+long timer_delta_mseconds(timer_s* t)
 {
 	return timer_delta_useconds(t) / 1000;
 }
 
  /** Returns the time diff in seconds */
-long timer_delta_seconds(struct timert* t)
+long timer_delta_seconds(timer_s* t)
 {
 	return timer_delta_useconds(t) / 1000000;
 }
 
  /** Returns the time diff in minutes (60 seconds) */
-long timer_delta_minutes(struct timert* t)
+long timer_delta_minutes(timer_s* t)
 {
 	return timer_delta_seconds(t) / 60;
 }
 
  /** Returns the time diff in hours (3600 seconds) */
-long timer_delta_hours(struct timert* t)
+long timer_delta_hours(timer_s* t)
 {
 	return timer_delta_minutes(t) / 60;
 }

@@ -177,7 +177,7 @@ int engine_windows_init()
 			window_normal_borders(w.win);
 	}
 
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->main = w;
 
 	/* leftmost */
@@ -213,7 +213,7 @@ int engine_windows_init()
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
 	}
 
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->leftmost = w;
 
 	/* middle-left */
@@ -226,7 +226,7 @@ int engine_windows_init()
 		window_fancy_borders(w.win);
 	else
 		window_normal_borders(w.win);
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->middle_left = w;
 
 	/* middle-right */
@@ -255,7 +255,7 @@ int engine_windows_init()
 		wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
 	}
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->middle_right = w;
 
 	/* right-most */
@@ -268,7 +268,7 @@ int engine_windows_init()
 		window_fancy_borders(w.win);
 	else
 		window_normal_borders(w.win);
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->rightmost = w;
 
 	/* next pieces */
@@ -277,7 +277,7 @@ int engine_windows_init()
 	w.x      = 1;
 	w.y      = 1;
 	w.win    = derwin(s->middle_right.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->next_container = w;
 
 	/* first next piece */
@@ -286,7 +286,7 @@ int engine_windows_init()
 	w.x      = 0;
 	w.y      = 0;
 	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	s->next[0] = w;
 
 	/* the rest */
@@ -302,7 +302,7 @@ int engine_windows_init()
 		w.x      = 0;
 		w.y      = s->next[i - 1].y + s->next[i - 1].height + 1 + y_offset;
 		w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-		wrefresh(w.win);
+		wnoutrefresh(w.win);
 		s->next[i] = w;
 	}
 
@@ -333,13 +333,13 @@ int engine_windows_init()
 	/* w.x      = 0; */
 	/* w.y      = s->hold.y + s->hold.height + 2; */
 	/* w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x); */
-	/* wrefresh(w.win); */
+	/* wnoutrefresh(w.win); */
 	/* s->score = w; */
 
 	w = s->info;
 	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
 	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	return 1;
 }
 
@@ -521,7 +521,9 @@ void engine_draw_board(board_s* b)
 		window_fancy_borders(engine.screen.middle_left.win);
 	else
 		window_normal_borders(engine.screen.middle_left.win);
-	wrefresh(engine.screen.middle_left.win);
+
+//	wrefresh(engine.screen.middle_left.win);
+	wnoutrefresh(engine.screen.middle_left.win);
 }
 
 /** Prints 'pause' on the board */
@@ -531,7 +533,7 @@ void engine_draw_pause()
 
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 }
 
 void engine_draw_next_pieces(game_s* g)
@@ -559,7 +561,7 @@ void engine_draw_next_pieces(game_s* g)
 				p.block[k].y -= 1;
 		}
 		engine_draw_piece(&p, w);
-		wrefresh(w);
+		wnoutrefresh(w);
 	}
 
 	w = engine.screen.middle_right.win;
@@ -578,7 +580,7 @@ void engine_draw_next_pieces(game_s* g)
 
 	wattrset(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w, 0, 1, "Next");
-	wrefresh(w);
+	wnoutrefresh(w);
 
 	window_s* win = &(engine.screen.middle_right);
 
@@ -615,12 +617,12 @@ void engine_draw_hold(game_s* g)
 	w = &(engine.screen.leftmost);
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Hold");
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 
 	w = &(engine.screen.hold);
 	werase(w->win);
 	engine_draw_piece(p, w->win);
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 
 	w = &(engine.screen.leftmost);
 	/* DRAWING BORDERS, AGGGHW */
@@ -709,7 +711,7 @@ void engine_draw_score(game_s* g)
 		mvwprintw(w.win,  8, 1, "%10d", g->score_delta);
 	}
 
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 }
 
 /** This is a very ugly function that draws blocks on the
@@ -877,7 +879,7 @@ void engine_draw_info(game_s* g)
 	else
 		window_normal_borders(w.win);
 
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 }
 
 /** Returns the color pair associated with #color.
@@ -895,44 +897,48 @@ int engine_get_color(short foreground, short background, bool is_bold)
 /** Calls all drawing routines in order */
 void engine_draw(game_s* g)
 {
-	WINDOW* w = engine.screen.board.win;
-	werase(w);
+	WINDOW* board = engine.screen.board.win;
+	werase(board);
 
 	switch (g->state)
 	{
 	case PLAYING:
 		engine_draw_board(&(g->board));
-		engine_draw_piece(&(g->piece_ghost), w);
-		engine_draw_piece(&(g->piece_current), w);
+		engine_draw_piece(&(g->piece_ghost), board);
+		engine_draw_piece(&(g->piece_current), board);
 		if (global.game_next_no > 0)
 			engine_draw_next_pieces(g);
 		if (global.game_can_hold)
 			engine_draw_hold(g);
 		engine_draw_score(g);
 		engine_draw_info(g);
+		doupdate();
 		break;
 
 	case PAUSED:
 		engine_draw_board(&(g->board));
 		engine_draw_pause();
 		engine_draw_info(g); /* refresh the current time */
+		doupdate();
 		break;
 
 	case GAME_OVER:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
+		doupdate();
 		break;
 
 	case HELP:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
 		engine_draw_help();
+		doupdate();
 		break;
 
 	default: /* Umm... Nothing, I guess...? */ break;
 	}
 
-	wrefresh(w);
+	wrefresh(board);
 }
 
 /** Draws a little animation on the board, painting all pieces white. */
@@ -954,10 +960,10 @@ void engine_draw_gameover(game_s* g)
 		}
 		/* Stop a little (50ms) before painting next line */
 		usleep(50000);
-		wrefresh(w);
+		wnoutrefresh(w);
 	}
 	/* Now wait a second, to let the feeling of defeat sink in */
-	wrefresh(w);
+	wnoutrefresh(w);
 	usleep(1000000);
 }
 
@@ -971,10 +977,10 @@ void engine_refresh_all_windows()
 			window_fancy_borders(window);  \
 		else                               \
 			window_normal_borders(window); \
-		wrefresh(window);                  \
+		wnoutrefresh(window);                  \
 	}
-	wrefresh(stdscr);
-	wrefresh(s->main.win);
+	wnoutrefresh(stdscr);
+	wnoutrefresh(s->main.win);
 	/* delwin(s->main.win); */
 	/* delwin(s->leftmost.win); */
 	/* delwin(s->middle_left.win); */
@@ -1023,7 +1029,7 @@ void engine_draw_help()
 
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Help");
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 
 	w = &(engine.screen.help);
 	werase(w->win);
@@ -1043,7 +1049,7 @@ void engine_draw_help()
 	       "    r            Restarts the game\n");
 
 	mvwaddstr(w->win,w->height - 1, 0, "For fun, check config file '~/.yetrisrc.ini'");
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 }
 
 /** Deletes the help window.
@@ -1055,7 +1061,7 @@ void engine_delete_help()
 	delwin(engine.screen.help.win);
 
 	werase(engine.screen.main.win);
-	wrefresh(engine.screen.main.win);
+	wnoutrefresh(engine.screen.main.win);
 }
 
 /* Local functions (functions specific to this module) */
@@ -1072,7 +1078,7 @@ window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
 	w.x      = x;
 	w.y      = y;
 	w.win    = derwin(main, height, width, y, x);
-	wrefresh(w.win);
+	wnoutrefresh(w.win);
 	return w;
 }
 

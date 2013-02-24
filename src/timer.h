@@ -41,19 +41,19 @@
 #include <sys/time.h>
 
 /** The timer structure */
-struct timert
+typedef struct timer_s
 {
 	struct timeval start; /**< The timer start point */
 	struct timeval end;   /**< The timer stop point */
-};
+} timer_s;
 
-int  timer_start (struct timert* t);
-int  timer_stop (struct timert* t);
-long timer_delta_useconds (struct timert* t);
-long timer_delta_mseconds(struct timert* t);
-long timer_delta_seconds(struct timert* t);
-long timer_delta_minutes(struct timert* t);
-long timer_delta_hours(struct timert* t);
+int  timer_start (timer_s* t);
+int  timer_stop (timer_s* t);
+long timer_delta_useconds (timer_s* t);
+long timer_delta_mseconds(timer_s* t);
+long timer_delta_seconds(timer_s* t);
+long timer_delta_minutes(timer_s* t);
+long timer_delta_hours(timer_s* t);
 
 #endif
 

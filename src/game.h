@@ -45,8 +45,8 @@ typedef struct game_s
 	board_s board;
 
 	/* timer-related stuff */
-	struct timert global_timer; /** Timer since the beginning of the game */
-	struct timert piece_timer; /** Timer to drop current piece */
+	timer_s global_timer; /** Timer since the beginning of the game */
+	timer_s piece_timer; /** Timer to drop current piece */
 	long gameplay_s; /** How many seconds have passed since game start */
 	long gameplay_m; /** How many minutes have passed since game start */
 	long gameplay_h; /** How many hours have passed since game start */
