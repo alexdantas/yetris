@@ -32,7 +32,7 @@
 #define INITIAL_SPEED  1000 /* miliseconds */
 
 /** All the possible game states */
-typedef enum { PLAYING, PAUSED, QUITTING, GAME_OVER, HELP } game_state;
+typedef enum { PLAYING, PAUSED, QUITTING, GAME_OVER, HELP, HSCORES } game_state;
 
 /** The main game structure. Controls all the actions related to game logic */
 typedef struct game_s
@@ -67,6 +67,7 @@ typedef struct game_s
 	bool quit;             /**< Will we quit the game */
 	bool is_over;          /**< Is the game over */
 	bool show_help;        /**< Will the help screen pop up */
+	bool show_hscores;
 	bool moved_piece_down; /**< Player forced to move down - reset drop timer */
 	bool is_combo;         /**< Is the player currently doing a combo */
 	bool is_back_to_back;  /**< Is the player currently doing a back-to-back */

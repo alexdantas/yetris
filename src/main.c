@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
 
 	engine_init();
 	atexit(engine_exit); /* no need to call it when quitting */
+	hscore_init();
 
 	game_s game = new_game();
 	engine_draw(&game);

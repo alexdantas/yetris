@@ -83,6 +83,9 @@ typedef struct screen_s
 	window_s score;
 	window_s help_container;
 	window_s help;
+	window_s hscores_container;
+	window_s hscores;
+
 } screen_s;
 
 /** Container for all info about the game engine */
@@ -151,6 +154,10 @@ void engine_create_help();
 void engine_delete_help();
 void engine_draw_line_statistics(game_s* g);
 void engine_draw_gameover_animation(game_s* g);
+
+void engine_create_hscores_window();
+void engine_draw_hscores();
+void engine_delete_hscores_window();
 
 #endif /* ENGINE_H_DEFINED */
 

@@ -63,6 +63,7 @@ game_s new_game()
 	g.quit      = false;
 	g.is_over   = false;
 	g.show_help = false;
+	g.show_hscores = false;
 	g.is_combo  = false;
 	g.moved_piece_down = false;
 	g.is_back_to_back  = false;
@@ -209,6 +210,7 @@ void game_update(game_s* g)
 	case PAUSED:    break;
 	case GAME_OVER:	break;
 	case HELP:      break;
+	case HSCORES:   break;
 
 	case QUITTING:
 		g->quit = true;
@@ -578,6 +580,11 @@ void game_handle_input(game_s* g, int input)
 			engine_create_help();
 			g->state = HELP;
 		}
+		else if (input == KEY_F(3))
+		{
+			engine_create_hscores_window();
+			g->state = HSCORES;
+		}
 
 /* DEBUG KEYS - for development tests only! */
 #ifdef _YETRIS_DEBUG
@@ -591,11 +598,11 @@ void game_handle_input(game_s* g, int input)
 			g->level--;
 			game_update_speed(g);
 		}
-		else if (input == KEY_F(3))
+		else if (input == KEY_F(6))
 		{
 			game_handle_score(g);
 		}
-		else if (input == KEY_F(4))
+		else if (input == KEY_F(7))
 		{
 			g->gameplay_m++;
 		}
@@ -654,6 +661,19 @@ void game_handle_input(game_s* g, int input)
 		if (input == '\n')
 		{
 			engine_delete_help(g);
+			g->state = PLAYING;
+			engine_draw(g);
+		}
+		else if (input == engine.input.quit)
+		{
+			g->state = QUITTING;
+		}
+		break;
+
+	case HSCORES:
+		if (input == '\n')
+		{
+			engine_delete_hscores_window(g);
 			g->state = PLAYING;
 			engine_draw(g);
 		}

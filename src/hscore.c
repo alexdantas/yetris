@@ -23,33 +23,44 @@
 #include <string.h>
 #include "hscore.h"
 
-
-couldn't make this work because it's very complicated
-
 /*
 1- how can i keep the high score between games?
 if i call new_game(), it doesnt zero the hscore and
 	it becomes trash. If i do, the hscore itself becomes
 	zero.
 	I cant seem to pass the previous high score to the next game
-
-
 */
 
 /** Starts the high score list with default values  */
-void game_score_init(game_s* g)
+void hscore_init()
 {
+	/* Zeroes all high scores */
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
-		g->scores[i] = new_score();
+		hscores[i] = new_score();
+
+	/* My defaults :) */
+	strncpy(hscores[0].name, "kure", 8);
+	strncpy(hscores[0].date, "24/02/13", 8);
+	strncpy(hscores[0].time, "20:13:55", 8);
+	hscores[0].points = 1000;
+	hscores[0].lines  = 100;
+	hscores[0].level  = 10;
 }
 
-bool is_on_hscore_list(game_s* g, int score)
+/** Creates an empty high score element */
+score_s new_score()
 {
-	if (score >= game_get_lscore_points(g))
-		return true;
-	else
-		return false;
+	score_s s;
+
+	memset(s.name, '\0', 11);
+	memset(s.date, '\0', 9);
+	memset(s.time, '\0', 9);
+	s.points = 0;
+	s.lines  = 0;
+	s.level  = 0;
+
+	return s;
 }
 
 /* int get_hscore_index(game_s* g, int score) */
@@ -65,36 +76,31 @@ bool is_on_hscore_list(game_s* g, int score)
 /* ///////////////////////////////////////////////////////////////////////////
   score handling functions */
 
-void game_handle_score(game_s* g)
+void hscore_handle(game_s* g)
 {
-	if (is_on_hscore_list(g, g->score))
-		score_set(&(g->scores[0]), "kure", g->score, g->lines, "11:02:12", g->level);
+	if (is_on_hscore_list(g->score))
+		score_set(&(hscores[0]), "kure", g->score, g->lines, g->level);
 	/* int i = get_hscore_index(g, g->score); */
 }
 
-score_s new_score()
+bool is_on_hscore_list(int score)
 {
-	score_s s;
-
-//	memset(s.name, '\0', 11);
-//	memset(s.date, '\0', 9);
-//	memset(s.time, '\0', 9);
-	s.points = 0;
-	s.lines  = 0;
-	s.level  = 0;
-
-	return s;
+	if (score >= hscore_get_lowest_points())
+		return true;
+	else
+		return false;
 }
 
-/** Saves a score based on current date */
-void score_set(score_s* s, char name[], int points, int lines, char time[], int level)
+/** Saves a score.
+ *  It automagically handles date.
+ */
+void score_set(score_s* s, char name[], int points, int lines, int level)
 {
-//	strncpy(s->name, name, 8);
+	strncpy(s->name, name, 8);
 
 	//MAKEdate!
-//	strncpy(s->date, "06/06/12", 8);
-
-//	strncpy(s->time, "11:99:22", 8);
+	strncpy(s->date, "06/06/12", 8);
+	strncpy(s->time, "11:99:22", 8);
 
 	s->points = points;
 	s->lines  = lines;
@@ -102,15 +108,15 @@ void score_set(score_s* s, char name[], int points, int lines, char time[], int 
 }
 
 /** Get the points from the first score on the list */
-int game_get_hscore_points(game_s* g)
+int hscore_get_highest_points()
 {
-	return g->scores[0].points;
+	return hscores[0].points;
 }
 
 /** Get the points from the last score on the list */
-int game_get_lscore_points(game_s* g)
+int hscore_get_lowest_points()
 {
-	return g->scores[MAX_HSCORES - 1].points;
+	return hscores[MAX_HSCORES - 1].points;
 }
 
 

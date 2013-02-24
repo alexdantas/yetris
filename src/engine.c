@@ -42,7 +42,7 @@
 #include "engine.h"
 #include "game.h"
 #include "globals.h"
-
+#include "hscore.h"
 
 /* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
 #if OS_IS_WINDOWS
@@ -934,6 +934,11 @@ void engine_draw(game_s* g)
 		engine_draw_info(g);
 		engine_draw_help();
 		break;
+	case HSCORES:
+		engine_draw_board(&(g->board));
+		engine_draw_info(g);
+		engine_draw_hscores();
+		break;
 
 	default: /* Umm... Nothing, I guess...? */ break;
 	}
@@ -975,7 +980,7 @@ void engine_draw_gameover()
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "Game Over");
 	mvwaddstr(w->win, w->height/2 + 1, 4,              "Press <Enter>");
-	mvwaddstr(w->win, w->height/2 + 2, 4,              " to restart");
+	mvwaddstr(w->win, w->height/2 + 2, 5,              "to restart");
 	wrefresh(w->win);
 }
 
@@ -1003,6 +1008,7 @@ void engine_refresh_all_windows()
 
 }
 
+/** Init the help-showing window */
 void engine_create_help()
 {
 	window_s w;
@@ -1062,6 +1068,80 @@ void engine_draw_help()
 
 	mvwaddstr(w->win,w->height - 1, 0, "For fun, check config file '~/.yetrisrc.ini'");
 	wnoutrefresh(w->win);
+}
+
+/** Init the score-showing window */
+void engine_create_hscores_window()
+{
+	window_s w;
+
+	w.width  = 56 + 2 + 2; /* 56 for all the info plus borders plus space */
+	w.height = 10 + 2 + 1; /* 10 scores plus borders plus title line*/
+	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.screen.main.height/2 - w.height/2;
+	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w.win);
+	else
+		window_normal_borders(w.win);
+
+	engine.screen.hscores_container = w;
+
+	w.width  = engine.screen.hscores_container.width - 2;
+	w.height = engine.screen.hscores_container.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(engine.screen.hscores_container.win, w.height, w.width, w.y, w.x);
+	engine.screen.hscores = w;
+}
+
+/** Pops a window showing the top highscores */
+void engine_draw_hscores()
+{
+	window_s* w = NULL;
+
+	w = &(engine.screen.hscores_container);
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w->win);
+	else
+		window_normal_borders(w->win);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 0, 1, "High Scores");
+	wnoutrefresh(w->win);
+
+	w = &(engine.screen.hscores);
+	werase(w->win);
+
+	/* This is all alligned */
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 0, 1, "     Score      Lines Level       Name     Date     Time");
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+
+	int i;
+	for (i = 0; i < MAX_HSCORES; i++)
+	{
+		if (hscores[i].points == 0)
+			mvwprintw(w->win, 1 + i, 1, "---------- ----------    -- ---------- -------- --------", hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
+		else
+			mvwprintw(w->win, 1 + i, 1, "%10d %10d    %2d %10s %8s %8s", hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
+	}
+
+
+	wnoutrefresh(w->win);
+}
+
+/** Deletes the high scores window.
+ *  @note This leaves the game screen on a messed-up state. Please
+ *        redraw it by calling engine_draw(g) afterwards!
+ */
+void engine_delete_hscores_window()
+{
+	delwin(engine.screen.hscores.win);
+
+	werase(engine.screen.main.win);
+	wnoutrefresh(engine.screen.main.win);
 }
 
 /** Deletes the help window.

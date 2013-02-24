@@ -72,7 +72,8 @@ OBJ        = obj/engine.o    obj/piece.o   \
               obj/game.o      obj/main.o    \
               obj/timer.o     obj/board.o   \
               obj/block.o     obj/globals.o \
-              obj/arguments.o obj/config.o
+              obj/arguments.o obj/config.o  \
+              obj/hscore.o
 
 MANFILE     = $(PACKAGE).6.gz
 MANPAGE     = $(LDOC)/man/$(MANFILE)

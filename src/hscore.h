@@ -23,31 +23,30 @@
 #ifndef HSCORE_H_DEFINED
 #define HSCORE_H_DEFINED
 
+#include "game.h"
+
 #define MAX_HSCORES 10 /* number of hscores to store */
 
-
-
-	score_s scores[MAX_HSCORES]; /** Top scores list, ordered */
-
-
-/* score handling stuff  * * * * * * * * * */
 typedef struct score_s
 {
-//	char name[11];
-//	char time[9]; /* hh:mm:ss */
-//	char date[9]; /* dd/mm/yy */
+	char name[11]; /* 10 chars + null */
+	char time[9];  /* hh:mm:ss */
+	char date[9];  /* dd/mm/yy */
 	int  points;
 	int  lines;
 	int  level;
 } score_s;
 
+/** Top scores list, ordered */
+score_s hscores[MAX_HSCORES];
 
-void game_score_init(game_s* g);
-void game_handle_score(game_s* g);
 score_s new_score();
-void score_set(score_s* s, char name[], int points, int lines, char time[], int level);
-int game_get_hscore_points(game_s* g);
-
+void hscore_init();
+void hscore_handle(game_s* g);
+void score_set(score_s* s, char name[], int points, int lines, int level);
+bool is_on_hscore_list(int score);
+int hscore_get_highest_points();
+int hscore_get_lowest_points();
 
 #endif /* HSCORE_H_DEFINED */
 
