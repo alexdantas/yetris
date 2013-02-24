@@ -54,6 +54,7 @@ typedef struct globals_s
 	bool screen_fancy_borders;
 	bool screen_show_outer_border;
 
+	int  fps; /** On how many frames per second is the game running? */
 	bool game_has_ghost;
 	bool game_can_hold;
 	char game_next_no; /**< How many next pieces the user can see */

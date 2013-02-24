@@ -872,6 +872,9 @@ void engine_draw_info(game_s* g)
 	wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
+	/* Showing FPS */
+//	mvwprintw(w.win, w.height - 2, 15, "FPS: %d", global.fps);
+
 	/* DRAW BORDERS AGGHWW */
 	w = engine.screen.rightmost;
 	if (global.screen_fancy_borders)
@@ -912,33 +915,29 @@ void engine_draw(game_s* g)
 			engine_draw_hold(g);
 		engine_draw_score(g);
 		engine_draw_info(g);
-		doupdate();
 		break;
 
 	case PAUSED:
 		engine_draw_board(&(g->board));
 		engine_draw_pause();
 		engine_draw_info(g); /* refresh the current time */
-		doupdate();
 		break;
 
 	case GAME_OVER:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
-		doupdate();
 		break;
 
 	case HELP:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
 		engine_draw_help();
-		doupdate();
 		break;
 
 	default: /* Umm... Nothing, I guess...? */ break;
 	}
-
-	wrefresh(board);
+	wnoutrefresh(board);
+	doupdate();
 }
 
 /** Draws a little animation on the board, painting all pieces white. */

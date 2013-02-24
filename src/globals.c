@@ -78,6 +78,8 @@ globals_s new_globals()
 		g.theme_piece_T[i] = ' ';
 	}
 
+	g.fps = 0;
+
 	g.config_filename = NULL;
 
 	return g;

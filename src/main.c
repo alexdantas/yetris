@@ -37,9 +37,6 @@
 #include "globals.h"
 #include "config.h"
 
-/* How many microseconds are there in a frame (supposing I want 60 FPS */
-#define UFPS (1000000/60)
-
 
 /** Main entry point for the game. I kept it as simple as I could. */
 int main(int argc, char* argv[])
@@ -59,9 +56,6 @@ int main(int argc, char* argv[])
 	game_s game = new_game();
 	engine_draw(&game);
 
-
-	timer_s fps_timer;
-	timer_start(&fps_timer);
 	while (!game.quit)
 	{
 		int c = engine_get_input(game.speed);
@@ -73,15 +67,6 @@ int main(int argc, char* argv[])
 			game = new_game();
 
 		engine_draw(&game);
-
-
-		timer_stop(&fps_timer);
-		if (timer_delta_useconds(&fps_timer) < UFPS)
-		{
-			long delay = UFPS - timer_delta_useconds(&fps_timer);
-			usleep(delay);
-		}
-		timer_start(&fps_timer);
 	}
 
 	return EXIT_SUCCESS;
