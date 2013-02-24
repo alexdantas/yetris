@@ -48,6 +48,9 @@ To see more info, run 'yetris --help' and 'yetris --usage'.
 	z, x                Rotates the piece counter-clockwise and clockwise
 	p                   Pauses the game
 	q                   Quits the game at any time
+	h                   Show help window.
+	F2                  Switch statistics
+	F5                  Refresh game based on config file
 
 3) Installation
 ---------------

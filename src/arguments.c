@@ -144,7 +144,10 @@ void print_help()
 	       "c           Holds the piece\n"
 	       "z, x        Rotates the piece counter-clockwise and clockwise\n"
 	       "p           Pauses the game\n"
-	       "q           Quits the game at any time\n");
+	       "q           Quits the game at any time\n"
+	       "h          Show help window.\n"
+	       "F2         Switch statistics\n"
+	       "F5         Refresh game based on config file\n");
 }
 
 void print_usage()

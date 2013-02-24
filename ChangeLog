@@ -1,5 +1,11 @@
 All the changes are documented on the git history, so here's just the major ones
 
+24-02-13 v1.5:
+	* Interface: Help window explaining controls, statistics showing
+	             misc information about the game.
+	* Gameplay: Smoother interface, color customizations, dozens of
+	            bugs fixed, Windows version improved.
+
 17-02-13 v1.4:
 	* Gameplay: config file support! Also, we can pause the game now.
 	* Interface: the player can customize some layout parts.

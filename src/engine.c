@@ -113,9 +113,9 @@ int engine_screen_init(int width, int height)
 		 * #define COLOR_WHITE	 7
 		 */
 		int i, j, k = 1;
-		for (i = COLOR_BLACK; i <= COLOR_WHITE; i++)
+		for (i = (COLOR_BLACK); i <= (COLOR_WHITE); i++)
 		{
-			for (j = COLOR_BLACK; j <= COLOR_WHITE; j++)
+			for (j = (COLOR_BLACK); j <= (COLOR_WHITE); j++)
 			{
 				init_pair(k, i, j);
 				k++;
