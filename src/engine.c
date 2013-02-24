@@ -925,6 +925,7 @@ void engine_draw(game_s* g)
 
 	case GAME_OVER:
 		engine_draw_board(&(g->board));
+		engine_draw_gameover();
 		engine_draw_info(g);
 		break;
 
@@ -940,11 +941,11 @@ void engine_draw(game_s* g)
 	doupdate();
 }
 
-/** Draws a little animation on the board, painting all pieces white. */
-void engine_draw_gameover(game_s* g)
+/** Draws a nice animation when the player loses the game */
+void engine_draw_gameover_animation(game_s* g)
 {
-	board_s* b = &(g->board);
-	WINDOW*  w = engine.screen.board.win;
+	board_s*   b = &(g->board);
+	window_s*  w = &(engine.screen.board);
 
 	int i, j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
@@ -953,17 +954,29 @@ void engine_draw_gameover(game_s* g)
 		{
 			if (b->block[i][j].type != EMPTY)
 			{
-				b->block[i][j].color = engine_get_color(COLOR_BLACK, COLOR_WHITE, false);
-				engine_draw_block(&(b->block[i][j]), w);
+				b->block[i][j].color = engine_get_color(COLOR_WHITE, COLOR_WHITE, false);
+				engine_draw_block(&(b->block[i][j]), w->win);
 			}
 		}
 		/* Stop a little (50ms) before painting next line */
 		usleep(50000);
-		wnoutrefresh(w);
+		wrefresh(w->win);
 	}
+	wrefresh(w->win);
 	/* Now wait a second, to let the feeling of defeat sink in */
-	wnoutrefresh(w);
-	usleep(1000000);
+//	usleep(1000000);
+}
+
+/** Prints a message telling the player that he has lost the game */
+void engine_draw_gameover()
+{
+	window_s* w = &(engine.screen.board);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "Game Over");
+	mvwaddstr(w->win, w->height/2 + 1, 4,              "Press <Enter>");
+	mvwaddstr(w->win, w->height/2 + 2, 4,              " to restart");
+	wrefresh(w->win);
 }
 
 void engine_refresh_all_windows()

@@ -31,7 +31,7 @@
 #include "config.h"
 
 /* Here's the order of game termination:
- * The player loses (board is full, on game_update()):
+ * The player loses (board is full, on update()):
  *
  *    we call game_over()
  *    game_over() does one-time settings
@@ -224,7 +224,8 @@ void game_over(game_s* g)
 {
 	timer_stop(&(g->global_timer));
 	game_handle_score(g);
-	engine_draw_gameover(g);
+	if (global.game_has_game_over_animation)
+		engine_draw_gameover_animation(g);
 
 	g->state = GAME_OVER;
 }

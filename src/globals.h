@@ -61,6 +61,7 @@ typedef struct globals_s
 	bool game_has_statistics;
 	bool game_has_line_statistics;
 	char game_random_algorithm;
+	bool game_has_game_over_animation;
 	int  game_line_clear_timeout; /**< Pause (microseconds) during line clear */
 
 	bool theme_piece_has_colors;

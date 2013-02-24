@@ -101,7 +101,7 @@ void config_parse(char* filename)
 	set_bool_if_valid(g->theme_ghost_has_colors, "theming:ghost_has_color");
 	set_bool_if_valid(g->theme_show_pivot_block, "theming:show_pivot");
 	set_bool_if_valid(g->theme_lock_piece_color, "theming:locked_piece_color");
-
+	set_bool_if_valid(g->game_has_game_over_animation, "gameplay:game_over_animation");
 
 /* This other macro sets the integer variable ONLY if
  * specified condition checks.
@@ -249,6 +249,10 @@ void config_create_default(char* filename)
 		"#  2: dummy random (srand)\n"
 		"# default: 1\n"
 		"random = 1\n"
+		"\n"
+		"# Enable/disable animation when the player loses\n"
+		"# default: true\n"
+		"game_over_animation = true\n"
 		"\n"
 		"[interface]\n"
 		"\n"

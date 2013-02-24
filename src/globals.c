@@ -41,6 +41,7 @@ globals_s new_globals()
 	g.game_has_line_statistics= false;
 	g.game_random_algorithm   = 1;
 	g.game_line_clear_timeout = 200000;
+	g.game_has_game_over_animation = true;
 
 	/* the hard-coded default appearances */
 	g.theme_piece[0]      = ' ';
