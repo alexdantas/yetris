@@ -623,16 +623,30 @@ void game_handle_input(game_s* g, int input)
 				global.game_has_line_statistics = false;
 			}
 		}
-
  		break;
 
 	case GAME_OVER:
 		if (input == engine.input.quit)
+		{
 			g->state = QUITTING;
-
+		}
 		else if (input == '\n')
+		{
 			g->is_over = true; /* warns main() to restart the game */
-
+		}
+		else if (input == KEY_F(2))
+		{
+			if (global.game_has_statistics)
+			{
+				global.game_has_statistics = false;
+				global.game_has_line_statistics = true;
+			}
+			else
+			{
+				global.game_has_statistics = true;
+				global.game_has_line_statistics = false;
+			}
+		}
 		break;
 
 	case HELP:
