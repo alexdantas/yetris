@@ -48,6 +48,8 @@
 /** Game-related global variables */
 typedef struct globals_s
 {
+	char game_version[4];
+
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
 	bool screen_use_colors;

@@ -80,8 +80,23 @@ void hscore_handle(game_s* g)
 {
 	if (is_on_hscore_list(g->score))
 		score_set(&(hscores[0]), "kure", g->score, g->lines, g->level);
-	/* int i = get_hscore_index(g, g->score); */
 }
+
+/* int hscore_get_index_of(int score) */
+/* { */
+/* 	bool bigger = false; */
+/* 	int	i; */
+/* 	for (i = MAX_HSCORES; i > 0; i--) */
+/* 	{ */
+/* 		if (bigger) */
+/* 			if (points < hscores[i].points) */
+/* 				return i; */
+
+/* 		if (points > hscores[i].points) */
+/* 			bigger = true; */
+/* 	} */
+/* 	return i; */
+/* } */
 
 bool is_on_hscore_list(int score)
 {
@@ -119,4 +134,64 @@ int hscore_get_lowest_points()
 	return hscores[MAX_HSCORES - 1].points;
 }
 
+void hscore_load()
+{
+	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
+	FILE* fp = fopen(SCORE_PATH, "rb");
+	if (!fp)
+	{
+		/* score already has defaults */
+		hscore_save();
+		return;
+	}
+
+	/* To ensure portability, I gotta save the version number */
+	fread(global.game_version, sizeof(char), 3, fp);
+	global.game_version[3] = '\0';
+
+	if (strcmp(global.game_version, VERSION) != 0)
+	{
+		exit(EXIT_FAILURE);
+		// wHAT
+	}
+
+	int i;
+	for (i = 0; i < MAX_HSCORES; i++)
+	{
+		fread(hscores[i].name, sizeof(char), 11, fp);
+		fread(hscores[i].time, sizeof(char), 9,  fp);
+		fread(hscores[i].date, sizeof(char), 9,  fp);
+
+		fread((&hscores[i].points), sizeof(int), 1, fp);
+		fread((&hscores[i].lines),  sizeof(int), 1, fp);
+		fread((&hscores[i].level),  sizeof(int), 1, fp);
+	}
+	fclose(fp);
+}
+
+void hscore_save()
+{
+	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
+	FILE* fp = fopen(SCORE_PATH, "wb");
+	if (!fp)
+		return;
+
+	/* To ensure portability, I gotta save the version number */
+	fwrite(VERSION, sizeof(char), 3, fp);
+
+	int i;
+	for (i = 0; i < MAX_HSCORES; i++)
+	{
+		fwrite(hscores[i].name, sizeof(char), 11, fp);
+		fwrite(hscores[i].time, sizeof(char), 9,  fp);
+		fwrite(hscores[i].date, sizeof(char), 9,  fp);
+
+		fwrite((&hscores[i].points), sizeof(int), 1, fp);
+		fwrite((&hscores[i].lines),  sizeof(int), 1, fp);
+		fwrite((&hscores[i].level),  sizeof(int), 1, fp);
+	}
+
+	fflush(fp);
+	fclose(fp);
+}
 

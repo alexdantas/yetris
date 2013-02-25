@@ -29,6 +29,7 @@
 #include "engine.h"
 #include "globals.h"
 #include "config.h"
+#include "hscore.h"
 
 /* Here's the order of game termination:
  * The player loses (board is full, on update()):
@@ -225,7 +226,8 @@ void game_update(game_s* g)
 void game_over(game_s* g)
 {
 	timer_stop(&(g->global_timer));
-	game_handle_score(g);
+	hscore_handle(g);
+	hscore_save();
 	if (global.game_has_game_over_animation)
 		engine_draw_gameover_animation(g);
 
@@ -600,7 +602,7 @@ void game_handle_input(game_s* g, int input)
 		}
 		else if (input == KEY_F(6))
 		{
-			game_handle_score(g);
+			hscore_handle(g);
 		}
 		else if (input == KEY_F(7))
 		{

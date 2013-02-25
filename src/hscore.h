@@ -47,6 +47,8 @@ void score_set(score_s* s, char name[], int points, int lines, int level);
 bool is_on_hscore_list(int score);
 int hscore_get_highest_points();
 int hscore_get_lowest_points();
+void hscore_save();
+void hscore_load();
 
 #endif /* HSCORE_H_DEFINED */
 

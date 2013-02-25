@@ -700,7 +700,7 @@ void engine_draw_score(game_s* g)
 	mvwaddstr(w.win, 12, 1, "Level");
 
 	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
-	mvwprintw(w.win, 4,  1, "%10d", g->hscore);
+	mvwprintw(w.win, 4,  1, "%10d", hscores[0].points);
 	mvwprintw(w.win, 7,  1, "%10d", g->score);
 	mvwprintw(w.win, 10, 1, "%10d", g->lines);
 	mvwprintw(w.win, 13, 9, "%02d", g->level);
@@ -1114,7 +1114,7 @@ void engine_draw_hscores()
 	w = &(engine.screen.hscores);
 	werase(w->win);
 
-	/* This is all alligned */
+	/* This is all well-alligned, think twice before changing a single char */
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "     Score      Lines Level       Name     Date     Time");
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
@@ -1123,11 +1123,11 @@ void engine_draw_hscores()
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
 		if (hscores[i].points == 0)
-			mvwprintw(w->win, 1 + i, 1, "---------- ----------    -- ---------- -------- --------", hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
+			mvwaddstr(w->win, 1 + i, 1, "---------- ----------    -- ---------- -------- --------");
 		else
-			mvwprintw(w->win, 1 + i, 1, "%10d %10d    %2d %10s %8s %8s", hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
+			mvwprintw(w->win, 1 + i, 1, "%10d %10d    %2d %10s %8s %8s",
+					  hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
 	}
-
 
 	wnoutrefresh(w->win);
 }

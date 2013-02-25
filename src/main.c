@@ -36,7 +36,7 @@
 #include "game.h"
 #include "globals.h"
 #include "config.h"
-
+#include "hscore.h"
 
 /** Main entry point for the game. I kept it as simple as I could. */
 int main(int argc, char* argv[])
@@ -53,6 +53,7 @@ int main(int argc, char* argv[])
 	engine_init();
 	atexit(engine_exit); /* no need to call it when quitting */
 	hscore_init();
+	hscore_load();
 
 	game_s game = new_game();
 	engine_draw(&game);
