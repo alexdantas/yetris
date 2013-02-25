@@ -22,7 +22,7 @@
 
 #include <string.h>
 #include "hscore.h"
-
+#include <time.h>
 /*
 1- how can i keep the high score between games?
 if i call new_game(), it doesnt zero the hscore and
@@ -78,8 +78,12 @@ score_s new_score()
 
 void hscore_handle(game_s* g)
 {
+	char* name = getenv("USER");
+	if (!name)
+		name = "player";
+
 	if (is_on_hscore_list(g->score))
-		score_set(&(hscores[0]), "kure", g->score, g->lines, g->level);
+		score_set(&(hscores[0]), name, g->score, g->lines, g->level);
 }
 
 /* int hscore_get_index_of(int score) */
@@ -113,9 +117,14 @@ void score_set(score_s* s, char name[], int points, int lines, int level)
 {
 	strncpy(s->name, name, 8);
 
-	//MAKEdate!
-	strncpy(s->date, "06/06/12", 8);
-	strncpy(s->time, "11:99:22", 8);
+	/* Another hack to get the current date and time
+	 * Format: Wed Jun 30 21:49:08 1993\n
+	 */
+	time_t cur_time;
+	time(&cur_time);
+
+	strncpy(s->date, "DD/MM/YY", 8);
+	strncpy(s->time, (ctime(&cur_time) + 11), 8);
 
 	s->points = points;
 	s->lines  = lines;
