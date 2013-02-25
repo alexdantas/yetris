@@ -123,7 +123,7 @@ void score_set(score_s* s, char name[], int points, int lines, int level)
 	time_t cur_time;
 	time(&cur_time);
 
-	strncpy(s->date, "DD/MM/YY", 8);
+	strncpy(s->date, "dd/mm/yy", 8);
 	strncpy(s->time, (ctime(&cur_time) + 11), 8);
 
 	s->points = points;
@@ -166,14 +166,30 @@ bool hscore_load()
 		}                                                           \
 	}
 
-	/* To ensure portability, I gotta save the version number */
+	/* The following is to ensure portability.
+	 * Every time the game saves the score, it also saves the version
+	 * number into the hscore file.
+	 * This way, different implementations of the hscore file will
+	 * not mess up with each other.
+	 * I chose to save the first 3 characters of the version number.
+	 * For instance, if the version is 1.51, the game saves the
+	 * string "1.5".
+	 * I must compare it with the current version and if they're
+	 * different, I should convert or reset the hscore file.
+	 */
 	reset_hscore_file_unless_read(global.game_version, sizeof(char), 3, fp)
 	global.game_version[3] = '\0';
 
-	if (strcmp(global.game_version, VERSION) != 0)
+	char version_check[4];
+	memset(version_check, '\0', 4);
+	strncpy(version_check, VERSION, 3);
+
+	if (strcmp(global.game_version, version_check) != 0)
 	{
 		// should i make a copy and do a backup?
-		exit(EXIT_FAILURE);
+		// exit(EXIT_FAILURE);
+		hscore_reset();
+		return false;
 		// wHAT
 	}
 
@@ -195,10 +211,9 @@ bool hscore_load()
 /** Zeroes the contents of the high score file */
 void hscore_reset()
 {
-	/* FILE* fp = fopen(SCORE_PATH, "wb"); */
-	/* if (!fp) */
-	/* 	fclose(fp); */
-	exit(EXIT_FAILURE);
+	FILE* fp = fopen(SCORE_PATH, "wb");
+	if (fp)
+		fclose(fp);
 }
 
 /** Writes the high scores into the file */
