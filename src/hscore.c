@@ -143,23 +143,36 @@ int hscore_get_lowest_points()
 	return hscores[MAX_HSCORES - 1].points;
 }
 
-void hscore_load()
+bool hscore_load()
 {
 	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
 	FILE* fp = fopen(SCORE_PATH, "rb");
 	if (!fp)
 	{
-		/* score already has defaults */
-		hscore_save();
-		return;
+		hscore_save(); /* score already has defaults so ill just save */
+		return false;
+	}
+
+/* This resets the high score file and returns unless fread() everything.
+ * This macro receives the same arguments as fread(), It just checks
+ * to see if everything has been written just fine.
+ */
+#define reset_hscore_file_unless_read(what, size, ammount, where)	\
+	{                                                               \
+		if (fread(what, size, ammount, where) != ammount)           \
+		{                                                           \
+			hscore_reset();                                         \
+			return false;											\
+		}                                                           \
 	}
 
 	/* To ensure portability, I gotta save the version number */
-	fread(global.game_version, sizeof(char), 3, fp);
+	reset_hscore_file_unless_read(global.game_version, sizeof(char), 3, fp)
 	global.game_version[3] = '\0';
 
 	if (strcmp(global.game_version, VERSION) != 0)
 	{
+		// should i make a copy and do a backup?
 		exit(EXIT_FAILURE);
 		// wHAT
 	}
@@ -167,40 +180,66 @@ void hscore_load()
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		fread(hscores[i].name, sizeof(char), 11, fp);
-		fread(hscores[i].time, sizeof(char), 9,  fp);
-		fread(hscores[i].date, sizeof(char), 9,  fp);
+		reset_hscore_file_unless_read(hscores[i].name, sizeof(char), 11, fp);
+		reset_hscore_file_unless_read(hscores[i].time, sizeof(char), 9,  fp);
+		reset_hscore_file_unless_read(hscores[i].date, sizeof(char), 9,  fp);
 
-		fread((&hscores[i].points), sizeof(int), 1, fp);
-		fread((&hscores[i].lines),  sizeof(int), 1, fp);
-		fread((&hscores[i].level),  sizeof(int), 1, fp);
+		reset_hscore_file_unless_read((&hscores[i].points), sizeof(int), 1, fp);
+		reset_hscore_file_unless_read((&hscores[i].lines),  sizeof(int), 1, fp);
+		reset_hscore_file_unless_read((&hscores[i].level),  sizeof(int), 1, fp);
 	}
 	fclose(fp);
+	return true;
 }
 
-void hscore_save()
+/** Zeroes the contents of the high score file */
+void hscore_reset()
+{
+	/* FILE* fp = fopen(SCORE_PATH, "wb"); */
+	/* if (!fp) */
+	/* 	fclose(fp); */
+	exit(EXIT_FAILURE);
+}
+
+/** Writes the high scores into the file */
+bool hscore_save()
 {
 	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
 	FILE* fp = fopen(SCORE_PATH, "wb");
 	if (!fp)
-		return;
+		return false;
+
+
+/* This returns false unless fwrite() has written everything.
+ * This macro receives the same arguments as fwrite(), It just checks
+ * to see if everything has been written just fine.
+ */
+#define return_false_unless_written(what, size, ammount, where)	\
+	{                                                           \
+		if (fwrite(what, size, ammount, where) != ammount)	    \
+			return false;                                       \
+	}
 
 	/* To ensure portability, I gotta save the version number */
-	fwrite(VERSION, sizeof(char), 3, fp);
+	return_false_unless_written(VERSION, sizeof(char), 3, fp);
 
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		fwrite(hscores[i].name, sizeof(char), 11, fp);
-		fwrite(hscores[i].time, sizeof(char), 9,  fp);
-		fwrite(hscores[i].date, sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].name, sizeof(char), 11, fp);
+		return_false_unless_written(hscores[i].time, sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].date, sizeof(char), 9,  fp);
 
-		fwrite((&hscores[i].points), sizeof(int), 1, fp);
-		fwrite((&hscores[i].lines),  sizeof(int), 1, fp);
-		fwrite((&hscores[i].level),  sizeof(int), 1, fp);
+		return_false_unless_written((&hscores[i].points), sizeof(int), 1, fp);
+		return_false_unless_written((&hscores[i].lines),  sizeof(int), 1, fp);
+		return_false_unless_written((&hscores[i].level),  sizeof(int), 1, fp);
 	}
+
+	// could i just write everything up?
+	//	return_false_unless_written(hscores, sizeof(score_s), MAX_HSCORES, fp);
 
 	fflush(fp);
 	fclose(fp);
+	return true;
 }
 
