@@ -608,6 +608,10 @@ void game_handle_input(game_s* g, int input)
 		{
 			g->gameplay_m++;
 		}
+		else if (input == KEY_F(8))
+		{
+			hscore_reset();
+		}
 #endif
 		break;
 
@@ -622,16 +626,7 @@ void game_handle_input(game_s* g, int input)
 		}
 		else if (input == KEY_F(2))
 		{
-			if (global.game_has_statistics)
-			{
-				global.game_has_statistics = false;
-				global.game_has_line_statistics = true;
-			}
-			else
-			{
-				global.game_has_statistics = true;
-				global.game_has_line_statistics = false;
-			}
+			game_switch_statistics();
 		}
  		break;
 
@@ -720,6 +715,21 @@ void game_hscore_save(game_s* g)
 	{
 		fwrite(&(g->hscore), sizeof(g->hscore), 1, fp);
 		fflush(fp);
+	}
+}
+
+/** Switches what statistics appear on the info screen. */
+void game_switch_statistics()
+{
+	if (global.game_has_statistics)
+	{
+		global.game_has_statistics = false;
+		global.game_has_line_statistics = true;
+	}
+	else
+	{
+		global.game_has_statistics = true;
+		global.game_has_line_statistics = false;
 	}
 }
 

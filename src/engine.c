@@ -1075,7 +1075,7 @@ void engine_create_hscores_window()
 {
 	window_s w;
 
-	w.width  = 56 + 2 + 2; /* 56 for all the info plus borders plus space */
+	w.width  = 67 + 2 + 2; /* 66 for all the info plus borders plus space */
 	w.height = 10 + 2 + 1; /* 10 scores plus borders plus title line*/
 	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
 	w.y      = engine.screen.main.height/2 - w.height/2;
@@ -1116,17 +1116,17 @@ void engine_draw_hscores()
 
 	/* This is all well-alligned, think twice before changing a single char */
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
-	mvwaddstr(w->win, 0, 1, "_____Score _____Lines Level ______Name ____Date ____Time");
+	mvwaddstr(w->win, 0, 1, "     Score      Lines Level    Timer       Name       Date     Time");
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
 
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		if (hscores[i].points == 0)
-			mvwaddstr(w->win, 1 + i, 1, "---------- ----------    -- ---------- -------- --------");
+		if (hscores[i].points == 0) /* empty score record */
+			mvwaddstr(w->win, 1 + i, 1, "---------- ----------    -- -------- ---------- ---------- --------");
 		else
-			mvwprintw(w->win, 1 + i, 1, "%10d %10d    %2d %10s %8s %8s",
-					  hscores[0].points, hscores[0].lines, hscores[0].level, hscores[0].name, hscores[0].date, hscores[0].time);
+			mvwprintw(w->win, 1 + i, 1, "%10d %10d    %2d %8s %10s %10s %8s",
+					  hscores[i].points, hscores[i].lines, hscores[i].level, hscores[i].timer, hscores[i].name, hscores[i].date, hscores[i].time);
 	}
 
 	wnoutrefresh(w->win);

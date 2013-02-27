@@ -29,7 +29,7 @@ SHELL	= /bin/sh
 
 # General Info
 PACKAGE = yetris
-VERSION = 1.5
+VERSION = 1.6
 DATE	= Feb2013
 
 # Local source code information

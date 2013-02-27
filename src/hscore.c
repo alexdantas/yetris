@@ -20,9 +20,15 @@
  * mailto:   alex.dantas92@gmail.com
  */
 
+#include <stdio.h>
 #include <string.h>
-#include "hscore.h"
 #include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "hscore.h"
+#include "engine.h"
+
+
 /*
 1- how can i keep the high score between games?
 if i call new_game(), it doesnt zero the hscore and
@@ -31,51 +37,6 @@ if i call new_game(), it doesnt zero the hscore and
 	I cant seem to pass the previous high score to the next game
 */
 
-/** Starts the high score list with default values  */
-void hscore_init()
-{
-	/* Zeroes all high scores */
-	int i;
-	for (i = 0; i < MAX_HSCORES; i++)
-		hscores[i] = new_score();
-
-	/* My defaults :) */
-	strncpy(hscores[0].name, "kure", 8);
-	strncpy(hscores[0].date, "24/02/13", 8);
-	strncpy(hscores[0].time, "20:13:55", 8);
-	hscores[0].points = 1000;
-	hscores[0].lines  = 100;
-	hscores[0].level  = 10;
-}
-
-/** Creates an empty high score element */
-score_s new_score()
-{
-	score_s s;
-
-	memset(s.name, '\0', 11);
-	memset(s.date, '\0', 9);
-	memset(s.time, '\0', 9);
-	s.points = 0;
-	s.lines  = 0;
-	s.level  = 0;
-
-	return s;
-}
-
-/* int get_hscore_index(game_s* g, int score) */
-/* { */
-/* 	For (i = 10; i > 0; i--) */
-/* 	{ */
-/* 		if (score < g->scores[i]) */
-/* 			return i; */
-/* 	} */
-/* 	return i; */
-/* } */
-
-/* ///////////////////////////////////////////////////////////////////////////
-  score handling functions */
-
 void hscore_handle(game_s* g)
 {
 	char* name = getenv("USER");
@@ -83,24 +44,141 @@ void hscore_handle(game_s* g)
 		name = "player";
 
 	if (is_on_hscore_list(g->score))
-		score_set(&(hscores[0]), name, g->score, g->lines, g->level);
+	{
+		score_s s;
+		score_set(&s, name, g->score, g->lines, g->level, g->gameplay_h, g->gameplay_m, g->gameplay_s);
+		hscore_insert(&s);
+	}
 }
 
-/* int hscore_get_index_of(int score) */
-/* { */
-/* 	bool bigger = false; */
-/* 	int	i; */
-/* 	for (i = MAX_HSCORES; i > 0; i--) */
-/* 	{ */
-/* 		if (bigger) */
-/* 			if (points < hscores[i].points) */
-/* 				return i; */
+/** Includes the score #s at it's according position on the global array.
+ *  Also shifts any score after the one included.
+ */
+void hscore_insert(score_s* s)
+{
+	int index = get_hscore_index(s->points);
+	if (index < 0)
+		return;
 
-/* 		if (points > hscores[i].points) */
-/* 			bigger = true; */
-/* 	} */
-/* 	return i; */
-/* } */
+	int i;
+	for (i = (MAX_HSCORES - 1); i >= 0; i--)
+	{
+		if (i == index)
+		{
+			hscore_copy(&(hscores[i]), s);
+			break;
+		}
+		hscore_copy(&(hscores[i]), &(hscores[i - 1]));
+	}
+}
+
+/** Returns where the score will be on the global array */
+int get_hscore_index(int score)
+{
+	if (!is_on_hscore_list(score))
+		return -1;
+
+	if (score > hscores[0].points)
+		return 0;
+
+	int i;
+	for (i = (MAX_HSCORES - 1); i > 0; i--)
+	{
+		if (score >= hscores[i].points)
+			if (score < hscores[i - 1].points)
+				return i;
+	}
+
+	/* what? */
+	return -1;
+}
+
+/** Starts the high score list with default values  */
+void hscore_init()
+{
+	/* Zeroes all high scores */
+	int i;
+	for (i = 0; i < MAX_HSCORES; i++)
+//		hscores[i] = new_score();
+	{
+		score_s s = new_score();
+		hscore_copy(&(hscores[i]), &s);
+	}
+
+	/* My defaults :) */
+	strncpy(hscores[0].name,  "kure", 10);
+	strncpy(hscores[0].date,  "21/12/2012", 10);
+	strncpy(hscores[0].time,  "13:37:00", 8);
+	strncpy(hscores[0].timer, "00:06:66", 8);
+	hscores[0].points = 5000;
+	hscores[0].lines  = 50;
+	hscores[0].level  = 5;
+}
+
+/** Creates an empty high score element */
+score_s new_score()
+{
+	score_s s;
+
+	memset(s.name,  '\0', 11);
+	memset(s.time,  '\0', 9);
+	memset(s.date,  '\0', 11);
+	memset(s.timer, '\0', 9);
+	s.points = 0;
+	s.lines  = 0;
+	s.level  = 0;
+
+	return s;
+}
+
+void hscore_copy(score_s* dest, score_s* orig)
+{
+	strncpy(dest->name,  orig->name, 11);
+	strncpy(dest->time,  orig->time, 9);
+	strncpy(dest->date,  orig->date, 11);
+	strncpy(dest->timer, orig->timer, 9);
+	dest->points = orig->points;
+	dest->lines  = orig->lines;
+	dest->level  = orig->level;
+}
+
+/** Saves a score.
+ *  It automagically handles date.
+ */
+void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds)
+{
+	strncpy(s->name, name, 11);
+
+	/* current gameplay timer - how long the player lasted on the game */
+	snprintf(s->timer, 9, "%02d:%02d:%02d", hours, minutes, seconds);
+
+	/* The following stores the date and time on #score
+	 * I basically broke down the current time into a struct
+	 * with components corresponding to time elements (day, month...).
+	 * See 'man localtime' for more info.
+	 */
+	time_t raw_time = time(NULL);
+	struct tm* cur_time = localtime(&(raw_time));
+	char tmp_date[11]; memset(tmp_date, '\0', 11);
+	char tmp_time[9]; memset(tmp_time, '\0', 9);
+
+	snprintf(tmp_date, 11, "%02d/%02d/%04d",
+			  cur_time->tm_mday,
+			 (cur_time->tm_mon + 1), /* starts from zero */
+			 (cur_time->tm_year) + 1900); /* no of years since 1900 */
+
+	snprintf(tmp_time, 9, "%02d:%02d:%02d",
+			  cur_time->tm_hour,
+			  cur_time->tm_min,
+			  cur_time->tm_sec);
+
+	strncpy(s->date, tmp_date, 10); s->date[10] = '\0';
+	strncpy(s->time, tmp_time, 8);
+
+	s->points = points;
+	s->lines  = lines;
+	s->level  = level;
+}
 
 bool is_on_hscore_list(int score)
 {
@@ -108,27 +186,6 @@ bool is_on_hscore_list(int score)
 		return true;
 	else
 		return false;
-}
-
-/** Saves a score.
- *  It automagically handles date.
- */
-void score_set(score_s* s, char name[], int points, int lines, int level)
-{
-	strncpy(s->name, name, 8);
-
-	/* Another hack to get the current date and time
-	 * Format: Wed Jun 30 21:49:08 1993\n
-	 */
-	time_t cur_time;
-	time(&cur_time);
-
-	strncpy(s->date, "dd/mm/yy", 8);
-	strncpy(s->time, (ctime(&cur_time) + 11), 8);
-
-	s->points = points;
-	s->lines  = lines;
-	s->level  = level;
 }
 
 /** Get the points from the first score on the list */
@@ -190,15 +247,15 @@ bool hscore_load()
 		// exit(EXIT_FAILURE);
 		hscore_reset();
 		return false;
-		// wHAT
 	}
 
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		reset_hscore_file_unless_read(hscores[i].name, sizeof(char), 11, fp);
-		reset_hscore_file_unless_read(hscores[i].time, sizeof(char), 9,  fp);
-		reset_hscore_file_unless_read(hscores[i].date, sizeof(char), 9,  fp);
+		reset_hscore_file_unless_read(hscores[i].name,  sizeof(char), 11, fp);
+		reset_hscore_file_unless_read(hscores[i].time,  sizeof(char), 9,  fp);
+		reset_hscore_file_unless_read(hscores[i].date,  sizeof(char), 11,  fp);
+		reset_hscore_file_unless_read(hscores[i].timer, sizeof(char), 9,  fp);
 
 		reset_hscore_file_unless_read((&hscores[i].points), sizeof(int), 1, fp);
 		reset_hscore_file_unless_read((&hscores[i].lines),  sizeof(int), 1, fp);
@@ -213,7 +270,10 @@ void hscore_reset()
 {
 	FILE* fp = fopen(SCORE_PATH, "wb");
 	if (fp)
+	{
+		fflush(fp);
 		fclose(fp);
+	}
 }
 
 /** Writes the high scores into the file */
@@ -241,9 +301,10 @@ bool hscore_save()
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		return_false_unless_written(hscores[i].name, sizeof(char), 11, fp);
-		return_false_unless_written(hscores[i].time, sizeof(char), 9,  fp);
-		return_false_unless_written(hscores[i].date, sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].name,  sizeof(char), 11, fp);
+		return_false_unless_written(hscores[i].time,  sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].date,  sizeof(char), 11, fp);
+		return_false_unless_written(hscores[i].timer, sizeof(char), 9,  fp);
 
 		return_false_unless_written((&hscores[i].points), sizeof(int), 1, fp);
 		return_false_unless_written((&hscores[i].lines),  sizeof(int), 1, fp);

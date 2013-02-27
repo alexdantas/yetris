@@ -34,8 +34,8 @@ typedef struct score_s
 {
 	char name[11]; /**< Name of the player (10 chars + null) */
 	char time[9];  /**< Time when this score was recorded (hh:mm:ss) */
-	char date[9];  /**< Date when this score was recorded (dd/mm/yy) */
-//	char timer[9]; /**< Ammount of time the game lasted (hh:mm:ss) */
+	char date[11]; /**< Date when this score was recorded (dd/mm/yyyy) */
+	char timer[9]; /**< Ammount of time the game lasted (hh:mm:ss) */
 	int  points;   /**< How many points the player has scored */
 	int  lines;    /**< How many lines the player cleared */
 	int  level;    /**< On what level the player was when he lost */
@@ -47,13 +47,16 @@ score_s hscores[MAX_HSCORES];
 score_s new_score();
 void hscore_init();
 void hscore_handle(game_s* g);
-void score_set(score_s* s, char name[], int points, int lines, int level);
+void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds);
 bool is_on_hscore_list(int score);
-int hscore_get_highest_points();
-int hscore_get_lowest_points();
+int  hscore_get_highest_points();
+int  hscore_get_lowest_points();
 bool hscore_save();
 bool hscore_load();
 void hscore_reset();
+void hscore_insert(score_s* s);
+int  get_hscore_index(int score);
+void hscore_copy(score_s* dest, score_s* orig);
 
 #endif /* HSCORE_H_DEFINED */
 

@@ -13,8 +13,10 @@ README Index
 	7)  Advanced Uninstallation
 	8)  Dependencies
 	9)  Main Directory Structure
-	10) Credits/Contact
-	11) License
+	10) Hacking
+	11) Contact
+	12) Credits
+	13) License
 
 Note:  Make sure you have libncurses5-dev. See 'Dependences' for more details.
 
@@ -103,7 +105,11 @@ src/      All of the source code files
 doc/index.html    Complete source code documentation
 doc/yetris.6.gz   The manpage
 
-10) Contact
+10) Hacking
+-----------
+I'll add more info about development here soon, so stay tuned.
+
+11) Contact
 -----------
 Hello there, I'm Alexandre Dantas (kure)!
 
@@ -118,12 +124,12 @@ yetris main page:   http://www.alexdantas.net/projects/yetris/
 
 I'd appreciate any commentary - even if it's just "Hello, I play your game!".
 
-10) Credits
+12) Credits
 -----------
 I'd like to thank you for playing this game. Hope you liked it!
 Every download is an honour to me.
 
-11) License
+13) License
 -----------
  yetris - Customizable Tetris(tm) on the console.
  Copyright (C) 2013  Alexandre Dantas (kure)

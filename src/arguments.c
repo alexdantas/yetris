@@ -25,6 +25,7 @@
 #include <getopt.h> /* getopt_long() */
 #include "arguments.h"
 #include "globals.h"
+#include "hscore.h"
 
 /** Handles all the commandline arguments.
  */
@@ -43,6 +44,7 @@ void args_handle (int argc, char* argv[])
 		{"no-hold",   no_argument, NULL, 'o'},
 		{"no-fancy",  no_argument, NULL, 'y'},
 		{"no-outer",  no_argument, NULL, 'b'},
+		{"reset-hscores",  no_argument, NULL, 'r'},
 		{"next",      required_argument, NULL, 'x'},
 		/* The last element must be all zeroes */
 		{0, 0, 0, 0}
@@ -52,7 +54,7 @@ void args_handle (int argc, char* argv[])
 	/* The character for comparison */
 	int c = 0;
 	/* All short options - place a colon after it if requires argument */
-	char short_options[] = "hucngoybvlx:";
+	char short_options[] = "hucngoybvlrx:";
 
 	/* We keep checking the arguments untill they run out (c == -1) */
 	while (c != -1)
@@ -90,6 +92,10 @@ void args_handle (int argc, char* argv[])
 				exit(EXIT_FAILURE);
 			}
 			}
+			break;
+
+		case 'r':
+			hscore_reset();
 			break;
 
 		case '?':
@@ -156,17 +162,18 @@ void print_usage()
 		   "\n"
 		   "	yetris [options]\n"
 		   "\n"
-	       "	-h, --help       Show help about the program.\n"
-	       "	-u, --usage      Display this text.\n"
-	       "	-v, --version    Display version and technical information.\n"
-	       "	-l, --license    Display licensing information.\n"
-	       "	-c, --center     Center the game on screen.\n"
-	       "	-n, --no-color   Runs the game without colors.\n"
-	       "	-o, --no-hold    Disable hold.\n"
-	       "	-g, --no-ghost   Disable ghost piece.\n"
-		   "	-y, --no-fancy   Dont show fancy borders.\n"
-		   "	-b, --no-outer   Dont show outer border on game screen.\n"
-	       "	-x, --next (num) Show (num) next pieces\n");
+	       "	-h, --help          Show help about the program\n"
+	       "	-u, --usage         Display this text\n"
+	       "	-v, --version       Display version and technical information\n"
+	       "	-l, --license       Display licensing information\n"
+	       "	-c, --center        Center the game on screen\n"
+	       "	-n, --no-color      Runs the game without colors\n"
+	       "	-o, --no-hold       Disable hold\n"
+	       "	-g, --no-ghost      Disable ghost piece\n"
+		   "	-y, --no-fancy      Dont show fancy borders\n"
+		   "	-b, --no-outer      Dont show outer border on game screen\n"
+	       "	-x, --next (num)    Show (num) next pieces\n"
+	       "	-r, --reset-hscores Reset all high scores to default\n");
 }
 
 void print_version()
