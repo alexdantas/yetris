@@ -125,10 +125,22 @@ typedef enum
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
+#ifndef _BLOCK_S
+#define _BLOCK_S
 typedef struct block_s block_s;
+#endif
+#ifndef _PIECE_S
+#define _PIECE_S
 typedef struct piece_s piece_s;
+#endif
+#ifndef _BOARD_S
+#define _BOARD_S
 typedef struct board_s board_s;
+#endif
+#ifndef _GAME_S
+#define _GAME_S
 typedef struct game_s  game_s;
+#endif
 
 
 int  engine_screen_init(int width, int height);

@@ -29,15 +29,19 @@
 typedef enum { BLOCK, EMPTY } block_e;
 
 /** All info about individual block */
-typedef struct block_s
+struct block_s
 {
 	int     x;        /**< x position relative to the board */
 	int     y;        /**< y position relative to the board */
 	block_e type;     /**< state of the block, see #block_e */
 	int     color;    /**< color that will print the block */
 	char    theme[2]; /**< appearance (how it will be printed onscreen) */
-} block_s;
+};
 
+#ifndef _BLOCK_S
+#define _BLOCK_S
+typedef struct block_s block_s;
+#endif
 
 block_s new_block(int x, int y, char theme[], color_e color);
 
