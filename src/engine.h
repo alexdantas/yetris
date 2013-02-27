@@ -28,19 +28,18 @@
  */
 #define OS_IS_WINDOWS ((defined __WIN32__) && (!defined __CYGWIN__))
 
-
 #include <stdlib.h>
 #include <ncurses.h>
 #include "globals.h"
 
-
 /** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
 
-/** This holds the game keymap. They all need to be int because of ncurses */
+/** Holds the game keymap.
+ *  They all need to be int because of ncurses' keypad() */
 typedef struct input_s
 {
-	char keys[NUMBER_OF_KEYS];
+	char keys[NUMBER_OF_KEYS]; /**< Current keymap  */
 	int  none;
 	int  left;
 	int  right;
@@ -64,12 +63,13 @@ typedef struct window_s
 	short   height;
 } window_s;
 
-/** Info about the console screen. Mostly ncurses' specific stuff */
+/** All screens of the game.
+ *  Mostly ncurses' specific stuff */
 typedef struct screen_s
 {
-	short width;
-	short height;
-	window_s main;
+	short width;       /**< Global window width */
+	short height;      /**< Global window height */
+	window_s main;     /**< Main window */
 	window_s leftmost;
 	window_s middle_left;
 	window_s middle_right;
@@ -121,6 +121,7 @@ typedef enum
 	CYAN_BLACK,      CYAN_RED,    CYAN_GREEN,    CYAN_YELLOW,    CYAN_BLUE,    CYAN_MAGENTA,    CYAN_CYAN,    CYAN_WHITE,
 	WHITE_BLACK,     WHITE_RED,   WHITE_GREEN,   WHITE_YELLOW,   WHITE_BLUE,   WHITE_MAGENTA,   WHITE_CYAN,  WHITE_WHITE
 } color_e;
+
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */

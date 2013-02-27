@@ -1116,7 +1116,7 @@ void engine_draw_hscores()
 
 	/* This is all well-alligned, think twice before changing a single char */
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
-	mvwaddstr(w->win, 0, 1, "     Score      Lines Level       Name     Date     Time");
+	mvwaddstr(w->win, 0, 1, "_____Score _____Lines Level ______Name ____Date ____Time");
 	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
 
 	int i;

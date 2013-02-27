@@ -25,18 +25,19 @@
 
 #include "engine.h"
 
-/** Which states can a block be? */
+/** Which states can a block be? Will not print when it's EMPTY */
 typedef enum { BLOCK, EMPTY } block_e;
 
-/** x and y are relative to the board */
+/** All info about individual block */
 typedef struct block_s
 {
-	int     x;
-	int     y;
-	block_e type;
-	int     color;
-	char    theme[3];
+	int     x;        /**< x position relative to the board */
+	int     y;        /**< y position relative to the board */
+	block_e type;     /**< state of the block, see #block_e */
+	int     color;    /**< color that will print the block */
+	char    theme[2]; /**< appearance (how it will be printed onscreen) */
 } block_s;
+
 
 block_s new_block(int x, int y, char theme[], color_e color);
 

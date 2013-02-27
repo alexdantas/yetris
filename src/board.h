@@ -26,19 +26,23 @@
 #include <stdbool.h>
 #include "block.h"
 
-/* How many blocks we have for width and height */
+/** The total width of the board (in blocks) */
 #define BOARD_WIDTH  10
+
+/** The total height of the board (in blocks) */
 #define BOARD_HEIGHT 20
 
 /* Forward declaration of the piece type -- see #piece.h */
 typedef struct piece_s piece_s;
 
-/** The map containing all blocks */
+
+/** Contains all blocks on the current game */
 typedef struct board_s
 {
 	block_s block[BOARD_WIDTH][BOARD_HEIGHT];
 
 } board_s;
+
 
 board_s new_board();
 void board_lock_piece(board_s* b, piece_s* p);

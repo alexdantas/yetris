@@ -26,19 +26,22 @@
 #include <stdbool.h>
 #include "game.h"
 
-#define MAX_HSCORES 10 /* number of hscores to store */
+/** Maximum number of high scores to store (both on the file and memory) */
+#define MAX_HSCORES 10
 
+/** Stores all stuff related to a single score. */
 typedef struct score_s
 {
-	char name[11]; /* 10 chars + null */
-	char time[9];  /* hh:mm:ss */
-	char date[9];  /* dd/mm/yy */
-	int  points;
-	int  lines;
-	int  level;
+	char name[11]; /**< Name of the player (10 chars + null) */
+	char time[9];  /**< Time when this score was recorded (hh:mm:ss) */
+	char date[9];  /**< Date when this score was recorded (dd/mm/yy) */
+//	char timer[9]; /**< Ammount of time the game lasted (hh:mm:ss) */
+	int  points;   /**< How many points the player has scored */
+	int  lines;    /**< How many lines the player cleared */
+	int  level;    /**< On what level the player was when he lost */
 } score_s;
 
-/** Top scores list, ordered */
+/** Global variable storing the top scores list, ordered by points */
 score_s hscores[MAX_HSCORES];
 
 score_s new_score();

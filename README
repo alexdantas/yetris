@@ -50,6 +50,7 @@ To see more info, run 'yetris --help' and 'yetris --usage'.
 	q                   Quits the game at any time
 	h                   Show help window.
 	F2                  Switch statistics
+	F3                  Show high scores
 	F5                  Refresh game based on config file
 
 3) Installation
@@ -58,7 +59,7 @@ Briefly, the following shell commands should configure, build and install
 this package on the default directories:
 
 	$ make
-	$ make install
+	$ make install # You'll probably need to use `sudo` when installing
 
 If you want to test the game before installing, do:
 
