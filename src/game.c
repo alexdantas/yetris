@@ -212,6 +212,7 @@ void game_update(game_s* g)
 	case GAME_OVER:	break;
 	case HELP:      break;
 	case HSCORES:   break;
+	case INPUT:     break;
 
 	case QUITTING:
 		g->quit = true;
@@ -226,10 +227,10 @@ void game_update(game_s* g)
 void game_over(game_s* g)
 {
 	timer_stop(&(g->global_timer));
-	hscore_handle(g);
-	hscore_save();
 	if (global.game_has_game_over_animation)
 		engine_draw_gameover_animation(g);
+	hscore_handle(g);
+	hscore_save();
 
 	g->state = GAME_OVER;
 }
@@ -675,6 +676,13 @@ void game_handle_input(game_s* g, int input)
 			engine_draw(g);
 		}
 		else if (input == engine.input.quit)
+		{
+			g->state = QUITTING;
+		}
+		break;
+
+	case INPUT:
+		if (input == engine.input.quit)
 		{
 			g->state = QUITTING;
 		}

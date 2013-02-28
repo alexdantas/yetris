@@ -39,9 +39,18 @@ if i call new_game(), it doesnt zero the hscore and
 
 void hscore_handle(game_s* g)
 {
-	char* name = getenv("USER");
-	if (!name)
-		name = "player";
+	char name[11];
+	memset(name, '\0', 11);
+
+	if (getenv("USER") == NULL)
+		strncpy(name, "player", 10);
+	else
+		strncpy(name, getenv("USER"), 10);
+
+	engine_create_input();
+	engine_draw_input();
+	engine_get_hscore_name(name, 10);
+	engine_delete_input();
 
 	if (is_on_hscore_list(g->score))
 	{

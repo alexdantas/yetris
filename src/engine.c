@@ -981,7 +981,7 @@ void engine_draw_gameover()
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "Game Over");
 	mvwaddstr(w->win, w->height/2 + 1, 4,              "Press <Enter>");
 	mvwaddstr(w->win, w->height/2 + 2, 5,              "to restart");
-	wrefresh(w->win);
+	wnoutrefresh(w->win);
 }
 
 void engine_refresh_all_windows()
@@ -1004,7 +1004,6 @@ void engine_refresh_all_windows()
 	/* delwin(s->middle_right.win); */
 	/* delwin(s->rightmost.win); */
 	/* engine_windows_init(); */
-
 
 }
 
@@ -1152,6 +1151,105 @@ void engine_delete_help()
 {
 	delwin(engine.screen.help.win);
 
+	werase(engine.screen.main.win);
+	wnoutrefresh(engine.screen.main.win);
+}
+
+void engine_create_input()
+{
+	window_s w;
+
+	w.width  = 50;
+	w.height = 6;
+	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.screen.main.height/2 - w.height/2;
+	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w.win);
+	else
+		window_normal_borders(w.win);
+
+	engine.screen.input_container = w;
+
+	w.width  = engine.screen.input_container.width - 2;
+	w.height = engine.screen.input_container.height - 2;
+	w.x      = 1;
+	w.y      = 1;
+	w.win    = derwin(engine.screen.input_container.win, w.height, w.width, w.y, w.x);
+	engine.screen.input = w;
+
+	curs_set(1);
+}
+
+void engine_draw_input()
+{
+	window_s* w = NULL;
+
+	w = &(engine.screen.input_container);
+	if (global.screen_fancy_borders)
+		window_fancy_borders(w->win);
+	else
+		window_normal_borders(w->win);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+//	mvwaddstr(w->win, 0, 1, "Enter your name");
+	wrefresh(w->win);
+
+	w = &(engine.screen.input);
+	werase(w->win);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	mvwaddstr(w->win, 0, 1, "Contrats, you made into the high score list!");
+	mvwaddstr(w->win, 1, 1, "Enter your name:");
+//	mvwprintf(w->win, 1, 1, "(position: %d", 192998);
+
+	char name[11];
+	memset(name, '\0', 11);
+
+	if (getenv("USER") == NULL)
+		strncpy(name, "player", 10);
+	else
+		strncpy(name, getenv("USER"), 10);
+
+	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	mvwprintw(w->win, 2, 18, "(default: %s)", name);
+
+	/* ncurses' refresh all windows */
+	wrefresh(w->win);
+}
+
+/* patio brasil, 504 sul, locus
+ * vi x emacs
+ *
+ * */
+void engine_get_hscore_name(char* name, int size)
+{
+	window_s* w   = &(engine.screen.input);
+	WINDOW*   sub = derwin(w->win, 1, 11, 1, 18);
+	werase(sub);
+	wattrset(sub, engine_get_color(COLOR_BLACK, COLOR_BLUE, false));
+	mvwhline(sub, 0, 0, ' ', 11);
+
+	char buffer[256];
+	memset(buffer, '\0', 256);
+
+	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	nodelay(stdscr, TRUE);
+	echo();
+
+	mvwscanw(sub, 0, 0, "%[^\n]s", buffer);
+	if (strlen(buffer) != 0)
+		strncpy(name, buffer, size);
+
+	noecho();
+	nodelay(stdscr, FALSE);
+}
+
+void engine_delete_input()
+{
+	delwin(engine.screen.input.win);
+	curs_set(0);
 	werase(engine.screen.main.win);
 	wnoutrefresh(engine.screen.main.win);
 }

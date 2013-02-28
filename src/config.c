@@ -87,6 +87,7 @@ void config_parse(char* filename)
 		if ((b != -1) && ((b == 0) || (b == 1)))    \
 			var = b;                                \
 	}
+
 	set_bool_if_valid(g->screen_use_colors,          "interface:colors");
 	set_bool_if_valid(g->screen_center_vertically,   "interface:center_vertical");
 	set_bool_if_valid(g->screen_center_horizontally, "interface:center_horizontal");

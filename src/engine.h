@@ -85,6 +85,8 @@ typedef struct screen_s
 	window_s help;
 	window_s hscores_container;
 	window_s hscores;
+	window_s input_container;
+	window_s input;
 
 } screen_s;
 
@@ -159,6 +161,12 @@ void engine_draw_gameover_animation(game_s* g);
 void engine_create_hscores_window();
 void engine_draw_hscores();
 void engine_delete_hscores_window();
+
+
+void engine_create_input();
+void engine_draw_input();
+void engine_get_hscore_name(char* name, int size);
+void engine_delete_input();
 
 #endif /* ENGINE_H_DEFINED */
 
