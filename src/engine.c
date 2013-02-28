@@ -1235,7 +1235,7 @@ void engine_get_hscore_name(char* name, int size)
 	memset(buffer, '\0', 256);
 
 	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
-	nodelay(stdscr, TRUE);
+	nodelay(stdscr, FALSE);
 	echo();
 
 	mvwscanw(sub, 0, 0, "%[^\n]s", buffer);
@@ -1243,7 +1243,7 @@ void engine_get_hscore_name(char* name, int size)
 		strncpy(name, buffer, size);
 
 	noecho();
-	nodelay(stdscr, FALSE);
+	nodelay(stdscr, TRUE);
 }
 
 void engine_delete_input()
