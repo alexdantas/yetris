@@ -1,27 +1,6 @@
-yetris README
-=============
-Customizable Tetris(tm) on the console.
+yetris for Windows Readme
+=========================
 
-README Index
-------------
-	1)  Introduction
-	2)  Controls
-	3)  Installation
-	4)  Installation Informations
-	5)  Advanced Installation
-	6)  Uninstallation
-	7)  Advanced Uninstallation
-	8)  Dependencies
-	9)  Main Directory Structure
-	10) Hacking
-	11) Contact
-	12) Credits
-	13) License
-
-Note:  Make sure you have libncurses5-dev. See 'Dependences' for more details.
-
-1) Introduction
----------------
 yetris is a customizable Tetris(tm) clone for the console.
 It aims to follow modern implementations with lots of features
 and please both casual players and Tetris(tm) enthusiasts.
@@ -33,15 +12,8 @@ It has full textual interface, with colors and many features:
 	* Hold, Combo and back-to-back sequences.
 	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
 
-yetris is developed on C and ncurses, running on (most) Linux terminals.
-It currently lacks some expected features but is on active development.
-
-Also, the source code is clean and commented, allowing much better
-understanding and easing feature-implementation.
-
-2) Controls
------------
-To see more info, run 'yetris --help' and 'yetris --usage'.
+Controls
+--------
 
 	Left, Right         Controls the piece
 	Down                Soft-drop
@@ -55,62 +27,8 @@ To see more info, run 'yetris --help' and 'yetris --usage'.
 	F3                  Show high scores
 	F5                  Refresh game based on config file
 
-3) Installation
----------------
-Briefly, the following shell commands should configure, build and install
-this package on the default directories:
-
-	$ make
-	$ make install # You'll probably need to use `sudo` when installing
-
-If you want to test the game before installing, do:
-
-	$ make run
-
-4) Installation Informations
-----------------------------
-see INSTALL file
-
-5) Advanced Installation
-------------------------
-see INSTALL file
-
-6) Uninstallation
------------------
-see INSTALL file
-
-7) Advanced Uninstallation
---------------------------
-see INSTALL file
-
-8) Dependences
---------------
-see INSTALL file
-
-9) Main Directory Structure
----------------------------
-README    General game information
-INSTALL   Installation instructions and information
-COPYING   Copyright and warranty info
-Doxyfile  Doxygen file for generating the documentation
-Makefile  Instructions to the 'make' program (build and install the game)
-TODO      Work that needs to be done or ideas for future versions
-BUGS      Known and solved bugs on the game
-
-bin/      Location of the executable generated after compilation
-doc/      The documentation files (explaining the source code) and manpage
-obj/      Location of resulting object files after compilation
-src/      All of the source code files
-
-doc/index.html    Complete source code documentation
-doc/yetris.6.gz   The manpage
-
-10) Hacking
------------
-I'll add more info about development here soon, so stay tuned.
-
-11) Contact
------------
+Credits
+-------
 Hello there, I'm Alexandre Dantas (kure)!
 
 Thanks for downloading and playing this game. I'm glad you had interest on
@@ -124,29 +42,5 @@ yetris main page:   http://www.alexdantas.net/projects/yetris/
 
 I'd appreciate any commentary - even if it's just "Hello, I play your game!".
 
-12) Credits
------------
-I'd like to thank you for playing this game. Hope you liked it!
-Every download is an honour to me.
-
-13) License
------------
- yetris - Customizable Tetris(tm) on the console.
- Copyright (C) 2013  Alexandre Dantas (kure)
-
- yetris is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
- homepage: http://www.github.com/alexdantas/yetris/
- mailto:   alex.dantas92@gmail.com
+For License and Warranty info, check 'License.txt' file.
 
