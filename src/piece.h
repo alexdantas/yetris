@@ -42,9 +42,12 @@ typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
 typedef enum { DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } direction_e;
 
 /* Forward declaration of the board type -- check #board.h */
+#ifndef _BOARD_S
+#define _BOARD_S
 typedef struct board_s board_s;
+#endif
 
-typedef struct piece_s
+struct piece_s
 {
 	piece_e type;
 	int     x;
@@ -54,7 +57,11 @@ typedef struct piece_s
 	block_s block[4]; /* all the piece's blocks */
 	short   rotation; /* current rotation number (0 is none) */
 
-} piece_s;
+};
+#ifndef _PIECE_S
+#define _PIECE_S
+typedef struct piece_s piece_s;
+#endif
 
 piece_s new_piece(piece_e type);
 bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation);
