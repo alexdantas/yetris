@@ -1,0 +1,152 @@
+
+\" ----------------------------- yetris man page -------------------------------
+.TH yetris 6 "DATE" vVERSION "yetris vVERSION"
+
+\"---------------------------------- NAME --------------------------------------
+.SH NAME
+yetris \- Customizable Tetris(tm) on the console.
+
+\"-------------------------------- SYNOPSIS ------------------------------------
+.SH SYNOPSIS
+yetris
+.RB [ -h ]
+.RB [ -u ]
+.RB [ -v ]
+.RB [ -l ]
+.RB [ -n ]
+.RB [ -c ]
+.RB [ -o ]
+.RB [ -g ]
+.RB [ -x
+.IR (num) ]
+.RB [ -y ]
+.RB [ -b ]
+
+\"------------------------------- DESCRIPTION ----------------------------------
+.SH DESCRIPTION
+.PP
+yetris is a customizable Tetris(tm) clone for the console.
+It aims to follow modern implementations with lots of features
+and please both casual players and Tetris(tm) enthusiasts.
+
+.PP
+It has full textual interface, with colors and many features:
+
+	* Colored textual interface - playable on the console.
+
+	* Upp to 6 next pieces.
+
+	* Hold, Combo and back-to-back sequences
+
+	* Scoring system compliant to the (conjectured) Tetris(tm) Guideline.
+
+.PP
+yetris is developed on C and ncurses, running on (most) Linux terminals.
+It currently lacks some expected features but is on active development.
+
+.PP
+Also, the source code is clean and commented, allowing much better
+understanding and easing feature-implementation.
+
+.B Controls:
+.RS
+.BR "Left, Right         " "Controls the piece"
+
+.BR "Down                " "Soft-drop"
+
+.BR "Space               " "Hard-drop"
+
+.BR "c                   " "Holds the piece"
+
+.BR "z, " "x                Rotates the piece counter-clockwise and clockwise"
+
+.BR "p                   " "Pauses the game"
+
+.BR "q                   " "Quits the game at any time"
+
+.BR "h                   " "Show help window"
+
+.BR "F2                  " "Switch statistics"
+
+.BR "F3                  " "Show high scores"
+
+.BR "F5                  " "Refresh game based on config file"
+.RE
+
+\"--------------------------------- OPTIONS ------------------------------------
+.SH OPTIONS
+
+.TP
+.B "-h, --help"
+Display the quick help text.
+
+.TP
+.B "-u, --usage"
+Display the program's commandline arguments.
+
+.TP
+.B "-v, --version"
+Display version and technical information.
+
+.TP
+.B "-v, --license"
+Display licensing information.
+
+.TP
+.B "-c, --center"
+Center the game on screen.
+
+.TP
+.B "-n, --no-color"
+Runs the game without colors.
+
+.TP
+.B "-o, --no-hold"
+Disable hold.
+
+.TP
+.B "-g, --no-ghost"
+Disable ghost piece.
+
+.TP
+.BI "-x, --next " (num)
+Show
+.I (num)
+next pieces.
+
+.TP
+.B "-g, --no-fancy"
+Don't show fancy borders.
+
+.TP
+.B "-g, --no-outer"
+Dont show outer border on game screen.
+
+.TP
+.B "-r, --reset-hscores"
+Reset all high scores to default.
+
+
+\"----------------------------------- FILES -------------------------------------
+.SH FILES
+.BR "$(HOME)/.yetrisrc.ini" "     User config and customization (created by default)"
+
+.BR "/var/games/yetris.scores" "  System-wide high scores for yetris"
+
+\"----------------------------------- SEE ALSO ----------------------------------
+.SH SEE ALSO
+.BR "petris" "(6) " "netris" "(6) " "bastet" "(6) "
+
+\"----------------------------------- BUGS -------------------------------------
+.SH BUGS
+Of course yetris has no bugs.
+
+But if any 'misbehaviours' ever occur, please tell me at <alex.dantas92@gmail.com>.
+
+\"---------------------------------- AUTHORS -----------------------------------
+.SH AUTHORS
+This manual page and yetris were both written by Alexandre Dantas <alex.dantas92@gmail.com>.
+
+\"---------------------------------- WEBSITE -----------------------------------
+.SH WWW
+http://alexdantas.github.com/yetris/

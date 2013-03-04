@@ -23,14 +23,14 @@
 #
 
 # Uncomment line below to tun on verbose mode permanently
-#V	= 1;
+#V = 1;
 
-SHELL	= /bin/sh
+SHELL   = /bin/sh
 
 # General Info
 PACKAGE = yetris
 VERSION = 1.6
-DATE	= Feb2013
+DATE    = $(shell date "+%B%Y")
 
 # Local source code information
 LBIN    = bin
@@ -41,13 +41,13 @@ LFILES  = BUGS ChangeLog COPYING Doxyfile INSTALL Makefile README TODO
 
 # Install
 DESTDIR =
-PREFIX	= $(DESTDIR)/usr/local
+PREFIX  = $(DESTDIR)/usr/local
 
 EXEC_PREFIX = $(PREFIX)
 DATAROOTDIR = $(PREFIX)/share
 MANDIR      = $(DATAROOTDIR)/man
 
-BINDIR	= $(EXEC_PREFIX)/$(LBIN)
+BINDIR  = $(EXEC_PREFIX)/$(LBIN)
 MAN6DIR = $(MANDIR)/man6
 
 # Package configuration files
@@ -61,11 +61,11 @@ CONFIGDIR   = $(HOME)
 CONFIG_PATH = $(CONFIGDIR)/$(CONFIG_FILE)
 
 # Compiling information
-CC	        = gcc
-EXE	        = yetris
-CDEBUG	    =
-CFLAGS	    = $(CDEBUG) -Wall -Wextra -O2
-LIBS	    = -lncurses
+CC          = gcc
+EXE         = yetris
+CDEBUG      =
+CFLAGS      = $(CDEBUG) -Wall -Wextra -O2
+LIBS        = -lncurses
 INCLUDESDIR =
 LIBSDIR     =
 OBJ        = obj/engine.o    obj/piece.o   \
@@ -75,10 +75,10 @@ OBJ        = obj/engine.o    obj/piece.o   \
               obj/arguments.o obj/config.o  \
               obj/hscore.o
 
-MANFILE     = $(PACKAGE).6.gz
+MANFILE     = $(PACKAGE).6
 MANPAGE     = $(LDOC)/man/$(MANFILE)
 
-DEFINES	= -DVERSION=\"$(VERSION)\"                 \
+DEFINES    = -DVERSION=\"$(VERSION)\"                 \
               -DDATE=\"$(DATE)\"                       \
               -DSCORE_PATH=\"$(SCORE_PATH)\"           \
               -DDEFAULT_CONFIG_FILE=\"$(CONFIG_PATH)\"
@@ -119,15 +119,21 @@ all: dirs $(EXE)
 
 install: all
 	@echo "* Installing..."
+
 	$(MUTE)install -d $(SCOREDIR)
+
 	$(MUTE)install -d --mode=755 $(BINDIR)
 	$(MUTE)install --mode=755 $(LBIN)/$(EXE) $(BINDIR)
-#	$(ROOT)$(MUTE)chown root:games $(BINDIR)/$(EXE)
+#######	$(ROOT)$(MUTE)chown root:games $(BINDIR)/$(EXE)
 	$(ROOT)$(MUTE)chmod u+s $(BINDIR)/$(EXE)
 	-$(MUTE)chown root:games $(BINDIR)/$(EXE)
 	-$(MUTE)chmod u+s $(BINDIR)/$(EXE)
+
+	-$(MUTE)cat $(MANPAGE) | sed -e "s|DATE|$(DATE)|g" -e "s|VERSION|$(VERSION)|g" >$(MANFILE)
 	$(MUTE)install -d $(MAN6DIR)
-	$(MUTE)install $(MANPAGE) $(MAN6DIR)
+	$(MUTE)install $(MANFILE) $(MAN6DIR)
+	$(MUTE)rm -f $(MANFILE)
+
 	@echo
 	@echo "* $(PACKAGE) successfuly installed!"
 
