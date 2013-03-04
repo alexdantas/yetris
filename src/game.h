@@ -112,4 +112,8 @@ piece_s game_get_next_piece(game_s* g);
 void game_update_speed(game_s* g);
 void game_switch_statistics();
 
+/* experimental features */
+void game_save(game_s* g);
+void game_load(game_s* g);
+
 #endif /* GAME_H_DEFINED */

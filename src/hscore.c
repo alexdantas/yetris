@@ -223,12 +223,12 @@ bool hscore_load()
  * This macro receives the same arguments as fread(), It just checks
  * to see if everything has been written just fine.
  */
-#define reset_hscore_file_unless_read(what, size, ammount, where)	\
+#define reset_hscore_file_unless_read(what, size, ammount, where)   \
 	{                                                               \
 		if (fread(what, size, ammount, where) != ammount)           \
 		{                                                           \
 			hscore_reset();                                         \
-			return false;											\
+			return false;                                           \
 		}                                                           \
 	}
 
@@ -298,9 +298,9 @@ bool hscore_save()
  * This macro receives the same arguments as fwrite(), It just checks
  * to see if everything has been written just fine.
  */
-#define return_false_unless_written(what, size, ammount, where)	\
+#define return_false_unless_written(what, size, ammount, where) \
 	{                                                           \
-		if (fwrite(what, size, ammount, where) != ammount)	    \
+		if (fwrite(what, size, ammount, where) != ammount)      \
 			return false;                                       \
 	}
 
