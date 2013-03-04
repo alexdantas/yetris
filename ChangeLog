@@ -1,5 +1,9 @@
 All the changes are documented on the git history, so here's just the major ones
 
+04-03-13 v1.6:
+	* Gameplay: High scores! Can save and show them during the game.
+	* Bugs: Game now compiles and runs on MacOSX.
+
 24-02-13 v1.5:
 	* Interface: Help window explaining controls, statistics showing
 	             misc information about the game.

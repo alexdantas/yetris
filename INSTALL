@@ -30,7 +30,7 @@ directories:
         /usr/local/bin/                   Executable files
         /usr/local/share/man/man6/        Man page
         /var/games/                       Highscore files
-		~/                                User configuration file
+	~/                                User configuration file
 
 5) Advanced Installation
 ------------------------

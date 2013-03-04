@@ -51,6 +51,7 @@ void hscore_handle(game_s* g)
 	engine_draw_input();
 	engine_get_hscore_name(name, 10);
 	engine_delete_input();
+	engine_refresh_all_windows();
 
 	if (is_on_hscore_list(g->score))
 	{

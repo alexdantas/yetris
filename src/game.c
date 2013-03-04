@@ -229,6 +229,7 @@ void game_over(game_s* g)
 	timer_stop(&(g->global_timer));
 	if (global.game_has_game_over_animation)
 		engine_draw_gameover_animation(g);
+
 	hscore_handle(g);
 	hscore_save();
 

@@ -4,6 +4,7 @@ Things I must do later
 * Save and restore game state
   (binary file with info on all major game data structures)
   (save with, idk, F10, and restore with --restore commandline)
+  ** I'm actually doing this! Hopefully, will be done on the next version **
 
 * Improve coding style
   (document even more and clean stupid hacks on the code)

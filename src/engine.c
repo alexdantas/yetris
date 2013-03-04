@@ -934,6 +934,7 @@ void engine_draw(game_s* g)
 		engine_draw_info(g);
 		engine_draw_help();
 		break;
+
 	case HSCORES:
 		engine_draw_board(&(g->board));
 		engine_draw_info(g);
@@ -984,10 +985,12 @@ void engine_draw_gameover()
 	wnoutrefresh(w->win);
 }
 
+/** Tries to refresh all windows onscreen */
 void engine_refresh_all_windows()
 {
 	screen_s* s = &(engine.screen);
 
+// NOT USING THIS MACRO NOW
 #define fancy_borders_and_refresh(window)  \
 	{                                      \
 		if (global.screen_fancy_borders)   \
@@ -998,12 +1001,15 @@ void engine_refresh_all_windows()
 	}
 	wnoutrefresh(stdscr);
 	wnoutrefresh(s->main.win);
-	/* delwin(s->main.win); */
-	/* delwin(s->leftmost.win); */
-	/* delwin(s->middle_left.win); */
-	/* delwin(s->middle_right.win); */
-	/* delwin(s->rightmost.win); */
-	/* engine_windows_init(); */
+
+	// FOR NOW IT DELETES AND RECREATES THEM
+	// IS THERE A BETTER WAY?
+	delwin(s->main.win);
+	delwin(s->leftmost.win);
+	delwin(s->middle_left.win);
+	delwin(s->middle_right.win);
+	delwin(s->rightmost.win);
+	engine_windows_init();
 
 }
 
@@ -1013,7 +1019,7 @@ void engine_create_help()
 	window_s w;
 
 	w.width  = engine.screen.main.width - engine.screen.main.width/8;
-	w.height = engine.screen.main.height/2 + 2;
+	w.height = engine.screen.main.height/2 + 5;
 	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
 	w.y      = engine.screen.main.height/2 - w.height/2;
 	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
@@ -1055,15 +1061,18 @@ void engine_draw_help()
 	mvwaddstr(w->win, 0, 2, "Controls:\n");
 	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 1, 0,
-		   "    Enter        Return to the game\n"
-	       "    q            Quits game at any time\n"
-		   "    Left, Right  Controls the piece\n"
-	       "    Down         Soft-drop\n"
-	       "    Space        Hard-drop\n"
-	       "    c            Holds the piece\n"
-	       "    z, x         Rotates piece counter-clockwise and clockwise\n"
-	       "    p            Pauses/unpauses the game\n"
-	       "    r            Restarts the game\n");
+	          "    Enter        Return to the game\n"
+	          "    q            Quits game at any time\n"
+	          "    Left, Right  Controls the piece\n"
+	          "    Down         Soft-drop\n"
+	          "    Space        Hard-drop\n"
+	          "    c            Holds the piece\n"
+	          "    z, x         Rotates piece counter-clockwise and clockwise\n"
+	          "    p            Pauses/unpauses the game\n"
+	          "    r            Restart game\n"
+	          "    F2           Switch statistics\n"
+	          "    F3           Show high scores\n"
+	          "    F5           Refresh game based on config file\n");
 
 	mvwaddstr(w->win,w->height - 1, 0, "For fun, check config file '~/.yetrisrc.ini'");
 	wnoutrefresh(w->win);

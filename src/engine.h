@@ -169,6 +169,7 @@ void engine_create_help();
 void engine_delete_help();
 void engine_draw_line_statistics(game_s* g);
 void engine_draw_gameover_animation(game_s* g);
+void engine_refresh_all_windows();
 
 void engine_create_hscores_window();
 void engine_draw_hscores();
