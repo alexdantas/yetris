@@ -126,8 +126,10 @@ I'd appreciate any commentary - even if it's just "Hello, I play your game!".
 
 12) Credits
 -----------
-I'd like to thank you for playing this game. Hope you liked it!
-Every download is an honour to me.
+Huge thanks to karfield for fixing a great mistake regarding typedefs
+and inclusions.
+Thanks to him, yetris now works on MacOsX!
+Do visit his page: http://www.github.com/karfield
 
 13) License
 -----------
