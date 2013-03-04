@@ -33,15 +33,23 @@
 #define BOARD_HEIGHT 20
 
 /* Forward declaration of the piece type -- see #piece.h */
+#ifndef _PIECE_S
+#define _PIECE_S
 typedef struct piece_s piece_s;
+#endif
 
 
 /** Contains all blocks on the current game */
-typedef struct board_s
+struct board_s
 {
 	block_s block[BOARD_WIDTH][BOARD_HEIGHT];
 
-} board_s;
+};
+
+#ifndef _BOARD_S
+#define _BOARD_S
+typedef struct board_s board_s;
+#endif
 
 
 board_s new_board();

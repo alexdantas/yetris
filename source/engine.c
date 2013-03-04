@@ -49,13 +49,6 @@
 #define mvwhline my_mvwhline
 #endif
 
-/* Windows can't handle 'stdin' or 'stdout'.
- * So for now i must keep this */
-#if OS_IS_WINDOWS
-#define fprintf(stderr, printf(
-#endif
-
-
 /* Local functions (functions specific to this module) */
 void register_signal_handler();
 window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y);
@@ -131,10 +124,13 @@ int engine_screen_init(int width, int height)
 	    (current_height < engine.screen.height))
 	{
 		endwin();
+
+/* Windows can't handle 'stdin' or 'stdout' */
+#if !OS_IS_WINDOWS
 		fprintf(stderr, "Error! Your console screen is smaller than %dx%d\n"
 		                "Please resize your window and try again\n",
 		                engine.screen.width, engine.screen.height);
-
+#endif
 		exit(EXIT_FAILURE);
 	}
 	engine.screen.width  = current_width;
@@ -382,14 +378,6 @@ bool restore_signals()
 	return true;
 }
 
-/** This stops ncurses on a sweet, gentle way. */
-void engine_exit()
-{
-	erase();
-	refresh();
-	endwin();
-}
-
 /** Function called when receiving an interrupt signal.
  *  It restores the terminal to it's initial state and
  *  frees whatever memory might be allocated from the game.
@@ -398,6 +386,9 @@ void engine_safe_exit(int sig)
 {
 	engine_exit();
 
+
+/* Windows can't handle 'stdin' or 'stdout' */
+#if !OS_IS_WINDOWS
 	/* since the game doesn't deal with malloc (yet) we're
 	 * pretty much safe quitting like this.
 	 * I've already set that when we call exit() we quit
@@ -406,8 +397,18 @@ void engine_safe_exit(int sig)
 		fprintf(stderr, "Interrupted (signal %d).\n"
 				        "Bad game, no donut for you!\n", sig);
 
+#endif
 	/* won't call functions registered with atexit() */
 	_exit(EXIT_FAILURE);
+}
+
+
+/** This stops ncurses on a sweet, gentle way. */
+void engine_exit()
+{
+	erase();
+	refresh();
+	endwin();
 }
 
 /** This defines the keymap according to the string #keymap.

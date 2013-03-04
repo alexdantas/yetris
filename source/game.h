@@ -36,7 +36,7 @@ typedef enum { PLAYING, PAUSED, QUITTING, GAME_OVER, HELP,
 			   HSCORES, INPUT } game_state;
 
 /** The main game structure. Controls all the actions related to game logic */
-typedef struct game_s
+struct game_s
 {
 	/* piece and board stuff */
 	piece_s piece_current;
@@ -92,7 +92,12 @@ typedef struct game_s
 	int triple_count;
 	int tetris_count;
 	int lines_count;
-} game_s;
+};
+
+#ifndef _GAME_S
+#define _GAME_S
+typedef struct game_s game_s;
+#endif
 
 game_s new_game();
 void game_lock_piece(game_s* g);
@@ -111,5 +116,9 @@ void game_hscore_save(game_s* g);
 piece_s game_get_next_piece(game_s* g);
 void game_update_speed(game_s* g);
 void game_switch_statistics();
+
+/* experimental features */
+void game_save(game_s* g);
+void game_load(game_s* g);
 
 #endif /* GAME_H_DEFINED */

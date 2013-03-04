@@ -588,6 +588,14 @@ void game_handle_input(game_s* g, int input)
 			engine_create_hscores_window();
 			g->state = HSCORES;
 		}
+		else if (input == KEY_F(10))
+		{
+			game_save(g);
+		}
+		else if (input == KEY_F(11))
+		{
+			game_load(g);
+		}
 
 /* DEBUG KEYS - for development tests only! */
 #ifdef _YETRIS_DEBUG
@@ -739,5 +747,174 @@ void game_switch_statistics()
 		global.game_has_statistics = true;
 		global.game_has_line_statistics = false;
 	}
+}
+
+
+/*  */
+/*  */
+/* experimental functions that saves the game state */
+/*  */
+/*  */
+
+#define SAVE_PATH "yetris01.sav"
+
+/** Saves the current game state.
+ *  Interrupts if something bad happens.
+ */
+void game_save(game_s* g)
+{
+	FILE* fp = fopen(SAVE_PATH, "wb");
+	if (!fp)
+		return;
+
+/* This returns unless fwrite() has written everything.
+ * This macro receives the same arguments as fwrite(), It just checks
+ * to see if everything has been written just fine.
+ */
+#define return_unless_written(what, size, ammount, where)       \
+	{                                                           \
+		if (fwrite(what, size, ammount, where) != ammount)      \
+			return;                                             \
+	}
+
+	return_unless_written(VERSION,             sizeof(char),    3, fp);
+	return_unless_written(&(g->piece_current), sizeof(piece_s), 1, fp);
+	return_unless_written(&(g->piece_next),    sizeof(piece_s), NEXT_PIECES_NO, fp);
+	return_unless_written(&(g->piece_ghost),   sizeof(piece_s), 1, fp);
+	return_unless_written(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+	return_unless_written(&(g->board),         sizeof(board_s), 1, fp);
+
+	return_unless_written(&(g->global_timer),  sizeof(timer_s), 1, fp);
+	return_unless_written(&(g->piece_timer),   sizeof(timer_s), 1, fp);
+
+	return_unless_written(&(g->gameplay_s),    sizeof(long), 1, fp);
+	return_unless_written(&(g->gameplay_m),    sizeof(long), 1, fp);
+	return_unless_written(&(g->gameplay_h),    sizeof(long), 1, fp);
+
+	return_unless_written(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+
+	return_unless_written(&(g->score), sizeof(int), 1, fp);
+	return_unless_written(&(g->lines), sizeof(int), 1, fp);
+	return_unless_written(&(g->level), sizeof(int), 1, fp);
+	return_unless_written(&(g->speed), sizeof(int), 1, fp);
+	return_unless_written(&(g->hscore), sizeof(int), 1, fp);
+	return_unless_written(&(g->combo_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->back_to_back_lines), sizeof(int), 1, fp);
+	return_unless_written(&(g->back_to_back_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->score_delta), sizeof(int), 1, fp);
+
+	return_unless_written(&(g->can_hold), sizeof(bool), 1, fp);
+	return_unless_written(&(g->quit), sizeof(bool), 1, fp);
+	return_unless_written(&(g->is_over), sizeof(bool), 1, fp);
+	return_unless_written(&(g->show_help), sizeof(bool), 1, fp);
+	return_unless_written(&(g->show_hscores), sizeof(bool), 1, fp);
+	return_unless_written(&(g->moved_piece_down), sizeof(bool), 1, fp);
+	return_unless_written(&(g->is_combo), sizeof(bool), 1, fp);
+	return_unless_written(&(g->is_back_to_back), sizeof(bool), 1, fp);
+	return_unless_written(&(g->show_score_delta), sizeof(bool), 1, fp);
+
+	return_unless_written(&(g->state), sizeof(game_state), 1, fp);
+
+	return_unless_written(&(g->I_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->T_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->L_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->J_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->S_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->Z_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->O_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->piece_count), sizeof(int), 1, fp);
+
+	return_unless_written(&(g->single_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->double_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->triple_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->tetris_count), sizeof(int), 1, fp);
+	return_unless_written(&(g->lines_count), sizeof(int), 1, fp);
+
+	return_unless_written(&global, sizeof(globals_s), 1, fp);
+}
+
+/** Loads a saved game state.
+ *  Interrupts if something wrong happens.
+ */
+void game_load(game_s* g)
+{
+	FILE* fp = fopen(SAVE_PATH, "rb");
+	if (!fp)
+		return;
+
+/* This returns unless fread() everything.
+ * This macro receives the same arguments as fread(), It just checks
+ * to see if everything has been written just fine.
+ */
+#define return_unless_read(what, size, ammount, where)              \
+	{                                                               \
+		if (fread(what, size, ammount, where) != ammount)           \
+			return;                                                 \
+	}
+
+	char version[4];
+	return_unless_read(version, sizeof(char), 3, fp)
+	version[3] = '\0';
+
+	char version_check[4];
+	memset(version_check, '\0', 4);
+	strncpy(version_check, VERSION, 3);
+
+	if (strcmp(version, version_check) != 0)
+		return;
+
+	return_unless_read(&(g->piece_current), sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->piece_next),    sizeof(piece_s), NEXT_PIECES_NO, fp);
+	return_unless_read(&(g->piece_ghost),   sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->board),         sizeof(board_s), 1, fp);
+
+	return_unless_read(&(g->global_timer),  sizeof(timer_s), 1, fp);
+	return_unless_read(&(g->piece_timer),   sizeof(timer_s), 1, fp);
+
+	return_unless_read(&(g->gameplay_s),    sizeof(long), 1, fp);
+	return_unless_read(&(g->gameplay_m),    sizeof(long), 1, fp);
+	return_unless_read(&(g->gameplay_h),    sizeof(long), 1, fp);
+
+	return_unless_read(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+
+	return_unless_read(&(g->score), sizeof(int), 1, fp);
+	return_unless_read(&(g->lines), sizeof(int), 1, fp);
+	return_unless_read(&(g->level), sizeof(int), 1, fp);
+	return_unless_read(&(g->speed), sizeof(int), 1, fp);
+	return_unless_read(&(g->hscore), sizeof(int), 1, fp);
+	return_unless_read(&(g->combo_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->back_to_back_lines), sizeof(int), 1, fp);
+	return_unless_read(&(g->back_to_back_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->score_delta), sizeof(int), 1, fp);
+
+	return_unless_read(&(g->can_hold), sizeof(bool), 1, fp);
+	return_unless_read(&(g->quit), sizeof(bool), 1, fp);
+	return_unless_read(&(g->is_over), sizeof(bool), 1, fp);
+	return_unless_read(&(g->show_help), sizeof(bool), 1, fp);
+	return_unless_read(&(g->show_hscores), sizeof(bool), 1, fp);
+	return_unless_read(&(g->moved_piece_down), sizeof(bool), 1, fp);
+	return_unless_read(&(g->is_combo), sizeof(bool), 1, fp);
+	return_unless_read(&(g->is_back_to_back), sizeof(bool), 1, fp);
+	return_unless_read(&(g->show_score_delta), sizeof(bool), 1, fp);
+
+	return_unless_read(&(g->state), sizeof(game_state), 1, fp);
+
+	return_unless_read(&(g->I_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->T_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->L_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->J_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->S_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->Z_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->O_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->piece_count), sizeof(int), 1, fp);
+
+	return_unless_read(&(g->single_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->double_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->triple_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->tetris_count), sizeof(int), 1, fp);
+	return_unless_read(&(g->lines_count), sizeof(int), 1, fp);
+
+	return_unless_read(&global, sizeof(globals_s), 1, fp);
 }
 
