@@ -170,8 +170,8 @@ void print_usage()
 	       "	-n, --no-color      Runs the game without colors\n"
 	       "	-o, --no-hold       Disable hold\n"
 	       "	-g, --no-ghost      Disable ghost piece\n"
-		   "	-y, --no-fancy      Dont show fancy borders\n"
-		   "	-b, --no-outer      Dont show outer border on game screen\n"
+		   "	-y, --no-fancy      Don't show fancy borders\n"
+		   "	-b, --no-outer      Don't show outer border on game screen\n"
 	       "	-x, --next (num)    Show (num) next pieces\n"
 	       "	-r, --reset-hscores Reset all high scores to default\n");
 }
