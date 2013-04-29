@@ -1,22 +1,22 @@
 # yetris Makefile (2013) Alexandre Dantas (kure) <alex.dantas92@gmail.com>
 #
 # Makefile Targets:
-#  make all        Compiles the package
-#  make run        Compiles and runs the program
-#  make install    Installs the package
-#  make clean      Removes the binary and the resulting object files
+#  make all		   Compiles the package
+#  make run		   Compiles and runs the program
+#  make install	   Installs the package
+#  make clean	   Removes the binary and the resulting object files
 #  make uninstall  Uninstalls the package
-#  make dist       Creates the source code 'tarball' for distribution
-#  make doc        Generates the documentation with doxygen
+#  make dist	   Creates the source code 'tarball' for distribution
+#  make doc		   Generates the documentation with doxygen
 #  make docclean   Removes the documentation
 #
 # Makefile Commandlines:
-#  V       Print all commands as they are called.
-#          To turn on for the current make, add 'V=1' on the
-#          commandline.
-#          To turn on permanently, uncomment the line specified below
+#  V	   Print all commands as they are called.
+#		   To turn on for the current make, add 'V=1' on the
+#		   commandline.
+#		   To turn on permanently, uncomment the line specified below
 #  DESTDIR Installs the package on a custom root directory (other than /)
-#          For example 'DESTDIR=~/'.
+#		   For example 'DESTDIR=~/'.
 #  PREFIX  Installs the package on a custom directory (overwrites root)
 #  CFLAGS  Changes the C flags used on compilation
 #  CDEBUG  If you wish to build on debug mode, add 'CDEBUG=-g'
@@ -25,66 +25,62 @@
 # Uncomment line below to tun on verbose mode permanently
 #V = 1;
 
-SHELL   = /bin/sh
+SHELL	= /bin/sh
 
 # General Info
 PACKAGE = yetris
 VERSION = 1.6
-DATE    = $(shell date "+%B%Y")
+DATE	= $(shell date "+%B%Y")
 
 # Local source code information
-LBIN    = bin
-LOBJ    = obj
-LDOC    = doc
-LSRC    = src
-LFILES  = BUGS ChangeLog COPYING Doxyfile INSTALL Makefile README TODO
+LBIN	= bin
+LOBJ	= obj
+LDOC	= doc
+LSRC	= src
+LFILES	= BUGS ChangeLog COPYING Doxyfile INSTALL Makefile README TODO
 
 # Install
 DESTDIR =
-PREFIX  = $(DESTDIR)/usr/local
+PREFIX	= $(DESTDIR)/usr
 
 EXEC_PREFIX = $(PREFIX)
 DATAROOTDIR = $(PREFIX)/share
-MANDIR      = $(DATAROOTDIR)/man
+MANROOT		= $(DATAROOTDIR)/man
 
-BINDIR  = $(EXEC_PREFIX)/$(LBIN)
-MAN6DIR = $(MANDIR)/man6
+MANNUMBER	= 6
 
-# Package configuration files
-# Default scores file: /var/games/yetris.scores
-SCORE_FILE  = yetris.scores
-SCOREDIR    = $(DESTDIR)/var/games
-SCORE_PATH  = $(SCOREDIR)/$(SCORE_FILE)
-# Default config file: /home/<user>/.yetrisrc.ini
-CONFIG_FILE = .yetrisrc.ini
-CONFIGDIR   = $(HOME)
-CONFIG_PATH = $(CONFIGDIR)/$(CONFIG_FILE)
+BINDIR		= $(EXEC_PREFIX)/games
+MANDIR		= $(MANROOT)/man$(MANNUMBER)
+
+MANFILE		= $(PACKAGE).$(MANNUMBER)
+MANPAGE		= $(LDOC)/man/$(MANFILE)
+
+SCORE_FILE	= yetris.scores
+CONFIG_FILE = config.ini
 
 # Compiling information
-CC          = gcc
-EXE         = yetris
-CDEBUG      =
-CFLAGS      = $(CDEBUG) -Wall -Wextra -O2
-LIBS        = -lncurses
+CC			= gcc
+EXE			= yetris
+CDEBUG		=
+CFLAGS		= $(CDEBUG) -Wall -Wextra -O2
+LIBS		= -lncurses
 INCLUDESDIR =
-LIBSDIR     =
-OBJ        = obj/engine.o    obj/piece.o   \
-              obj/game.o      obj/main.o    \
-              obj/timer.o     obj/board.o   \
-              obj/block.o     obj/globals.o \
-              obj/arguments.o obj/config.o  \
-              obj/hscore.o
+LIBSDIR		=
+OBJ			= obj/engine.o	 obj/piece.o   \
+			  obj/game.o	  obj/main.o	\
+			  obj/timer.o	  obj/board.o	\
+			  obj/block.o	  obj/globals.o \
+			  obj/arguments.o obj/config.o	\
+			  obj/hscore.o
 
-MANFILE     = $(PACKAGE).6
-MANPAGE     = $(LDOC)/man/$(MANFILE)
-
-DEFINES    = -DVERSION=\"$(VERSION)\"                 \
-              -DDATE=\"$(DATE)\"                       \
-              -DSCORE_PATH=\"$(SCORE_PATH)\"           \
-              -DDEFAULT_CONFIG_FILE=\"$(CONFIG_PATH)\"
+DEFINES		= -DVERSION=\""$(VERSION)"\"			   \
+			  -DPACKAGE=\""$(PACKAGE)"\"			   \
+			  -DDATE=\""$(DATE)"\"					   \
+			  -DSCORE_FILE=\""$(SCORE_FILE)"\"		   \
+			  -DCONFIG_FILE=\""$(CONFIG_FILE)"\"
 
 # iniparser stuff
-INIDIR     = src/iniparser
+INIDIR	   = src/iniparser
 INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra
 INI_OBJS   = obj/iniparser.o obj/inidictionary.o
 
@@ -112,49 +108,39 @@ else
 CDEBUG =
 endif
 
-#############################################################################
 # Make targets
 all: dirs $(EXE)
-	@echo "* Build successful!"
+	# Build successful!
 
 install: all
-	@echo "* Installing..."
-
-	$(MUTE)install -d $(SCOREDIR)
+	# Installing...
 
 	$(MUTE)install -d --mode=755 $(BINDIR)
 	$(MUTE)install --mode=755 $(LBIN)/$(EXE) $(BINDIR)
-#######	$(ROOT)$(MUTE)chown root:games $(BINDIR)/$(EXE)
-	$(ROOT)$(MUTE)chmod u+s $(BINDIR)/$(EXE)
-	-$(MUTE)chown root:games $(BINDIR)/$(EXE)
-	-$(MUTE)chmod u+s $(BINDIR)/$(EXE)
-
 	-$(MUTE)cat $(MANPAGE) | sed -e "s|DATE|$(DATE)|g" -e "s|VERSION|$(VERSION)|g" >$(MANFILE)
-	$(MUTE)install -d $(MAN6DIR)
-	$(MUTE)install $(MANFILE) $(MAN6DIR)
+	$(MUTE)install -d $(MANDIR)
+	$(MUTE)install $(MANFILE) $(MANDIR)
 	$(MUTE)rm -f $(MANFILE)
-
-	@echo
-	@echo "* $(PACKAGE) successfuly installed!"
+	# $(PACKAGE) successfuly installed!
 
 uninstall:
-	@echo "* Uninstalling..."
+	# Uninstalling...
 	$(MUTE)rm -f $(BINDIR)/$(EXE)
+	$(MUTE)rm -f $(MANDIR)/$(MANFILE)
 
 purge: uninstall
-	@echo "* Purging configuration files..."
-	$(MUTE)rm -f $(SCORE_PATH)
-	$(MUTE)rm -f $(MAN6DIR)/$(MANFILE)
+	# Purging configuration files...
+	$(MUTE)rm -f $(MANDIR)/$(MANFILE)
 
 $(EXE): $(OBJ) $(INI_OBJS)
-	@echo "* Linking..."
+	# Linking...
 	$(MUTE)$(CC) $(OBJ) $(INI_OBJS) -o $(LBIN)/$(EXE) $(LIBSDIR) $(LIBS)
 
 $(LOBJ)/%.o: $(LSRC)/%.c
-	@echo "* Compiling $<..."
+	# Compiling $<...
 	$(MUTE)$(CC) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
-dist: $(DISTDIR).tar.gz
+dist: clean $(DISTDIR).tar.gz
 
 $(DISTDIR).tar.gz: $(DISTDIR)
 	$(MUTE)tar czf $(DISTDIR).tar.gz $(DISTDIR)
@@ -169,37 +155,33 @@ $(DISTDIR):
 	-$(MUTE)cp -r $(LSRC)/* $(DISTDIR)/$(LSRC)
 	-$(MUTE)cp -r $(LBIN)/* $(DISTDIR)/$(LBIN)
 	-$(MUTE)cp -r $(LDOC)/* $(DISTDIR)/$(LDOC)
-# Not copying git info - unnecessary MBs!
-#	-$(MUTE)cp -r .git $(DISTDIR)/
 
-# Phony targets
 dirs:
 	@-mkdir -p $(LOBJ) $(LBIN)
 
 run: all
-	@echo "* Running..."
+	# Running...
 	$(MUTE)./$(LBIN)/$(EXE)
 
 clean:
-	@echo "* Cleaning files..."
+	# Cleaning files...
 	$(MUTE)rm $(VTAG) -f $(LOBJ)/*.o
 	$(MUTE)rm $(VTAG) -f $(LBIN)/*
 
 doc:
-	@echo "* Generating documentation..."
+	# Generating documentation...
 	$(MUTE)doxygen Doxyfile
 
 docclean:
-	@echo "* Removing documentation..."
+	# Removing documentation...
 	-$(MUTE)rm $(VTAG) -rf $(LDOC)/html
 
 .PHONY: clean doc docclean uninstall dirs
 
-#------------------------------------------------------------------------------
 # iniparser stuff
 
 obj/iniparser.o: $(INIDIR)/iniparser.c
-	@echo "* Compiling iniparser..."
+	# Compiling iniparser...
 	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/iniparser.c  -c -o obj/iniparser.o
 
 obj/inidictionary.o: $(INIDIR)/dictionary.c

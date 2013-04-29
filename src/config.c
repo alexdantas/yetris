@@ -5,12 +5,18 @@
  * If the user specifies options at commandline, they have higher
  * precedence over the config file.
  *
- * Remember, DEFAULT_CONFIG_FILE is defined on the Makefile.
- * By default, it's '/home/<user>/.yetrisrc.ini'
+ * We get CONFIG_FILE defined from the Makefile.
+ * By default, it's 'config.ini' and it should be on
+ * the user's config directory ('~/.yetris/').
+ *
+ * We also get PACKAGE from the Makefile, which contains the program
+ * (and executable's) name.
  *
  */
 
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "config.h"
 #include "globals.h"
 #include "engine.h"
@@ -19,31 +25,52 @@ int get_color_from_string(char* string)
 {
 	if (!string) return -1;
 
-	if (strcasecmp(string, "black")   == 0) return COLOR_BLACK;
-	if (strcasecmp(string, "red")     == 0) return COLOR_RED;
-	if (strcasecmp(string, "green")   == 0) return COLOR_GREEN;
+	if (strcasecmp(string, "black")	  == 0) return COLOR_BLACK;
+	if (strcasecmp(string, "red")	  == 0) return COLOR_RED;
+	if (strcasecmp(string, "green")	  == 0) return COLOR_GREEN;
 	if (strcasecmp(string, "yellow")  == 0) return COLOR_YELLOW;
-	if (strcasecmp(string, "blue")    == 0) return COLOR_BLUE;
+	if (strcasecmp(string, "blue")	  == 0) return COLOR_BLUE;
 	if (strcasecmp(string, "magenta") == 0) return COLOR_MAGENTA;
-	if (strcasecmp(string, "cyan")    == 0) return COLOR_CYAN;
-	if (strcasecmp(string, "white")   == 0) return COLOR_WHITE;
+	if (strcasecmp(string, "cyan")	  == 0) return COLOR_CYAN;
+	if (strcasecmp(string, "white")	  == 0) return COLOR_WHITE;
 
 	return -1;
 }
 
 /** Deals with the config file, storing each option in memory.
- *   @see globals.h
+ *	@see globals.h
  */
 void config_handle()
 {
-	// try to deal with custom config name specified by the player
-	if (!config_file_exists(DEFAULT_CONFIG_FILE))
+	char package_dir[256];
+	memset(package_dir, '\0', 256);
+
+	strncpy(package_dir, getenv("HOME"), 255);
+	strncat(package_dir, "/."PACKAGE"/", 255);
+
+	// blindly attempts to create the directory
+	// TODO: Test first, same with hscore
+	mkdir(package_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH);
+
+	// builds the absolute pathname according to the user who's
+	// executing the game (assumes it's empty)
+	if (getenv("HOME") == NULL)
+		strncpy(global.config_filename, "/dev/null", 255);
+
+	else
 	{
-		config_create_default(DEFAULT_CONFIG_FILE);
+		strncpy(global.config_filename, package_dir, 255);
+		strncat(global.config_filename, CONFIG_FILE, 255);
+	}
+
+	// try to deal with custom config name specified by the player
+	if (!config_file_exists(global.config_filename))
+	{
+		config_create_default(global.config_filename);
 		return;
 	}
 
-	config_parse(DEFAULT_CONFIG_FILE);
+	config_parse(global.config_filename);
 }
 
 /** Tests if #filename exists. */
@@ -58,11 +85,11 @@ bool config_file_exists(char* filename)
 }
 
 /** Reads the config file and stores It's contents in memory
- *  This is the main interface with the iniparser library.
- *  Watch out, this function's big and scary, but you can do it
- *  if you take your time and go step-by-step.
+ *	This is the main interface with the iniparser library.
+ *	Watch out, this function's big and scary, but you can do it
+ *	if you take your time and go step-by-step.
  *
- *  Warning, macros ahead!
+ *	Warning, macros ahead!
  */
 void config_parse(char* filename)
 {
@@ -80,22 +107,22 @@ void config_parse(char* filename)
  * Note that it depends on the 'bool b' variable!
  */
 	bool b;
-#define set_bool_if_valid(var, string)              \
-	{                                               \
-		b = -1;                                     \
-		b = iniparser_getboolean(ini, string, -1);  \
-		if ((b != -1) && ((b == 0) || (b == 1)))    \
-			var = b;                                \
+#define set_bool_if_valid(var, string)				\
+	{												\
+		b = -1;										\
+		b = iniparser_getboolean(ini, string, -1);	\
+		if ((b != -1) && ((b == 0) || (b == 1)))	\
+			var = b;								\
 	}
 
-	set_bool_if_valid(g->screen_use_colors,          "interface:colors");
-	set_bool_if_valid(g->screen_center_vertically,   "interface:center_vertical");
+	set_bool_if_valid(g->screen_use_colors,			 "interface:colors");
+	set_bool_if_valid(g->screen_center_vertically,	 "interface:center_vertical");
 	set_bool_if_valid(g->screen_center_horizontally, "interface:center_horizontal");
-	set_bool_if_valid(g->screen_fancy_borders,       "interface:fancy_borders");
-	set_bool_if_valid(g->screen_show_outer_border,   "interface:outer_border");
-	set_bool_if_valid(g->game_has_statistics,        "interface:statistics");
+	set_bool_if_valid(g->screen_fancy_borders,		 "interface:fancy_borders");
+	set_bool_if_valid(g->screen_show_outer_border,	 "interface:outer_border");
+	set_bool_if_valid(g->game_has_statistics,		 "interface:statistics");
 
-	set_bool_if_valid(g->game_can_hold,  "gameplay:hold");
+	set_bool_if_valid(g->game_can_hold,	 "gameplay:hold");
 	set_bool_if_valid(g->game_has_ghost, "gameplay:ghost");
 
 	set_bool_if_valid(g->theme_piece_has_colors, "theming:piece_has_color");
@@ -112,12 +139,12 @@ void config_parse(char* filename)
  * Note that it depends on the 'int i' variable!
  */
 	int i;
-#define set_int_if(condition, var, string)     \
-	{                                          \
-		i = 0;                                 \
+#define set_int_if(condition, var, string)	   \
+	{										   \
+		i = 0;								   \
 		i = iniparser_getint(ini, string, -1); \
-		if (condition)                         \
-			var = i;                           \
+		if (condition)						   \
+			var = i;						   \
 	}
 	set_int_if((i >= 0) && (i <= NEXT_PIECES_NO), g->game_next_no, "gameplay:next");
 	set_int_if((i >= 1) && (i <= 2), g->game_random_algorithm, "gameplay:random");
@@ -132,15 +159,15 @@ void config_parse(char* filename)
  * I dont even have to say that 'char* s' is essential.
  */
 	char* s;
-#define set_theme_if_valid(dest, config_string)            \
-	{                                                      \
-		s = NULL;                                          \
+#define set_theme_if_valid(dest, config_string)			   \
+	{													   \
+		s = NULL;										   \
 		s = iniparser_getstring(ini, config_string, NULL); \
-		if ((s) && (s[0] != '\0'))                         \
-		{                                                  \
-			dest[0] = s[0];                                \
-			dest[1] = s[1];                                \
-		}                                                  \
+		if ((s) && (s[0] != '\0'))						   \
+		{												   \
+			dest[0] = s[0];								   \
+			dest[1] = s[1];								   \
+		}												   \
 	}
 	set_theme_if_valid(g->theme_piece, "theming:piece");
 	set_theme_if_valid(g->theme_ghost, "theming:ghost");
@@ -180,17 +207,17 @@ void config_parse(char* filename)
 	 */
 	int fg , bg, new_fg, new_bg;
 #define get_colors_if_valid(var, string_fg, string_bg, default_fg, default_bg) \
-{                                                                              \
-	fg = default_fg;                                                           \
-	bg = default_bg;                                                           \
+{																			   \
+	fg = default_fg;														   \
+	bg = default_bg;														   \
 	new_fg = get_color_from_string(iniparser_getstring(ini, string_fg, NULL)); \
-	if (new_fg != -1) fg = new_fg;                                             \
+	if (new_fg != -1) fg = new_fg;											   \
 	new_bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL)); \
-	if (new_bg != -1) bg = new_bg;                                             \
-	                                                                           \
-		var = engine_get_color(fg, bg, false);                                 \
+	if (new_bg != -1) bg = new_bg;											   \
+																			   \
+		var = engine_get_color(fg, bg, false);								   \
 }
-	get_colors_if_valid(g->theme_ghost_color,   "theming:ghost_fg",   "theming:ghost_bg",   COLOR_WHITE, COLOR_BLACK);
+	get_colors_if_valid(g->theme_ghost_color,	"theming:ghost_fg",	  "theming:ghost_bg",	COLOR_WHITE, COLOR_BLACK);
 	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED);
 	get_colors_if_valid(g->theme_piece_Z_color, "theming:piece_Z_fg", "theming:piece_Z_bg", COLOR_WHITE, COLOR_GREEN);
 	get_colors_if_valid(g->theme_piece_O_color, "theming:piece_O_fg", "theming:piece_O_bg", COLOR_WHITE, COLOR_YELLOW);
@@ -223,11 +250,11 @@ void config_create_default(char* filename)
 		"#\n"
 		"# Each piece is referred by names resembling it's appearance:\n"
 		"#\n"
-		"#                       []\n"
-		"#                       []  []      []\n"
-		"#   [][]  [][]    [][]  []  []      []    []\n"
-		"# [][]      [][]  [][]  []  [][]  [][]  [][][]\n"
-		"#   S        Z     O     I    L    J      T\n"
+		"#						 []\n"
+		"#						 []	 []		 []\n"
+		"#	 [][]  [][]	   [][]	 []	 []		 []	   []\n"
+		"# [][]		 [][]  [][]	 []	 [][]  [][]	 [][][]\n"
+		"#	 S		  Z		O	  I	   L	J	   T\n"
 		"\n"
 		"[gameplay]\n"
 		"\n"
@@ -246,8 +273,8 @@ void config_create_default(char* filename)
 		"# The piece-generation algorithm used by the game. Invalid values\n"
 		"# will fallback to the last valid one.\n"
 		"# Valid values are:\n"
-		"#  1: bag generator\n"
-		"#  2: dummy random (srand)\n"
+		"#	1: bag generator\n"
+		"#	2: dummy random (srand)\n"
 		"# default: 1\n"
 		"random = 1\n"
 		"\n"
@@ -281,8 +308,8 @@ void config_create_default(char* filename)
 		"[theming]\n"
 		"\n"
 		"# The appearance of a normal piece (two-char string)\n"
-		"# default: \"  \"\n"
-		"piece = \"  \"\n"
+		"# default: \"	\"\n"
+		"piece = \"	 \"\n"
 		"\n"
 		"# The appearance of the ghost piece (two-char string)\n"
 		"# default: \"[]\"\n"
@@ -316,13 +343,13 @@ void config_create_default(char* filename)
 		"#\n"
 		"# Options accepted (case-insensitive) are:\n"
 		"#\n"
-		"#     black, red, green, yellow, blue, magenta, cyan, white\n"
+		"#	   black, red, green, yellow, blue, magenta, cyan, white\n"
 		"#\n"
 		"# For default, leave blank\n"
 		"\n"
 		"# default: white/black\n"
-		"#ghost_fg   = white\n"
-		"#ghost_bg   = black\n"
+		"#ghost_fg	 = white\n"
+		"#ghost_bg	 = black\n"
 		"# default: white/red\n"
 		"#piece_S_fg = red\n"
 		"#piece_S_bg = black\n"

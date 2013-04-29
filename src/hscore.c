@@ -10,14 +10,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.	 If not, see <http://www.gnu.org/licenses/>.
  *
  * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:   alex.dantas92@gmail.com
+ * mailto:	 alex.dantas92@gmail.com
  */
 
 #include <stdio.h>
@@ -25,6 +25,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "hscore.h"
 #include "engine.h"
 
@@ -39,6 +41,7 @@ if i call new_game(), it doesnt zero the hscore and
 
 void hscore_handle(game_s* g)
 {
+	// getting user name for defaulthighscore entry
 	char name[11];
 	memset(name, '\0', 11);
 
@@ -62,7 +65,7 @@ void hscore_handle(game_s* g)
 }
 
 /** Includes the score #s at it's according position on the global array.
- *  Also shifts any score after the one included.
+ *	Also shifts any score after the one included.
  */
 void hscore_insert(score_s* s)
 {
@@ -103,7 +106,7 @@ int get_hscore_index(int score)
 	return -1;
 }
 
-/** Starts the high score list with default values  */
+/** Starts the high score list with default values	*/
 void hscore_init()
 {
 	/* Zeroes all high scores */
@@ -130,30 +133,30 @@ score_s new_score()
 {
 	score_s s;
 
-	memset(s.name,  '\0', 11);
-	memset(s.time,  '\0', 9);
-	memset(s.date,  '\0', 11);
+	memset(s.name,	'\0', 11);
+	memset(s.time,	'\0', 9);
+	memset(s.date,	'\0', 11);
 	memset(s.timer, '\0', 9);
 	s.points = 0;
-	s.lines  = 0;
-	s.level  = 0;
+	s.lines	 = 0;
+	s.level	 = 0;
 
 	return s;
 }
 
 void hscore_copy(score_s* dest, score_s* orig)
 {
-	strncpy(dest->name,  orig->name, 11);
-	strncpy(dest->time,  orig->time, 9);
-	strncpy(dest->date,  orig->date, 11);
+	strncpy(dest->name,	 orig->name, 11);
+	strncpy(dest->time,	 orig->time, 9);
+	strncpy(dest->date,	 orig->date, 11);
 	strncpy(dest->timer, orig->timer, 9);
 	dest->points = orig->points;
-	dest->lines  = orig->lines;
-	dest->level  = orig->level;
+	dest->lines	 = orig->lines;
+	dest->level	 = orig->level;
 }
 
 /** Saves a score.
- *  It automagically handles date.
+ *	It automagically handles date.
  */
 void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds)
 {
@@ -212,8 +215,29 @@ int hscore_get_lowest_points()
 
 bool hscore_load()
 {
-	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
-	FILE* fp = fopen(SCORE_PATH, "rb");
+	char package_dir[256];
+	memset(package_dir, '\0', 256);
+
+	strncpy(package_dir, getenv("HOME"), 255);
+	strncat(package_dir, "/."PACKAGE"/", 255);
+
+	// blindly attempts to create the directory
+	// TODO: Test first, same with hscore
+	mkdir(package_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH);
+
+	// builds the absolute pathname according to the user who's
+	// executing the game (assumes it's empty)
+	if (getenv("HOME") == NULL)
+		strncpy(global.hscore_filename, "/dev/null", 255);
+
+	else
+	{
+		strncpy(global.hscore_filename, package_dir, 255);
+		strncat(global.hscore_filename, SCORE_FILE, 255);
+	}
+
+	/* global.hscore_filename defined from Makefile (default /var/games/yetris.scores) */
+	FILE* fp = fopen(global.hscore_filename, "rb");
 	if (!fp)
 	{
 		hscore_save(); /* score already has defaults so ill just save */
@@ -224,13 +248,13 @@ bool hscore_load()
  * This macro receives the same arguments as fread(), It just checks
  * to see if everything has been written just fine.
  */
-#define reset_hscore_file_unless_read(what, size, ammount, where)   \
-	{                                                               \
-		if (fread(what, size, ammount, where) != ammount)           \
-		{                                                           \
-			hscore_reset();                                         \
-			return false;                                           \
-		}                                                           \
+#define reset_hscore_file_unless_read(what, size, ammount, where)	\
+	{																\
+		if (fread(what, size, ammount, where) != ammount)			\
+		{															\
+			hscore_reset();											\
+			return false;											\
+		}															\
 	}
 
 	/* The following is to ensure portability.
@@ -262,14 +286,14 @@ bool hscore_load()
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
-		reset_hscore_file_unless_read(hscores[i].name,  sizeof(char), 11, fp);
-		reset_hscore_file_unless_read(hscores[i].time,  sizeof(char), 9,  fp);
-		reset_hscore_file_unless_read(hscores[i].date,  sizeof(char), 11,  fp);
+		reset_hscore_file_unless_read(hscores[i].name,	sizeof(char), 11, fp);
+		reset_hscore_file_unless_read(hscores[i].time,	sizeof(char), 9,  fp);
+		reset_hscore_file_unless_read(hscores[i].date,	sizeof(char), 11,  fp);
 		reset_hscore_file_unless_read(hscores[i].timer, sizeof(char), 9,  fp);
 
 		reset_hscore_file_unless_read((&hscores[i].points), sizeof(int), 1, fp);
-		reset_hscore_file_unless_read((&hscores[i].lines),  sizeof(int), 1, fp);
-		reset_hscore_file_unless_read((&hscores[i].level),  sizeof(int), 1, fp);
+		reset_hscore_file_unless_read((&hscores[i].lines),	sizeof(int), 1, fp);
+		reset_hscore_file_unless_read((&hscores[i].level),	sizeof(int), 1, fp);
 	}
 	fclose(fp);
 	return true;
@@ -278,7 +302,7 @@ bool hscore_load()
 /** Zeroes the contents of the high score file */
 void hscore_reset()
 {
-	FILE* fp = fopen(SCORE_PATH, "wb");
+	FILE* fp = fopen(global.hscore_filename, "wb");
 	if (fp)
 	{
 		fflush(fp);
@@ -289,8 +313,7 @@ void hscore_reset()
 /** Writes the high scores into the file */
 bool hscore_save()
 {
-	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
-	FILE* fp = fopen(SCORE_PATH, "wb");
+	FILE* fp = fopen(global.hscore_filename, "wb");
 	if (!fp)
 		return false;
 
@@ -300,9 +323,9 @@ bool hscore_save()
  * to see if everything has been written just fine.
  */
 #define return_false_unless_written(what, size, ammount, where) \
-	{                                                           \
-		if (fwrite(what, size, ammount, where) != ammount)      \
-			return false;                                       \
+	{															\
+		if (fwrite(what, size, ammount, where) != ammount)		\
+			return false;										\
 	}
 
 	/* To ensure portability, I gotta save the version number */
@@ -312,9 +335,9 @@ bool hscore_save()
 	for (i = 0; i < MAX_HSCORES; i++)
 	{
 		return_false_unless_written(hscores[i].name,  sizeof(char), 11, fp);
-		return_false_unless_written(hscores[i].time,  sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].time,  sizeof(char), 9,	fp);
 		return_false_unless_written(hscores[i].date,  sizeof(char), 11, fp);
-		return_false_unless_written(hscores[i].timer, sizeof(char), 9,  fp);
+		return_false_unless_written(hscores[i].timer, sizeof(char), 9,	fp);
 
 		return_false_unless_written((&hscores[i].points), sizeof(int), 1, fp);
 		return_false_unless_written((&hscores[i].lines),  sizeof(int), 1, fp);

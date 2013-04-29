@@ -10,14 +10,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.	 If not, see <http://www.gnu.org/licenses/>.
  *
  * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:   alex.dantas92@gmail.com
+ * mailto:	 alex.dantas92@gmail.com
  */
 
 #include <stdbool.h>
@@ -34,14 +34,14 @@
 /* Here's the order of game termination:
  * The player loses (board is full, on update()):
  *
- *    we call game_over()
- *    game_over() does one-time settings
- *    game_over() sets the game state to GAME_OVER
- *    while the state is GAME_OVER, we wait for a specific keypress
- *      via game_handle_input()
- *    when we get the keypress we wanted, we set game.is_over to
- *      true, so the main() can see the game has ended.
- *    main() then restarts the game
+ *	  we call game_over()
+ *	  game_over() does one-time settings
+ *	  game_over() sets the game state to GAME_OVER
+ *	  while the state is GAME_OVER, we wait for a specific keypress
+ *		via game_handle_input()
+ *	  when we get the keypress we wanted, we set game.is_over to
+ *		true, so the main() can see the game has ended.
+ *	  main() then restarts the game
  */
 
 /** Initializes and returns a new game structure with all it's dependencies */
@@ -50,7 +50,7 @@ game_s new_game()
 	game_s g;
 	int i;
 
- 	srand(time(NULL));
+	srand(time(NULL));
 	g.state = PLAYING;
 
 	g.board = new_board();
@@ -61,11 +61,11 @@ game_s new_game()
 		for (i = 0; i < global.game_next_no; i++)
 			g.piece_next[i] = new_piece(piece_get_random());
 
-	g.quit      = false;
-	g.is_over   = false;
+	g.quit		= false;
+	g.is_over	= false;
 	g.show_help = false;
 	g.show_hscores = false;
-	g.is_combo  = false;
+	g.is_combo	= false;
 	g.moved_piece_down = false;
 	g.is_back_to_back  = false;
 	g.show_score_delta = false;
@@ -73,7 +73,7 @@ game_s new_game()
 
 	if (global.game_can_hold)
 	{
-		g.can_hold   = true;
+		g.can_hold	 = true;
 		g.piece_hold = new_piece(PIECE_DUMMY); /* create a dummy piece */
 	}
 
@@ -81,11 +81,11 @@ game_s new_game()
 		game_ghost_update(&g);
 
 	/* player info */
-	g.score       = 0;
-	g.lines       = 0;
-	g.level       = 1;
-	g.speed       = INITIAL_SPEED;
-	g.hscore      = 0;
+	g.score		  = 0;
+	g.lines		  = 0;
+	g.level		  = 1;
+	g.speed		  = INITIAL_SPEED;
+	g.hscore	  = 0;
 	g.combo_count = 0;
 	g.back_to_back_count = 0;
 	g.back_to_back_lines = 0;
@@ -208,11 +208,11 @@ void game_update(game_s* g)
 		break;
 
 	/** Will only respond to input */
-	case PAUSED:    break;
+	case PAUSED:	break;
 	case GAME_OVER:	break;
-	case HELP:      break;
-	case HSCORES:   break;
-	case INPUT:     break;
+	case HELP:		break;
+	case HSCORES:	break;
+	case INPUT:		break;
 
 	case QUITTING:
 		g->quit = true;
@@ -221,9 +221,9 @@ void game_update(game_s* g)
 }
 
 /** Called once when the player loses.
- *  Will set a state GAME_OVER, from where the game should
- *  know how to react.
- *  Usually it respawns itself or sends to the main menu.*/
+ *	Will set a state GAME_OVER, from where the game should
+ *	know how to react.
+ *	Usually it respawns itself or sends to the main menu.*/
 void game_over(game_s* g)
 {
 	timer_stop(&(g->global_timer));
@@ -238,10 +238,10 @@ void game_over(game_s* g)
 
 /** Updates piece position on screen.
  *
- *  I need the g->moved_piece_down because if the player moved the
- *  piece down, I must reset the piece timer (it wont double-drop it).
- *  But if the player moved the piece sideways, must avoid infinite
- *  floating.
+ *	I need the g->moved_piece_down because if the player moved the
+ *	piece down, I must reset the piece timer (it wont double-drop it).
+ *	But if the player moved the piece sideways, must avoid infinite
+ *	floating.
  */
 void game_update_piece(game_s* g)
 {
@@ -275,15 +275,15 @@ void game_update_level(game_s* g)
 // this is getting too long - need to create a math function
 	switch (g->lines)
 	{
-	case 0:   g->level = 1;  break; /* 1000ms */
-	case 5:   g->level = 2;  break;
-	case 10:  g->level = 3;  break;
-	case 15:  g->level = 4;  break;
-	case 20:  g->level = 5;  break;
-	case 25:  g->level = 6;  break;
-	case 30:  g->level = 7;  break;
-	case 40:  g->level = 8;  break;
-	case 50:  g->level = 9;  break;
+	case 0:	  g->level = 1;	 break; /* 1000ms */
+	case 5:	  g->level = 2;	 break;
+	case 10:  g->level = 3;	 break;
+	case 15:  g->level = 4;	 break;
+	case 20:  g->level = 5;	 break;
+	case 25:  g->level = 6;	 break;
+	case 30:  g->level = 7;	 break;
+	case 40:  g->level = 8;	 break;
+	case 50:  g->level = 9;	 break;
 	case 60:  g->level = 10; break;
 	case 70:  g->level = 11; break;
 	case 100: g->level = 12; break;
@@ -300,15 +300,15 @@ void game_update_speed(game_s* g)
 {
 	switch (g->level)
 	{
-	case 1:  g->speed = INITIAL_SPEED; break; /* 1000ms */
-	case 2:  g->speed = 900;  break;
-	case 3:  g->speed = 850;  break;
-	case 4:  g->speed = 800;  break;
-	case 5:  g->speed = 750;  break;
-	case 6:  g->speed = 700;  break;
-	case 7:  g->speed = 650;  break;
-	case 8:  g->speed = 600;  break;
-	case 9:  g->speed = 550;  break;
+	case 1:	 g->speed = INITIAL_SPEED; break; /* 1000ms */
+	case 2:	 g->speed = 900;  break;
+	case 3:	 g->speed = 850;  break;
+	case 4:	 g->speed = 800;  break;
+	case 5:	 g->speed = 750;  break;
+	case 6:	 g->speed = 700;  break;
+	case 7:	 g->speed = 650;  break;
+	case 8:	 g->speed = 600;  break;
+	case 9:	 g->speed = 550;  break;
 	case 10: g->speed = 500;  break;
 	case 11: g->speed = 450;  break;
 	case 12: g->speed = 400;  break;
@@ -323,17 +323,17 @@ void game_update_speed(game_s* g)
 }
 
 /** Saves current piece for later use. If there's already one on the
- *  'hold slot', switch them.
- *  @note Can only do this once per drop.
+ *	'hold slot', switch them.
+ *	@note Can only do this once per drop.
  */
 bool game_hold_piece(game_s* g)
 {
 	if (!g->can_hold)
 		return false;
 
-   	g->can_hold = false;
+	g->can_hold = false;
 
-	piece_s tmp   = g->piece_hold;
+	piece_s tmp	  = g->piece_hold;
 	g->piece_hold = new_piece(g->piece_current.type);
 	// if we were working with malloc(), we'd free() piece_current now
 
@@ -372,25 +372,25 @@ bool game_hold_piece(game_s* g)
 
 /** Checks all lines, deleting the ones that are full.
  *
- *  @note I know this function's ugly...
- *  @todo Maybe create a 'Line' data structure? To make this ?
+ *	@note I know this function's ugly...
+ *	@todo Maybe create a 'Line' data structure? To make this ?
  *
- *  This function also deals with score. These are the rules:
+ *	This function also deals with score. These are the rules:
  *
- *  line_score:         single: 100, double: 300, triple: 500, tetris: 800
- *  combo_score:        50 * combo_count * current_level
- *  back_to_back_score: (line_score * 3) / 2
+ *	line_score:			single: 100, double: 300, triple: 500, tetris: 800
+ *	combo_score:		50 * combo_count * current_level
+ *	back_to_back_score: (line_score * 3) / 2
  *
- *  score: (line_score * current_level) + combo_score
- *  Also, when you hard drop a piece, it's 10 points for free.
- *  Soft drops are the same (although they should be based on height.
+ *	score: (line_score * current_level) + combo_score
+ *	Also, when you hard drop a piece, it's 10 points for free.
+ *	Soft drops are the same (although they should be based on height.
  */
 bool game_delete_possible_lines(game_s* g)
 {
 	board_s* b = &(g->board);
 
 	bool lines[BOARD_HEIGHT]; /* this will mark lines to be deleted */
-	int  count = 0; /* how many lines have been cleared */
+	int	 count = 0; /* how many lines have been cleared */
 
 	g->show_score_delta = false;
 	g->score_delta = 0;
@@ -417,7 +417,7 @@ bool game_delete_possible_lines(game_s* g)
 	/* No lines to be deleted */
 	if (count == 0)
 	{
-		g->is_combo    = false;
+		g->is_combo	   = false;
 		g->combo_count = 0;
 		return false;
 	}
@@ -433,7 +433,7 @@ bool game_delete_possible_lines(game_s* g)
 	}
 	else
 	{
-		g->is_combo    = true;
+		g->is_combo	   = true;
 		g->combo_count = 0;
 	}
 
@@ -500,9 +500,9 @@ void game_update_gameplay_time(game_s* g)
 }
 
 /** Perform actions based on #input.
- *  It must be 'int' (and not 'char') because of ncurses' stuff.
+ *	It must be 'int' (and not 'char') because of ncurses' stuff.
  *
- *  I with it was a big 'switch', but it doesn't work with variables!
+ *	I with it was a big 'switch', but it doesn't work with variables!
  */
 void game_handle_input(game_s* g, int input)
 {
@@ -553,7 +553,7 @@ void game_handle_input(game_s* g, int input)
 		}
 		else if (input == engine.input.pause)
 		{
-   			g->state = PAUSED;
+			g->state = PAUSED;
 		}
 		else if (input == engine.input.hold)
 		{
@@ -638,7 +638,7 @@ void game_handle_input(game_s* g, int input)
 		{
 			game_switch_statistics();
 		}
- 		break;
+		break;
 
 	case GAME_OVER:
 		if (input == engine.input.quit)
@@ -701,11 +701,10 @@ void game_handle_input(game_s* g, int input)
 	}
 }
 
-/** Starts the high score list with default values  */
+/** Starts the high score list with default values	*/
 void game_hscore_init(game_s* g)
 {
-	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
-	FILE* fp = fopen(SCORE_PATH, "rb");
+	FILE* fp = fopen(global.hscore_filename, "rb");
 	if (!fp)
 	{
 		g->hscore = 100;
@@ -726,8 +725,7 @@ void game_handle_score(game_s* g)
 
 void game_hscore_save(game_s* g)
 {
-	/* SCORE_PATH defined from Makefile (default /var/games/yetris.scores) */
-	FILE* fp = fopen(SCORE_PATH, "wb");
+	FILE* fp = fopen(global.hscore_filename, "wb");
 	if (fp)
 	{
 		fwrite(&(g->hscore), sizeof(g->hscore), 1, fp);
@@ -751,16 +749,16 @@ void game_switch_statistics()
 }
 
 
-/*  */
-/*  */
+/*	*/
+/*	*/
 /* experimental functions that saves the game state */
-/*  */
-/*  */
+/*	*/
+/*	*/
 
 #define SAVE_PATH "yetris01.sav"
 
 /** Saves the current game state.
- *  Interrupts if something bad happens.
+ *	Interrupts if something bad happens.
  */
 void game_save(game_s* g)
 {
@@ -772,27 +770,27 @@ void game_save(game_s* g)
  * This macro receives the same arguments as fwrite(), It just checks
  * to see if everything has been written just fine.
  */
-#define return_unless_written(what, size, ammount, where)       \
-	{                                                           \
-		if (fwrite(what, size, ammount, where) != ammount)      \
-			return;                                             \
+#define return_unless_written(what, size, ammount, where)		\
+	{															\
+		if (fwrite(what, size, ammount, where) != ammount)		\
+			return;												\
 	}
 
-	return_unless_written(VERSION,             sizeof(char),    3, fp);
+	return_unless_written(VERSION,			   sizeof(char),	3, fp);
 	return_unless_written(&(g->piece_current), sizeof(piece_s), 1, fp);
-	return_unless_written(&(g->piece_next),    sizeof(piece_s), NEXT_PIECES_NO, fp);
+	return_unless_written(&(g->piece_next),	   sizeof(piece_s), NEXT_PIECES_NO, fp);
 	return_unless_written(&(g->piece_ghost),   sizeof(piece_s), 1, fp);
-	return_unless_written(&(g->piece_hold),    sizeof(piece_s), 1, fp);
-	return_unless_written(&(g->board),         sizeof(board_s), 1, fp);
+	return_unless_written(&(g->piece_hold),	   sizeof(piece_s), 1, fp);
+	return_unless_written(&(g->board),		   sizeof(board_s), 1, fp);
 
 	return_unless_written(&(g->global_timer),  sizeof(timer_s), 1, fp);
 	return_unless_written(&(g->piece_timer),   sizeof(timer_s), 1, fp);
 
-	return_unless_written(&(g->gameplay_s),    sizeof(long), 1, fp);
-	return_unless_written(&(g->gameplay_m),    sizeof(long), 1, fp);
-	return_unless_written(&(g->gameplay_h),    sizeof(long), 1, fp);
+	return_unless_written(&(g->gameplay_s),	   sizeof(long), 1, fp);
+	return_unless_written(&(g->gameplay_m),	   sizeof(long), 1, fp);
+	return_unless_written(&(g->gameplay_h),	   sizeof(long), 1, fp);
 
-	return_unless_written(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+	return_unless_written(&(g->piece_hold),	   sizeof(piece_s), 1, fp);
 
 	return_unless_written(&(g->score), sizeof(int), 1, fp);
 	return_unless_written(&(g->lines), sizeof(int), 1, fp);
@@ -835,7 +833,7 @@ void game_save(game_s* g)
 }
 
 /** Loads a saved game state.
- *  Interrupts if something wrong happens.
+ *	Interrupts if something wrong happens.
  */
 void game_load(game_s* g)
 {
@@ -847,10 +845,10 @@ void game_load(game_s* g)
  * This macro receives the same arguments as fread(), It just checks
  * to see if everything has been written just fine.
  */
-#define return_unless_read(what, size, ammount, where)              \
-	{                                                               \
-		if (fread(what, size, ammount, where) != ammount)           \
-			return;                                                 \
+#define return_unless_read(what, size, ammount, where)				\
+	{																\
+		if (fread(what, size, ammount, where) != ammount)			\
+			return;													\
 	}
 
 	char version[4];
@@ -865,19 +863,19 @@ void game_load(game_s* g)
 		return;
 
 	return_unless_read(&(g->piece_current), sizeof(piece_s), 1, fp);
-	return_unless_read(&(g->piece_next),    sizeof(piece_s), NEXT_PIECES_NO, fp);
-	return_unless_read(&(g->piece_ghost),   sizeof(piece_s), 1, fp);
-	return_unless_read(&(g->piece_hold),    sizeof(piece_s), 1, fp);
-	return_unless_read(&(g->board),         sizeof(board_s), 1, fp);
+	return_unless_read(&(g->piece_next),	sizeof(piece_s), NEXT_PIECES_NO, fp);
+	return_unless_read(&(g->piece_ghost),	sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->piece_hold),	sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->board),			sizeof(board_s), 1, fp);
 
-	return_unless_read(&(g->global_timer),  sizeof(timer_s), 1, fp);
-	return_unless_read(&(g->piece_timer),   sizeof(timer_s), 1, fp);
+	return_unless_read(&(g->global_timer),	sizeof(timer_s), 1, fp);
+	return_unless_read(&(g->piece_timer),	sizeof(timer_s), 1, fp);
 
-	return_unless_read(&(g->gameplay_s),    sizeof(long), 1, fp);
-	return_unless_read(&(g->gameplay_m),    sizeof(long), 1, fp);
-	return_unless_read(&(g->gameplay_h),    sizeof(long), 1, fp);
+	return_unless_read(&(g->gameplay_s),	sizeof(long), 1, fp);
+	return_unless_read(&(g->gameplay_m),	sizeof(long), 1, fp);
+	return_unless_read(&(g->gameplay_h),	sizeof(long), 1, fp);
 
-	return_unless_read(&(g->piece_hold),    sizeof(piece_s), 1, fp);
+	return_unless_read(&(g->piece_hold),	sizeof(piece_s), 1, fp);
 
 	return_unless_read(&(g->score), sizeof(int), 1, fp);
 	return_unless_read(&(g->lines), sizeof(int), 1, fp);
