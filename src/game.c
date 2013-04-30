@@ -262,6 +262,8 @@ void game_update_piece(game_s* g)
 
 		timer_start(&(g->piece_timer));
 	}
+	else
+		timer_unpause(&(g->piece_timer));
 }
 
 /** Updates level and speed based on the number of lines cleared. */
