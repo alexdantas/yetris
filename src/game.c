@@ -226,7 +226,7 @@ void game_update(game_s* g)
  *	Usually it respawns itself or sends to the main menu.*/
 void game_over(game_s* g)
 {
-	timer_stop(&(g->global_timer));
+	timer_pause(&(g->global_timer));
 	if (global.game_has_game_over_animation)
 		engine_draw_gameover_animation(g);
 
@@ -245,8 +245,8 @@ void game_over(game_s* g)
  */
 void game_update_piece(game_s* g)
 {
-	timer_stop(&(g->piece_timer));
-	if (timer_delta_mseconds(&(g->piece_timer)) >= g->speed)
+	timer_pause(&(g->piece_timer));
+	if (timer_delta_ms(&(g->piece_timer)) >= g->speed)
 	{
 		if (!g->moved_piece_down)
 		{
@@ -493,10 +493,11 @@ bool game_delete_possible_lines(game_s* g)
 /* Updates the time indicator on the right screen */
 void game_update_gameplay_time(game_s* g)
 {
-	timer_stop(&(g->global_timer));
-	g->gameplay_s = timer_delta_seconds(&(g->global_timer));
-	g->gameplay_m = timer_delta_minutes(&(g->global_timer));
-	g->gameplay_h = timer_delta_hours(&(g->global_timer));
+	timer_pause(&(g->global_timer));
+	g->gameplay_s = timer_delta_s(&(g->global_timer));
+	g->gameplay_m = timer_delta_m(&(g->global_timer));
+	g->gameplay_h = timer_delta_h(&(g->global_timer));
+	timer_unpause(&(g->global_timer));
 }
 
 /** Perform actions based on #input.
@@ -554,6 +555,7 @@ void game_handle_input(game_s* g, int input)
 		else if (input == engine.input.pause)
 		{
 			g->state = PAUSED;
+			timer_pause(&(g->global_timer));
 		}
 		else if (input == engine.input.hold)
 		{
@@ -633,6 +635,7 @@ void game_handle_input(game_s* g, int input)
 		else if (input == engine.input.pause)
 		{
 			g->state = PLAYING;
+			timer_unpause(&(g->global_timer));
 		}
 		else if (input == KEY_F(2))
 		{
