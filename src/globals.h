@@ -53,6 +53,7 @@ typedef struct globals_s
 	bool screen_center_vertically;
 	bool screen_center_horizontally;
 	bool screen_use_colors;
+    bool screen_use_default_background;
 	bool screen_fancy_borders;
 	bool screen_show_outer_border;
 
