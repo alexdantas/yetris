@@ -714,9 +714,10 @@ void game_hscore_init(game_s* g)
 	{
 		g->hscore = 100;
 		game_hscore_save(g);
+		return;
 	}
-	else
-		fread(&(g->hscore), sizeof(g->hscore), 1, fp);
+	fread(&(g->hscore), sizeof(g->hscore), 1, fp);
+	fclose(fp);
 }
 
 void game_handle_score(game_s* g)
@@ -734,7 +735,7 @@ void game_hscore_save(game_s* g)
 	if (fp)
 	{
 		fwrite(&(g->hscore), sizeof(g->hscore), 1, fp);
-		fflush(fp);
+		fclose(fp);
 	}
 }
 
@@ -778,7 +779,7 @@ void game_save(game_s* g)
 #define return_unless_written(what, size, ammount, where)		\
 	{															\
 		if (fwrite(what, size, ammount, where) != ammount)		\
-			return;												\
+			goto out;											\
 	}
 
 	return_unless_written(VERSION,			   sizeof(char),	3, fp);
@@ -835,6 +836,9 @@ void game_save(game_s* g)
 	return_unless_written(&(g->lines_count), sizeof(int), 1, fp);
 
 	return_unless_written(&global, sizeof(globals_s), 1, fp);
+
+out:
+	fclose(fp);
 }
 
 /** Loads a saved game state.
@@ -853,7 +857,7 @@ void game_load(game_s* g)
 #define return_unless_read(what, size, ammount, where)				\
 	{																\
 		if (fread(what, size, ammount, where) != ammount)			\
-			return;													\
+			goto out;												\
 	}
 
 	char version[4];
@@ -865,7 +869,7 @@ void game_load(game_s* g)
 	strncpy(version_check, VERSION, 3);
 
 	if (strcmp(version, version_check) != 0)
-		return;
+		goto out;
 
 	return_unless_read(&(g->piece_current), sizeof(piece_s), 1, fp);
 	return_unless_read(&(g->piece_next),	sizeof(piece_s), NEXT_PIECES_NO, fp);
@@ -920,5 +924,8 @@ void game_load(game_s* g)
 	return_unless_read(&(g->lines_count), sizeof(int), 1, fp);
 
 	return_unless_read(&global, sizeof(globals_s), 1, fp);
+
+out:
+	fclose(fp);
 }
 

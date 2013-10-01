@@ -388,5 +388,6 @@ void config_create_default(char* filename)
 
 	/* well, that was easy, wasn't it? */
 	fprintf(file, text);
+	fclose(file);
 }
 
