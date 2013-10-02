@@ -251,10 +251,7 @@ bool hscore_load()
 #define reset_hscore_file_unless_read(what, size, ammount, where)	\
 	{																\
 		if (fread(what, size, ammount, where) != ammount)			\
-		{															\
-			hscore_reset();											\
-			return false;											\
-		}															\
+			goto out_reset;											\
 	}
 
 	/* The following is to ensure portability.
@@ -279,8 +276,7 @@ bool hscore_load()
 	{
 		// should i make a copy and do a backup?
 		// exit(EXIT_FAILURE);
-		hscore_reset();
-		return false;
+		goto out_reset;
 	}
 
 	int i;
@@ -297,6 +293,11 @@ bool hscore_load()
 	}
 	fclose(fp);
 	return true;
+
+out_reset:
+	fclose(fp);
+	hscore_reset();
+	return false;
 }
 
 /** Zeroes the contents of the high score file */
@@ -304,15 +305,14 @@ void hscore_reset()
 {
 	FILE* fp = fopen(global.hscore_filename, "wb");
 	if (fp)
-	{
-		fflush(fp);
 		fclose(fp);
-	}
 }
 
 /** Writes the high scores into the file */
 bool hscore_save()
 {
+	bool ret = false;
+
 	FILE* fp = fopen(global.hscore_filename, "wb");
 	if (!fp)
 		return false;
@@ -325,7 +325,7 @@ bool hscore_save()
 #define return_false_unless_written(what, size, ammount, where) \
 	{															\
 		if (fwrite(what, size, ammount, where) != ammount)		\
-			return false;										\
+			goto out;										\
 	}
 
 	/* To ensure portability, I gotta save the version number */
@@ -347,8 +347,10 @@ bool hscore_save()
 	// could i just write everything up?
 	//	return_false_unless_written(hscores, sizeof(score_s), MAX_HSCORES, fp);
 
-	fflush(fp);
+	ret = true;
+
+out:
 	fclose(fp);
-	return true;
+	return ret;
 }
 
