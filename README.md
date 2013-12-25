@@ -2,6 +2,8 @@
 
 Customizable Tetris(tm) on the console.
 
+![screenshot](http://yetris.alexdantas.net/images/1gameplay.png)
+
 ## Introduction
 
 yetris is a customizable Tetris(tm) clone for the console.

@@ -1,23 +1,30 @@
-# yetris Makefile (2013) Alexandre Dantas (kure) <alex.dantas92@gmail.com>
+# yetris Makefile
+# (2013) Alexandre Dantas <eu@alexdantas.net>
 #
-# Makefile Targets:
-#  make all		   Compiles the package
-#  make run		   Compiles and runs the program
-#  make install	   Installs the package
-#  make clean	   Removes the binary and the resulting object files
-#  make uninstall  Uninstalls the package
-#  make dist	   Creates the source code 'tarball' for distribution
-#  make doc		   Generates the documentation with doxygen
-#  make docclean   Removes the documentation
+# This is a rather complex Makefile, sorry about that.
+# It supports the following targets:
 #
-# Makefile Commandlines:
-#  V	   Print all commands as they are called.
-#		   To turn on for the current make, add 'V=1' on the
-#		   commandline.
-#		   To turn on permanently, uncomment the line specified below
-#  DESTDIR Installs the package on a custom root directory (other than /)
-#		   For example 'DESTDIR=~/'.
-#  PREFIX  Installs the package on a custom directory (overwrites root)
+# make all        Builds the package
+# make run        Builds and runs the program
+# make install    Installs the package on your system
+# make uninstall  Uninstalls the package from your system
+# make clean      Cleans results of building process
+# make dist       Creates source code "tarball"
+# make doc        Generates the documentation with doxygen
+# make docclean   Removes the documentation
+#
+# Also, the following commandline arguments customize
+# default actions:
+#
+#  V       Verbose mode, off by default.
+#          To turn on for the current command,
+#          add `V=1` when calling `make`.
+#          To turn on permanently, uncomment the line
+#          specified below
+#  DESTDIR Installs the package on a custom root directory
+#          (other than `/`). For example `DESTDIR=~/`.
+#  PREFIX  Installs the package on a custom directory
+#          (overwrites root)
 #  CFLAGS  Changes the C flags used on compilation
 #  CDEBUG  If you wish to build on debug mode, add 'CDEBUG=-g'
 #
@@ -25,64 +32,57 @@
 # Uncomment line below to tun on verbose mode permanently
 #V = 1;
 
-SHELL	= /bin/sh
-
 # General Info
 PACKAGE = yetris
 VERSION = 1.6
-DATE	= $(shell date "+%B%Y")
+DATE    = $(shell date "+%b%Y")
 
 # Local source code information
-LBIN	= bin
-LOBJ	= obj
-LDOC	= doc
-LSRC	= src
-LFILES	= BUGS ChangeLog COPYING Doxyfile INSTALL Makefile README TODO
+FILES = BUGS ChangeLog COPYING Doxyfile \
+        INSTALL.md Makefile README.md TODO
 
-# Install
+# Install dirs
 DESTDIR =
-PREFIX	= $(DESTDIR)/usr
+PREFIX  = $(DESTDIR)/usr
 
 EXEC_PREFIX = $(PREFIX)
 DATAROOTDIR = $(PREFIX)/share
-MANROOT		= $(DATAROOTDIR)/man
+MANROOT     = $(DATAROOTDIR)/man
 
-MANNUMBER	= 6
+MANNUMBER   = 6
 
-BINDIR		= $(EXEC_PREFIX)/games
-MANDIR		= $(MANROOT)/man$(MANNUMBER)
+BINDIR      = $(EXEC_PREFIX)/games
+MANDIR      = $(MANROOT)/man$(MANNUMBER)
 
-MANFILE		= $(PACKAGE).$(MANNUMBER)
-MANPAGE		= $(LDOC)/man/$(MANFILE)
+MANFILE     = $(PACKAGE).$(MANNUMBER)
+MANPAGE     = doc/man/$(MANFILE)
 
-SCORE_FILE	= yetris.scores
+SCORE_FILE  = yetris.scores
 CONFIG_FILE = config.ini
 
-# Compiling information
-CC			= gcc
-EXE			= yetris
-CDEBUG		=
-CFLAGS		= $(CDEBUG) -Wall -Wextra -O2
-LIBS		= -lncurses
+# Build info
+EXE         = $(PACKAGE)
+CDEBUG      = -O2
+CFLAGS      = $(CDEBUG) -Wall -Wextra
+LDFLAGS     = -lncurses
 INCLUDESDIR =
-LIBSDIR		=
-OBJ			= obj/engine.o	 obj/piece.o   \
-			  obj/game.o	  obj/main.o	\
-			  obj/timer.o	  obj/board.o	\
-			  obj/block.o	  obj/globals.o \
-			  obj/arguments.o obj/config.o	\
-			  obj/hscore.o
+LIBSDIR     =
 
-DEFINES		= -DVERSION=\""$(VERSION)"\"			   \
-			  -DPACKAGE=\""$(PACKAGE)"\"			   \
-			  -DDATE=\""$(DATE)"\"					   \
-			  -DSCORE_FILE=\""$(SCORE_FILE)"\"		   \
-			  -DCONFIG_FILE=\""$(CONFIG_FILE)"\"
+# All source files
+CFILES  = $(shell find src -maxdepth 1 -type f -name '*.c')
+OBJECTS = $(CFILES:.c=.o)
+
+DEFINES = -DVERSION=\""$(VERSION)"\"         \
+          -DPACKAGE=\""$(PACKAGE)"\"         \
+          -DDATE=\""$(DATE)"\"               \
+          -DSCORE_FILE=\""$(SCORE_FILE)"\"   \
+          -DCONFIG_FILE=\""$(CONFIG_FILE)"\"
 
 # iniparser stuff
-INIDIR	   = src/iniparser
+INIDIR     = src/iniparser
 INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra
-INI_OBJS   = obj/iniparser.o obj/inidictionary.o
+INI_OBJS   = $(INIDIR)/inidictionary.o \
+             $(INIDIR)/iniparser.o
 
 # Distribution tarball
 TARNAME = $(PACKAGE)
@@ -116,7 +116,7 @@ install: all
 	# Installing...
 
 	$(MUTE)install -d --mode=755 $(BINDIR)
-	$(MUTE)install --mode=755 $(LBIN)/$(EXE) $(BINDIR)
+	$(MUTE)install --mode=755 bin/$(EXE) $(BINDIR)
 	-$(MUTE)cat $(MANPAGE) | sed -e "s|DATE|$(DATE)|g" -e "s|VERSION|$(VERSION)|g" >$(MANFILE)
 	$(MUTE)install -d $(MANDIR)
 	$(MUTE)install $(MANFILE) $(MANDIR)
@@ -132,11 +132,11 @@ purge: uninstall
 	# Purging configuration files...
 	$(MUTE)rm -f $(MANDIR)/$(MANFILE)
 
-$(EXE): $(OBJ) $(INI_OBJS)
+$(EXE): $(OBJECTS) $(INI_OBJS)
 	# Linking...
-	$(MUTE)$(CC) $(OBJ) $(INI_OBJS) -o $(LBIN)/$(EXE) $(LIBSDIR) $(LIBS)
+	$(MUTE)$(CC) $(OBJECTS) $(INI_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
-$(LOBJ)/%.o: $(LSRC)/%.c
+src/%.o: src/%.c
 	# Compiling $<...
 	$(MUTE)$(CC) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
@@ -149,24 +149,22 @@ $(DISTDIR).tar.gz: $(DISTDIR)
 	$(MUTE)rm -f $(DISTDIR).tar.gz
 
 $(DISTDIR):
-	$(MUTE)mkdir -p $(DISTDIR)/$(LSRC) $(DISTDIR)/$(LDOC)
-	$(MUTE)mkdir -p $(DISTDIR)/$(LBIN) $(DISTDIR)/$(LOBJ)
-	-$(MUTE)cp $(LFILES) -t $(DISTDIR)
-	-$(MUTE)cp -r $(LSRC)/* $(DISTDIR)/$(LSRC)
-	-$(MUTE)cp -r $(LBIN)/* $(DISTDIR)/$(LBIN)
-	-$(MUTE)cp -r $(LDOC)/* $(DISTDIR)/$(LDOC)
+	$(MUTE)mkdir -p $(DISTDIR)/src $(DISTDIR)/doc $(DISTDIR)/bin
+	-$(MUTE)cp $(FILES) -t $(DISTDIR)
+	-$(MUTE)cp -r src/* $(DISTDIR)/src
+	-$(MUTE)cp -r doc/* $(DISTDIR)/doc
 
 dirs:
-	@-mkdir -p $(LOBJ) $(LBIN)
+	@-mkdir -p bin
 
 run: all
 	# Running...
-	$(MUTE)./$(LBIN)/$(EXE)
+	$(MUTE)./bin/$(EXE)
 
 clean:
 	# Cleaning files...
-	$(MUTE)rm $(VTAG) -f $(LOBJ)/*.o
-	$(MUTE)rm $(VTAG) -f $(LBIN)/*
+	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(INI_OBJS)
+	$(MUTE)rm $(VTAG) -f bin/$(EXE)
 
 doc:
 	# Generating documentation...
@@ -174,16 +172,16 @@ doc:
 
 docclean:
 	# Removing documentation...
-	-$(MUTE)rm $(VTAG) -rf $(LDOC)/html
+	-$(MUTE)rm $(VTAG) -rf doc/html
 
 .PHONY: clean doc docclean uninstall dirs
 
 # iniparser stuff
 
-obj/iniparser.o: $(INIDIR)/iniparser.c
+$(INIDIR)/iniparser.o: $(INIDIR)/iniparser.c
 	# Compiling iniparser...
-	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/iniparser.c  -c -o obj/iniparser.o
+	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/iniparser.c  -c -o $(INIDIR)/iniparser.o
 
-obj/inidictionary.o: $(INIDIR)/dictionary.c
-	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/dictionary.c -c -o obj/inidictionary.o
+$(INIDIR)/inidictionary.o: $(INIDIR)/dictionary.c
+	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/dictionary.c -c -o $(INIDIR)/inidictionary.o
 

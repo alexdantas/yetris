@@ -1,17 +1,11 @@
-# Ignoring unnecessary binary files
 
+# Object files and binary
 bin/*
-obj/*
+*.o
 
-# And emacs' backup files
-
-.#*
-
-# Also, the high score file
-
+# Temporary score file
 yetris.hscore
 
 # local documentation
-
 doc/html
 
