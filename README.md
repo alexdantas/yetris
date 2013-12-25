@@ -145,3 +145,5 @@ Huge thanks for all the people that contributed to the project
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/fde5a2c1dd787040f5121109b5451879 "githalytics.com")](http://githalytics.com/alexdantas/yetris)
+
