@@ -115,8 +115,8 @@ all: dirs $(EXE)
 install: all
 	# Installing...
 
-	$(MUTE)install -d --mode=755 $(BINDIR)
-	$(MUTE)install --mode=755 $(LBIN)/$(EXE) $(BINDIR)
+	$(MUTE)install -d -m 755 $(BINDIR)
+	$(MUTE)install -m 755 $(LBIN)/$(EXE) $(BINDIR)
 	-$(MUTE)cat $(MANPAGE) | sed -e "s|DATE|$(DATE)|g" -e "s|VERSION|$(VERSION)|g" >$(MANFILE)
 	$(MUTE)install -d $(MANDIR)
 	$(MUTE)install $(MANFILE) $(MANDIR)
