@@ -127,7 +127,8 @@ Huge thanks for all the people that contributed to the project
   unnecessary `fflush()` calls.
 * [Damon McDougall](https://github.com/dmcdougall) pointed out
   [a serious issue](https://github.com/alexdantas/yetris/issues/1)
-  on the building process, helping the game a lot.
+  on the building process. Thanks to him *yetris can be installed
+  on BSD*!
 
 ## License
 

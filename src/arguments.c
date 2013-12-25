@@ -126,7 +126,7 @@ void args_handle (int argc, char* argv[])
 
 void print_help()
 {
-	printf("yetris v" VERSION " Help\n"
+	printf("yetris v"VERSION" ("DATE") Help\n"
 		   "\n"
 		   "yetris is a customizable Tetris(tm) clone for the console.\n"
 		   "It aims to follow modern implementations with lots of features\n"
@@ -158,7 +158,7 @@ void print_help()
 
 void print_usage()
 {
-	printf("yetris v" VERSION " Usage\n"
+	printf("yetris v"VERSION" ("DATE") Usage\n"
 		   "\n"
 		   "	yetris [options]\n"
 		   "\n"
@@ -179,15 +179,15 @@ void print_usage()
 void print_version()
 {
 	printf("yetris v"VERSION" ("DATE")\n"
-		   "Copyright (C) 2013 Alexandre Dantas (kure)\n"
+		   "Copyright (C) 2013 Alexandre Dantas\n"
 		   "\n"
 		   "This program comes with ABSOLUTELY NO WARRANTY\n"
-		   "for warranty details type 'yetris --license'.\n"
+		   "for warranty details type `yetris --license`.\n"
 		   "This is free software, and you are welcome to redistribute it\n"
-		   "under certain conditions; type 'yetris --license' for license details.\n"
+		   "under certain conditions; type `yetris --license` for license details.\n"
 		   "\n"
 		   "Mailto:	  eu@alexdantas.net\n"
-		   "Homepage: http://alexdantas.github.com/yetris/\n"
+		   "Homepage: http://yetris.alexdantas.net/\n"
 		   "\n");
 }
 
@@ -195,7 +195,7 @@ void print_license ()
 {
 	/* preamble of the GNU GPLv3 */
 	printf("yetris - Customizable Tetris(tm) on the console.\n"
-		   "Copyright (C) 2013 Alexandre Dantas (kure)\n"
+		   "Copyright (C) 2013 Alexandre Dantas\n"
 		   "\n"
 		   "yetris is free software: you can redistribute it and/or modify\n"
 		   "it under the terms of the GNU General Public License as published by\n"
