@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.	 If not, see <http://www.gnu.org/licenses/>.
  *
- * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:	 alex.dantas92@gmail.com
+ * homepage: http://yetris.alexdantas.net/
+ * mailto:	 eu@alexdantas.net
  */
 
 #include <stdio.h> /* printf() */
@@ -186,7 +186,7 @@ void print_version()
 		   "This is free software, and you are welcome to redistribute it\n"
 		   "under certain conditions; type 'yetris --license' for license details.\n"
 		   "\n"
-		   "Mailto:	  alex.dantas92@gmail.com\n"
+		   "Mailto:	  eu@alexdantas.net\n"
 		   "Homepage: http://alexdantas.github.com/yetris/\n"
 		   "\n");
 }

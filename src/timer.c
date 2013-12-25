@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.	 If not, see <http://www.gnu.org/licenses/>.
  *
- * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:	 alex.dantas92@gmail.com
+ * homepage: http://yetris.alexdantas.net/
+ * mailto:	 eu@alexdantas.net
  */
 
 /** @file timer.c
@@ -42,6 +42,7 @@ static suseconds_t get_ticks()
 
 	return tmp.tv_usec + (tmp.tv_sec * MICRO_IN_SECONDS);
 }
+
 void timer_start(timer_s* t)
 {
 	t->start_mark = get_ticks();
@@ -50,6 +51,7 @@ void timer_start(timer_s* t)
 	t->running	  = true;
 	t->paused	  = false;
 }
+
 void timer_pause(timer_s* t)
 {
 	if (!(t->running) || (t->paused)) return;
@@ -58,6 +60,7 @@ void timer_pause(timer_s* t)
 	t->running	  = false;
 	t->paused	  = true;
 }
+
 void timer_unpause(timer_s* t)
 {
 	if (t->running || !(t->paused)) return;
@@ -66,7 +69,8 @@ void timer_unpause(timer_s* t)
 	t->running	  = true;
 	t->paused	  = false;
 }
-suseconds_t timer_delta_us (timer_s* t)
+
+suseconds_t timer_delta_us(timer_s* t)
 {
 	if (t->running)
 		return get_ticks() - (t->start_mark);
@@ -77,18 +81,22 @@ suseconds_t timer_delta_us (timer_s* t)
 	// Will never actually get here
 	return (t->pause_mark) - (t->start_mark);
 }
+
 long timer_delta_ms(timer_s* t)
 {
 	return timer_delta_us(t) / 1000;
 }
+
 long timer_delta_s(timer_s* t)
 {
 	return timer_delta_us(t) / 1000000;
 }
+
 long timer_delta_m(timer_s* t)
 {
 	return timer_delta_s(t) / 60;
 }
+
 long timer_delta_h(timer_s* t)
 {
 	return timer_delta_m(t) / 60;

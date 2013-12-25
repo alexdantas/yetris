@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:   alex.dantas92@gmail.com
+ * homepage: http://yetris.alexdantas.net
+ * mailto:   eu@alexdantas.net
  */
 
 #ifndef PIECE_H_DEFINED

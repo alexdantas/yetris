@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.	 If not, see <http://www.gnu.org/licenses/>.
  *
- * homepage: http://www.github.com/alexdantas/yetris/
- * mailto:	 alex.dantas92@gmail.com
+ * homepage: http://yetris.alexdantas.net
+ * mailto:	 eu@alexdantas.net
  */
 
 /** @file timer.h
@@ -50,6 +50,7 @@ typedef struct timer_s
 	suseconds_t pause_mark; /**< In case we pause the timer */
 	bool running;
 	bool paused;
+
 } timer_s;
 
 /** Starts the timer.
@@ -69,7 +70,7 @@ void timer_pause(timer_s* t);
 void timer_unpause(timer_s* t);
 
 /** Returns the time difference in microseconds (1/1000000 seconds). */
-long timer_delta_us(timer_s* t);
+suseconds_t timer_delta_us(timer_s* t);
 
  /** Returns the time difference in mili (1/1000 seconds). */
 long timer_delta_ms(timer_s* t);
