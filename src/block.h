@@ -38,8 +38,8 @@ struct block_s
 	char    theme[2]; /**< appearance (how it will be printed onscreen) */
 };
 
-#ifndef _BLOCK_S
-#define _BLOCK_S
+#ifndef BLOCK_S_DEFINED
+#define BLOCK_S_DEFINED
 typedef struct block_s block_s;
 #endif
 

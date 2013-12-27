@@ -42,8 +42,8 @@ typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
 typedef enum { DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } direction_e;
 
 /* Forward declaration of the board type -- check #board.h */
-#ifndef _BOARD_S
-#define _BOARD_S
+#ifndef BOARD_S_DEFINED
+#define BOARD_S_DEFINED
 typedef struct board_s board_s;
 #endif
 
@@ -58,8 +58,8 @@ struct piece_s
 	short   rotation; /* current rotation number (0 is none) */
 
 };
-#ifndef _PIECE_S
-#define _PIECE_S
+#ifndef PIECE_S_DEFINED
+#define PIECE_S_DEFINED
 typedef struct piece_s piece_s;
 #endif
 

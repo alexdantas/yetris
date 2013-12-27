@@ -127,20 +127,20 @@ typedef enum
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
-#ifndef _BLOCK_S
-#define _BLOCK_S
+#ifndef BLOCK_S_DEFINED
+#define BLOCK_S_DEFINED
 typedef struct block_s block_s;
 #endif
-#ifndef _PIECE_S
-#define _PIECE_S
+#ifndef PIECE_S_DEFINED
+#define PIECE_S_DEFINED
 typedef struct piece_s piece_s;
 #endif
-#ifndef _BOARD_S
-#define _BOARD_S
+#ifndef BOARD_S_DEFINED
+#define BOARD_S_DEFINED
 typedef struct board_s board_s;
 #endif
-#ifndef _GAME_S
-#define _GAME_S
+#ifndef GAME_S_DEFINED
+#define GAME_S_DEFINED
 typedef struct game_s  game_s;
 #endif
 

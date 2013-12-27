@@ -94,8 +94,8 @@ struct game_s
 	int lines_count;
 };
 
-#ifndef _GAME_S
-#define _GAME_S
+#ifndef GAME_S_DEFINED
+#define GAME_S_DEFINED
 typedef struct game_s game_s;
 #endif
 

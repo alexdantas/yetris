@@ -33,8 +33,8 @@
 #define BOARD_HEIGHT 20
 
 /* Forward declaration of the piece type -- see #piece.h */
-#ifndef _PIECE_S
-#define _PIECE_S
+#ifndef PIECE_S_DEFINED
+#define PIECE_S_DEFINED
 typedef struct piece_s piece_s;
 #endif
 
@@ -46,8 +46,8 @@ struct board_s
 
 };
 
-#ifndef _BOARD_S
-#define _BOARD_S
+#ifndef BOARD_S_DEFINED
+#define BOARD_S_DEFINED
 typedef struct board_s board_s;
 #endif
 
