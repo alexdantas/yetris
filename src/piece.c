@@ -16,18 +16,16 @@ piece_s new_piece(piece_type_e type)
 	/* Deciding the appearance of the blocks */
 	p.type = type;
 
-	block_theme_s* theme;
-
 	switch(type)
 	{
-	case PIECE_S: theme = &(global.theme_piece_S);  break;
-	case PIECE_Z: theme = &(global.theme_piece_Z);  break;
-	case PIECE_O: theme = &(global.theme_piece_O);  break;
-	case PIECE_I: theme = &(global.theme_piece_I);  break;
-	case PIECE_L: theme = &(global.theme_piece_L);  break;
-	case PIECE_J: theme = &(global.theme_piece_J);  break;
-	case PIECE_T: theme = &(global.theme_piece_T);  break;
-	default:      theme = &(global.theme_piece_colorless); break;
+	case PIECE_S: p.theme = &(global.theme_piece_S);  break;
+	case PIECE_Z: p.theme = &(global.theme_piece_Z);  break;
+	case PIECE_O: p.theme = &(global.theme_piece_O);  break;
+	case PIECE_I: p.theme = &(global.theme_piece_I);  break;
+	case PIECE_L: p.theme = &(global.theme_piece_L);  break;
+	case PIECE_J: p.theme = &(global.theme_piece_J);  break;
+	case PIECE_T: p.theme = &(global.theme_piece_T);  break;
+	default:      p.theme = &(global.theme_piece_colorless); break;
 	}
 
 	p.rotation = 0;
@@ -41,28 +39,6 @@ piece_s new_piece(piece_type_e type)
 	p.x = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
 	p.y = global_pieces_position[p.type][p.rotation][1];
 
-	/* This seems complicated, but its just initializing each
-	 * block of the piece according to it's X and Y on the board.
-	 * Remember that each block has its X and Y relative to the start
-	 * of the board.
-	 */
-	int i,j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[p.type][p.rotation][j][i] != 0)
-			{
-				int block_x  = p.x + i;
-				int block_y  = p.y + j;
-
-				p.block[k] = new_block(block_x, block_y, theme);
-
-				if ((global.theme_show_pivot_block) &&
-				    (global_pieces[p.type][p.rotation][j][i] == 2))
-					p.block->theme = &(global.theme_piece_colorless);
-
-				k++;
-			}
-
 	return p;
 }
 
@@ -74,23 +50,6 @@ void piece_rotate(piece_s* p, int rotation)
 
 	/* keep it under 4 */
 	p->rotation = (p->rotation + rotation) % 4;
-
-	/* refreshing the piece's blocks */
-	int i,j, k = 0;
-	for (i = 0; i < PIECE_BLOCKS; i++)
-		for (j = 0; j < PIECE_BLOCKS; j++)
-			if (global_pieces[p->type][p->rotation][j][i] != 0)
-			{
-				p->block[k].x = p->x + i;
-				p->block[k].y = p->y + j;
-
-
-				if ((global.theme_show_pivot_block) &&
-				    (global_pieces[p->type][p->rotation][j][i] == 2))
-					p->block[k].theme = &(global.theme_piece_colorless);
-
-				k++;
-			}
 }
 
 bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
@@ -105,9 +64,11 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 		return true;
 	}
 
-	/* the SRS depends on several informations about the piece */
-	/* first, the type */
-	int type; int rot_num;
+	/* The SRS depends on several informations about the piece.
+	 * First, it's type */
+	piece_type_e type;
+	int rot_num;
+
 	if (p->type == PIECE_I)
 	{
 		type    = 1;
@@ -123,7 +84,8 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 		rot_num = tmp.rotation;
 	}
 
-	/* then if the player wants to rotate it clockwise or counter */
+	/* Then if the player wants to rotate it
+	 * clockwise or counter-clockwise */
 	int rot_way;
 	if (rotation > 0)
 		rot_way = 0;
@@ -132,7 +94,8 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 
 	/* This will make 5 tests, trying to move the piece around.
 	 * If any of them pass, the piece is immediately moved.
-	 * If none of them pass, well... Lets say we're out of luck.
+	 * If none of them pass, well...
+	 * Lets say we're out of luck.
 	 */
 	int i;
 	for (i = 0; i < 5; i++)
@@ -142,7 +105,8 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 		int  k;
 
 		/* Remember, the piece #tmp has already been rotated.
-		 * Here we just try to move it, making it preform wall/floor kicks */
+		 * Here we just try to move it,
+		 * making it preform wall/floor kicks */
 		tmp.x += dx;
 		tmp.y += dy;
 		for (k = 0; k < 4; k++)
@@ -165,7 +129,8 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 			return true;
 		}
 
-		/* well, it didnt work, so lets return #tmp to its initial position */
+		/* well, it didnt work, so lets return #tmp
+		 * to its initial position */
 		tmp.x -= dx;
 		tmp.y -= dy;
 		for (k = 0; k < 4; k++)
@@ -193,13 +158,6 @@ void piece_move(piece_s* p, direction_e dir)
 
 	p->x += delta_x;
 	p->y += delta_y;
-
-	int k;
-	for (k = 0; k < 4; k++)
-	{
-		p->block[k].x += delta_x;
-		p->block[k].y += delta_y;
-	}
 }
 
 bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir)
@@ -283,32 +241,42 @@ bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 
 bool piece_is_on_valid_position(piece_s* p, board_s* b)
 {
-	/* Going through the board only where the piece's at */
-	int k;
-	for (k = 0; k < 4; k++)
+	/* We're simply looking up on the global "table"
+	 * of piece positions and rotations.
+	 */
+	int i, j;
+
+	for (i = 0; i < PIECE_BLOCKS; i++)
 	{
-		/* Here we don't confuse our 'dummy' blocks
-		 * with real ones */
-		p->block[k].is_visible = false;
+		for (j = 0; j < PIECE_BLOCKS; j++)
+		{
+			if (global_pieces[p->type][p->rotation][j][i] != 0)
+			{
+				/* WHAT THE FUCK */
+		/* /\* Here we don't confuse our 'dummy' blocks */
+		/*  * with real ones *\/ */
+		/* p->block[k].is_visible = false; */
 
-		/* block's x and y are not relative to the piece
-		 * -- they're global */
-		int block_x = p->block[k].x;
-		int block_y = p->block[k].y;
+				int block_x = i + p->x;
+				int block_y = j + p->y;
 
-		/* Off-limits check */
-		if ((block_x >= BOARD_WIDTH) || (block_y >= BOARD_HEIGHT) ||
-			(block_x < 0))
-			return false;
+				/* Off-limits check */
+				if ((block_x >= BOARD_WIDTH) ||
+				    (block_y >= BOARD_HEIGHT) ||
+				    (block_x < 0))
+					return false;
 
-		/* If the piece is still out of the board,
-		 * we don't check collision */
-		if (block_y < 0) continue;
+				/* If the piece is still out of the board,
+				 * we don't check collision */
+				if (block_y < 0) continue;
 
-		/* Fellow blocks check */
-		if (b->block[block_x][block_y].is_visible)
-			return false;
+				/* Fellow blocks check */
+				if (b->block[block_x][block_y].is_visible)
+					return false;
+			}
+		}
 	}
+	/* Pheew! */
 	return true;
 }
 

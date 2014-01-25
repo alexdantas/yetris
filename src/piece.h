@@ -67,14 +67,31 @@ typedef enum
 typedef struct board_s board_s;
 #endif
 
+/**
+ * A single piece (tetramino) on the game.
+ *
+ * Instead of each piece having it's blocks inside,
+ * we have a global definition of all possible
+ * pieces and rotations.
+ * @see piece_definitions.h
+ *
+ * To get a block set, we need to know a piece
+ * #type and #rotation.
+ *
+ * With that in hands, we can show the piece on the
+ * screen, applying the piece's #theme to those
+ * blocks, based on the piece's #x and #y.
+ *
+ */
 struct piece_s
 {
 	piece_type_e type;
+	block_theme_s theme; /**< Appearance of the inner blocks */
 
-	int     x;
-	int     y;
-	block_s block[4]; /* all the piece's blocks */
-	short   rotation; /* current rotation number (0 is none) */
+	int x; /**< Top-left y (@see #piece_definitions.h) */
+	int y; /**< Top-left y (@see #piece_definitions.h) */
+
+	short rotation; /* current rotation number (0 is none) */
 };
 
 #ifndef PIECE_S_DEFINED
@@ -82,6 +99,9 @@ struct piece_s
 typedef struct piece_s piece_s;
 #endif
 
+/**
+ * Creates a new piece of #type.
+ */
 piece_s new_piece(piece_type_e type);
 
 /**
@@ -96,7 +116,7 @@ void piece_rotate(piece_s* p, int rotation);
 /**
  * Tries to rotate the piece, doing nothing if cant.
  *
- * @return false (0) if something weird happened, else true (1).
+ * @return false (0) if couldn't rotate, true (1) if it could.
  *
  * This function acts according to the SRS (super rotation system).
  * It's described on <http://tetrisconcept.net/wiki/SRS>

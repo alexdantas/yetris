@@ -102,9 +102,7 @@ void game_ghost_update(game_s* g)
 {
 	g->piece_ghost = g->piece_current;
 
-	int i;
-	for (i = 0; i < 4; i++)
-		g->piece_ghost.block[i].theme = &(global.theme_ghost);
+	g->piece_ghost.theme = &(global.theme_ghost);
 
 	piece_hard_drop(&(g->piece_ghost), &(g->board));
 }
@@ -307,40 +305,40 @@ bool game_hold_piece(game_s* g)
 
 	g->can_hold = false;
 
-	piece_s tmp	  = g->piece_hold;
+	piece_s tmp = g->piece_hold; /* saving, just in case */
+
 	g->piece_hold = new_piece(g->piece_current.type);
-	// if we were working with malloc(), we'd free() piece_current now
+
+	/* If we were working with malloc(),
+	 * we'd free() piece_current now */
 
 	/* little hack to pretty-print square pieces */
 	if (g->piece_hold.type == PIECE_O)
-	{
-		int i;
-		for (i = 0; i < 4; i++)
-			g->piece_hold.block[i].y--;
-	}
+		g->piece_hold.y--;
 
-	/* Empty slot - first time holding */
 	if (tmp.type == PIECE_DUMMY)
 	{
+		/* Empty slot - first time holding */
+
 		g->piece_current = game_get_next_piece(g);
+
 		if (global.game_has_ghost)
 			game_ghost_update(g);
 	}
-	/* All right, switching pieces */
 	else
 	{
+		/* All right, switching pieces */
+
 		g->piece_current = new_piece(tmp.type);
-		// we'd also free() tmp
+
+		/* We'd also free() tmp */
 	}
 
 	/* Makes the piece look nice on the hold screen */
 	g->piece_hold.rotation = 0;
-	int k;
-	for (k = 0; k < 4; k++)
-	{
-		g->piece_hold.block[k].x -= g->piece_hold.x;
-		g->piece_hold.block[k].y -= g->piece_hold.y;
-	}
+	g->piece_hold.x = 0;
+	g->piece_hold.y = 0;
+
 	return true;
 }
 
