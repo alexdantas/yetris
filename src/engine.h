@@ -102,6 +102,21 @@ typedef struct engine_s
 /** Global engine structure */
 engine_s engine;
 
+/** How a block is shown on the screen.  */
+typedef struct block_theme_s
+{
+	color_pair_t color;
+	char         appearance[2];
+
+} block_theme_s;
+
+void block_theme_set(block_theme_s* t, color_pair_t color, char one, char two)
+{
+	t->color = color;
+	t->appearance[0] = one;
+	t->appearance[1] = two;
+}
+
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
 #ifndef BLOCK_S_DEFINED

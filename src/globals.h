@@ -41,7 +41,7 @@
 #define GLOBALS_H_DEFINED
 
 #include <stdbool.h>
-#include "color.h"
+#include "engine.h"
 
 #define NEXT_PIECES_NO 6 /* by default how many next pieces will be shown
 						  * (1 on the top and 5 others) */
@@ -72,28 +72,17 @@ typedef struct globals_s
 	bool theme_ghost_has_colors;
 	bool theme_show_pivot_block;
 	bool theme_lock_piece_color;
-	color_pair_t theme_clear_line_color;
-	color_pair_t theme_piece_no_color;
-	color_pair_t theme_ghost_color;
-	color_pair_t theme_piece_S_color;
-	color_pair_t theme_piece_Z_color;
-	color_pair_t theme_piece_O_color;
-	color_pair_t theme_piece_I_color;
-	color_pair_t theme_piece_L_color;
-	color_pair_t theme_piece_J_color;
-	color_pair_t theme_piece_T_color;
 
-	char theme_piece[2];
-	char theme_ghost[2];
-	char theme_clear_line[2];
-
-	char theme_piece_S[2];
-	char theme_piece_Z[2];
-	char theme_piece_O[2];
-	char theme_piece_I[2];
-	char theme_piece_L[2];
-	char theme_piece_J[2];
-	char theme_piece_T[2];
+	block_theme_s theme_clear_line;
+	block_theme_s theme_piece_colorless;
+	block_theme_s theme_ghost;
+	block_theme_s theme_piece_S;
+	block_theme_s theme_piece_Z;
+	block_theme_s theme_piece_O;
+	block_theme_s theme_piece_I;
+	block_theme_s theme_piece_L;
+	block_theme_s theme_piece_J;
+	block_theme_s theme_piece_T;
 
 	char config_filename[256]; /**< Absolute path to the configuration file */
 	char hscore_filename[256]; /**< Absolute path to the high-score file */
