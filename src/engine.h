@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include "globals.h"
+#include "color.h"
 
 /** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
