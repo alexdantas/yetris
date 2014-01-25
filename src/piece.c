@@ -1,8 +1,7 @@
 
 #include "engine.h"
 #include "piece.h"
-#include "pieces_define.h"
-#include "block.h"
+#include "piece_definitions.h"
 #include "board.h"
 #include "utils.h"
 
@@ -102,18 +101,12 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 	{
 		char dx = srs_possible_positions[type][rot_way][rot_num][i][0];
 		char dy = srs_possible_positions[type][rot_way][rot_num][i][1];
-		int  k;
 
 		/* Remember, the piece #tmp has already been rotated.
 		 * Here we just try to move it,
 		 * making it preform wall/floor kicks */
 		tmp.x += dx;
 		tmp.y += dy;
-		for (k = 0; k < 4; k++)
-		{
-			tmp.block[k].x += dx;
-			tmp.block[k].y += dy;
-		}
 
 		/* alright, if it worked for #tmp, it will work for #p */
 		if (piece_is_on_valid_position(&tmp, b))
@@ -121,11 +114,6 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 			piece_rotate(p, rotation);
 			p->x += dx;
 			p->y += dy;
-			for (k = 0; k < 4; k++)
-			{
-				p->block[k].x += dx;
-				p->block[k].y += dy;
-			}
 			return true;
 		}
 
@@ -133,11 +121,6 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 		 * to its initial position */
 		tmp.x -= dx;
 		tmp.y -= dy;
-		for (k = 0; k < 4; k++)
-		{
-			tmp.block[k].x -= dx;
-			tmp.block[k].y -= dy;
-		}
 	}
 	return false;
 }
@@ -271,7 +254,7 @@ bool piece_is_on_valid_position(piece_s* p, board_s* b)
 				if (block_y < 0) continue;
 
 				/* Fellow blocks check */
-				if (b->block[block_x][block_y].is_visible)
+				if (b->block[block_x][block_y])
 					return false;
 			}
 		}

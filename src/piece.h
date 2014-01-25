@@ -28,8 +28,6 @@
  * Everything related to a single piece (tetramino).
  */
 
-#include "block.h"
-
 /* How many blocks exists around the piece. Check the global
  * array #pieces -- each piece has 5 x 5 blocks */
 #define PIECE_BLOCKS 5
@@ -86,7 +84,7 @@ typedef struct board_s board_s;
 struct piece_s
 {
 	piece_type_e type;
-	block_theme_s theme; /**< Appearance of the inner blocks */
+	block_theme_s* theme; /**< Appearance of the inner blocks */
 
 	int x; /**< Top-left y (@see #piece_definitions.h) */
 	int y; /**< Top-left y (@see #piece_definitions.h) */

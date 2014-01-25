@@ -24,7 +24,7 @@
  */
 
 /** Initializes and returns a new game structure with all it's dependencies */
-game_s new_game()
+game_s new_game(int x, int y)
 {
 	game_s g;
 	int i;
@@ -32,7 +32,7 @@ game_s new_game()
 	srand(time(NULL));
 	g.state = PLAYING;
 
-	g.board = new_board();
+	g.board = new_board(x, y);
 	g.piece_current = new_piece(piece_random_type());
 
 	/* filling next pieces if possible */
@@ -314,7 +314,7 @@ bool game_hold_piece(game_s* g)
 
 	/* little hack to pretty-print square pieces */
 	if (g->piece_hold.type == PIECE_O)
-		g->piece_hold.y--;
+		g->piece_hold.y -= 1;
 
 	if (tmp.type == PIECE_DUMMY)
 	{
@@ -373,7 +373,7 @@ bool game_delete_possible_lines(game_s* g)
 		int i = 0;
 		while (i < BOARD_WIDTH)
 		{
-			if (!(b->block[i][j].is_visible))
+			if (! b->block[i][j])
 			{
 				lines[j] = false;
 				break;

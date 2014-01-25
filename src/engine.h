@@ -104,10 +104,6 @@ engine_s engine;
 
 /* Forward defining some structures to shut up the compiler
  * (they'll be linked on anyway) */
-#ifndef BLOCK_S_DEFINED
-#define BLOCK_S_DEFINED
-typedef struct block_s block_s;
-#endif
 #ifndef PIECE_S_DEFINED
 #define PIECE_S_DEFINED
 typedef struct piece_s piece_s;
@@ -130,7 +126,6 @@ bool restore_signals();
 void engine_exit();
 int  engine_keymap(char keymap[]);
 int  engine_get_input(int delay_ms);
-void engine_draw_block(block_s* b, WINDOW* w);
 void engine_draw_piece(piece_s* p, WINDOW* w);
 void engine_draw_board(board_s* b);
 void engine_draw_hold(game_s* g);
@@ -138,6 +133,9 @@ void engine_draw_score(game_s* g);
 void engine_draw(game_s* g);
 void engine_draw_help();
 void engine_draw_gameover();
+
+void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y);
+
 void engine_draw_pause();
 void engine_draw_statistics(game_s* g);
 void engine_safe_exit(int sig);

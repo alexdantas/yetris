@@ -99,7 +99,7 @@ struct game_s
 typedef struct game_s game_s;
 #endif
 
-game_s new_game();
+game_s new_game(int x, int y);
 void game_lock_piece(game_s* g);
 void game_update(game_s* g);
 void game_ghost_update(game_s* g);

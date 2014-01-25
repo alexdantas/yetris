@@ -24,7 +24,7 @@
 #define BOARD_H_DEFINED
 
 #include <stdbool.h>
-#include "block.h"
+#include "globals.h"
 
 /** The total width of the board (in blocks) */
 #define BOARD_WIDTH  10
@@ -39,10 +39,19 @@ typedef struct piece_s piece_s;
 #endif
 
 
-/** Contains all blocks on the current game */
+/**
+ * The great container, where the blocks go rest.
+ *
+ * Note that we don't have any actual blocks in here.
+ * What we have are pointers to appearances.
+ *
+ */
 struct board_s
 {
-	block_s block[BOARD_WIDTH][BOARD_HEIGHT];
+	int x;
+	int y;
+
+	block_theme_s* block[BOARD_WIDTH][BOARD_HEIGHT];
 
 };
 
@@ -51,11 +60,27 @@ struct board_s
 typedef struct board_s board_s;
 #endif
 
+/**
+ * Returns a brand new board.
+ */
+board_s new_board(int x, int y);
 
-board_s new_board();
+/**
+ * Locks all the blocks from piece #p on the board #b.
+ */
 void board_lock_piece(board_s* b, piece_s* p);
-void board_delete_line(board_s* b, int line);
-bool board_is_full(board_s* b);
+
+/**
+ * Deletes all the lines specified by the array #lines.
+ *
+ * @note This function's very ugly... FIX IT LATER.
+ */
 void board_delete_lines(board_s* b, bool lines[]);
 
+/**
+ * Tells if #b is filled (pieces stacked at the top).
+ */
+bool board_is_full(board_s* b);
+
 #endif /* BOARD_H_DEFINED */
+

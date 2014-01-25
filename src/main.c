@@ -9,7 +9,6 @@
 #endif
 
 #include "engine.h"
-#include "block.h"
 #include "piece.h"
 #include "board.h"
 #include "game.h"
@@ -34,7 +33,8 @@ int main(int argc, char* argv[])
 	hscore_init();
 	hscore_load();
 
-	game_s game = new_game();
+	game_s game = new_game(engine.screen.board.x - 1,
+	                       engine.screen.board.y - 1); /* borders */
 	engine_draw(&game);
 
 	while (!game.quit)
@@ -45,7 +45,10 @@ int main(int argc, char* argv[])
 		game_update(&game);
 
 		if (game.is_over)
-			game = new_game();
+		{
+			game = new_game(engine.screen.board.x - 1,
+			                engine.screen.board.y - 1);
+		}
 
 		engine_draw(&game);
 	}

@@ -22,6 +22,8 @@
 #include "game.h"
 #include "globals.h"
 #include "hscore.h"
+#include "piece.h"
+#include "piece_definitions.h"
 
 /* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
 #if OS_IS_WINDOWS
@@ -429,33 +431,22 @@ int engine_get_input(int delay_ms)
 	return c;
 }
 
-/** Draws a single block.
- *  It prints on the screen the two chars that represents
- *  the block. They're stored on #b under 'theme'.
- */
-void engine_draw_block(block_s* b, WINDOW* w)
-{
-	if (! b->is_visible)
-		return;
-
-	if (global.screen_use_colors)
-		color_pair_activate(w, b->theme->color);
-	else
-		color_pair_activate(w, global.theme_piece_colorless.color);
-
-	mvwaddch(w, b->y, (b->x * 2),     b->theme->appearance[0]);
-	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme->appearance[1]);
-}
-
 /** Draws a whole piece, calling #engine_draw_block */
 void engine_draw_piece(piece_s* p, WINDOW* w)
 {
 	if (!piece_is_valid(p))
 		return;
 
-	int k;
-	for (k = 0; k < 4; k++)
-		engine_draw_block(&(p->block[k]), w);
+	int i, j;
+
+	for (i = 0; i < PIECE_BLOCKS; i++)
+		for (j = 0; j < PIECE_BLOCKS; j++)
+
+			if (global_pieces[p->type][p->rotation][j][i] != 0)
+				engine_draw_block_theme(w,
+				                        p->theme,
+				                        (p->x + i) * 2,
+				                        p->y + j);
 }
 
 /** Draws the board #b, calling #engine_draw_block */
@@ -466,7 +457,10 @@ void engine_draw_board(board_s* b)
 	int i, j;
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			engine_draw_block(&(b->block[i][j]), w);
+			engine_draw_block_theme(w,
+			                        b->block[i][j],
+			                        (b->x + i) * 2, /* 2 chars */
+			                         b->y + j);
 
 	if (global.screen_fancy_borders)
 		window_fancy_borders(engine.screen.middle_left.win);
@@ -474,6 +468,20 @@ void engine_draw_board(board_s* b)
 		window_normal_borders(engine.screen.middle_left.win);
 
 	wnoutrefresh(engine.screen.middle_left.win);
+}
+
+void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y)
+{
+	if (!w || !t)
+		return;
+
+	if (global.screen_use_colors)
+		color_pair_activate(w, t->color);
+	else
+		color_pair_activate(w, global.theme_piece_colorless.color);
+
+	mvwaddch(w, y, x,     t->appearance[0]);
+	mvwaddch(w, y, x + 1, t->appearance[1]);
 }
 
 /** Prints 'pause' on the board */
@@ -489,7 +497,7 @@ void engine_draw_pause()
 void engine_draw_next_pieces(game_s* g)
 {
 	WINDOW* w = NULL;
-	int i, k;
+	int i;
 	for (i = 0; i < global.game_next_no; i++)
 	{
 		piece_s p = g->piece_next[i];
@@ -499,17 +507,12 @@ void engine_draw_next_pieces(game_s* g)
 
 		/* This is a little hack to pretty-print pieces
 		 * TODO somehow manage to fix this */
-		for (k = 0; k < 4; k++)
-		{
-			/* shifting them to the left */
-			p.block[k].x -= p.x + 1;
-			p.block[k].y -= p.y;
+		p.x = -1;
+		p.y = -1;
 
-			p.block[k].y--;
+		if (p.type == PIECE_O)
+			p.y -= 1;
 
-			if (p.type == PIECE_O)
-				p.block[k].y -= 1;
-		}
 		engine_draw_piece(&p, w);
 		wnoutrefresh(w);
 	}
@@ -575,6 +578,7 @@ void engine_draw_hold(game_s* g)
 	wnoutrefresh(w->win);
 
 	w = &(engine.screen.leftmost);
+
 	/* DRAWING BORDERS, AGGGHW */
 	if (global.screen_fancy_borders)
 	{
@@ -674,91 +678,56 @@ void engine_draw_score(game_s* g)
 void engine_draw_statistics(game_s* g)
 {
 	window_s w = engine.screen.info;
-	int k;
-	int x_offset = 3;
+	int x_offset = 6;
+	int y_offset = 1;
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 3, 1, "%10d x", g->I_count);
-	piece_s  p = new_piece(PIECE_I);
+	piece_s p = new_piece(PIECE_I);
 	p.x = x_offset;
-	p.y = 4;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 5, 1, "%10d x", g->T_count);
 	p = new_piece(PIECE_T);
 	p.x = x_offset;
-	p.y = 6;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 2;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 7, 1, "%10d x", g->L_count);
 	p = new_piece(PIECE_L);
 	p.x = x_offset;
-	p.y = 8;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 4;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 9, 1, "%10d x", g->J_count);
 	p = new_piece(PIECE_J);
 	p.x = x_offset;
-	p.y = 10;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 6;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 11, 1, "%10d x", g->S_count);
 	p = new_piece(PIECE_S);
 	p.x = x_offset;
-	p.y = 12;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 8;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 13, 1, "%10d x", g->Z_count);
 	p = new_piece(PIECE_Z);
 	p.x = x_offset;
-	p.y = 14;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 10;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, 15, 1, "%10d x", g->O_count);
 	p = new_piece(PIECE_O);
 	p.x = x_offset - 1;
-	p.y = 16;
-	for (k = 0; k < 4; k++)
-	{
-		p.block[k].x += p.x;
-		p.block[k].y += p.y;
-	}
+	p.y = y_offset + 11;
 	engine_draw_piece(&p, w.win);
 
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
@@ -888,18 +857,21 @@ void engine_draw(game_s* g)
 /** Draws a nice animation when the player loses the game */
 void engine_draw_gameover_animation(game_s* g)
 {
-	board_s*   b = &(g->board);
-	window_s*  w = &(engine.screen.board);
+	board_s*  b = &(g->board);
+	window_s* w = &(engine.screen.board);
 
 	int i, j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
 	{
 		for (i = 0; i < BOARD_WIDTH; i++)
 		{
-			if (b->block[i][j].is_visible)
+			if (b->block[i][j])
 			{
-				b->block[i][j].theme->color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
-				engine_draw_block(&(b->block[i][j]), w->win);
+				b->block[i][j]->color = color_pair(COLOR_WHITE, COLOR_WHITE, true);
+				engine_draw_block_theme(w->win,
+				                        b->block[i][j],
+				                        (b->x + i) * 2,
+				                        b->y + j);
 			}
 		}
 		/* Stop a little (50ms) before painting next line */
