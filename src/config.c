@@ -1,18 +1,3 @@
-/* @file config.h
- * This file implements stuff related to the configuration file.
- * It can read customizations on it and set the global variables.
- *
- * If the user specifies options at commandline, they have higher
- * precedence over the config file.
- *
- * We get CONFIG_FILE defined from the Makefile.
- * By default, it's 'config.ini' and it should be on
- * the user's config directory ('~/.yetris/').
- *
- * We also get PACKAGE from the Makefile, which contains the program
- * (and executable's) name.
- *
- */
 
 #include <string.h>
 #include <sys/stat.h>
@@ -21,9 +6,6 @@
 #include "globals.h"
 #include "engine.h"
 
-/** Deals with the config file, storing each option in memory.
- *	@see globals.h
- */
 void config_handle()
 {
 	char package_dir[256];
@@ -57,7 +39,6 @@ void config_handle()
 	config_parse(global.config_filename);
 }
 
-/** Tests if #filename exists. */
 bool config_file_exists(char* filename)
 {
 	FILE* file = fopen(filename, "r");
@@ -68,13 +49,6 @@ bool config_file_exists(char* filename)
 	return true;
 }
 
-/** Reads the config file and stores It's contents in memory
- *	This is the main interface with the iniparser library.
- *	Watch out, this function's big and scary, but you can do it
- *	if you take your time and go step-by-step.
- *
- *	Warning, macros ahead!
- */
 void config_parse(char* filename)
 {
 	globals_s* g = &global;
@@ -218,7 +192,6 @@ void config_parse(char* filename)
 	iniparser_freedict(ini);
 }
 
-/** Creates a default config file on #filename */
 void config_create_default(char* filename)
 {
 	FILE* file = fopen(filename, "w");

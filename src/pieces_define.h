@@ -23,9 +23,11 @@
 #ifndef PIECES_DEFINITIONS_H_DEFINED
 #define PIECES_DEFINITIONS_H_DEFINED
 
-/** This defines all pieces and possible rotations.
- *  We have 7 pieces, 4 rotations for each. To every rotation, there's
- *  a 5x5 char array
+/**
+ * This defines all pieces and possible rotations.
+ *
+ *  We have 7 pieces, 4 rotations for each.
+ *  To every rotation, there's a 5x5 char array
  *
  *  0 = no block
  *  1 = normal block

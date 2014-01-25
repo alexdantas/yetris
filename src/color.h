@@ -23,39 +23,39 @@
 
 #include <ncurses.h>
 
-/** This file handles all color schemes of nCurses.
+/**
+ * This file handles all color schemes of nCurses.
  *
- *  You can't do nothing with a single `color_t`.
- *  Color pairs (`color_pair_t`) are what you're looking for.
+ * You can't do nothing with a single `color_t`.
+ * Color pairs (`color_pair_t`) are what you're looking for.
  *
- *  You can set a color pair, so that next texts you write on
- *  the screen will have their appearance.
+ * You can set a color pair, so that next texts you write on
+ * the screen will have their appearance.
  *
- *  Single colors only exist to build color pairs.
- *  See the functions on this module and how they fit together
- *  to build color pairs from colors.
+ * Single colors only exist to build color pairs.
+ * See the functions on this module and how they fit together
+ * to build color pairs from colors.
  *
- *  Starting off, you have the following colors:
+ * Starting off, you have the following colors:
  *
- *  `COLOR_BLACK`
- *  `COLOR_RED`
- *  `COLOR_GREEN`
- *  `COLOR_YELLOW`
- *  `COLOR_BLUE`
- *  `COLOR_MAGENTA`
- *  `COLOR_CYAN`
- *  `COLOR_WHITE`
- *  `COLOR_DEFAULT`  (default color of your terminal)
+ * `COLOR_BLACK`
+ * `COLOR_RED`
+ * `COLOR_GREEN`
+ * `COLOR_YELLOW`
+ * `COLOR_BLUE`
+ * `COLOR_MAGENTA`
+ * `COLOR_CYAN`
+ * `COLOR_WHITE`
+ * `COLOR_DEFAULT`  (default color of your terminal)
  *
- *  You can combine them as foreground and background to
- *  make color pairs.
- *  Also, you can create your own RGB colors with
- *  `color_rgb` and `color_hex`.
+ * You can combine them as foreground and background to
+ * make color pairs.
+ * Also, you can create your own RGB colors with
+ * `color_rgb` and `color_hex`.
  *
- *  @note `COLORS` is nCurses' alias for the maximum number of
- *        currently supported colors.
- *        For old terminals that's 8 and for modern ones is 256.
- *
+ * @note `COLORS` is nCurses' alias for the maximum number of
+ *       currently supported colors.
+ *       For old terminals that's 8 and for modern ones is 256.
  */
 
 typedef short  color_t;

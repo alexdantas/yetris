@@ -23,16 +23,22 @@
 #ifndef PIECE_H_DEFINED
 #define PIECE_H_DEFINED
 
+/**
+ * @file piece.h
+ * Everything related to a single piece (tetramino).
+ */
+
 #include "block.h"
 
 /* How many blocks exists around the piece. Check the global
  * array #pieces -- each piece has 5 x 5 blocks */
 #define PIECE_BLOCKS 5
 
-/** Enumerate all possible pieces.
- *  @note This order is important.
- *  Also, PIECE_MAX tells the biggest number for a visible piece.
- *  The others are flags for special pieces.
+/**
+ * Enumerate all possible pieces.
+ * @note This order is important.
+ * Also, PIECE_MAX tells the biggest number for a visible piece.
+ * The others are flags for special pieces.
  */
 typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
                PIECE_J,     PIECE_Z, PIECE_S, PIECE_T,

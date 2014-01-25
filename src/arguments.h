@@ -20,12 +20,13 @@
  * mailto:   eu@alexdantas.net
  */
 
-/** @file arguments.h
- *  Declaration of the functions related to commandline arguments.
- */
-
 #ifndef ARGUMENTS_H_DEFINED
 #define ARGUMENTS_H_DEFINED
+
+/**
+ * @file arguments.h
+ * Declaration of the functions related to commandline arguments.
+ */
 
 void args_handle (int argc, char* argv[]);
 void print_help();

@@ -20,29 +20,59 @@
  * mailto:   eu@alexdantas.net
  */
 
-
-/* @file config.h
- * This file defines stuff related to the configuration file.
- * It can read customizations on it and set the global variables.
- *
- * If the user specifies options at commandline, they have higher
- * precedence over the config file.
- *
- * Remember, DEFAULT_CONFIG_FILE is defined on the Makefile.
- * By default, it's '/home/<user>/.yetrisrc.ini'
- *
- */
-
 #ifndef CONFIG_H_DEFINED
 #define CONFIG_H_DEFINED
+
+/**
+ * @file config.h
+ * Interface to the configuration file.
+ *
+ * @note We expect two definitions from the Makefile,
+ *       `PACKAGE` which is the program name and
+ *       `CONFIG_FILE` which is the name of the config file.
+ *
+ * So, the default configuration file is at:
+ * `$(HOME)/.$(PACKAGE)/$(CONFIG_FILE)`.
+ *
+ * It uses `iniparser` to read an .ini file and
+ * stores the results on `globals.h`.
+ * @see globals.h
+ *
+ * If the user specifies options at commandline,
+ * they have higher precedence over the config file.
+ */
 
 #include <stdbool.h>
 #include "iniparser/iniparser.h"
 
+/**
+ * Deals with the config file, storing each option in memory.
+ * @see globals.h
+ */
 void config_handle();
+
+/**
+ * Tests if #filename exists.
+ */
 bool config_file_exists(char* filename);
-void config_create_default(char* filename);
+
+/**
+ *	Big function that reads the config file (#filename) and
+ *	stores it's contents in memory.
+ *
+ *	This is the main interface with the iniparser library.
+ *
+ *	Watch out, this function's big and scary, but you can do it
+ *	if you take your time and go step-by-step.
+ *
+ *	@warning Macros ahead!
+ */
 void config_parse(char* filename);
+
+/**
+ * Creates a default configuration file on #filename.
+ */
+void config_create_default(char* filename);
 
 #endif /* CONFIG_H_DEFINED */
 
