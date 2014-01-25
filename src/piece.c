@@ -70,7 +70,7 @@ piece_s new_piece(piece_e type)
 
 				if (global.theme_show_pivot_block)
 					if (global_pieces[p.type][p.rotation][j][i] == 2)
-						p.block[k] = new_block(block_x, block_y, p.theme, engine_get_color(COLOR_WHITE, COLOR_WHITE, true));
+						p.block[k] = new_block(block_x, block_y, p.theme, color_pair(COLOR_WHITE, COLOR_WHITE, true));
 				k++;
 			}
 	return p;
@@ -101,7 +101,7 @@ void piece_rotate(piece_s* p, int rotation)
 
 				if (global.theme_show_pivot_block)
 					if (global_pieces[p->type][p->rotation][j][i] == 2)
-						p->block[k] = new_block(block_x, block_y, p->theme, engine_get_color(COLOR_WHITE, COLOR_WHITE, true));
+						p->block[k] = new_block(block_x, block_y, p->theme, color_pair(COLOR_WHITE, COLOR_WHITE, true));
 				k++;
 			}
 }

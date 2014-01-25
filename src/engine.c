@@ -179,7 +179,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w.win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w.win, 5, 1, '-', w.width - 2);
 	}
 
@@ -222,7 +222,7 @@ int engine_windows_init()
 	else
 	{
 		window_normal_borders(w.win);
-		wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w.win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w.win, 3, 1, '-', w.width - 2);
 	}
 	wnoutrefresh(w.win);
@@ -307,7 +307,7 @@ int engine_windows_init()
 	/* s->score = w; */
 
 	w = s->info;
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, true));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, true));
 	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
 	wnoutrefresh(w.win);
 	return 1;
@@ -459,7 +459,7 @@ void engine_draw_block(block_s* b, WINDOW* w)
 	if (global.screen_use_colors)
 		wattrset(w, b->color);
 	else
-		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_WHITE, false));
+		wattrset(w, color_pair(COLOR_BLACK, COLOR_WHITE, false));
 
 	mvwaddch(w, b->y, (b->x * 2),     b->theme[0]);
 	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme[1]);
@@ -501,7 +501,7 @@ void engine_draw_pause()
 {
 	window_s* w = &(engine.screen.board);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
 	wnoutrefresh(w->win);
 }
@@ -544,11 +544,11 @@ void engine_draw_next_pieces(game_s* g)
 	}
 	else
 	{
-		wattrset(w, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w, 3, 1, '-', 8);
 	}
 
-	wattrset(w, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w, 0, 1, "Next");
 	wnoutrefresh(w);
 
@@ -572,7 +572,7 @@ void engine_draw_next_pieces(game_s* g)
 	else
 	{
 		window_normal_borders(win->win);
-		wattrset(win->win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(win->win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(win->win, 3, 1, '-', win->width - 2);
 	}
 
@@ -585,7 +585,7 @@ void engine_draw_hold(game_s* g)
 	piece_s*  p = &(g->piece_hold);
 
 	w = &(engine.screen.leftmost);
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Hold");
 	wnoutrefresh(w->win);
 
@@ -618,7 +618,7 @@ void engine_draw_hold(game_s* g)
 	else
 	{
 		window_normal_borders(w->win);
-		wattrset(w->win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+		wattrset(w->win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 		mvwhline(w->win, 5, 1, '-', w->width - 2);
 	}
 }
@@ -636,9 +636,9 @@ void engine_draw_score(game_s* g)
 	if ((g->is_combo) && (g->combo_count > 0))
 	{
 		if (g->combo_count > 3)
-			wattrset(w.win, engine_get_color(COLOR_RED, COLOR_BLACK, false));
+			wattrset(w.win, color_pair(COLOR_RED, COLOR_BLACK, false));
 		else
-			wattrset(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, false));
+			wattrset(w.win, color_pair(COLOR_YELLOW, COLOR_BLACK, false));
 
 		mvwaddstr(w.win, 0, 2, "Combo!");
 		mvwprintw(w.win, 0, 8, "x%d", g->combo_count);
@@ -648,9 +648,9 @@ void engine_draw_score(game_s* g)
 	if (g->back_to_back_count > 0)
 	{
 		if (g->back_to_back_lines < 4)
-			wattrset(w.win, engine_get_color(COLOR_RED,    COLOR_BLACK, true));
+			wattrset(w.win, color_pair(COLOR_RED,    COLOR_BLACK, true));
 		else
-			wattrset(w.win, engine_get_color(COLOR_YELLOW, COLOR_BLACK, true));
+			wattrset(w.win, color_pair(COLOR_YELLOW, COLOR_BLACK, true));
 
 		mvwaddstr(w.win, 1, 0, "Back-to-back");
 		switch (g->back_to_back_lines)
@@ -663,13 +663,13 @@ void engine_draw_score(game_s* g)
 			mvwprintw(w.win, 2, 8, "x%d", g->back_to_back_count);
 	}
 
-	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 3,  1, "High Score");
 	mvwaddstr(w.win, 6,  1, "Score");
 	mvwaddstr(w.win, 9,  1, "Lines");
 	mvwaddstr(w.win, 12, 1, "Level");
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 4,  1, "%10d", hscores[0].points);
 	mvwprintw(w.win, 7,  1, "%10d", g->score);
 	mvwprintw(w.win, 10, 1, "%10d", g->lines);
@@ -677,7 +677,7 @@ void engine_draw_score(game_s* g)
 
 	if (g->show_score_delta)
 	{
-		wattrset(w.win, engine_get_color(COLOR_GREEN, COLOR_BLACK, true));
+		wattrset(w.win, color_pair(COLOR_GREEN, COLOR_BLACK, true));
 		mvwprintw(w.win,  8, 1, "%10d", g->score_delta);
 	}
 
@@ -697,7 +697,7 @@ void engine_draw_statistics(game_s* g)
 	int k;
 	int x_offset = 3;
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 3, 1, "%10d x", g->I_count);
 	piece_s  p = new_piece(PIECE_I);
 	p.x = x_offset;
@@ -709,7 +709,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 5, 1, "%10d x", g->T_count);
 	p = new_piece(PIECE_T);
 	p.x = x_offset;
@@ -721,7 +721,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 7, 1, "%10d x", g->L_count);
 	p = new_piece(PIECE_L);
 	p.x = x_offset;
@@ -733,7 +733,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 9, 1, "%10d x", g->J_count);
 	p = new_piece(PIECE_J);
 	p.x = x_offset;
@@ -745,7 +745,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 11, 1, "%10d x", g->S_count);
 	p = new_piece(PIECE_S);
 	p.x = x_offset;
@@ -757,7 +757,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 13, 1, "%10d x", g->Z_count);
 	p = new_piece(PIECE_Z);
 	p.x = x_offset;
@@ -769,7 +769,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 15, 1, "%10d x", g->O_count);
 	p = new_piece(PIECE_O);
 	p.x = x_offset - 1;
@@ -781,7 +781,7 @@ void engine_draw_statistics(game_s* g)
 	}
 	engine_draw_piece(&p, w.win);
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, 16, 1, "%10d   Total", g->piece_count);
 }
 
@@ -789,14 +789,14 @@ void engine_draw_line_statistics(game_s* g)
 {
 	window_s* w = &(engine.screen.info);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, true));
 	mvwaddstr(w->win, 3, 1, "Single:");
 	mvwaddstr(w->win, 4, 1, "Double:");
 	mvwaddstr(w->win, 5, 1, "Triple:");
 	mvwaddstr(w->win, 6, 1, "Tetris:");
 	mvwaddstr(w->win, 7, 1, "Total:");
 
-	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w->win, 3, 9, "%10d", g->single_count);
 	mvwprintw(w->win, 4, 9, "%10d", g->double_count);
 	mvwprintw(w->win, 5, 9, "%10d", g->triple_count);
@@ -818,20 +818,20 @@ void engine_draw_info(game_s* g)
 	else if (global.game_has_line_statistics)
 		engine_draw_line_statistics(g);
 
-	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, 0, 0, "yetris v"VERSION);
 	mvwaddstr(w.win, 1, 1, "(press 'h' for info)");
 	mvwaddstr(w.win, w.height - 1, 0, "Timer:");
 
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	if (g->gameplay_h) /* Wow.. will someone really play this game for hours? */
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d:%02d", g->gameplay_h, g->gameplay_m % 60, g->gameplay_s % 60);
 	else
 		mvwprintw(w.win, w.height - 1, 7, "%02d:%02d", g->gameplay_m % 60, g->gameplay_s % 60);
 
-	wattrset(w.win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w.win, w.height - 2, 0, "Speed:");
-	wattrset(w.win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
 	/* This is a little hack to display the time onscreen.
@@ -839,7 +839,7 @@ void engine_draw_info(game_s* g)
 	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
 	time(&cur_time);
-	wattrset(w.win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+	wattrset(w.win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 	mvwprintw(w.win, w.height - 1, 15, "%.8s", (ctime(&cur_time) + 11));
 
 	/* Showing FPS */
@@ -853,18 +853,6 @@ void engine_draw_info(game_s* g)
 		window_normal_borders(w.win);
 
 	wnoutrefresh(w.win);
-}
-
-/** Returns the color pair associated with #color.
- *  If #is_bold is true, will make the color brighter.
- */
-int engine_get_color(short foreground, short background, bool is_bold)
-{
-	color_e c = (foreground * 8) + (background + 1);
-	if (is_bold)
-		return (COLOR_PAIR(c) | A_BOLD);
-	else
-		return COLOR_PAIR(c);
 }
 
 /** Calls all drawing routines in order */
@@ -930,7 +918,7 @@ void engine_draw_gameover_animation(game_s* g)
 		{
 			if (b->block[i][j].type != EMPTY)
 			{
-				b->block[i][j].color = engine_get_color(COLOR_WHITE, COLOR_WHITE, false);
+				b->block[i][j].color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
 				engine_draw_block(&(b->block[i][j]), w->win);
 			}
 		}
@@ -948,7 +936,7 @@ void engine_draw_gameover()
 {
 	window_s* w = &(engine.screen.board);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, true));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "Game Over");
 	mvwaddstr(w->win, w->height/2 + 1, 4,              "Press <Enter>");
 	mvwaddstr(w->win, w->height/2 + 2, 5,              "to restart");
@@ -1020,16 +1008,16 @@ void engine_draw_help()
 	else
 		window_normal_borders(w->win);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Help");
 	wnoutrefresh(w->win);
 
 	w = &(engine.screen.help);
 	werase(w->win);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, true));
 	mvwaddstr(w->win, 0, 2, "Controls:\n");
-	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 1, 0,
 	          "    Enter        Return to the game\n"
 	          "    q            Quits game at any time\n"
@@ -1085,7 +1073,7 @@ void engine_draw_hscores()
 	else
 		window_normal_borders(w->win);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "High Scores");
 	wnoutrefresh(w->win);
 
@@ -1093,9 +1081,9 @@ void engine_draw_hscores()
 	werase(w->win);
 
 	/* This is all well-alligned, think twice before changing a single char */
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "     Score      Lines Level    Timer       Name       Date     Time");
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, true));
 
 	int i;
 	for (i = 0; i < MAX_HSCORES; i++)
@@ -1171,14 +1159,14 @@ void engine_draw_input()
 	else
 		window_normal_borders(w->win);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 //  mvwaddstr(w->win, 0, 1, "Enter your name");
 	wrefresh(w->win);
 
 	w = &(engine.screen.input);
 	werase(w->win);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, false));
 	mvwaddstr(w->win, 0, 1, "Contrats, you made into the high score list!");
 	mvwaddstr(w->win, 1, 1, "Enter your name:");
 //  mvwprintf(w->win, 1, 1, "(position: %d", 192998);
@@ -1191,7 +1179,7 @@ void engine_draw_input()
 	else
 		strncpy(name, getenv("USER"), 10);
 
-	wattrset(w->win, engine_get_color(COLOR_BLUE, COLOR_BLACK, true));
+	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_BLACK, true));
 	mvwprintw(w->win, 2, 18, "(default: %s)", name);
 
 	/* ncurses' refresh all windows */
@@ -1207,13 +1195,13 @@ void engine_get_hscore_name(char* name, int size)
 	window_s* w   = &(engine.screen.input);
 	WINDOW*   sub = derwin(w->win, 1, 11, 1, 18);
 	werase(sub);
-	wattrset(sub, engine_get_color(COLOR_BLACK, COLOR_BLUE, false));
+	wattrset(sub, color_pair(COLOR_BLACK, COLOR_BLUE, false));
 	mvwhline(sub, 0, 0, ' ', 11);
 
 	char buffer[256];
 	memset(buffer, '\0', 256);
 
-	wattrset(w->win, engine_get_color(COLOR_WHITE, COLOR_BLACK, false));
+	wattrset(w->win, color_pair(COLOR_WHITE, COLOR_BLACK, false));
 	nodelay(stdscr, FALSE);
 	echo();
 
@@ -1267,7 +1255,7 @@ void window_fancy_borders(WINDOW* win)
 /** Draws normal borders on window #win */
 void window_normal_borders(WINDOW* win)
 {
-	wattrset(win, engine_get_color(COLOR_BLACK, COLOR_BLACK, true));
+	wattrset(win, color_pair(COLOR_BLACK, COLOR_BLACK, true));
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 

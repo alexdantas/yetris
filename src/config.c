@@ -215,7 +215,7 @@ void config_parse(char* filename)
 	new_bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL)); \
 	if (new_bg != -1) bg = new_bg;											   \
 																			   \
-		var = engine_get_color(fg, bg, false);								   \
+		var = color_pair(fg, bg, false);								   \
 }
 	get_colors_if_valid(g->theme_ghost_color,	"theming:ghost_fg",	  "theming:ghost_bg",	COLOR_WHITE, COLOR_BLACK);
 	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED);

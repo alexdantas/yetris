@@ -109,7 +109,7 @@ color_t color_from_string(const char* str);
  *        To see them, check the comment at the beginning
  *        of this module.
  */
-color_pair_t color_pair(color_t foreground, color_t background);
+color_pair_t color_pair(color_t foreground, color_t background, bool is_bold);
 
 /** Returns the color pair for strings `foreground`
  *  and `background`.

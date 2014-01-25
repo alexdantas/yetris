@@ -48,7 +48,7 @@ void board_lock_piece(board_s* b, piece_s* p)
 		int block_y = p->block[k].y;
 		b->block[block_x][block_y] = p->block[k];
 		if (global.theme_lock_piece_color)
-			b->block[block_x][block_y].color = engine_get_color(COLOR_WHITE, COLOR_WHITE, false);
+			b->block[block_x][block_y].color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
 	}
 }
 
@@ -71,7 +71,7 @@ void board_delete_lines(board_s* b, bool lines[])
 			/* The appearance of the line just before it's deleted */
 			b->block[i][k].theme[0] = global.theme_clear_line[0];
 			b->block[i][k].theme[1] = global.theme_clear_line[1];
-			b->block[i][k].color    = engine_get_color(COLOR_WHITE, COLOR_BLACK, true);
+			b->block[i][k].color    = color_pair(COLOR_WHITE, COLOR_BLACK, true);
 			// BUG! If I set bold to 'true' all pieces become bold!
 		}
 	}

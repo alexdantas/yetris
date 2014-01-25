@@ -109,19 +109,32 @@ color_t color_hex(const char* hex)
 
 	return color_rgb(r, g, b);
 }
-color_pair_t color_pair(color_t foreground, color_t background)
+color_pair_t color_pair(color_t foreground, color_t background, bool is_bold)
 {
 	/* Basic nCurses colors */
 	if ((foreground < 8) && (background < 8))
 	{
 		if (background == COLOR_DEFAULT)
-			return COLOR_PAIR(64 + foreground);
+		{
+			if (is_bold)
+				return COLOR_PAIR(64 + foreground) | A_BOLD;
+			else
+				return COLOR_PAIR(64 + foreground);
+		}
 
-		return COLOR_PAIR(foreground*8 + background);
+		if (is_bold)
+			return COLOR_PAIR(foreground*8 + background) | A_BOLD;
+		else
+			return COLOR_PAIR(foreground*8 + background);
 	}
 
 	if (COLORS < 256)
-		return COLOR_PAIR(0);
+	{
+		if (is_bold)
+			return COLOR_PAIR(0) | A_BOLD;
+		else
+			return COLOR_PAIR(0);
+	}
 
 	/* Will create color pair
 	 * (above the 64 regular ones plus 12 default = 72)*/
@@ -132,7 +145,10 @@ color_pair_t color_pair(color_t foreground, color_t background)
 
 	init_pair((color_pair_no - 1), foreground, background);
 
-	return COLOR_PAIR(color_pair_no - 1);
+	if (is_bold)
+		return COLOR_PAIR(color_pair_no - 1) | A_BOLD;
+	else
+		return COLOR_PAIR(color_pair_no - 1);
 }
 color_t color_from_string(const char* str)
 {
