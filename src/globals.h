@@ -41,6 +41,7 @@
 #define GLOBALS_H_DEFINED
 
 #include <stdbool.h>
+#include "color.h"
 
 #define NEXT_PIECES_NO 6 /* by default how many next pieces will be shown
 						  * (1 on the top and 5 others) */
@@ -71,16 +72,16 @@ typedef struct globals_s
 	bool theme_ghost_has_colors;
 	bool theme_show_pivot_block;
 	bool theme_lock_piece_color;
-	int	 theme_clear_line_color;
-	int	 theme_piece_no_color;
-	int	 theme_ghost_color;
-	int	 theme_piece_S_color;
-	int	 theme_piece_Z_color;
-	int	 theme_piece_O_color;
-	int	 theme_piece_I_color;
-	int	 theme_piece_L_color;
-	int	 theme_piece_J_color;
-	int	 theme_piece_T_color;
+	color_pair_t theme_clear_line_color;
+	color_pair_t theme_piece_no_color;
+	color_pair_t theme_ghost_color;
+	color_pair_t theme_piece_S_color;
+	color_pair_t theme_piece_Z_color;
+	color_pair_t theme_piece_O_color;
+	color_pair_t theme_piece_I_color;
+	color_pair_t theme_piece_L_color;
+	color_pair_t theme_piece_J_color;
+	color_pair_t theme_piece_T_color;
 
 	char theme_piece[2];
 	char theme_ghost[2];

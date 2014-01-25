@@ -23,7 +23,7 @@
 #include "engine.h"
 #include "block.h"
 
-block_s new_block(int x, int y, char theme[], color_e color)
+block_s new_block(int x, int y, char theme[], color_pair_t color)
 {
 	block_s b;
 

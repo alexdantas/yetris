@@ -32,7 +32,7 @@ piece_s new_piece(piece_e type)
 //		exit(0); /* Isn't that a bit rough? */
 
 	piece_s p;
-	color_e color;
+	color_pair_t color;
 
 	p.rotation = 0;
 	p.type     = type;

@@ -43,7 +43,7 @@ struct block_s
 typedef struct block_s block_s;
 #endif
 
-block_s new_block(int x, int y, char theme[], color_e color);
+block_s new_block(int x, int y, char theme[], color_pair_t color);
 
 #endif /* BLOCK_H_DEFINED */
 
