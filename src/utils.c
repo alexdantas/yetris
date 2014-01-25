@@ -1,15 +1,11 @@
 #include "utils.h"
 #include <stdlib.h>
 
-int random_int_between (int upper, int lower)
+/** Returns a random integer between #min and #max */
+int random_int_between(int min, int max)
 {
-	if (upper < lower)
-	{
-		int tmp = upper;
-		upper = lower;
-		lower = tmp;
-	}
+	if (min > max) { int tmp = min; min = max; max = tmp; }
 
-	return rand() % (upper - lower + 1) + lower;
+	return rand() % (max - min + 1) + min;
 }
 

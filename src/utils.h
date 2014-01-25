@@ -25,12 +25,15 @@
 
 /**
  * @file utils.h
- * Here we have random things that may be useful anywhere on the code.
+ * Here we have random things that may be useful
+ * anywhere on the code.
  *
  */
 
-/** Returns a random number between `upper` and `lower`. */
-int random_int_between(int upper, int lower);
+/**
+ * Returns a random integer between (including) #min and #max.
+ */
+int random_int_between(int min, int max);
 
 #endif /* UTILS_H_DEFINED */
 

@@ -4,6 +4,7 @@
 #include "pieces_define.h"
 #include "block.h"
 #include "board.h"
+#include "utils.h"
 
 piece_s new_piece(piece_type_e type)
 {
@@ -65,9 +66,6 @@ piece_s new_piece(piece_type_e type)
 	return p;
 }
 
-/** Rotate piece #p by #rotation times. Negative number rotates backwards
- *  Doesnt check if the piece will be valid later.
- */
 void piece_rotate(piece_s* p, int rotation)
 {
 	/* rotating to the negative side (counter-clockwise) */
@@ -95,13 +93,6 @@ void piece_rotate(piece_s* p, int rotation)
 			}
 }
 
-
-/** Tries to rotate the piece, doing nothing if cant.
- *   @return true if succeeded, false if failed
- *
- *   This function acts according to the SRS (super rotation system).
- *   It's described on http://tetrisconcept.net/wiki/SRS
- */
 bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 {
 	piece_s tmp = *p;
@@ -186,20 +177,6 @@ bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation)
 	return false;
 }
 
-/** Tries to move the piece, doing nothing if cant.
- *  @return true if succeeded, false if failed
- */
-bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir)
-{
-	if (piece_can_move(p, b, dir))
-	{
-		piece_move(p, dir);
-		return true;
-	}
-	return false;
-}
-
-/** Moves piece according to #direction. 0 is right and 1 is left */
 void piece_move(piece_s* p, direction_e dir)
 {
 	int delta_x = 0;
@@ -225,32 +202,37 @@ void piece_move(piece_s* p, direction_e dir)
 	}
 }
 
-/** Drops piece as far as possible */
+bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir)
+{
+	if (piece_can_move(p, b, dir))
+	{
+		piece_move(p, dir);
+		return true;
+	}
+	return false;
+}
+
 void piece_hard_drop(piece_s* p, board_s* b)
 {
 	while (piece_can_move(p, b, DIR_DOWN))
 		piece_move(p, DIR_DOWN);
 }
 
-/** Returns a random integer between #min and #max */
-int random_number_between(int min, int max)
+piece_type_e piece_random_type()
 {
-	if (min > max) { int tmp = min; min = max; max = tmp; }
-
-	return rand() % (max - min + 1) + min;
-}
-
-/** Returns a random piece type.
- *
- *  The logic is to keep a bag with one of each piece (7 pieces total).
- *  Then we take one after another in a random order.
- *  As soon as we took them all, place them back on the bag and redo it.
- *  This way, we avoid long sequences of the same piece and guarantee
- *  a certain degree of piece rotativity (I WANT TEH LINES!11!!).
- */
-piece_type_e piece_get_random()
-{
-	/* default 'smart' algorithm */
+	/* Default 'smart' algorithm
+	 *
+	 * The logic is to keep a bag with
+	 * one of each piece (7 pieces total).
+	 *
+	 * Then we take one after another in a random order.
+	 * As soon as we took them all,
+	 * place them back on the bag and redo it.
+	 *
+	 * This way, we avoid long sequences
+	 * of the same piece and guarantee a certain
+	 * degree of piece rotativity ("I WANT TEH LINES!11!!").
+	 */
 	if (global.game_random_algorithm == 1)
 	{
 		int i,j;
@@ -263,16 +245,16 @@ piece_type_e piece_get_random()
 		{
 			piece = 0;
 
-			bag[0] = random_number_between(0, size - 1);
+			bag[0] = random_int_between(0, size - 1);
 			for (i = 1; i < size; i++)
 			{
-				bag[i] = random_number_between(0, size - 1);
+				bag[i] = random_int_between(0, size - 1);
 				j = 0;
 				do {				///for (j = 0; j < i; j++)
 
 					if (bag[j] == bag[i])
 					{
-						bag[i] = random_number_between(0, size - 1);
+						bag[i] = random_int_between(0, size - 1);
 						j = 0;
 					}
 					else
@@ -287,23 +269,18 @@ piece_type_e piece_get_random()
 	/* dummy random algorithm */
 	else
 	{
-		return random_number_between(0, PIECE_MAX - 1);
+		return random_int_between(0, (PIECE_MAX - 1));
 	}
 }
 
-/** Checks if the piece #p can move to direction #dir.
- *  The thing here is we create a 'dummy' piece, move it and then
- *  tests if it's on a right spot.
- */
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir)
 {
-	piece_s tmp = *p;
+	piece_s tmp = (*p);
 
 	piece_move(&tmp, dir);
 	return piece_is_on_valid_position(&tmp, b);
 }
 
-/** Returns if the piece is colliding with something or if it's off-limits */
 bool piece_is_on_valid_position(piece_s* p, board_s* b)
 {
 	/* Going through the board only where the piece's at */
@@ -335,7 +312,6 @@ bool piece_is_on_valid_position(piece_s* p, board_s* b)
 	return true;
 }
 
-/** Tells if a piece is a basic one (one of the 7 original ones) */
 bool piece_is_valid(piece_s* p)
 {
 	/* p is always positive */

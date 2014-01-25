@@ -33,12 +33,12 @@ game_s new_game()
 	g.state = PLAYING;
 
 	g.board = new_board();
-	g.piece_current = new_piece(piece_get_random());
+	g.piece_current = new_piece(piece_random_type());
 
 	/* filling next pieces if possible */
 	if (global.game_next_no > 0)
 		for (i = 0; i < global.game_next_no; i++)
-			g.piece_next[i] = new_piece(piece_get_random());
+			g.piece_next[i] = new_piece(piece_random_type());
 
 	g.quit		= false;
 	g.is_over	= false;
@@ -151,14 +151,14 @@ void game_lock_piece(game_s* g)
 piece_s game_get_next_piece(game_s* g)
 {
 	if (global.game_next_no == 0)
-		return new_piece(piece_get_random());
+		return new_piece(piece_random_type());
 
 	piece_s next = g->piece_next[0];
 	int i;
 	for (i = 0; i < global.game_next_no - 1; i++)
 		g->piece_next[i] = g->piece_next[i + 1];
 
-	g->piece_next[i] = new_piece(piece_get_random());
+	g->piece_next[i] = new_piece(piece_random_type());
 	return next;
 }
 
