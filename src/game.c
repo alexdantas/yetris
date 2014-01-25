@@ -122,18 +122,11 @@ game_s new_game()
 void game_ghost_update(game_s* g)
 {
 	g->piece_ghost = g->piece_current;
-	g->piece_ghost.color = global.theme_ghost_color;
-	g->piece_ghost.theme[0] = global.theme_ghost[0];
-	g->piece_ghost.theme[1] = global.theme_ghost[1];
 
 	int i;
 	for (i = 0; i < 4; i++)
-	{
-		g->piece_ghost.block[i].type  = EMPTY;
-		g->piece_ghost.block[i].color = g->piece_ghost.color;
-		g->piece_ghost.block[i].theme[0] = g->piece_ghost.theme[0];
-		g->piece_ghost.block[i].theme[1] = g->piece_ghost.theme[1];
-	}
+		g->piece_ghost.block[i].theme = &(global.theme_ghost);
+
 	piece_hard_drop(&(g->piece_ghost), &(g->board));
 }
 
@@ -403,7 +396,7 @@ bool game_delete_possible_lines(game_s* g)
 		int i = 0;
 		while (i < BOARD_WIDTH)
 		{
-			if (b->block[i][j].type == EMPTY)
+			if (!(b->block[i][j].is_visible))
 			{
 				lines[j] = false;
 				break;

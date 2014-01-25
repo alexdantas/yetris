@@ -26,26 +26,34 @@
 #include "block.h"
 #include "board.h"
 
-piece_s new_piece(piece_e type)
+piece_s new_piece(piece_type_e type)
 {
 //	if ((type < 0) || (type >= PIECE_MAX))
 //		exit(0); /* Isn't that a bit rough? */
 
 	piece_s p;
-	color_pair_t color;
+
+	/* Deciding the appearance of the blocks */
+	p.type = type;
+
+	block_theme_s* theme;
+
+	switch(type)
+	{
+	case PIECE_S: theme = &(global.theme_piece_S);  break;
+	case PIECE_Z: theme = &(global.theme_piece_Z);  break;
+	case PIECE_O: theme = &(global.theme_piece_O);  break;
+	case PIECE_I: theme = &(global.theme_piece_I);  break;
+	case PIECE_L: theme = &(global.theme_piece_L);  break;
+	case PIECE_J: theme = &(global.theme_piece_J);  break;
+	case PIECE_T: theme = &(global.theme_piece_T);  break;
+	default:      theme = &(global.theme_piece_colorless); break;
+	}
 
 	p.rotation = 0;
-	p.type     = type;
 
-	if (global.theme_piece_has_colors)
-		color = piece_get_color(p.type);
-	else
-		color = global.theme_piece_no_color;
-	p.color = color;
-
-	piece_reset_theme(&p);
-
-	/* If we're creating a dummy piece, stop. It won't be printed anyway */
+	/* If we're creating a dummy piece, stop.
+	 * It won't be printed anyway */
 	if (!piece_is_valid(&p))
 		return p;
 
@@ -66,13 +74,15 @@ piece_s new_piece(piece_e type)
 				int block_x  = p.x + i;
 				int block_y  = p.y + j;
 
-				p.block[k] = new_block(block_x, block_y, p.theme, p.color);
+				p.block[k] = new_block(block_x, block_y, theme);
 
-				if (global.theme_show_pivot_block)
-					if (global_pieces[p.type][p.rotation][j][i] == 2)
-						p.block[k] = new_block(block_x, block_y, p.theme, color_pair(COLOR_WHITE, COLOR_WHITE, true));
+				if ((global.theme_show_pivot_block) &&
+				    (global_pieces[p.type][p.rotation][j][i] == 2))
+					p.block->theme = &(global.theme_piece_colorless);
+
 				k++;
 			}
+
 	return p;
 }
 
@@ -94,14 +104,14 @@ void piece_rotate(piece_s* p, int rotation)
 		for (j = 0; j < PIECE_BLOCKS; j++)
 			if (global_pieces[p->type][p->rotation][j][i] != 0)
 			{
-				int block_x  = p->x + i;
-				int block_y  = p->y + j;
+				p->block[k].x = p->x + i;
+				p->block[k].y = p->y + j;
 
-				p->block[k] = new_block(block_x, block_y, p->theme, p->color);
 
-				if (global.theme_show_pivot_block)
-					if (global_pieces[p->type][p->rotation][j][i] == 2)
-						p->block[k] = new_block(block_x, block_y, p->theme, color_pair(COLOR_WHITE, COLOR_WHITE, true));
+				if ((global.theme_show_pivot_block) &&
+				    (global_pieces[p->type][p->rotation][j][i] == 2))
+					p->block[k].theme = &(global.theme_piece_colorless);
+
 				k++;
 			}
 }
@@ -259,7 +269,7 @@ int random_number_between(int min, int max)
  *  This way, we avoid long sequences of the same piece and guarantee
  *  a certain degree of piece rotativity (I WANT TEH LINES!11!!).
  */
-piece_e piece_get_random()
+piece_type_e piece_get_random()
 {
 	/* default 'smart' algorithm */
 	if (global.game_random_algorithm == 1)
@@ -321,10 +331,12 @@ bool piece_is_on_valid_position(piece_s* p, board_s* b)
 	int k;
 	for (k = 0; k < 4; k++)
 	{
-		/* Here we don't confuse our 'dummy' blocks with real ones */
-		p->block[k].type = EMPTY;
+		/* Here we don't confuse our 'dummy' blocks
+		 * with real ones */
+		p->block[k].is_visible = false;
 
-		/* block's x and y are not relative to the piece -- they're global */
+		/* block's x and y are not relative to the piece
+		 * -- they're global */
 		int block_x = p->block[k].x;
 		int block_y = p->block[k].y;
 
@@ -333,11 +345,12 @@ bool piece_is_on_valid_position(piece_s* p, board_s* b)
 			(block_x < 0))
 			return false;
 
-		/* If the piece is still out of the board, we don't check collision */
+		/* If the piece is still out of the board,
+		 * we don't check collision */
 		if (block_y < 0) continue;
 
 		/* Fellow blocks check */
-		if (b->block[block_x][block_y].type != EMPTY)
+		if (b->block[block_x][block_y].is_visible)
 			return false;
 	}
 	return true;
@@ -351,67 +364,5 @@ bool piece_is_valid(piece_s* p)
 		return false;
 	else
 		return true;
-}
-
-/** Returns the color according to the piece type */
-int piece_get_color(piece_e type)
-{
-	switch(type)
-	{
-	case PIECE_S: return global.theme_piece_S_color;  break;
-	case PIECE_Z: return global.theme_piece_Z_color;  break;
-	case PIECE_O: return global.theme_piece_O_color;  break;
-	case PIECE_I: return global.theme_piece_I_color;  break;
-	case PIECE_L: return global.theme_piece_L_color;  break;
-	case PIECE_J: return global.theme_piece_J_color;  break;
-	case PIECE_T: return global.theme_piece_T_color;  break;
-	default:      return global.theme_piece_no_color; break;
-	}
-	/* will never get here */
-	return 666;
-}
-
-/** Copies the piece's theme based on the global variable
- *  holding all the piece's themes.
- *  A theme is the appearance of the piece on the screen.
- *  It can be defined on the config file or set by default.
- *  Anyway, you should @see globals.h
- */
-void piece_reset_theme(piece_s* p)
-{
-	globals_s* g = &global;
-
-	switch (p->type)
-	{
-	case PIECE_S:
-		p->theme[0] = g->theme_piece_S[0];
-		p->theme[1] = g->theme_piece_S[1];
-		break;
-	case PIECE_Z:
-		p->theme[0] = g->theme_piece_Z[0];
-		p->theme[1] = g->theme_piece_Z[1];
-		break;
-	case PIECE_O:
-		p->theme[0] = g->theme_piece_O[0];
-		p->theme[1] = g->theme_piece_O[1];
-		break;
-	case PIECE_I:
-		p->theme[0] = g->theme_piece_I[0];
-		p->theme[1] = g->theme_piece_I[1];
-		break;
-	case PIECE_L:
-		p->theme[0] = g->theme_piece_L[0];
-		p->theme[1] = g->theme_piece_L[1];
-		break;
-	case PIECE_J:
-		p->theme[0] = g->theme_piece_J[0];
-		p->theme[1] = g->theme_piece_J[1];
-		break;
-	case PIECE_T:
-		p->theme[0] = g->theme_piece_T[0];
-		p->theme[1] = g->theme_piece_T[1];
-		break;
-	default: break;
-	}
 }
 

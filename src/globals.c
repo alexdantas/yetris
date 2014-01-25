@@ -25,6 +25,13 @@
 #include "globals.h"
 #include "engine.h"
 
+void block_theme_set(block_theme_s* t, color_pair_t color, char one, char two)
+{
+	t->color = color;
+	t->appearance[0] = one;
+	t->appearance[1] = two;
+}
+
 globals_s new_globals()
 {
 	globals_s g;
@@ -59,9 +66,17 @@ globals_s new_globals()
 	                color_pair(COLOR_BLACK, COLOR_WHITE, false),
 	                ' ', ' ');
 
-	block_theme_set(&(g.theme_piece_ghost),
+	block_theme_set(&(g.theme_piece),
+	                color_pair(COLOR_BLACK, COLOR_WHITE, false),
+	                ' ', ' ');
+
+	block_theme_set(&(g.theme_ghost),
 	                color_pair(COLOR_BLACK, COLOR_WHITE, false),
 	                '[', ']');
+
+	block_theme_set(&(g.theme_locked),
+	                color_pair(COLOR_WHITE, COLOR_WHITE, false),
+	                ' ', ' ');
 
 	block_theme_set(&(g.theme_piece_S),
 	                color_pair(COLOR_WHITE, COLOR_GREEN, false),

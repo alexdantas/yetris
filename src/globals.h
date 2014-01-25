@@ -41,10 +41,25 @@
 #define GLOBALS_H_DEFINED
 
 #include <stdbool.h>
-#include "engine.h"
+#include "color.h"
 
-#define NEXT_PIECES_NO 6 /* by default how many next pieces will be shown
-						  * (1 on the top and 5 others) */
+/* By default how many next pieces will be shown
+ * (1 on the top and 5 others) */
+#define NEXT_PIECES_NO 6
+
+/** How a block is shown on the screen.
+ *  @bug This should be at `engine.h`!
+ *       It's currently here due to an #include
+ *       circular dependence.
+ */
+typedef struct block_theme_s
+{
+	color_pair_t color;
+	char         appearance[2];
+
+} block_theme_s;
+
+void block_theme_set(block_theme_s* t, color_pair_t color, char one, char two);
 
 /** Game-related global variables */
 typedef struct globals_s
@@ -75,7 +90,9 @@ typedef struct globals_s
 
 	block_theme_s theme_clear_line;
 	block_theme_s theme_piece_colorless;
+	block_theme_s theme_piece;
 	block_theme_s theme_ghost;
+	block_theme_s theme_locked;
 	block_theme_s theme_piece_S;
 	block_theme_s theme_piece_Z;
 	block_theme_s theme_piece_O;

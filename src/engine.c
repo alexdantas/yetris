@@ -456,13 +456,16 @@ int engine_get_input(int delay_ms)
  */
 void engine_draw_block(block_s* b, WINDOW* w)
 {
-	if (global.screen_use_colors)
-		wattrset(w, b->color);
-	else
-		wattrset(w, color_pair(COLOR_BLACK, COLOR_WHITE, false));
+	if (! b->is_visible)
+		return;
 
-	mvwaddch(w, b->y, (b->x * 2),     b->theme[0]);
-	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme[1]);
+	if (global.screen_use_colors)
+		color_pair_activate(w, b->theme->color);
+	else
+		color_pair_activate(w, global.theme_piece_colorless.color);
+
+	mvwaddch(w, b->y, (b->x * 2),     b->theme->appearance[0]);
+	mvwaddch(w, b->y, (b->x * 2) + 1, b->theme->appearance[1]);
 }
 
 /** Draws a whole piece, calling #engine_draw_block */
@@ -484,15 +487,13 @@ void engine_draw_board(board_s* b)
 	int i, j;
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			if (b->block[i][j].type != EMPTY)
-				engine_draw_block(&(b->block[i][j]), w);
+			engine_draw_block(&(b->block[i][j]), w);
 
 	if (global.screen_fancy_borders)
 		window_fancy_borders(engine.screen.middle_left.win);
 	else
 		window_normal_borders(engine.screen.middle_left.win);
 
-//  wrefresh(engine.screen.middle_left.win);
 	wnoutrefresh(engine.screen.middle_left.win);
 }
 
@@ -916,9 +917,9 @@ void engine_draw_gameover_animation(game_s* g)
 	{
 		for (i = 0; i < BOARD_WIDTH; i++)
 		{
-			if (b->block[i][j].type != EMPTY)
+			if (b->block[i][j].is_visible)
 			{
-				b->block[i][j].color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
+				b->block[i][j].theme->color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
 				engine_draw_block(&(b->block[i][j]), w->win);
 			}
 		}

@@ -25,17 +25,14 @@
 
 #include "engine.h"
 
-/** Which states can a block be? Will not print when it's EMPTY */
-typedef enum { BLOCK, EMPTY } block_e;
-
 /** All info about individual block */
 struct block_s
 {
 	int     x;        /**< x position relative to the board */
 	int     y;        /**< y position relative to the board */
-	block_e type;     /**< state of the block, see #block_e */
-	int     color;    /**< color that will print the block */
-	char    theme[2]; /**< appearance (how it will be printed onscreen) */
+
+	bool is_visible;
+	block_theme_s* theme;
 };
 
 #ifndef BLOCK_S_DEFINED
@@ -43,7 +40,7 @@ struct block_s
 typedef struct block_s block_s;
 #endif
 
-block_s new_block(int x, int y, char theme[], color_pair_t color);
+block_s new_block(int x, int y, block_theme_s* theme);
 
 #endif /* BLOCK_H_DEFINED */
 

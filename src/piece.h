@@ -36,7 +36,7 @@
  */
 typedef enum { PIECE_O = 0, PIECE_I, PIECE_L,
                PIECE_J,     PIECE_Z, PIECE_S, PIECE_T,
-               PIECE_MAX,   PIECE_DUMMY } piece_e;
+               PIECE_MAX,   PIECE_DUMMY } piece_type_e;
 
 /** Possible directions a piece can move */
 typedef enum { DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT } direction_e;
@@ -49,31 +49,28 @@ typedef struct board_s board_s;
 
 struct piece_s
 {
-	piece_e type;
+	piece_type_e type;
+
 	int     x;
 	int     y;
-	int     color;
-	char    theme[2]; /* the appearance of each block */
 	block_s block[4]; /* all the piece's blocks */
 	short   rotation; /* current rotation number (0 is none) */
-
 };
 #ifndef PIECE_S_DEFINED
 #define PIECE_S_DEFINED
 typedef struct piece_s piece_s;
 #endif
 
-piece_s new_piece(piece_e type);
+piece_s new_piece(piece_type_e type);
 bool piece_rotate_if_possible(piece_s* p, board_s* b, int rotation);
 void piece_rotate(piece_s* p, int rotation);
 bool piece_move_if_possible(piece_s* p, board_s* b, direction_e dir);
 void piece_move(piece_s* p, direction_e dir);
 void piece_hard_drop(piece_s* p, board_s* b);
-piece_e piece_get_random();
+piece_type_e piece_get_random();
 bool piece_can_move(piece_s* p, board_s* b, direction_e dir);
 bool piece_is_valid(piece_s* p);
-int piece_get_color(piece_e type);
 bool piece_is_on_valid_position(piece_s* p, board_s* b);
-void piece_reset_theme(piece_s* p);
 
 #endif /* PIECE_H_DEFINED */
+

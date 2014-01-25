@@ -23,17 +23,14 @@
 #include "engine.h"
 #include "block.h"
 
-block_s new_block(int x, int y, char theme[], color_pair_t color)
+block_s new_block(int x, int y, block_theme_s* theme)
 {
 	block_s b;
 
-	b.x        = x;
-	b.y        = y;
-	b.color    = color;
-	b.type     = BLOCK;
-	b.theme[0] = theme[0];
-	b.theme[1] = theme[1];
-
+	b.x          = x;
+	b.y          = y;
+	b.is_visible = true;
+	b.theme      = theme;
 	return b;
 }
 

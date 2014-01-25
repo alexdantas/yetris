@@ -33,7 +33,7 @@ board_s new_board()
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			b.block[i][j].type = EMPTY;
+			b.block[i][j].is_visible = false;
 
 	return b;
 }
@@ -47,8 +47,9 @@ void board_lock_piece(board_s* b, piece_s* p)
 		int block_x = p->block[k].x;
 		int block_y = p->block[k].y;
 		b->block[block_x][block_y] = p->block[k];
+
 		if (global.theme_lock_piece_color)
-			b->block[block_x][block_y].color = color_pair(COLOR_WHITE, COLOR_WHITE, false);
+			b->block[block_x][block_y].theme = &(global.theme_locked);
 	}
 }
 
@@ -69,9 +70,8 @@ void board_delete_lines(board_s* b, bool lines[])
 		for (i = 0; i < BOARD_WIDTH; i++)
 		{
 			/* The appearance of the line just before it's deleted */
-			b->block[i][k].theme[0] = global.theme_clear_line[0];
-			b->block[i][k].theme[1] = global.theme_clear_line[1];
-			b->block[i][k].color    = color_pair(COLOR_WHITE, COLOR_BLACK, true);
+			b->block[i][k].theme = &(global.theme_clear_line);
+
 			// BUG! If I set bold to 'true' all pieces become bold!
 		}
 	}
@@ -99,10 +99,10 @@ void board_delete_lines(board_s* b, bool lines[])
 
 bool board_is_full(board_s* b)
 {
-	/* Currently, we watch the first line for any non-EMPTY blocks */
+	/* Currently, we watch the first line for any visible blocks */
 	int i;
 	for (i = 0; i < BOARD_WIDTH; i++)
-		if (b->block[i][0].type != EMPTY)
+		if (b->block[i][0].is_visible)
 			return true;
 
 	return false;
