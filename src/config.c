@@ -21,22 +21,6 @@
 #include "globals.h"
 #include "engine.h"
 
-int get_color_from_string(char* string)
-{
-	if (!string) return -1;
-
-	if (strcasecmp(string, "black")	  == 0) return COLOR_BLACK;
-	if (strcasecmp(string, "red")	  == 0) return COLOR_RED;
-	if (strcasecmp(string, "green")	  == 0) return COLOR_GREEN;
-	if (strcasecmp(string, "yellow")  == 0) return COLOR_YELLOW;
-	if (strcasecmp(string, "blue")	  == 0) return COLOR_BLUE;
-	if (strcasecmp(string, "magenta") == 0) return COLOR_MAGENTA;
-	if (strcasecmp(string, "cyan")	  == 0) return COLOR_CYAN;
-	if (strcasecmp(string, "white")	  == 0) return COLOR_WHITE;
-
-	return -1;
-}
-
 /** Deals with the config file, storing each option in memory.
  *	@see globals.h
  */
@@ -205,17 +189,20 @@ void config_parse(char* filename)
 	/* This gets all piece-specific colors from the config file.
 	 * I get the string ("black") and convert it to my color value
 	 */
-	int fg , bg, new_fg, new_bg;
+	color_t fg, bg;
+
 #define get_colors_if_valid(var, string_fg, string_bg, default_fg, default_bg) \
-{																			   \
-	fg = default_fg;														   \
-	bg = default_bg;														   \
-	new_fg = get_color_from_string(iniparser_getstring(ini, string_fg, NULL)); \
-	if (new_fg != -1) fg = new_fg;											   \
-	new_bg = get_color_from_string(iniparser_getstring(ini, string_bg, NULL)); \
-	if (new_bg != -1) bg = new_bg;											   \
-																			   \
-		var = color_pair(fg, bg, false);								   \
+{                                                                              \
+	fg = default_fg;                                                           \
+	bg = default_bg;                                                           \
+	                                                                           \
+	if (iniparser_getstring(ini, string_fg, NULL) != NULL)                     \
+		fg = color_from_string(iniparser_getstring(ini, string_fg, NULL));     \
+	                                                                           \
+	if (iniparser_getstring(ini, string_bg, NULL) != NULL)                     \
+		bg = color_from_string(iniparser_getstring(ini, string_bg, NULL));     \
+	                                                                           \
+	var = color_pair(fg, bg, false);                                           \
 }
 	get_colors_if_valid(g->theme_ghost_color,	"theming:ghost_fg",	  "theming:ghost_bg",	COLOR_WHITE, COLOR_BLACK);
 	get_colors_if_valid(g->theme_piece_S_color, "theming:piece_S_fg", "theming:piece_S_bg", COLOR_WHITE, COLOR_RED);

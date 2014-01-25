@@ -117,7 +117,7 @@ color_pair_t color_pair(color_t foreground, color_t background, bool is_bold);
  *  @note Currently accepted values are
  *        the same as `color_from_string`.
  */
-color_pair_t color_pair_from_string(const char* foreground, const char* background);
+color_pair_t color_pair_from_string(const char* foreground, const char* background, bool is_bool);
 
 /** Makes color pair active, so things we show on the screen
  *  from now on will have it's appearance.

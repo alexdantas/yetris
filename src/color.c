@@ -152,6 +152,9 @@ color_pair_t color_pair(color_t foreground, color_t background, bool is_bold)
 }
 color_t color_from_string(const char* str)
 {
+	if (str == NULL)
+		return 255;
+
 #define STRING_EQUAL(a, b) (strcasecmp(a, b) == 0)
 
 	/* All ncurses' internal values */
@@ -165,18 +168,22 @@ color_t color_from_string(const char* str)
 	if (STRING_EQUAL(str, "cyan"))    return COLOR_CYAN;
 	if (STRING_EQUAL(str, "white"))   return COLOR_WHITE;
 
-	return 0;
+	/* keep in mind this error code */
+	return 255;
 }
-color_pair_t color_pair_from_string(const char* foreground, const char* background)
+color_pair_t color_pair_from_string(const char* foreground, const char* background, bool is_bool)
 {
+	if (foreground == NULL || background == NULL)
+		return 255;
+
 	short f = color_from_string(foreground);
 	short b = color_from_string(background);
 
-	return color_pair(f, b);
+	return color_pair(f, b, is_bool);
 }
 void color_activate(WINDOW* window, color_t foreground, color_t background)
 {
-	wattrset(WINDOW, color_pair(foreground, background));
+	wattrset(window, color_pair(foreground, background, false));
 }
 void color_pair_activate(WINDOW* window, color_pair_t color)
 {
