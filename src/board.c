@@ -167,3 +167,15 @@ void board_bump_up(board_s* b)
 			b->block[i][BOARD_HEIGHT - 1] = &(global.theme_piece_colorless);
 }
 
+void board_force_down(board_s* b)
+{
+	int i, j;
+
+	for (j = (BOARD_HEIGHT - 1); j > 1; j--)
+		for (i = 0; i < BOARD_WIDTH; i++)
+			b->block[i][j] = b->block[i][j - 1];
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		b->block[i][0] = NULL;
+}
+

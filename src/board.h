@@ -106,5 +106,11 @@ void board_add_noise(board_s* b, int height);
  */
 void board_bump_up(board_s* b);
 
+/**
+ * Forces all blocks on #b one row down,
+ * clearing up the top blocks.
+ */
+void board_force_down(board_s* b);
+
 #endif /* BOARD_H_DEFINED */
 
