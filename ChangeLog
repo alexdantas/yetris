@@ -1,5 +1,12 @@
 All the changes are documented on the git history, so here's just the major ones
 
+26-01-14 v1.7.0:
+	* Gameplay: blocks on the board can be pushed on all 4 directions.
+	            options on the config file.
+	* Gameplay: game can add noise (random blocks) at startup.
+	            option on the config file.
+	* Development: changed to Semantic Versioning.
+
 04-03-13 v1.6:
 	* Gameplay: High scores! Can save and show them during the game.
 	* Bugs: Game now compiles and runs on MacOSX.

@@ -34,7 +34,7 @@
 
 # General Info
 PACKAGE = yetris
-VERSION = 1.6
+VERSION = 1.7.0
 DATE    = $(shell date "+%b%Y")
 
 # Local source code information

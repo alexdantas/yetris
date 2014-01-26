@@ -10,11 +10,11 @@ Current Bugs
 ***   If force the piece down, the falling time doubles.
 **    When the game ends, the animation leaves some blocks colored.
 ****  Cannot rotate pieces if it's way's blocked or on the corner.
-***** While the game is paused, the game timer keeps counting!
 
 Fixed Bugs
 ----------
 
+***** While the game is paused, the game timer keeps counting!
 ***   Piece hanging on the sides when above ceiling.
 ****  Bad timer.
 
