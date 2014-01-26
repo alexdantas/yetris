@@ -15,53 +15,24 @@
 #include "piece.h"
 #include "piece_definitions.h"
 
-/* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
-#if OS_IS_WINDOWS
-#define mvwhline my_mvwhline
-#endif
-
 /* Windows can't handle 'stdin' or 'stdout'.
  * So for now i must keep this */
 #if OS_IS_WINDOWS
 #define fprintf(stderr, printf(
 #endif
 
-
-/* Local functions */
-
-/** Whenever we get a signal from the player or the system,
- *  we're calling engine_safe_exit to safely exit ncurses
+/**
+ * Local function.
+ *
+ * Whenever we get a signal from the player or the system,
+ * we're calling engine_safe_exit to safely exit ncurses
  */
 void register_signal_handler();
-
-/**
- * PDCurses (on Windows) doesn't have this function, so I need
- * to re-implement it.
- *
- * @todo implement more features - see 'man mvwhline'
- */
-void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num);
-
-/* End of Local functions (functions specific to this module) */
 
 bool engine_init()
 {
 	/* signals during initialization */
 	block_signals();
-
-	engine_screen_init(80, 24);
-	engine_windows_init();
-	engine_keymap(NULL);
-
-	restore_signals();
-	register_signal_handler();
-	return true;
-}
-
-int engine_screen_init(int width, int height)
-{
-	engine.screen.width  = width;
-	engine.screen.height = height;
 
 	/* Starting ncurses! */
 	initscr();
@@ -69,231 +40,16 @@ int engine_screen_init(int width, int height)
 	if (global.screen_use_colors)
 		color_init();
 
-	/* Gets the current width and height */
-	int current_height, current_width;
-	getmaxyx(stdscr, current_height, current_width);
-
-	if ((current_width  < engine.screen.width) ||
-	    (current_height < engine.screen.height))
-	{
-		endwin();
-		fprintf(stderr, "Error! Your console screen is smaller than %dx%d\n"
-		        "Please resize your window and try again\n",
-		        engine.screen.width, engine.screen.height);
-
-		exit(EXIT_FAILURE);
-	}
-	engine.screen.width  = current_width;
-	engine.screen.height = current_height;
-
 	cbreak();    /* Character input doesnt require the <enter> key anymore */
 	curs_set(0); /* Makes the blinking cursor invisible */
 	noecho();    /* Wont print the keys received through input */
 	nodelay(stdscr, TRUE); /* Wont wait for input */
 	keypad(stdscr, TRUE);  /* Support for extra keys (life F1, F2, ... ) */
-	refresh();   /* Refresh the screen (prints whats in the screen buffer) */
-	return 1;
-}
+	refresh();   /* Refresh the layout (prints whats in the layout buffer) */
 
-int engine_windows_init()
-{
-	window_s  w;
-	screen_s* s = &(engine.screen);
-
-	int main_x = 0;
-	int main_y = 0;
-	if (global.screen_center_horizontally)
-		main_x = engine.screen.width/2 - 80/2;
-
-	if (global.screen_center_vertically)
-		main_y = engine.screen.height/2 - 24/2;
-
-	/* main window, wrapper of all others */
-	w.width  = 80;
-	w.height = 24;
-	w.x      = main_x;
-	w.y      = main_y;
-	w.win    = newwin(w.height, w.width, w.y, w.x);
-	if (global.screen_show_outer_border)
-	{
-		if (global.screen_fancy_borders)
-			window_fancy_borders(w.win);
-		else
-			window_normal_borders(w.win);
-	}
-
-	wnoutrefresh(w.win);
-	s->main = w;
-
-	/* leftmost */
-	w.width  = 6 * 2 + 2;
-	w.height = s->main.height - 2; /* borders */
-	w.x      = 2;
-	w.y      = 1;
-	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-
-	if (global.screen_fancy_borders)
-	{
-		window_fancy_borders(w.win);
-
-		/* If the player has no hold, doesnt make sense printing these parts */
-		if (global.game_can_hold)
-		{
-			/* making the top line between hold and score windows */
-			mvwaddch(w.win, 5, 0, ACS_LLCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
-			my_mvwhline(w.win, 5, 1, ACS_HLINE|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD, w.width - 2);
-			mvwaddch(w.win, 5, w.width - 1, ACS_LRCORNER|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD);
-
-			/* making the bottom line between hold and score windows */
-			mvwaddch(w.win, 6, 0, ACS_ULCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false)|A_BOLD);
-			my_mvwhline(w.win, 6, 1, ACS_HLINE|color_pair(COLOR_WHITE, COLOR_DEFAULT, false), w.width - 2);
-			mvwaddch(w.win, 6, w.width - 1, ACS_URCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
-		}
-
-	}
-	else
-	{
-		window_normal_borders(w.win);
-		wattrset(w.win, color_pair(COLOR_BLACK, COLOR_DEFAULT, true));
-		mvwhline(w.win, 5, 1, '-', w.width - 2);
-	}
-
-	wnoutrefresh(w.win);
-	s->leftmost = w;
-
-	/* middle-left */
-	w.width  = 10 * 2 + 2;
-	w.height = s->main.height - 2; /* borders */
-	w.x      = s->leftmost.x + s->leftmost.width + 1;
-	w.y      = 1;
-	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	if (global.screen_fancy_borders)
-		window_fancy_borders(w.win);
-	else
-		window_normal_borders(w.win);
-	wnoutrefresh(w.win);
-	s->middle_left = w;
-
-	/* middle-right */
-	w.width  = 4 * 2 + 2;
-	w.height = s->main.height - 2; /* borders */
-	w.x      = s->middle_left.x + s->middle_left.width + 1;
-	w.y      = 1;
-	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	if (global.screen_fancy_borders)
-	{
-		window_fancy_borders(w.win);
-		/* making the top line between 1st next and the rest */
-		mvwaddch(w.win, 3, 0, ACS_LLCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
-		mvwhline(w.win, 3, 1, ACS_HLINE|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD, w.width - 2);
-		mvwaddch(w.win, 3, w.width - 1, ACS_LRCORNER|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD);
-
-		/* making the bottom line between 1st next and the rest */
-		mvwaddch(w.win, 4, 0, ACS_ULCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false)|A_BOLD);
-		mvwhline(w.win, 4, 1, ACS_HLINE|color_pair(COLOR_WHITE, COLOR_DEFAULT, false), w.width - 2);
-		mvwaddch(w.win, 4, w.width - 1, ACS_URCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
-
-	}
-	else
-	{
-		window_normal_borders(w.win);
-		wattrset(w.win, color_pair(COLOR_BLACK, COLOR_DEFAULT, true));
-		mvwhline(w.win, 3, 1, '-', w.width - 2);
-	}
-	wnoutrefresh(w.win);
-	s->middle_right = w;
-
-	/* right-most */
-	w.width  = s->main.width - (s->middle_right.x + s->middle_right.width) - 3;
-	w.height = s->main.height - 2; /* borders */
-	w.x      = s->middle_right.x + s->middle_right.width + 1;
-	w.y      = 1;
-	w.win    = derwin(s->main.win, w.height, w.width, w.y, w.x);
-	if (global.screen_fancy_borders)
-		window_fancy_borders(w.win);
-	else
-		window_normal_borders(w.win);
-	wnoutrefresh(w.win);
-	s->rightmost = w;
-
-	/* next pieces */
-	w.width  = s->middle_right.width  - 2;
-	w.height = s->middle_right.height - 2;
-	w.x      = 1;
-	w.y      = 1;
-	w.win    = derwin(s->middle_right.win, w.height, w.width, w.y, w.x);
-	wnoutrefresh(w.win);
-	s->next_container = w;
-
-	/* first next piece */
-	w.width  = s->next_container.width;
-	w.height = 2;
-	w.x      = 0;
-	w.y      = 0;
-	w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-	wnoutrefresh(w.win);
-	s->next[0] = w;
-
-	/* the rest */
-	int i; int y_offset = 2;
-	for (i = 1; i <= global.game_next_no; i++)
-	{
-		/* making all the next pieces 1 line lower */
-		if (i != 1)
-			y_offset = 0;
-
-		w.width  = s->next_container.width;
-		w.height = 2;
-		w.x      = 0;
-		w.y      = s->next[i - 1].y + s->next[i - 1].height + 1 + y_offset;
-		w.win    = derwin(s->next_container.win, w.height, w.width, w.y, w.x);
-		wnoutrefresh(w.win);
-		s->next[i] = w;
-	}
-
-	s->board = new_sub_win_from(s->middle_left.win,
-	                            1,
-	                            1,
-	                            s->middle_left.width - 2,
-	                            s->middle_left.height - 2);
-
-	s->info = new_sub_win_from(s->rightmost.win,
-							   2,
-	                           1,
-	                           s->rightmost.width - 4,
-	                           s->rightmost.height - 2);
-
-	s->leftmost_container = new_sub_win_from(s->leftmost.win,
-	                                         1,
-	                                         1,
-	                                         s->leftmost.width - 2,
-	                                         s->leftmost.height - 2);
-
-	s->hold = new_sub_win_from(s->leftmost_container.win,
-	                           0,
-	                           0,
-	                           s->leftmost_container.width,
-	                           4);
-
-	s->score = new_sub_win_from(s->leftmost_container.win,
-	                            0,
-	                            s->hold.y + s->hold.height + 2,
-	                            s->leftmost_container.width,
-	                            s->leftmost_container.height - (s->hold.height) - 2);
-
-	/* w.width  = s->leftmost_container.width; */
-	/* w.height = s->leftmost_container.height - (s->hold.height) - 2; */
-	/* w.x      = 0; */
-	/* w.y      = s->hold.y + s->hold.height + 2; */
-	/* w.win    = derwin(s->leftmost_container.win, w.height, w.width, w.y, w.x); */
-	/* wnoutrefresh(w.win); */
-	/* s->score = w; */
-
-	w = s->info;
-	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, true));
-	mvwaddstr(w.win, w.height - 1, 16 , "Loading");
-	wnoutrefresh(w.win);
-	return 1;
+	restore_signals();
+	register_signal_handler();
+	return true;
 }
 
 void register_signal_handler()
@@ -433,7 +189,7 @@ void engine_draw_piece(piece_s* p, WINDOW* w)
 
 void engine_draw_board(board_s* b)
 {
-	WINDOW* w = engine.screen.board.win;
+	WINDOW* w = engine.layout.board.win;
 
 	int i, j;
 	for (i = 0; i < BOARD_WIDTH; i++)
@@ -444,11 +200,11 @@ void engine_draw_board(board_s* b)
 			                         b->y + j);
 
 	if (global.screen_fancy_borders)
-		window_fancy_borders(engine.screen.middle_left.win);
+		window_fancy_borders(engine.layout.middle_left.win);
 	else
-		window_normal_borders(engine.screen.middle_left.win);
+		window_normal_borders(engine.layout.middle_left.win);
 
-	wnoutrefresh(engine.screen.middle_left.win);
+	wnoutrefresh(engine.layout.middle_left.win);
 }
 
 void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y)
@@ -468,7 +224,7 @@ void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y)
 
 void engine_draw_pause()
 {
-	window_s* w = &(engine.screen.board);
+	window_s* w = &(engine.layout.board);
 
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, false));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
@@ -484,7 +240,7 @@ void engine_draw_next_pieces(game_s* g)
 	for (i = 0; i < global.game_next_no; i++)
 	{
 		piece_s p = g->piece_next[i];
-		w = engine.screen.next[i].win;
+		w = engine.layout.next[i].win;
 
 		werase(w);
 
@@ -500,7 +256,7 @@ void engine_draw_next_pieces(game_s* g)
 		wnoutrefresh(w);
 	}
 
-	w = engine.screen.middle_right.win;
+	w = engine.layout.middle_right.win;
 
 	if (global.screen_fancy_borders)
 	{
@@ -518,7 +274,7 @@ void engine_draw_next_pieces(game_s* g)
 	mvwaddstr(w, 0, 1, "Next");
 	wnoutrefresh(w);
 
-	window_s* win = &(engine.screen.middle_right);
+	window_s* win = &(engine.layout.middle_right);
 
 	/* RE-DRAWING BORDERS (damn this sucks) */
 	if (global.screen_fancy_borders)
@@ -549,17 +305,17 @@ void engine_draw_hold(game_s* g)
 	window_s* w = NULL;
 	piece_s*  p = &(g->piece_hold);
 
-	w = &(engine.screen.leftmost);
+	w = &(engine.layout.leftmost);
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, false));
 	mvwaddstr(w->win, 0, 1, "Hold");
 	wnoutrefresh(w->win);
 
-	w = &(engine.screen.hold);
+	w = &(engine.layout.hold);
 	werase(w->win);
 	engine_draw_piece(p, w->win);
 	wnoutrefresh(w->win);
 
-	w = &(engine.screen.leftmost);
+	w = &(engine.layout.leftmost);
 
 	/* DRAWING BORDERS, AGGGHW */
 	if (global.screen_fancy_borders)
@@ -591,7 +347,7 @@ void engine_draw_hold(game_s* g)
 
 void engine_draw_score(game_s* g)
 {
-	window_s w = engine.screen.score;
+	window_s w = engine.layout.score;
 
 	werase(w.win);
 
@@ -649,7 +405,7 @@ void engine_draw_score(game_s* g)
 
 void engine_draw_statistics(game_s* g)
 {
-	window_s w = engine.screen.info;
+	window_s w = engine.layout.info;
 	int x_offset = 6;
 	int y_offset = 1;
 
@@ -708,7 +464,7 @@ void engine_draw_statistics(game_s* g)
 
 void engine_draw_line_statistics(game_s* g)
 {
-	window_s* w = &(engine.screen.info);
+	window_s* w = &(engine.layout.info);
 
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, true));
 	mvwaddstr(w->win, 3, 1, "Single:");
@@ -733,7 +489,7 @@ void engine_draw_line_statistics(game_s* g)
  */
 void engine_draw_info(game_s* g)
 {
-	window_s w = engine.screen.info;
+	window_s w = engine.layout.info;
 
 	werase(w.win);
 
@@ -760,7 +516,7 @@ void engine_draw_info(game_s* g)
 	wattrset(w.win, color_pair(COLOR_WHITE, COLOR_DEFAULT, false));
 	mvwprintw(w.win, w.height - 2, 7, "%dms", g->speed);
 
-	/* This is a little hack to display the time onscreen.
+	/* This is a little hack to display the time onlayout.
 	 * It's ugly as hell, but I had to make it
 	 * Format: Wed Jun 30 21:49:08 1993\n */
 	time_t cur_time;
@@ -772,7 +528,7 @@ void engine_draw_info(game_s* g)
 //  mvwprintw(w.win, w.height - 2, 15, "FPS: %d", global.fps);
 
 	/* DRAW BORDERS AGGHWW */
-	w = engine.screen.rightmost;
+	w = engine.layout.rightmost;
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
@@ -783,7 +539,7 @@ void engine_draw_info(game_s* g)
 
 void engine_draw(game_s* g)
 {
-	WINDOW* board = engine.screen.board.win;
+	WINDOW* board = engine.layout.board.win;
 	werase(board);
 
 	switch (g->state)
@@ -833,7 +589,7 @@ void engine_draw(game_s* g)
 void engine_draw_gameover_animation(game_s* g)
 {
 	board_s*  b = &(g->board);
-	window_s* w = &(engine.screen.board);
+	window_s* w = &(engine.layout.board);
 
 	int i, j;
 	for (j = 0; j < BOARD_HEIGHT; j++)
@@ -860,7 +616,7 @@ void engine_draw_gameover_animation(game_s* g)
 
 void engine_draw_gameover()
 {
-	window_s* w = &(engine.screen.board);
+	window_s* w = &(engine.layout.board);
 
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, true));
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "Game Over");
@@ -871,7 +627,7 @@ void engine_draw_gameover()
 
 void engine_refresh_all_windows()
 {
-	screen_s* s = &(engine.screen);
+	layout_s* s = &(engine.layout);
 
 // NOT USING THIS MACRO NOW
 #define fancy_borders_and_refresh(window)	  \
@@ -892,40 +648,40 @@ void engine_refresh_all_windows()
 	delwin(s->middle_left.win);
 	delwin(s->middle_right.win);
 	delwin(s->rightmost.win);
-	engine_windows_init();
 
+	layout_windows_init();
 }
 
 void engine_create_help()
 {
 	window_s w;
 
-	w.width  = engine.screen.main.width - engine.screen.main.width/8;
-	w.height = engine.screen.main.height/2 + 5;
-	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
-	w.y      = engine.screen.main.height/2 - w.height/2;
-	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+	w.width  = engine.layout.main.width - engine.layout.main.width/8;
+	w.height = engine.layout.main.height/2 + 5;
+	w.x      = engine.layout.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.layout.main.height/2 - w.height/2;
+	w.win    = derwin(engine.layout.main.win, w.height, w.width, w.y, w.x);
 
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
 		window_normal_borders(w.win);
 
-	engine.screen.help_container = w;
+	engine.layout.help_container = w;
 
-	w.width  = engine.screen.help_container.width - 2;
-	w.height = engine.screen.help_container.height - 2;
+	w.width  = engine.layout.help_container.width - 2;
+	w.height = engine.layout.help_container.height - 2;
 	w.x      = 1;
 	w.y      = 1;
-	w.win    = derwin(engine.screen.help_container.win, w.height, w.width, w.y, w.x);
-	engine.screen.help = w;
+	w.win    = derwin(engine.layout.help_container.win, w.height, w.width, w.y, w.x);
+	engine.layout.help = w;
 }
 
 void engine_draw_help()
 {
 	window_s* w = NULL;
 
-	w = &(engine.screen.help_container);
+	w = &(engine.layout.help_container);
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w->win);
 	else
@@ -935,7 +691,7 @@ void engine_draw_help()
 	mvwaddstr(w->win, 0, 1, "Help");
 	wnoutrefresh(w->win);
 
-	w = &(engine.screen.help);
+	w = &(engine.layout.help);
 	werase(w->win);
 
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, true));
@@ -965,23 +721,23 @@ void engine_create_hscores_window()
 
 	w.width  = 67 + 2 + 2; /* 66 for all the info plus borders plus space */
 	w.height = 10 + 2 + 1; /* 10 scores plus borders plus title line*/
-	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
-	w.y      = engine.screen.main.height/2 - w.height/2;
-	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+	w.x      = engine.layout.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.layout.main.height/2 - w.height/2;
+	w.win    = derwin(engine.layout.main.win, w.height, w.width, w.y, w.x);
 
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
 		window_normal_borders(w.win);
 
-	engine.screen.hscores_container = w;
+	engine.layout.hscores_container = w;
 
-	w.width  = engine.screen.hscores_container.width - 2;
-	w.height = engine.screen.hscores_container.height - 2;
+	w.width  = engine.layout.hscores_container.width - 2;
+	w.height = engine.layout.hscores_container.height - 2;
 	w.x      = 1;
 	w.y      = 1;
-	w.win    = derwin(engine.screen.hscores_container.win, w.height, w.width, w.y, w.x);
-	engine.screen.hscores = w;
+	w.win    = derwin(engine.layout.hscores_container.win, w.height, w.width, w.y, w.x);
+	engine.layout.hscores = w;
 }
 
 /** Pops a window showing the top highscores
@@ -992,7 +748,7 @@ void engine_draw_hscores()
 {
 	window_s* w = NULL;
 
-	w = &(engine.screen.hscores_container);
+	w = &(engine.layout.hscores_container);
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w->win);
 	else
@@ -1002,7 +758,7 @@ void engine_draw_hscores()
 	mvwaddstr(w->win, 0, 1, "High Scores");
 	wnoutrefresh(w->win);
 
-	w = &(engine.screen.hscores);
+	w = &(engine.layout.hscores);
 	werase(w->win);
 
 	/* This is all well-alligned, think twice before changing a single char */
@@ -1025,18 +781,18 @@ void engine_draw_hscores()
 
 void engine_delete_hscores_window()
 {
-	delwin(engine.screen.hscores.win);
+	delwin(engine.layout.hscores.win);
 
-	werase(engine.screen.main.win);
-	wnoutrefresh(engine.screen.main.win);
+	werase(engine.layout.main.win);
+	wnoutrefresh(engine.layout.main.win);
 }
 
 void engine_delete_help()
 {
-	delwin(engine.screen.help.win);
+	delwin(engine.layout.help.win);
 
-	werase(engine.screen.main.win);
-	wnoutrefresh(engine.screen.main.win);
+	werase(engine.layout.main.win);
+	wnoutrefresh(engine.layout.main.win);
 }
 
 void engine_create_input()
@@ -1045,23 +801,23 @@ void engine_create_input()
 
 	w.width  = 50;
 	w.height = 6;
-	w.x      = engine.screen.main.width/2 - w.width/2 /* center */;
-	w.y      = engine.screen.main.height/2 - w.height/2;
-	w.win    = derwin(engine.screen.main.win, w.height, w.width, w.y, w.x);
+	w.x      = engine.layout.main.width/2 - w.width/2 /* center */;
+	w.y      = engine.layout.main.height/2 - w.height/2;
+	w.win    = derwin(engine.layout.main.win, w.height, w.width, w.y, w.x);
 
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w.win);
 	else
 		window_normal_borders(w.win);
 
-	engine.screen.input_container = w;
+	engine.layout.input_container = w;
 
-	w.width  = engine.screen.input_container.width - 2;
-	w.height = engine.screen.input_container.height - 2;
+	w.width  = engine.layout.input_container.width - 2;
+	w.height = engine.layout.input_container.height - 2;
 	w.x      = 1;
 	w.y      = 1;
-	w.win    = derwin(engine.screen.input_container.win, w.height, w.width, w.y, w.x);
-	engine.screen.input = w;
+	w.win    = derwin(engine.layout.input_container.win, w.height, w.width, w.y, w.x);
+	engine.layout.input = w;
 
 	curs_set(1);
 }
@@ -1070,7 +826,7 @@ void engine_draw_input()
 {
 	window_s* w = NULL;
 
-	w = &(engine.screen.input_container);
+	w = &(engine.layout.input_container);
 	if (global.screen_fancy_borders)
 		window_fancy_borders(w->win);
 	else
@@ -1080,7 +836,7 @@ void engine_draw_input()
 //  mvwaddstr(w->win, 0, 1, "Enter your name");
 	wrefresh(w->win);
 
-	w = &(engine.screen.input);
+	w = &(engine.layout.input);
 	werase(w->win);
 
 	wattrset(w->win, color_pair(COLOR_BLUE, COLOR_DEFAULT, false));
@@ -1105,7 +861,7 @@ void engine_draw_input()
 
 void engine_get_hscore_name(char* name, int size)
 {
-	window_s* w   = &(engine.screen.input);
+	window_s* w   = &(engine.layout.input);
 	WINDOW*   sub = derwin(w->win, 1, 11, 1, 18);
 	werase(sub);
 	wattrset(sub, color_pair(COLOR_BLACK, COLOR_BLUE, false));
@@ -1128,16 +884,9 @@ void engine_get_hscore_name(char* name, int size)
 
 void engine_delete_input()
 {
-	delwin(engine.screen.input.win);
+	delwin(engine.layout.input.win);
 	curs_set(0);
-	werase(engine.screen.main.win);
-	wnoutrefresh(engine.screen.main.win);
-}
-
-void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
-{
-	int i;
-	for (i = 0; i < num; i++)
-		mvwaddch(win, y, (x + i), ch);
+	werase(engine.layout.main.win);
+	wnoutrefresh(engine.layout.main.win);
 }
 

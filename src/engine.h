@@ -44,7 +44,7 @@
 #include <ncurses.h>
 #include "globals.h"
 #include "color.h"
-#include "window.h"
+#include "layout.h"
 
 /** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
@@ -57,53 +57,20 @@
 typedef struct input_s
 {
 	char keys[NUMBER_OF_KEYS]; /**< Current keymap  */
-	int  none;
-	int  left;
-	int  right;
-	int  rotate;
-	int  down;
-	int  drop;
-	int  rotate_backw;
-	int  quit;
-	int  pause;
-	int  hold;
-	int  restart;
+
+	int none;
+	int left;
+	int right;
+	int rotate;
+	int down;
+	int drop;
+	int rotate_backw;
+	int quit;
+	int pause;
+	int hold;
+	int restart;
+
 } input_s;
-
-/**
- * All screens of the game.
- * Mostly ncurses' specific stuff.
- */
-typedef struct screen_s
-{
-	/** Global window width */
-	short width;
-
-	/** Global window height */
-	short height;
-
-	/** Main window */
-	window_s main;
-
-	window_s leftmost;
-	window_s middle_left;
-	window_s middle_right;
-	window_s rightmost;
-	window_s next_container;
-	window_s board;
-	window_s info;
-	window_s next[NEXT_PIECES_NO];
-	window_s hold;
-	window_s leftmost_container;
-	window_s score;
-	window_s help_container;
-	window_s help;
-	window_s hscores_container;
-	window_s hscores;
-	window_s input_container;
-	window_s input;
-
-} screen_s;
 
 /**
  * Container for all info about the game engine.
@@ -111,7 +78,7 @@ typedef struct screen_s
 typedef struct engine_s
 {
 	input_s  input;
-	screen_s screen;
+	layout_s layout;
 
 } engine_s;
 
@@ -138,14 +105,6 @@ typedef struct game_s  game_s;
  * There's no need to call 'engine_exit'.
  */
 bool engine_init();
-
-/**
- * Start things related to the game screen and layout.
- */
-int engine_screen_init(int width, int height);
-
-/** Starts all the subscreens of the game */
-int engine_windows_init();
 
 /** This function blocks the interrupt signal (Ctrl+C) during
  *  the game's initialization.
@@ -179,14 +138,21 @@ void engine_safe_exit(int sig);
  */
 int engine_keymap(char keymap[]);
 
-/** Get input, waiting at most #delay_ms miliseconds.
- *  @return An input enum - it could be ERROR, you know */
+/**
+ * Get input, waiting at most #delay_ms miliseconds.
+ *
+ * @return An input enum - it could be ERROR, you know.
+ */
 int engine_get_input(int delay_ms);
 
-/** Draws a whole piece, calling #engine_draw_block */
+/**
+ * Draws a whole piece.
+ */
 void engine_draw_piece(piece_s* p, WINDOW* w);
 
-/** Draws the board #b, calling #engine_draw_block */
+/**
+ * Draws the board #b.
+ */
 void engine_draw_board(board_s* b);
 
 void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y);
@@ -206,8 +172,8 @@ void engine_draw_score(game_s* g);
  *  info window for statistical purposes.
  *  It uses several position hacks that i need to fix later.
  *  The problem is that pieces always start relative to the
- *  middle of the board, independent of the screen.
- *  So im repositioning them according to it, on the info screen.
+ *  middle of the board, independent of the layout.
+ *  So im repositioning them according to it, on the info layout.
  */
 void engine_draw_statistics(game_s* g);
 
@@ -222,7 +188,7 @@ void engine_draw_gameover_animation(game_s* g);
  */
 void engine_draw_gameover();
 
-/** Tries to refresh all windows onscreen */
+/** Tries to refresh all windows onlayout */
 void engine_refresh_all_windows();
 
 /** Init the help-showing window */
@@ -237,13 +203,13 @@ void engine_draw_help();
 void engine_create_hscores_window();
 
 /** Deletes the high scores window.
- *  @note This leaves the game screen on a messed-up state. Please
+ *  @note This leaves the game layout on a messed-up state. Please
  *        redraw it by calling engine_draw(g) afterwards!
  */
 void engine_delete_hscores_window();
 
 /** Deletes the help window.
- *  @note This leaves the game screen on a messed-up state. Please
+ *  @note This leaves the game layout on a messed-up state. Please
  *        redraw it by calling engine_draw(g) afterwards!
  */
 void engine_delete_help();

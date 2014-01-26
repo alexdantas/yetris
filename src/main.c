@@ -16,7 +16,8 @@
 #include "config.h"
 #include "hscore.h"
 
-/** Main entry point for the game. I kept it as simple as I could. */
+/** Main entry point for the game.
+ * I tried to keep it simple (but kinda failed). */
 int main(int argc, char* argv[])
 {
 	global = new_globals();
@@ -29,13 +30,16 @@ int main(int argc, char* argv[])
 #endif
 
 	engine_init();
+	layout_init(80, 24);
+	engine_keymap(NULL);
+
 	atexit(engine_exit); /* no need to call it when quitting */
 
 	hscore_init();
 	hscore_load();
 
-	game_s game = new_game(engine.screen.board.x - 1,
-	                       engine.screen.board.y - 1); /* borders */
+	game_s game = new_game(engine.layout.board.x - 1,
+	                       engine.layout.board.y - 1); /* borders */
 	engine_draw(&game);
 
 	while (!game.quit)
@@ -47,8 +51,8 @@ int main(int argc, char* argv[])
 
 		if (game.is_over)
 		{
-			game = new_game(engine.screen.board.x - 1,
-			                engine.screen.board.y - 1);
+			game = new_game(engine.layout.board.x - 1,
+			                engine.layout.board.y - 1);
 		}
 		engine_draw(&game);
 	}

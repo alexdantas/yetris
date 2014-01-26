@@ -71,7 +71,7 @@ void board_delete_lines(board_s* b, bool lines[])
 
 	/* Redrawing the board - perhaps I should do it other way? */
 	engine_draw_board(b);
-	wrefresh(engine.screen.board.win);
+	wrefresh(engine.layout.board.win);
 
 	/* Sleeping for a few moments */
 	usleep(global.game_line_clear_timeout);
