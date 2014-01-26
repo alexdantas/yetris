@@ -10,20 +10,6 @@
 #include "config.h"
 #include "hscore.h"
 
-/* Here's the order of game termination:
- * The player loses (board is full, on update()):
- *
- *	  we call game_over()
- *	  game_over() does one-time settings
- *	  game_over() sets the game state to GAME_OVER
- *	  while the state is GAME_OVER, we wait for a specific keypress
- *		via game_handle_input()
- *	  when we get the keypress we wanted, we set game.is_over to
- *		true, so the main() can see the game has ended.
- *	  main() then restarts the game
- */
-
-/** Initializes and returns a new game structure with all it's dependencies */
 game_s new_game(int x, int y)
 {
 	game_s g;
@@ -97,7 +83,6 @@ game_s new_game(int x, int y)
 	return g;
 }
 
-/** Refreshes the ghost piece to the current one on #g */
 void game_ghost_update(game_s* g)
 {
 	g->piece_ghost = g->piece_current;
@@ -107,7 +92,6 @@ void game_ghost_update(game_s* g)
 	piece_hard_drop(&(g->piece_ghost), &(g->board));
 }
 
-/** Locks the current piece on the board and gets a new one */
 void game_lock_piece(game_s* g)
 {
 	/* before locking, lets add to the statistics */
@@ -145,7 +129,6 @@ void game_lock_piece(game_s* g)
 	g->score += 10;
 }
 
-/** Returns the next piece and refreshes the piece_next array */
 piece_s game_get_next_piece(game_s* g)
 {
 	if (global.game_next_no == 0)
@@ -160,7 +143,6 @@ piece_s game_get_next_piece(game_s* g)
 	return next;
 }
 
-/** Perform any updates on the data structures inside #g */
 void game_update(game_s* g)
 {
 	switch (g->state)
@@ -190,10 +172,6 @@ void game_update(game_s* g)
 	}
 }
 
-/** Called once when the player loses.
- *	Will set a state GAME_OVER, from where the game should
- *	know how to react.
- *	Usually it respawns itself or sends to the main menu.*/
 void game_over(game_s* g)
 {
 	timer_pause(&(g->global_timer));
@@ -206,13 +184,6 @@ void game_over(game_s* g)
 	g->state = GAME_OVER;
 }
 
-/** Updates piece position on screen.
- *
- *	I need the g->moved_piece_down because if the player moved the
- *	piece down, I must reset the piece timer (it wont double-drop it).
- *	But if the player moved the piece sideways, must avoid infinite
- *	floating.
- */
 void game_update_piece(game_s* g)
 {
 	timer_pause(&(g->piece_timer));
@@ -236,7 +207,6 @@ void game_update_piece(game_s* g)
 		timer_unpause(&(g->piece_timer));
 }
 
-/** Updates level and speed based on the number of lines cleared. */
 void game_update_level(game_s* g)
 {
 // OLD WAY, DEPRECATED
@@ -294,10 +264,6 @@ void game_update_speed(game_s* g)
 	}
 }
 
-/** Saves current piece for later use. If there's already one on the
- *	'hold slot', switch them.
- *	@note Can only do this once per drop.
- */
 bool game_hold_piece(game_s* g)
 {
 	if (!g->can_hold)
@@ -342,21 +308,6 @@ bool game_hold_piece(game_s* g)
 	return true;
 }
 
-/** Checks all lines, deleting the ones that are full.
- *
- *	@note I know this function's ugly...
- *	@todo Maybe create a 'Line' data structure? To make this ?
- *
- *	This function also deals with score. These are the rules:
- *
- *	line_score:			single: 100, double: 300, triple: 500, tetris: 800
- *	combo_score:		50 * combo_count * current_level
- *	back_to_back_score: (line_score * 3) / 2
- *
- *	score: (line_score * current_level) + combo_score
- *	Also, when you hard drop a piece, it's 10 points for free.
- *	Soft drops are the same (although they should be based on height.
- */
 bool game_delete_possible_lines(game_s* g)
 {
 	board_s* b = &(g->board);
@@ -462,7 +413,6 @@ bool game_delete_possible_lines(game_s* g)
 	return true;
 }
 
-/* Updates the time indicator on the right screen */
 void game_update_gameplay_time(game_s* g)
 {
 	timer_pause(&(g->global_timer));
@@ -472,11 +422,6 @@ void game_update_gameplay_time(game_s* g)
 	timer_unpause(&(g->global_timer));
 }
 
-/** Perform actions based on #input.
- *	It must be 'int' (and not 'char') because of ncurses' stuff.
- *
- *	I with it was a big 'switch', but it doesn't work with variables!
- */
 void game_handle_input(game_s* g, int input)
 {
 	switch (g->state)
@@ -676,7 +621,6 @@ void game_handle_input(game_s* g, int input)
 	}
 }
 
-/** Starts the high score list with default values	*/
 void game_hscore_init(game_s* g)
 {
 	FILE* fp = fopen(global.hscore_filename, "rb");
@@ -709,7 +653,6 @@ void game_hscore_save(game_s* g)
 	}
 }
 
-/** Switches what statistics appear on the info screen. */
 void game_switch_statistics()
 {
 	if (global.game_has_statistics)
@@ -725,17 +668,14 @@ void game_switch_statistics()
 }
 
 
-/*	*/
-/*	*/
-/* experimental functions that saves the game state */
-/*	*/
-/*	*/
+/*
+ *
+ * experimental functions that saves the game state
+ *
+ */
 
 #define SAVE_PATH "yetris01.sav"
 
-/** Saves the current game state.
- *	Interrupts if something bad happens.
- */
 void game_save(game_s* g)
 {
 	FILE* fp = fopen(SAVE_PATH, "wb");
@@ -743,8 +683,8 @@ void game_save(game_s* g)
 		return;
 
 /* This returns unless fwrite() has written everything.
- * This macro receives the same arguments as fwrite(), It just checks
- * to see if everything has been written just fine.
+ * This macro receives the same arguments as fwrite(),
+ * It just checks to see if everything has been written just fine.
  */
 #define return_unless_written(what, size, ammount, where)		\
 	{															\
@@ -811,9 +751,6 @@ out:
 	fclose(fp);
 }
 
-/** Loads a saved game state.
- *	Interrupts if something wrong happens.
- */
 void game_load(game_s* g)
 {
 	FILE* fp = fopen(SAVE_PATH, "rb");

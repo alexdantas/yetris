@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
 
 	engine_init();
 	atexit(engine_exit); /* no need to call it when quitting */
+
 	hscore_init();
 	hscore_load();
 
@@ -49,7 +50,6 @@ int main(int argc, char* argv[])
 			game = new_game(engine.screen.board.x - 1,
 			                engine.screen.board.y - 1);
 		}
-
 		engine_draw(&game);
 	}
 
