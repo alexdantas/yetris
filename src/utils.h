@@ -23,6 +23,8 @@
 #ifndef UTILS_H_DEFINED
 #define UTILS_H_DEFINED
 
+#include <stdbool.h>
+
 /**
  * @file utils.h
  * Here we have random things that may be useful
@@ -34,6 +36,11 @@
  * Returns a random integer between (including) #min and #max.
  */
 int random_int_between(int min, int max);
+
+/**
+ * Returns a random #true/#false
+ */
+bool random_bool();
 
 #endif /* UTILS_H_DEFINED */
 

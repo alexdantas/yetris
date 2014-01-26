@@ -5,6 +5,7 @@
 #include "piece.h"
 #include "piece_definitions.h"
 #include "engine.h"
+#include "utils.h"
 
 board_s new_board(int x, int y)
 {
@@ -128,5 +129,41 @@ void board_slide_right(board_s* b)
 
 		b->block[0][j] = tmp;
 	}
+}
+
+void board_add_noise(board_s* b, int height)
+{
+	if (height > BOARD_HEIGHT)
+		height = BOARD_HEIGHT;
+
+	int i, j;
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+	{
+		for (j = BOARD_HEIGHT - height;
+		     j < BOARD_HEIGHT;
+		     j++)
+		{
+			if (random_bool())
+			{
+				piece_s tmp = new_piece(piece_random_type());
+
+				b->block[i][j] = tmp.theme;
+			}
+		}
+	}
+}
+
+void board_bump_up(board_s* b)
+{
+	int i, j;
+
+	for (j = 0; j < (BOARD_HEIGHT - 1); j++)
+		for (i = 0; i < BOARD_WIDTH; i++)
+			b->block[i][j] = b->block[i][j + 1];
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		if (random_bool())
+			b->block[i][BOARD_HEIGHT - 1] = &(global.theme_piece_colorless);
 }
 

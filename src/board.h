@@ -95,5 +95,16 @@ void board_slide_left(board_s* b);
  */
 void board_slide_right(board_s* b);
 
+/**
+ * Adds random blocks on #b up to #height rows.
+ */
+void board_add_noise(board_s* b, int height);
+
+/**
+ * Moves all blocks on #b one row up,
+ * adding noise on the bottom row.
+ */
+void board_bump_up(board_s* b);
+
 #endif /* BOARD_H_DEFINED */
 
