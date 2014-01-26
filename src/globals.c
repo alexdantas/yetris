@@ -22,6 +22,7 @@ globals_s new_globals()
 	g.screen_fancy_borders		    = true;
 	g.screen_show_outer_border	    = true;
 
+	g.game_initial_noise           = 0;
 	g.game_has_ghost               = true;
 	g.game_can_hold                = true;
 	g.game_next_no                 = NEXT_PIECES_NO;
@@ -30,6 +31,8 @@ globals_s new_globals()
 	g.game_random_algorithm        = 1;
 	g.game_line_clear_timeout      = 200000;
 	g.game_has_game_over_animation = true;
+	g.game_slide_left              = false;
+	g.game_slide_right             = false;
 
 	g.theme_piece_has_colors = true;
 	g.theme_ghost_has_colors = false;

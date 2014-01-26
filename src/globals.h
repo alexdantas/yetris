@@ -76,15 +76,25 @@ typedef struct globals_s
 	bool screen_fancy_borders;
 	bool screen_show_outer_border;
 
-	int	 fps; /** On how many frames per second is the game running? */
+	/** On how many frames per second is the game running? */
+	int	fps;
+
+	/** How many lines of noise we add at the bottom initially */
+	int game_initial_noise;
+
 	bool game_has_ghost;
 	bool game_can_hold;
-	char game_next_no; /**< How many next pieces the user can see */
+
+	/** How many next pieces the user can see */
+	char game_next_no;
+
 	bool game_has_statistics;
 	bool game_has_line_statistics;
 	char game_random_algorithm;
 	bool game_has_game_over_animation;
 	int	 game_line_clear_timeout; /**< Pause (microseconds) during line clear */
+	bool game_slide_left;
+	bool game_slide_right;
 
 	bool theme_piece_has_colors;
 	bool theme_ghost_has_colors;

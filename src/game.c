@@ -21,6 +21,9 @@ game_s new_game(int x, int y)
 	g.board = new_board(x, y);
 	g.piece_current = new_piece(piece_random_type());
 
+	if (global.game_initial_noise > 0)
+		board_add_noise(&(g.board), global.game_initial_noise);
+
 	/* filling next pieces if possible */
 	if (global.game_next_no > 0)
 		for (i = 0; i < global.game_next_no; i++)
@@ -112,7 +115,12 @@ void game_lock_piece(game_s* g)
 	}
 
 	board_lock_piece(&(g->board), &(g->piece_current));
-	/* board_slide_right(&(g->board)); */
+
+	if (global.game_slide_right)
+		board_push_right(&(g->board));
+
+	if (global.game_slide_left)
+		board_push_left(&(g->board));
 
 	g->piece_current = game_get_next_piece(g);
 	timer_start(&(g->piece_timer)); /* reset piece falling timer */

@@ -82,6 +82,8 @@ void config_parse(char* filename)
 
 	set_bool_if_valid(g->game_can_hold,	 "gameplay:hold");
 	set_bool_if_valid(g->game_has_ghost, "gameplay:ghost");
+	set_bool_if_valid(g->game_slide_left,  "gameplay:slide_left");
+	set_bool_if_valid(g->game_slide_right, "gameplay:slide_right");
 
 	set_bool_if_valid(g->theme_piece_has_colors, "theming:piece_has_color");
 	set_bool_if_valid(g->theme_ghost_has_colors, "theming:ghost_has_color");
@@ -106,6 +108,7 @@ void config_parse(char* filename)
 	}
 	set_int_if((i >= 0) && (i <= NEXT_PIECES_NO), g->game_next_no, "gameplay:next");
 	set_int_if((i >= 1) && (i <= 2), g->game_random_algorithm, "gameplay:random");
+	set_int_if((i > 0), g->game_initial_noise, "gameplay:initial_noise");
 
 
 /* Finally, this one's way more specific than the others.
@@ -242,6 +245,17 @@ void config_create_default(char* filename)
 		"# Enable/disable animation when the player loses\n"
 		"# default: true\n"
 		"game_over_animation = true\n"
+		"\n"
+		"# Enable/disable sliding of the board left/right\n"
+		"# when locking the pieces. Try it, very fun!\n"
+		"# default: false\n"
+		"slide_left = false\n"
+		"slide_right = false\n"
+		"\n"
+		"# How many lines of random blocks we add at the end\n"
+		"# when beginning the game\n"
+		"# default: 0\n"
+		"initial_noise = 0\n"
 		"\n"
 		"[interface]\n"
 		"\n"
