@@ -44,6 +44,7 @@
 #include <ncurses.h>
 #include "globals.h"
 #include "color.h"
+#include "window.h"
 
 /** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
@@ -68,21 +69,6 @@ typedef struct input_s
 	int  hold;
 	int  restart;
 } input_s;
-
-/**
- * Stores information about a ncurses' window.
- */
-typedef struct window_s
-{
-	/** nCurses' internal representation of a screen */
-	WINDOW* win;
-
-	short x;
-	short y;
-	short width;
-	short height;
-
-} window_s;
 
 /**
  * All screens of the game.
@@ -159,7 +145,7 @@ bool engine_init();
 int engine_screen_init(int width, int height);
 
 /** Starts all the subscreens of the game */
-int  engine_windows_init();
+int engine_windows_init();
 
 /** This function blocks the interrupt signal (Ctrl+C) during
  *  the game's initialization.

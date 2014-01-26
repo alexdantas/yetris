@@ -35,24 +35,6 @@
 void register_signal_handler();
 
 /**
- * This creates a sub window based on #main.
- *
- * The new window will have #width and #height and
- * it's #x and #y will be relative to #main.
- */
-window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y);
-
-/**
- * Draws fancy borders on window #win.
- */
-void window_fancy_borders(WINDOW* win);
-
-/**
- * Draws normal borders on window #win.
- */
-void window_normal_borders(WINDOW* win);
-
-/**
  * PDCurses (on Windows) doesn't have this function, so I need
  * to re-implement it.
  *
@@ -269,27 +251,35 @@ int engine_windows_init()
 		s->next[i] = w;
 	}
 
-	s->board = new_sub_win_from(s->middle_left.win, (s->middle_left.width - 2), (s->middle_left.height - 2), 1, 1);
+	s->board = new_sub_win_from(s->middle_left.win,
+	                            1,
+	                            1,
+	                            s->middle_left.width - 2,
+	                            s->middle_left.height - 2);
 
-	s->info  = new_sub_win_from(s->rightmost.win,   (s->rightmost.width - 4),   (s->rightmost.height - 2),   2, 1);
+	s->info = new_sub_win_from(s->rightmost.win,
+							   2,
+	                           1,
+	                           s->rightmost.width - 4,
+	                           s->rightmost.height - 2);
 
 	s->leftmost_container = new_sub_win_from(s->leftmost.win,
-	                                         (s->leftmost.width - 2),
-	                                         (s->leftmost.height - 2),
 	                                         1,
-	                                         1);
+	                                         1,
+	                                         s->leftmost.width - 2,
+	                                         s->leftmost.height - 2);
 
 	s->hold = new_sub_win_from(s->leftmost_container.win,
-	                           s->leftmost_container.width,
-	                           4,
 	                           0,
-	                           0);
+	                           0,
+	                           s->leftmost_container.width,
+	                           4);
 
 	s->score = new_sub_win_from(s->leftmost_container.win,
-	                            s->leftmost_container.width,
-	                            s->leftmost_container.height - (s->hold.height) - 2,
 	                            0,
-	                            s->hold.y + s->hold.height + 2);
+	                            s->hold.y + s->hold.height + 2,
+	                            s->leftmost_container.width,
+	                            s->leftmost_container.height - (s->hold.height) - 2);
 
 	/* w.width  = s->leftmost_container.width; */
 	/* w.height = s->leftmost_container.height - (s->hold.height) - 2; */
@@ -367,32 +357,33 @@ int engine_keymap(char keymap[])
 	/* ncurses' constants */
 	engine.input.none = ERR;
 
-	if ((!keymap) || (strnlen(keymap, NUMBER_OF_KEYS + 1) != NUMBER_OF_KEYS))
+	if (! keymap ||
+	    strnlen(keymap, NUMBER_OF_KEYS + 1) != NUMBER_OF_KEYS)
 	{
 		/* Invalid string, setting default keymap */
-		engine.input.down   = KEY_DOWN;
-		engine.input.right  = KEY_RIGHT;
-		engine.input.left   = KEY_LEFT;
-		engine.input.rotate = 'x';
+		engine.input.down         = KEY_DOWN;
+		engine.input.right        = KEY_RIGHT;
+		engine.input.left         = KEY_LEFT;
+		engine.input.rotate       = 'x';
 		engine.input.rotate_backw = 'z';
-		engine.input.drop    = ' ';
-		engine.input.hold    = 'c';
-		engine.input.pause   = 'p';
-		engine.input.quit    = 'q';
-		engine.input.restart = 'r';
+		engine.input.drop         = ' ';
+		engine.input.hold         = 'c';
+		engine.input.pause        = 'p';
+		engine.input.quit         = 'q';
+		engine.input.restart      = 'r';
 		return -1;
 	}
 
-	engine.input.down   = keymap[0];
-	engine.input.right  = keymap[1];
-	engine.input.left   = keymap[2];
-	engine.input.rotate = keymap[3];
+	engine.input.down         = keymap[0];
+	engine.input.right        = keymap[1];
+	engine.input.left         = keymap[2];
+	engine.input.rotate       = keymap[3];
 	engine.input.rotate_backw = keymap[4];
-	engine.input.drop   = keymap[5];
-	engine.input.pause  = keymap[6];
-	engine.input.quit   = keymap[7];
-	engine.input.hold   = keymap[8];
-	engine.input.restart = keymap[8];
+	engine.input.drop         = keymap[5];
+	engine.input.pause        = keymap[6];
+	engine.input.quit         = keymap[7];
+	engine.input.hold         = keymap[8];
+	engine.input.restart      = keymap[8];
 	return 0;
 }
 
@@ -416,6 +407,7 @@ int engine_get_input(int delay_ms)
 
 	if ((retval == 1) && (c == ERR)) /* ERROR */
 		return -1;
+
 	if (retval == 0)
 		return engine.input.none;
 
@@ -1140,38 +1132,6 @@ void engine_delete_input()
 	curs_set(0);
 	werase(engine.screen.main.win);
 	wnoutrefresh(engine.screen.main.win);
-}
-
-/* Local functions (functions specific to this module) */
-
-window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
-{
-	window_s w;
-	w.width  = width;
-	w.height = height;
-	w.x      = x;
-	w.y      = y;
-	w.win    = derwin(main, height, width, y, x);
-	wnoutrefresh(w.win);
-	return w;
-}
-
-void window_fancy_borders(WINDOW* win)
-{
-	wborder(win, ACS_VLINE|color_pair(COLOR_WHITE, COLOR_DEFAULT, false),
-	        ACS_VLINE|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD,
-	        ACS_HLINE|color_pair(COLOR_WHITE, COLOR_DEFAULT, false),
-	        ACS_HLINE|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD,
-	        ACS_ULCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false)|A_BOLD,
-	        ACS_URCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false),
-	        ACS_LLCORNER|color_pair(COLOR_WHITE, COLOR_DEFAULT, false),
-	        ACS_LRCORNER|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD);
-}
-
-void window_normal_borders(WINDOW* win)
-{
-	wattrset(win, color_pair(COLOR_BLACK, COLOR_DEFAULT, true));
-	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 
 void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
