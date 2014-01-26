@@ -100,3 +100,33 @@ bool board_is_full(board_s* b)
 	return false;
 }
 
+void board_slide_left(board_s* b)
+{
+	int i, j;
+
+	for (j = 0; j < BOARD_HEIGHT; j++)
+	{
+		block_theme_s* tmp = b->block[0][j];
+
+		for (i = 0; i < (BOARD_WIDTH - 1); i++)
+			b->block[i][j] = b->block[i + 1][j];
+
+		b->block[BOARD_WIDTH - 1][j] = tmp;
+	}
+}
+
+void board_slide_right(board_s* b)
+{
+	int i, j;
+
+	for (j = 0; j < BOARD_HEIGHT; j++)
+	{
+		block_theme_s* tmp = b->block[BOARD_WIDTH - 1][j];
+
+		for (i = (BOARD_WIDTH - 1); i > 0; i--)
+			b->block[i][j] = b->block[i - 1][j];
+
+		b->block[0][j] = tmp;
+	}
+}
+

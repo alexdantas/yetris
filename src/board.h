@@ -82,5 +82,18 @@ void board_delete_lines(board_s* b, bool lines[]);
  */
 bool board_is_full(board_s* b);
 
+/**
+ * Moves all blocks inside the board one column left,
+ * overlapping the first to the last.
+ *
+ * Just for fun.
+ */
+void board_slide_left(board_s* b);
+
+/**
+ * Same as board_slide_left(), only right.
+ */
+void board_slide_right(board_s* b);
+
 #endif /* BOARD_H_DEFINED */
 

@@ -112,6 +112,7 @@ void game_lock_piece(game_s* g)
 	}
 
 	board_lock_piece(&(g->board), &(g->piece_current));
+	/* board_slide_right(&(g->board)); */
 
 	g->piece_current = game_get_next_piece(g);
 	timer_start(&(g->piece_timer)); /* reset piece falling timer */
