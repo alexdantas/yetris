@@ -428,9 +428,6 @@ void game_handle_input(game_s* g, int input)
 	switch (g->state)
 	{
 	case PLAYING:
-		if (input == 'i')
-			board_force_down(&(g->board));
-
 		if (input == engine.input.quit)
 		{
 			g->state = QUITTING;

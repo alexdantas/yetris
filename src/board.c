@@ -101,7 +101,7 @@ bool board_is_full(board_s* b)
 	return false;
 }
 
-void board_slide_left(board_s* b)
+void board_push_left(board_s* b)
 {
 	int i, j;
 
@@ -116,7 +116,7 @@ void board_slide_left(board_s* b)
 	}
 }
 
-void board_slide_right(board_s* b)
+void board_push_right(board_s* b)
 {
 	int i, j;
 
@@ -154,7 +154,7 @@ void board_add_noise(board_s* b, int height)
 	}
 }
 
-void board_bump_up(board_s* b)
+void board_push_up(board_s* b)
 {
 	int i, j;
 
@@ -167,7 +167,7 @@ void board_bump_up(board_s* b)
 			b->block[i][BOARD_HEIGHT - 1] = &(global.theme_piece_colorless);
 }
 
-void board_force_down(board_s* b)
+void board_push_down(board_s* b)
 {
 	int i, j;
 
