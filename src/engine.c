@@ -1,14 +1,4 @@
 
-/* @file engine.c Implementations of graphical stuff.
- *
- * This module deals with ncurses and how to print the game
- * onscreen.
- *
- * On Micro$oft Windows systems, I use PDCurses, which has
- * less functionalities than ncurses. So I need to make a
- * few #defines to fix this.
- */
-
 #include <stdlib.h>
 #include <ncurses.h>
 #include <stdbool.h>
@@ -37,17 +27,41 @@
 #endif
 
 
-/* Local functions (functions specific to this module) */
+/* Local functions */
+
+/** Whenever we get a signal from the player or the system,
+ *  we're calling engine_safe_exit to safely exit ncurses
+ */
 void register_signal_handler();
+
+/**
+ * This creates a sub window based on #main.
+ *
+ * The new window will have #width and #height and
+ * it's #x and #y will be relative to #main.
+ */
 window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y);
+
+/**
+ * Draws fancy borders on window #win.
+ */
 void window_fancy_borders(WINDOW* win);
+
+/**
+ * Draws normal borders on window #win.
+ */
 void window_normal_borders(WINDOW* win);
+
+/**
+ * PDCurses (on Windows) doesn't have this function, so I need
+ * to re-implement it.
+ *
+ * @todo implement more features - see 'man mvwhline'
+ */
 void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num);
+
 /* End of Local functions (functions specific to this module) */
 
-
-/** Initializes all ncurses' related stuff (windows, colors...).
- *  There's no need to call 'engine_exit' */
 bool engine_init()
 {
 	/* signals during initialization */
@@ -62,7 +76,6 @@ bool engine_init()
 	return true;
 }
 
-/** Start things related to the game screen and layout */
 int engine_screen_init(int width, int height)
 {
 	engine.screen.width  = width;
@@ -100,7 +113,6 @@ int engine_screen_init(int width, int height)
 	return 1;
 }
 
-/** Starts all the subscreens of the game */
 int engine_windows_init()
 {
 	window_s  w;
@@ -294,9 +306,6 @@ int engine_windows_init()
 	return 1;
 }
 
-/** Whenever we get a signal from the player or the system,
- *  we're calling engine_safe_exit to safely exit ncurses
- */
 void register_signal_handler()
 {
 	struct sigaction sigint_handler;
@@ -312,10 +321,6 @@ void register_signal_handler()
 	sigaction(SIGTERM, &sigint_handler, NULL);
 }
 
-/** This function blocks the interrupt signal (Ctrl+C) during
- *  the game's initialization.
- *  That's because ncurses leaves the terminal in a broken state.
- */
 bool block_signals()
 {
 	struct sigaction sigint_handler;
@@ -324,7 +329,6 @@ bool block_signals()
 	return true;
 }
 
-/** Now the player's allowed to interrupt the program it he wishes so. */
 bool restore_signals()
 {
 	struct sigaction sigint_handler;
@@ -333,7 +337,6 @@ bool restore_signals()
 	return true;
 }
 
-/** This stops ncurses on a sweet, gentle way. */
 void engine_exit()
 {
 	erase();
@@ -341,10 +344,6 @@ void engine_exit()
 	endwin();
 }
 
-/** Function called when receiving an interrupt signal.
- *  It restores the terminal to it's initial state and
- *  frees whatever memory might be allocated from the game.
- */
 void engine_safe_exit(int sig)
 {
 	engine_exit();
@@ -361,13 +360,6 @@ void engine_safe_exit(int sig)
 	_exit(EXIT_FAILURE);
 }
 
-/** This defines the keymap according to the string #keymap.
- *   Each char represents the key to be pressed for the following
- *   commands (on that order):
- *     down, right, left, rotate, rotate backwards, drop, pause, quit, hold
- *   For example:
- *     "sdawe pqu"
- */
 int engine_keymap(char keymap[])
 {
 	/* TODO: check for repeated letters */
@@ -404,8 +396,7 @@ int engine_keymap(char keymap[])
 	return 0;
 }
 
-/** Get input, waiting at most #delay_ms miliseconds.
- *  @return An input enum - it could be ERROR, you know */
+
 int engine_get_input(int delay_ms)
 {
 	int retval = 0;
@@ -431,7 +422,6 @@ int engine_get_input(int delay_ms)
 	return c;
 }
 
-/** Draws a whole piece, calling #engine_draw_block */
 void engine_draw_piece(piece_s* p, WINDOW* w)
 {
 	if (!piece_is_valid(p))
@@ -449,7 +439,6 @@ void engine_draw_piece(piece_s* p, WINDOW* w)
 				                        p->y + j);
 }
 
-/** Draws the board #b, calling #engine_draw_block */
 void engine_draw_board(board_s* b)
 {
 	WINDOW* w = engine.screen.board.win;
@@ -484,7 +473,7 @@ void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y)
 	mvwaddch(w, y, x + 1, t->appearance[1]);
 }
 
-/** Prints 'pause' on the board */
+
 void engine_draw_pause()
 {
 	window_s* w = &(engine.screen.board);
@@ -493,6 +482,8 @@ void engine_draw_pause()
 	mvwaddstr(w->win, w->height/2 - 1, w->width/2 - 4, "[paused]");
 	wnoutrefresh(w->win);
 }
+
+/* LOCAL FUNCTION WTF */
 
 void engine_draw_next_pieces(game_s* g)
 {
@@ -561,7 +552,6 @@ void engine_draw_next_pieces(game_s* g)
 
 }
 
-/** Draws the window where we keep the hold piece */
 void engine_draw_hold(game_s* g)
 {
 	window_s* w = NULL;
@@ -607,9 +597,6 @@ void engine_draw_hold(game_s* g)
 	}
 }
 
-/** Draws the score, high score and warn the player if he has any
- *  combo or back-to-back sequences.
- */
 void engine_draw_score(game_s* g)
 {
 	window_s w = engine.screen.score;
@@ -668,13 +655,6 @@ void engine_draw_score(game_s* g)
 	wnoutrefresh(w.win);
 }
 
-/** This is a very ugly function that draws blocks on the
- *  info window for statistical purposes.
- *  It uses several position hacks that i need to fix later.
- *  The problem is that pieces always start relative to the
- *  middle of the board, independent of the screen.
- *  So im repositioning them according to it, on the info screen.
- */
 void engine_draw_statistics(game_s* g)
 {
 	window_s w = engine.screen.info;
@@ -753,7 +733,12 @@ void engine_draw_line_statistics(game_s* g)
 	mvwprintw(w->win, 7, 9, "%10d", g->lines_count);
 }
 
-/** Draws everything that's on the info window (the rightmost one) */
+/**
+ * Draws everything that's on the info
+ * window (the rightmost one).
+ *
+ * WTF LOCAL FUNCTION
+ */
 void engine_draw_info(game_s* g)
 {
 	window_s w = engine.screen.info;
@@ -804,7 +789,6 @@ void engine_draw_info(game_s* g)
 	wnoutrefresh(w.win);
 }
 
-/** Calls all drawing routines in order */
 void engine_draw(game_s* g)
 {
 	WINDOW* board = engine.screen.board.win;
@@ -854,7 +838,6 @@ void engine_draw(game_s* g)
 	doupdate();
 }
 
-/** Draws a nice animation when the player loses the game */
 void engine_draw_gameover_animation(game_s* g)
 {
 	board_s*  b = &(g->board);
@@ -883,7 +866,6 @@ void engine_draw_gameover_animation(game_s* g)
 //  usleep(1000000);
 }
 
-/** Prints a message telling the player that he has lost the game */
 void engine_draw_gameover()
 {
 	window_s* w = &(engine.screen.board);
@@ -895,7 +877,6 @@ void engine_draw_gameover()
 	wnoutrefresh(w->win);
 }
 
-/** Tries to refresh all windows onscreen */
 void engine_refresh_all_windows()
 {
 	screen_s* s = &(engine.screen);
@@ -923,7 +904,6 @@ void engine_refresh_all_windows()
 
 }
 
-/** Init the help-showing window */
 void engine_create_help()
 {
 	window_s w;
@@ -949,7 +929,6 @@ void engine_create_help()
 	engine.screen.help = w;
 }
 
-/** Pops a window explaining some stuff */
 void engine_draw_help()
 {
 	window_s* w = NULL;
@@ -988,7 +967,6 @@ void engine_draw_help()
 	wnoutrefresh(w->win);
 }
 
-/** Init the score-showing window */
 void engine_create_hscores_window()
 {
 	window_s w;
@@ -1014,7 +992,10 @@ void engine_create_hscores_window()
 	engine.screen.hscores = w;
 }
 
-/** Pops a window showing the top highscores */
+/** Pops a window showing the top highscores
+ *
+ *  WTF LOCAL FUNCTION
+ */
 void engine_draw_hscores()
 {
 	window_s* w = NULL;
@@ -1050,10 +1031,6 @@ void engine_draw_hscores()
 	wnoutrefresh(w->win);
 }
 
-/** Deletes the high scores window.
- *  @note This leaves the game screen on a messed-up state. Please
- *        redraw it by calling engine_draw(g) afterwards!
- */
 void engine_delete_hscores_window()
 {
 	delwin(engine.screen.hscores.win);
@@ -1062,10 +1039,6 @@ void engine_delete_hscores_window()
 	wnoutrefresh(engine.screen.main.win);
 }
 
-/** Deletes the help window.
- *  @note This leaves the game screen on a messed-up state. Please
- *        redraw it by calling engine_draw(g) afterwards!
- */
 void engine_delete_help()
 {
 	delwin(engine.screen.help.win);
@@ -1138,10 +1111,6 @@ void engine_draw_input()
 	wrefresh(w->win);
 }
 
-/* patio brasil, 504 sul, locus
- * vi x emacs
- *
- * */
 void engine_get_hscore_name(char* name, int size)
 {
 	window_s* w   = &(engine.screen.input);
@@ -1175,10 +1144,6 @@ void engine_delete_input()
 
 /* Local functions (functions specific to this module) */
 
-/** This creates a sub window based on #main.
- *  The new window will have #width and #height and it's #x and #y
- *  will be relative to #main.
- */
 window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
 {
 	window_s w;
@@ -1191,7 +1156,6 @@ window_s new_sub_win_from(WINDOW* main, int width, int height, int x, int y)
 	return w;
 }
 
-/** Draws fancy borders on window #win */
 void window_fancy_borders(WINDOW* win)
 {
 	wborder(win, ACS_VLINE|color_pair(COLOR_WHITE, COLOR_DEFAULT, false),
@@ -1204,23 +1168,16 @@ void window_fancy_borders(WINDOW* win)
 	        ACS_LRCORNER|color_pair(COLOR_BLACK, COLOR_DEFAULT, false)|A_BOLD);
 }
 
-/** Draws normal borders on window #win */
 void window_normal_borders(WINDOW* win)
 {
 	wattrset(win, color_pair(COLOR_BLACK, COLOR_DEFAULT, true));
 	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 
-/** PDCurses (on Windows) doesn't have this function, so I need
- *  to re-implement it.
- *  TODO: implement more features - see 'man mvwhline'
- */
 void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
 {
 	int i;
 	for (i = 0; i < num; i++)
 		mvwaddch(win, y, (x + i), ch);
 }
-
-/* End of Local functions (functions specific to this module) */
 

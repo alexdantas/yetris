@@ -44,19 +44,44 @@ typedef struct score_s
 /** Global variable storing the top scores list, ordered by points */
 score_s hscores[MAX_HSCORES];
 
-score_s new_score();
-void hscore_init();
 void hscore_handle(game_s* g);
-void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds);
-bool is_on_hscore_list(int score);
-int  hscore_get_highest_points();
-int  hscore_get_lowest_points();
-bool hscore_save();
-bool hscore_load();
-void hscore_reset();
+
+/** Includes the score #s at it's according position on the global array.
+ *	Also shifts any score after the one included.
+ */
 void hscore_insert(score_s* s);
+
+/** Returns where the score will be on the global array */
 int  get_hscore_index(int score);
+
+/** Starts the high score list with default values	*/
+void hscore_init();
+
+/** Creates an empty high score element */
+score_s new_score();
+
 void hscore_copy(score_s* dest, score_s* orig);
+
+/** Saves a score.
+ *	It automagically handles date.
+ */
+void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds);
+
+bool is_on_hscore_list(int score);
+
+/** Get the points from the first score on the list */
+int  hscore_get_highest_points();
+
+/** Get the points from the last score on the list */
+int  hscore_get_lowest_points();
+
+/** Zeroes the contents of the high score file */
+void hscore_reset();
+
+/** Writes the high scores into the file */
+bool hscore_save();
+
+bool hscore_load();
 
 #endif /* HSCORE_H_DEFINED */
 

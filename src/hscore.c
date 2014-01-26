@@ -10,13 +10,12 @@
 #include "engine.h"
 
 
-/*
-1- how can i keep the high score between games?
-if i call new_game(), it doesnt zero the hscore and
-	it becomes trash. If i do, the hscore itself becomes
-	zero.
-	I cant seem to pass the previous high score to the next game
-*/
+/* 1- how can i keep the high score between games?
+ * if i call new_game(), it doesnt zero the hscore and
+ * it becomes trash. If i do, the hscore itself becomes
+ * zero.
+ * I cant seem to pass the previous high score to the next game
+ */
 
 void hscore_handle(game_s* g)
 {
@@ -43,9 +42,6 @@ void hscore_handle(game_s* g)
 	}
 }
 
-/** Includes the score #s at it's according position on the global array.
- *	Also shifts any score after the one included.
- */
 void hscore_insert(score_s* s)
 {
 	int index = get_hscore_index(s->points);
@@ -64,7 +60,6 @@ void hscore_insert(score_s* s)
 	}
 }
 
-/** Returns where the score will be on the global array */
 int get_hscore_index(int score)
 {
 	if (!is_on_hscore_list(score))
@@ -85,7 +80,6 @@ int get_hscore_index(int score)
 	return -1;
 }
 
-/** Starts the high score list with default values	*/
 void hscore_init()
 {
 	/* Zeroes all high scores */
@@ -107,7 +101,6 @@ void hscore_init()
 	hscores[0].level  = 5;
 }
 
-/** Creates an empty high score element */
 score_s new_score()
 {
 	score_s s;
@@ -134,9 +127,6 @@ void hscore_copy(score_s* dest, score_s* orig)
 	dest->level	 = orig->level;
 }
 
-/** Saves a score.
- *	It automagically handles date.
- */
 void score_set(score_s* s, char name[], int points, int lines, int level, int hours, int minutes, int seconds)
 {
 	strncpy(s->name, name, 11);
@@ -180,13 +170,11 @@ bool is_on_hscore_list(int score)
 		return false;
 }
 
-/** Get the points from the first score on the list */
 int hscore_get_highest_points()
 {
 	return hscores[0].points;
 }
 
-/** Get the points from the last score on the list */
 int hscore_get_lowest_points()
 {
 	return hscores[MAX_HSCORES - 1].points;
@@ -279,7 +267,7 @@ out_reset:
 	return false;
 }
 
-/** Zeroes the contents of the high score file */
+
 void hscore_reset()
 {
 	FILE* fp = fopen(global.hscore_filename, "wb");
@@ -287,7 +275,6 @@ void hscore_reset()
 		fclose(fp);
 }
 
-/** Writes the high scores into the file */
 bool hscore_save()
 {
 	bool ret = false;

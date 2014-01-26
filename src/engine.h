@@ -23,6 +23,18 @@
 #ifndef ENGINE_H_DEFINED
 #define ENGINE_H_DEFINED
 
+/**
+ * @file engine.c
+ * Implementations of graphical stuff.
+ *
+ * This module deals with ncurses and how to print the game
+ * onscreen.
+ *
+ * On Micro$oft Windows systems, I use PDCurses, which has
+ * less functionalities than ncurses. So I need to make a
+ * few #defines to fix this.
+ */
+
 /** My little hack to make yetris work on Windows. Watch out for
  *  parts where I use this define - it makes things ugly
  */
@@ -36,8 +48,11 @@
 /** Number of possible keystrokes - pause, left, right... */
 #define NUMBER_OF_KEYS 10
 
-/** Holds the game keymap.
- *  They all need to be int because of ncurses' keypad() */
+/**
+ * Holds the game keymap.
+ *
+ * They all need to be int because of ncurses' keypad().
+ */
 typedef struct input_s
 {
 	char keys[NUMBER_OF_KEYS]; /**< Current keymap  */
@@ -54,23 +69,36 @@ typedef struct input_s
 	int  restart;
 } input_s;
 
-/** Stores information about a ncurses' window */
+/**
+ * Stores information about a ncurses' window.
+ */
 typedef struct window_s
 {
-	WINDOW* win; /**< ncurses' internal representation of a screen */
-	short   x;
-	short   y;
-	short   width;
-	short   height;
+	/** nCurses' internal representation of a screen */
+	WINDOW* win;
+
+	short x;
+	short y;
+	short width;
+	short height;
+
 } window_s;
 
-/** All screens of the game.
- *  Mostly ncurses' specific stuff */
+/**
+ * All screens of the game.
+ * Mostly ncurses' specific stuff.
+ */
 typedef struct screen_s
 {
-	short width;       /**< Global window width */
-	short height;      /**< Global window height */
-	window_s main;     /**< Main window */
+	/** Global window width */
+	short width;
+
+	/** Global window height */
+	short height;
+
+	/** Main window */
+	window_s main;
+
 	window_s leftmost;
 	window_s middle_left;
 	window_s middle_right;
@@ -91,7 +119,9 @@ typedef struct screen_s
 
 } screen_s;
 
-/** Container for all info about the game engine */
+/**
+ * Container for all info about the game engine.
+ */
 typedef struct engine_s
 {
 	input_s  input;
@@ -117,42 +147,129 @@ typedef struct board_s board_s;
 typedef struct game_s  game_s;
 #endif
 
-
-int  engine_screen_init(int width, int height);
-int  engine_windows_init();
+/**
+ * Initializes all ncurses' related stuff (windows, colors...).
+ * There's no need to call 'engine_exit'.
+ */
 bool engine_init();
+
+/**
+ * Start things related to the game screen and layout.
+ */
+int engine_screen_init(int width, int height);
+
+/** Starts all the subscreens of the game */
+int  engine_windows_init();
+
+/** This function blocks the interrupt signal (Ctrl+C) during
+ *  the game's initialization.
+ *  That's because ncurses leaves the terminal in a broken state.
+ */
 bool block_signals();
+
+/** Now the player's allowed to interrupt the program it he wishes so. */
 bool restore_signals();
+
+/** This stops ncurses on a sweet, gentle way. */
 void engine_exit();
-int  engine_keymap(char keymap[]);
-int  engine_get_input(int delay_ms);
+
+/** Function called when receiving an interrupt signal.
+ *  It restores the terminal to it's initial state and
+ *  frees whatever memory might be allocated from the game.
+ */
+void engine_safe_exit(int sig);
+
+/**
+ * This defines the keymap according to the string #keymap.
+ *
+ * Each char represents the key to be pressed for the following
+ * commands (on that order):
+ *
+ *     down, right, left, rotate, rotate backwards,
+ *     drop, pause, quit, hold
+ *
+ * For example:
+ *    "sdawe pqu"
+ */
+int engine_keymap(char keymap[]);
+
+/** Get input, waiting at most #delay_ms miliseconds.
+ *  @return An input enum - it could be ERROR, you know */
+int engine_get_input(int delay_ms);
+
+/** Draws a whole piece, calling #engine_draw_block */
 void engine_draw_piece(piece_s* p, WINDOW* w);
+
+/** Draws the board #b, calling #engine_draw_block */
 void engine_draw_board(board_s* b);
-void engine_draw_hold(game_s* g);
-void engine_draw_score(game_s* g);
-void engine_draw(game_s* g);
-void engine_draw_help();
-void engine_draw_gameover();
 
 void engine_draw_block_theme(WINDOW* w, block_theme_s* t, int x, int y);
 
+/** Prints 'pause' on the board */
 void engine_draw_pause();
+
+/** Draws the window where we keep the hold piece */
+void engine_draw_hold(game_s* g);
+
+/** Draws the score, high score and warn the player if he has any
+ *  combo or back-to-back sequences.
+ */
+void engine_draw_score(game_s* g);
+
+/** This is a very ugly function that draws blocks on the
+ *  info window for statistical purposes.
+ *  It uses several position hacks that i need to fix later.
+ *  The problem is that pieces always start relative to the
+ *  middle of the board, independent of the screen.
+ *  So im repositioning them according to it, on the info screen.
+ */
 void engine_draw_statistics(game_s* g);
-void engine_safe_exit(int sig);
-void engine_create_help();
-void engine_delete_help();
-void engine_draw_line_statistics(game_s* g);
+
+/** Calls all drawing routines in order */
+void engine_draw(game_s* g);
+
+/** Draws a nice animation when the player loses the game */
 void engine_draw_gameover_animation(game_s* g);
+
+/** Prints a message telling the player that
+ * he has lost the game.
+ */
+void engine_draw_gameover();
+
+/** Tries to refresh all windows onscreen */
 void engine_refresh_all_windows();
 
+/** Init the help-showing window */
+void engine_create_help();
+
+void engine_draw_line_statistics(game_s* g);
+
+/** Pops a window explaining some stuff */
+void engine_draw_help();
+
+/** Init the score-showing window */
 void engine_create_hscores_window();
-void engine_draw_hscores();
+
+/** Deletes the high scores window.
+ *  @note This leaves the game screen on a messed-up state. Please
+ *        redraw it by calling engine_draw(g) afterwards!
+ */
 void engine_delete_hscores_window();
 
+/** Deletes the help window.
+ *  @note This leaves the game screen on a messed-up state. Please
+ *        redraw it by calling engine_draw(g) afterwards!
+ */
+void engine_delete_help();
 
 void engine_create_input();
+
+void engine_draw_hscores();
+
 void engine_draw_input();
+
 void engine_get_hscore_name(char* name, int size);
+
 void engine_delete_input();
 
 #endif /* ENGINE_H_DEFINED */
