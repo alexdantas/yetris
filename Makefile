@@ -69,8 +69,9 @@ INCLUDESDIR =
 LIBSDIR     =
 
 # All source files
-CFILES  = $(shell find src -maxdepth 1 -type f -name '*.c')
-OBJECTS = $(CFILES:.c=.o)
+CFILES  = $(shell find src -maxdepth 1 -type f -name '*.cpp') \
+          $(shell find src -maxdepth 1 -type f -name '*.c')
+OBJECTS = $(CFILES:.cpp=.o)
 
 DEFINES = -DVERSION=\""$(VERSION)"\"         \
           -DPACKAGE=\""$(PACKAGE)"\"         \
@@ -135,7 +136,7 @@ $(EXE): $(OBJECTS) $(INI_OBJS)
 	# Linking...
 	$(MUTE)$(CC) $(OBJECTS) $(INI_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
-src/%.o: src/%.c
+src/%.o: src/%.cpp
 	# Compiling $<...
 	$(MUTE)$(CC) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
