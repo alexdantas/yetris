@@ -1,6 +1,5 @@
 #include "Window.hpp"
 
-
 Window::Window(int x, int y, int w, int h):
 	win(NULL),
 	error(false),
@@ -41,8 +40,10 @@ void Window::resize(int w, int h)
 	this->width  = w;
 	this->height = h;
 }
-void Window::print(std::string str, int x, int y)
+void Window::print(std::string str, int x, int y, ColorPair pair)
 {
+	Colors::pairActivate(this->win, pair);
+
 	mvwaddstr(this->win, y, x, str.c_str());
 }
 void Window::setBackground(chtype ch, unsigned long pair)

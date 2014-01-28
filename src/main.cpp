@@ -7,9 +7,10 @@ int main(int argc, char *argv[])
 	(void)(argv);
 
 	Ncurses::init();
+	Colors::init();
 
 	Window w(0, 0, 10, 5);
-	w.print("Great", 3, 3);
+	w.print("Great", 3, 3, Colors::pair(COLOR_RED, COLOR_DEFAULT));
 	w.refresh();
 
 	Window w2(&w, 2, 2, 8, 3);

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <ncurses.h>
+#include "Colors.hpp"
 
 /// A segment of the terminal screen (2D char matrix).
 ///
@@ -19,7 +20,7 @@ public:
 
 	bool isValid();
 
-	void print(std::string str, int x, int y);
+	void print(std::string str, int x, int y, ColorPair pair=0);
 
 	void setBackground(chtype ch, unsigned long pair);
 
