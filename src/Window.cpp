@@ -6,7 +6,8 @@ Window::Window(int x, int y, int w, int h):
 	x(x),
 	y(y),
 	width(w),
-	height(h)
+	height(h),
+	borderType(BORDER_NONE)
 {
 	this->win = newwin(height, width, y, x);
 
@@ -58,6 +59,10 @@ void Window::refresh()
 void Window::clear()
 {
 	werase(this->win);
+
+	// Redrawing borders if existing
+	if (this->borderType != BORDER_NONE)
+		this->borders(this->borderType);
 }
 int Window::getW() const
 {
@@ -75,4 +80,30 @@ int Window::getY() const
 {
 	return this->y;
 }
+void Window::borders(BorderType type)
+{
+	this->borderType = type;
+
+	if (type == BORDER_NONE)
+		return;
+
+	if (type == BORDER_FANCY)
+	{
+		wborder(this->win,
+		        ACS_VLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_VLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
+		        ACS_HLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_HLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
+		        ACS_ULCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true),
+		        ACS_URCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_LLCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_LRCORNER|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
+	}
+	else if (type == BORDER_REGULAR)
+	{
+		wattrset(this->win, Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
+		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
+	}
+}
+
 

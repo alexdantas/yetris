@@ -10,6 +10,11 @@
 class Window
 {
 public:
+	enum BorderType
+	{
+		BORDER_NONE, BORDER_REGULAR, BORDER_FANCY
+	};
+
 	Window(int x, int y, int w, int h);
 
 	Window(Window* parent, int x, int y, int width, int height);
@@ -33,6 +38,8 @@ public:
 	int getX() const;
 	int getY() const;
 
+	void borders(BorderType type);
+
 protected:
 	/// Ncurses' internal data structure.
 	WINDOW* win;
@@ -44,6 +51,8 @@ protected:
 	int y;
 	int width;
 	int height;
+
+	BorderType borderType;
 };
 
 #endif //WINDOW_H_DEFINED

@@ -9,12 +9,16 @@ int main(int argc, char *argv[])
 	Ncurses::init();
 	Colors::init();
 
-	Window w(0, 0, 10, 5);
-	w.print("Great", 3, 3, Colors::pair(COLOR_RED, COLOR_DEFAULT));
+	Window w(0, 0, 20, 10);
+	w.print("Great", 1, 1, Colors::pair(COLOR_RED, COLOR_DEFAULT));
+	w.borders(Window::BORDER_REGULAR);
 	w.refresh();
 
-	Window w2(&w, 2, 2, 8, 3);
-	w2.print("Test", 0, 0);
+	Window w2(&w, 2, 3, 8, 3);
+	w2.print("Test", 1, 1);
+	w2.borders(Window::BORDER_FANCY);
+	w2.clear();
+
 	w2.refresh();
 
 	while (true)
