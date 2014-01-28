@@ -134,11 +134,11 @@ purge: uninstall
 
 $(EXE): $(OBJECTS) $(INI_OBJS)
 	# Linking...
-	$(MUTE)$(CC) $(OBJECTS) $(INI_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
+	$(MUTE)$(CXX) $(OBJECTS) $(INI_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
 src/%.o: src/%.cpp
 	# Compiling $<...
-	$(MUTE)$(CC) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
+	$(MUTE)$(CXX) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
 dist: clean $(DISTDIR).tar.gz
 

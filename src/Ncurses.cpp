@@ -26,3 +26,36 @@ void Ncurses::delay_ms(int delay)
 	napms(delay);
 }
 
+int Ncurses::getInput(int delay_ms)
+{
+	// Will use select() function
+	int retval = 0;
+	int c      = 0;
+
+	fd_set input;
+	struct timeval timeout;
+
+	timeout.tv_sec = 0;
+	timeout.tv_usec = delay_ms * 1000; // microseconds
+
+	FD_ZERO(&input);
+	FD_SET(STDIN_FILENO, &input);
+
+	// This function is somewhat complex
+	// check 'man select' for info
+	retval = select(FD_SETSIZE, &input, NULL, NULL, &timeout);
+
+	// Ncurses' function that works without delay
+	// (because we nodelay()'ed)
+	c = getch();
+
+	if ((retval == 1) && (c == ERR)) // ERROR
+		return -1;
+
+	if (retval == 0)
+		return ERR; //engine.input.none;
+
+	return c;
+}
+
+

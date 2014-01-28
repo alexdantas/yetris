@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include <ncurses.h>
+#include <sys/select.h>			// select()
+#include <unistd.h>				// STDIN_FILENO
 
 /// Everything related to the terminal library Ncurses.
 namespace Ncurses
@@ -15,6 +17,8 @@ namespace Ncurses
 
 	/// Sleeps for #delay miliseconds.
 	void delay_ms(int delay);
+
+	int getInput(int delay_ms);
 };
 
 #endif //NCURSES_H_DEFINED

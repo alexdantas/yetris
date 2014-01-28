@@ -7,7 +7,13 @@ int main(int argc, char *argv[])
 
 	Ncurses::init();
 
-	Ncurses::delay_ms(1000);
+	while (true)
+	{
+		int c = Ncurses::getInput(100);
+
+		if (c == 'q')
+			break;
+	}
 
 	Ncurses::exit();
 	return 0;
