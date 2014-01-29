@@ -105,5 +105,9 @@ void Window::borders(BorderType type)
 		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
 	}
 }
-
+void Window::horizontalLine(int x, int y, chtype c, int width, ColorPair pair)
+{
+	Colors::pairActivate(this->win, pair);
+	mvwhline(this->win, y, x, c, width);
+}
 

@@ -40,6 +40,8 @@ public:
 
 	void borders(BorderType type);
 
+	void horizontalLine(int x, int y, chtype c, int width, ColorPair pair);
+
 protected:
 	/// Ncurses' internal data structure.
 	WINDOW* win;
