@@ -26,6 +26,7 @@ public:
 	bool isValid();
 
 	void print(std::string str, int x, int y, ColorPair pair=0);
+	void printChar(int c, int x, int y, ColorPair pair=0);
 
 	void setBackground(chtype ch, unsigned long pair);
 
@@ -40,7 +41,7 @@ public:
 
 	void borders(BorderType type);
 
-	void horizontalLine(int x, int y, chtype c, int width, ColorPair pair);
+	void horizontalLine(int x, int y, int c, int width, ColorPair pair);
 
 protected:
 	/// Ncurses' internal data structure.

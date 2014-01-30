@@ -2,8 +2,7 @@
 #define LAYOUTGAME_H_DEFINED
 
 #include "Layout.hpp"
-
-#define NEXT_PIECES_NO 8
+#include <vector>
 
 /// All the windows on the game and how they're displayed.
 ///
@@ -19,8 +18,6 @@ public:
 
 	void draw();
 
-private:
-
 	/// Global window width
 	short width;
 
@@ -33,6 +30,7 @@ private:
 	/// Layout height
 	short originalHeight;
 
+private:
 	/// Main window
 	Window* main;
 
@@ -43,7 +41,7 @@ private:
 	Window* next_container;
 	Window* board;
 	Window* info;
-	Window* next[NEXT_PIECES_NO];
+	std::vector<Window*> next;
 	Window* hold;
 	Window* leftmost_container;
 	Window* score;

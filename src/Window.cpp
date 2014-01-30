@@ -16,12 +16,24 @@ Window::Window(int x, int y, int w, int h):
 }
 Window::Window(Window* parent, int x, int y, int width, int height):
 	win(NULL),
-	error(false),
-	x(x),
-	y(y),
-	width(width),
-	height(height)
+	error(false)
 {
+	// if we want to include the window inside a `parent`
+	// that has borders
+	if (parent->borderType != BORDER_NONE)
+	{
+		if (x == 0) x = 1;
+		if (y == 0) y = 1;
+
+		if (width == 0)  width  = parent->width  - 2;
+		if (height == 0) height = parent->height - 2;
+	}
+
+	this->x = x;
+	this->y = y;
+	this->width  = width;
+	this->height = height;
+
 	this->win = derwin(parent->win, height, width, y, x);
 	if (!win)
 		this->error = true;
@@ -46,6 +58,12 @@ void Window::print(std::string str, int x, int y, ColorPair pair)
 	Colors::pairActivate(this->win, pair);
 
 	mvwaddstr(this->win, y, x, str.c_str());
+}
+void Window::printChar(int c, int x, int y, ColorPair pair)
+{
+	Colors::pairActivate(this->win, pair);
+
+	mvwaddch(this->win, y, x, c);
 }
 void Window::setBackground(chtype ch, unsigned long pair)
 {
@@ -105,7 +123,7 @@ void Window::borders(BorderType type)
 		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
 	}
 }
-void Window::horizontalLine(int x, int y, chtype c, int width, ColorPair pair)
+void Window::horizontalLine(int x, int y, int c, int width, ColorPair pair)
 {
 	Colors::pairActivate(this->win, pair);
 	mvwhline(this->win, y, x, c, width);
