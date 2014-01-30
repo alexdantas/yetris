@@ -24,10 +24,13 @@ public:
 		DIR_NONE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT
 	};
 
+	static PieceType random();
+
 	Piece(PieceType type, int x, int y);
 
 	void draw(Window* win);
 	void rotate(short rotation);
+	void move(PieceDirection direction);
 
 	int getX();
 	int getY();

@@ -63,7 +63,7 @@ CONFIG_FILE = config.ini
 # Build info
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
-CFLAGS      = $(CDEBUG) -Wall -Wextra
+CXXFLAGS      = $(CDEBUG) -Wall -Wextra -std=c++0x
 LDFLAGS     = -lncurses
 INCLUDESDIR =
 LIBSDIR     =
@@ -138,7 +138,7 @@ $(EXE): $(OBJECTS) $(INI_OBJS)
 
 src/%.o: src/%.cpp
 	# Compiling $<...
-	$(MUTE)$(CXX) $(CFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
+	$(MUTE)$(CXX) $(CXXFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
 dist: clean $(DISTDIR).tar.gz
 

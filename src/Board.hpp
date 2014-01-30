@@ -17,6 +17,7 @@ public:
 	void draw(Window* win);
 
 	void lockPiece(Piece* piece);
+	bool isPieceValid(Piece* p);
 
 private:
 	int x;
