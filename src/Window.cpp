@@ -1,5 +1,23 @@
 #include "Window.hpp"
 
+/* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
+#if OS_IS_WINDOWS
+#define mvwhline my_mvwhline
+#endif
+
+/**
+ * PDCurses (on Windows) doesn't have this function, so I need
+ * to re-implement it.
+ *
+ * @todo implement more features - see 'man mvwhline'
+ */
+void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
+{
+	int i;
+	for (i = 0; i < num; i++)
+		mvwaddch(win, y, (x + i), ch);
+}
+
 Window::Window(int x, int y, int w, int h):
 	win(NULL),
 	error(false),
