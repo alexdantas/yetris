@@ -27,6 +27,13 @@ public:
 	Piece(PieceType type, int x, int y);
 
 	void draw(Window* win);
+	void rotate(short rotation);
+
+	int getX();
+	int getY();
+	Block* getBlock();
+	PieceType getType();
+	short getRotation();
 
 private:
 	PieceType type;

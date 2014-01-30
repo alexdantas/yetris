@@ -43,4 +43,33 @@ void Piece::draw(Window* win)
 				                  (this->x + i) * 2,
 				                  this->y + j);
 }
+void Piece::rotate(short rotation)
+{
+	// Rotating to the negative side (counter-clockwise)
+	if (rotation < 0)
+		rotation += 4;
+
+	// keep it under 4
+	this->rotation = (this->rotation + rotation) % 4;
+}
+int Piece::getX()
+{
+	return this->x;
+}
+int Piece::getY()
+{
+	return this->y;
+}
+Block* Piece::getBlock()
+{
+	return this->block;
+}
+Piece::PieceType Piece::getType()
+{
+	return this->type;
+}
+short Piece::getRotation()
+{
+	return this->rotation;
+}
 

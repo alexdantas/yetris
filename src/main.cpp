@@ -1,7 +1,7 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
 #include "LayoutGame.hpp"
-#include "Piece.hpp"
+#include "Board.hpp"
 #include "Globals.hpp"
 
 int main(int argc, char *argv[])
@@ -16,8 +16,16 @@ int main(int argc, char *argv[])
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
 
-	Piece piece(Piece::PIECE_L, 1, 0);
-	piece.draw(layout.board);
+	Board board(layout.board->getX(), layout.board->getY(),
+	            DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
+
+	Piece piece(Piece::PIECE_L, 4, 2);
+	board.lockPiece(&piece);
+
+	Piece piece2(Piece::PIECE_O, 0, 0);
+	board.lockPiece(&piece2);
+
+	board.draw(layout.board);
 	layout.board->refresh();
 
 	while (true)
