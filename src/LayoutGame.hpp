@@ -30,7 +30,6 @@ public:
 	/// Layout height
 	short originalHeight;
 
-private:
 	/// Main window
 	Window* main;
 

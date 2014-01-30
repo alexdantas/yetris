@@ -1,6 +1,7 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
 #include "LayoutGame.hpp"
+#include "Block.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,11 @@ int main(int argc, char *argv[])
 
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
+
+	Block block(Colors::pair(COLOR_RED, COLOR_DEFAULT, true),
+	            '#', '#');
+	block.draw(layout.board, 1, 0);
+	layout.board->refresh();
 
 	while (true)
 	{
