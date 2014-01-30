@@ -7,6 +7,16 @@
 ///
 namespace Globals
 {
+	/// Allocates necessary variables.
+	///
+	/// @note No need for Globals::exit() because the
+	///       Operational System always frees the memory
+	///       when quitting the program.
+	///       And definitely this module will need to
+	///       be accessed until the end of the program.
+	///
+	void init();
+
 	/// Game version (format MMP - Major Minor Patch)
 	extern int version[3];
 

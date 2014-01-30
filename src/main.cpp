@@ -1,22 +1,23 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
 #include "LayoutGame.hpp"
-#include "Block.hpp"
+#include "Piece.hpp"
+#include "Globals.hpp"
 
 int main(int argc, char *argv[])
 {
 	(void)(argc);
 	(void)(argv);
 
+	Globals::init();
 	Ncurses::init();
 	Colors::init();
 
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
 
-	Block block(Colors::pair(COLOR_RED, COLOR_DEFAULT, true),
-	            '#', '#');
-	block.draw(layout.board, 1, 0);
+	Piece piece(Piece::PIECE_L, 1, 0);
+	piece.draw(layout.board);
 	layout.board->refresh();
 
 	while (true)

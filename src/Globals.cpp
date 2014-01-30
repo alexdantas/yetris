@@ -67,4 +67,43 @@ Block* Globals::Theme::piece_T = NULL;
 std::string Globals::Config::config_filename = "";
 std::string Globals::Config::hscore_filename = "";
 
+void Globals::init()
+{
+	Globals::Theme::clear_line = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false),
+	                ':', ':');
+
+	Globals::Theme::piece_colorless = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	                ' ', ' ');
+
+	Globals::Theme::ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	                '[', ']');
+
+	Globals::Theme::locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece_S = new Block(Colors::pair(COLOR_WHITE, COLOR_GREEN, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece_Z = new Block(Colors::pair(COLOR_WHITE, COLOR_RED, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece_O = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece_I = new Block(Colors::pair(COLOR_WHITE, COLOR_CYAN, true),
+	                ' ', ' ');
+
+	Globals::Theme::piece_L = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, true),
+	                ' ', ' ');
+
+	Globals::Theme::piece_J = new Block(Colors::pair(COLOR_WHITE, COLOR_BLUE, false),
+	                ' ', ' ');
+
+	Globals::Theme::piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA, false),
+	                ' ', ' ');
+
+}
 
