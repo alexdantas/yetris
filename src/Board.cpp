@@ -190,5 +190,16 @@ int Board::clearFullLines(Window* win)
 	}
 	return lines_cleared;
 }
+bool Board::pieceCanMove(Piece* piece, Piece::PieceDirection direction)
+{
+	Piece tmp = (*piece);
 
+	tmp.move(direction);
+	return this->isPieceValid(&tmp);
+}
+void Board::hardDrop(Piece* piece)
+{
+	while (this->pieceCanMove(piece, Piece::DIR_DOWN))
+		piece->move(Piece::DIR_DOWN);
+}
 

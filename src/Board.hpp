@@ -39,6 +39,12 @@ public:
 	///
 	int clearFullLines(Window* win);
 
+	/// Tells if #piece can move to #direction inside this Board.
+	bool pieceCanMove(Piece* piece, Piece::PieceDirection direction);
+
+	/// Forces #piece to move all the way down inside this Board.
+	void hardDrop(Piece* piece);
+
 private:
 	int x;
 	int y;

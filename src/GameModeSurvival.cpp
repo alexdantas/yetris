@@ -78,7 +78,8 @@ void GameModeSurvival::handleInput(int c)
 	}
 	else if (c == Globals::Input::drop)
 	{
-		// Drop piece
+		this->board->hardDrop(this->pieceCurrent);
+		this->lockCurrentPiece();
 	}
 }
 void GameModeSurvival::update()
