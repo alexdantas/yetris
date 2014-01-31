@@ -4,7 +4,14 @@
 #include "Layout.hpp"
 #include <vector>
 
-/// All the windows on the game and how they're displayed.
+/// Abstract interface on how the things on the GameModes
+/// are displayed.
+///
+/// You see, this interface has the main Windows where
+/// all the things that compose a GameMode are shown.
+///
+/// To create alternative Layouts, inherit this class and
+/// place things on your own.
 ///
 class LayoutGame: public Layout
 {
@@ -12,43 +19,31 @@ public:
 	LayoutGame(int width, int height);
 	virtual ~LayoutGame();
 
-	void windowsInit();
-	void windowsExit();
+	void draw() {};
 
-	void draw();
-
-	/// Global window width
+	/// Terminal full width.
 	short width;
 
-	/// Global window height
+	/// Terminal full height.
 	short height;
 
-	/// Layout width
+	/// Layout minimum width.
 	short originalWidth;
 
-	/// Layout height
+	/// Layout minimum height.
 	short originalHeight;
 
-	/// Main window
+	/// The main window, where all the others are inside.
 	Window* main;
 
-	Window* leftmost;
-	Window* middle_left;
-	Window* middle_right;
-	Window* rightmost;
-	Window* next_container;
+	/// Where the game Board is shown.
 	Window* board;
-	Window* info;
-	std::vector<Window*> next;
+
+	/// Where the hold piece is displayed.
 	Window* hold;
-	Window* leftmost_container;
-	Window* score;
-	Window* help_container;
-	Window* help;
-	Window* hscores_container;
-	Window* hscores;
-	Window* input_container;
-	Window* input;
+
+	/// Where some info on the current game is shown.
+	Window* info;
 };
 
 #endif //LAYOUTGAME_H_DEFINED

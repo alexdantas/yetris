@@ -1,6 +1,6 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
-#include "LayoutGame.hpp"
+#include "LayoutGameDefault.hpp"
 #include "Utils.hpp"
 #include "GameModeSurvival.hpp"
 #include "Globals.hpp"
@@ -15,10 +15,9 @@ int main(int argc, char *argv[])
 	Ncurses::init();
 	Colors::init();
 
-	LayoutGame layout(80, 24);
-	layout.windowsInit();
+	LayoutGame* layout = new LayoutGameDefault(80, 24);
 
-	GameModeSurvival game(&layout);
+	GameModeSurvival game(layout);
 	game.start();
 
 	while (! game.willQuit)

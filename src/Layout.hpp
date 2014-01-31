@@ -4,6 +4,7 @@
 #include "Window.hpp"
 
 /// Abstract interface for any kind of layout.
+///
 class Layout
 {
 public:
