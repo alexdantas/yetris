@@ -96,7 +96,7 @@ void GameModeSurvival::update()
 {
 	// Droping piece if enough time has passed
 	this->pieceTimer.pause();
-	if (this->pieceTimer.delta_ms() >= 500)
+	if (this->pieceTimer.delta_ms() >= 800)
 	{
 		if (! this->movedPieceDown)
 		{
@@ -190,13 +190,15 @@ void GameModeSurvival::lockCurrentPiece()
 
 	// Since we've dropped the piece, we can hold now
 	this->canHold = true;
+
+	this->pieceTimer.start();
 }
 Piece* GameModeSurvival::getNextPiece()
 {
 	Piece::PieceType new_type = this->nextPieces[0];
 
 	int x = (this->board->getW()/2) + global_pieces_position[new_type][0][0];
-	int y = global_pieces_position[new_type][0][1];
+	int y = global_pieces_position[new_type][0][1] + 1;
 
 	Piece* next = new Piece(new_type, x, y);
 
