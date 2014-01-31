@@ -92,13 +92,13 @@ void LayoutGame::windowsInit()
 
 		// If the player has no hold,
 		// doesn't make sense printing these parts
-//		if (global.game_can_hold)
+		if (Globals::Game::can_hold)
 		{
 			// making the top line between
 			// hold and score windows
-			this->leftmost->printChar(0,
+			this->leftmost->printChar(ACS_LLCORNER,
+			                          0,
 			                          5,
-			                          ACS_LLCORNER,
 			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
 			this->leftmost->horizontalLine(1,
 			                               5,
@@ -106,17 +106,17 @@ void LayoutGame::windowsInit()
 			                               this->leftmost->getW() - 2,
 			                               Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
-			this->leftmost->printChar(this->leftmost->getW() - 1,
+			this->leftmost->printChar(ACS_LRCORNER,
+			                          this->leftmost->getW() - 1,
 			                          5,
-			                          ACS_LRCORNER,
 			                          Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
 			// Making the bottom line
 			// between hold and score windows
-			this->leftmost->printChar(0,
-			                         6,
-			                         ACS_ULCORNER,
-			                         Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
+			this->leftmost->printChar(ACS_ULCORNER,
+			                          0,
+			                          6,
+			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
 
 			this->leftmost->horizontalLine(1,
 			                               6,
@@ -124,9 +124,9 @@ void LayoutGame::windowsInit()
 			                               this->leftmost->getW() - 2,
 			                               Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
 
-			this->leftmost->printChar(this->leftmost->getW() - 1,
+			this->leftmost->printChar(ACS_URCORNER,
+			                          this->leftmost->getW() - 1,
 			                          6,
-			                          ACS_URCORNER,
 			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
 		}
 	}
@@ -168,9 +168,9 @@ void LayoutGame::windowsInit()
 		this->middle_right->borders(Window::BORDER_FANCY);
 
 		// Making the top line between 1st next and the rest
-		this->middle_right->printChar(3,
+		this->middle_right->printChar(ACS_LLCORNER,
 		                              0,
-		                              ACS_LLCORNER,
+		                              3,
 		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
 
 		this->middle_right->horizontalLine(1,
@@ -179,16 +179,28 @@ void LayoutGame::windowsInit()
 		                                   this->middle_right->getW() - 2,
 		                                   Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
-		this->middle_right->printChar(this->middle_right->getW() - 1,
+		this->middle_right->printChar(ACS_LRCORNER,
+		                              this->middle_right->getW() - 1,
 		                              3,
-		                              ACS_LRCORNER,
+
 		                              Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
-		// /* making the bottom line between 1st next and the rest */
-		// printChar(w.win, 4, 0, ACS_ULCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false)|A_BOLD);
-		// mvwhline(w.win, 4, 1, ACS_HLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false), w->getW() - 2);
-		// printChar(w.win, 4, w->getW() - 1, ACS_URCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
+		// Making the bottom line between 1st next and the rest
+		this->middle_right->printChar(ACS_ULCORNER,
+		                              0,
+		                              4,
+		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
 
+		this->middle_right->horizontalLine(1,
+		                                   4,
+		                                   ACS_HLINE,
+		                                   this->middle_right->getW() - 2,
+		                                   Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
+
+		this->middle_right->printChar(ACS_URCORNER,
+		                              this->middle_right->getW() - 1,
+		                              4,
+		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
 	}
 	else
 	{
@@ -199,7 +211,7 @@ void LayoutGame::windowsInit()
 	}
 	this->middle_right->refresh();
 
-	/* right-most */
+	// Right-most
 	this->rightmost = new Window(this->main,
 	                             this->middle_right->getX() + this->middle_right->getW(),
 	                             1,

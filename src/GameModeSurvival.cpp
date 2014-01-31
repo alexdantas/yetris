@@ -140,12 +140,16 @@ void GameModeSurvival::draw()
 		return;
 
 	this->layout->board->clear();
-
 	this->board->draw(this->layout->board);
-
 	this->pieceCurrent->draw(this->layout->board);
-
 	this->layout->board->refresh();
+
+	if (this->pieceHold)
+	{
+		this->layout->hold->clear();
+		this->pieceHold->draw(this->layout->hold);
+		this->layout->hold->refresh();
+	}
 }
 bool GameModeSurvival::isOver()
 {

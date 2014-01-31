@@ -175,6 +175,7 @@ int Board::clearFullLines(Window* win)
 		return 0;
 
 	// Redrawing the board and sleeping for a few moments
+	win->clear();
 	this->draw(win);
 	win->refresh();
 	usleep(Globals::Game::line_clear_timeout_us);
