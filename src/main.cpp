@@ -1,10 +1,10 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
 #include "LayoutGame.hpp"
-#include "Board.hpp"
 #include "Globals.hpp"
 #include "Utils.hpp"
 #include "RotationSystemSRS.hpp"
+#include "GameModeSurvival.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -16,75 +16,17 @@ int main(int argc, char *argv[])
 	Ncurses::init();
 	Colors::init();
 
-	RotationSystem* rot = new RotationSystemSRS();
-
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
 
-	Board board(0, 0,
-	            DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
+	GameModeSurvival game;
+	game.start();
 
-	Piece piece(Piece::random(), 0, 0);
-
-	bool willQuit = false;
-
-	while (! willQuit)
+	while (! game.isOver())
 	{
-		int c = Ncurses::getInput(100);
+		game.handleInput(Ncurses::getInput(100));
 
-		switch(c)
-		{
-		case 'q':
-			willQuit = true;
-			break;
-
-		case 'a':
-		{
-			Piece tmp = piece;
-			tmp.move(Piece::DIR_LEFT);
-
-			if (board.isPieceValid(&tmp))
-				piece.move(Piece::DIR_LEFT);
-
-			break;
-		}
-		case 's':
-		{
-			Piece tmp = piece;
-			tmp.move(Piece::DIR_DOWN);
-
-			if (board.isPieceValid(&tmp))
-				piece.move(Piece::DIR_DOWN);
-
-			break;
-		}
-		case 'd':
-		{
-			Piece tmp = piece;
-			tmp.move(Piece::DIR_RIGHT);
-
-			if (board.isPieceValid(&tmp))
-				piece.move(Piece::DIR_RIGHT);
-
-			break;
-		}
-		case 'w':
-			rot->rotate(&piece, &board, 1);
-			break;
-
-		case ' ':
-		{
-			board.lockPiece(&piece);
-
-			piece = Piece(Piece::random(), 0, 0);
-			break;
-		}
-		}
-
-		layout.board->clear();
-		board.draw(layout.board);
-		piece.draw(layout.board);
-		layout.board->refresh();
+		game.draw(&layout);
 	}
 
 	Ncurses::exit();

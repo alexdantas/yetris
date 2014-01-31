@@ -5,7 +5,6 @@
 #include "Board.hpp"
 
 /// Abstract interface to rules on how to rotate pieces.
-///
 class RotationSystem
 {
 public:
