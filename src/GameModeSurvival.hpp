@@ -8,6 +8,7 @@
 #include <vector>
 #include "Timer.hpp"
 #include "Statistics.hpp"
+#include "PieceGhost.hpp"
 
 ///
 class GameModeSurvival: public GameMode
@@ -46,7 +47,7 @@ private:
 	bool gameOver;
 
 	Piece* pieceCurrent;
-	Piece* pieceGhost;
+	PieceGhost* pieceGhost;
 	Piece* pieceHold;
 
 	/// All the next pieces on the line.

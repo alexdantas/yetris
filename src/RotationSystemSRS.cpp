@@ -175,12 +175,12 @@ void RotationSystemSRS::rotate(Piece* piece, Board* board, short rotation)
 	short srs_type;
 	int rotation_num;
 
-	if (piece->getType() == Piece::PIECE_I)
+	if (piece->getType() == Piece::I)
 	{
 		srs_type = 0;
 		rotation_num = piece->getRotation();
 	}
-	else if (piece->getType() == Piece::PIECE_O)
+	else if (piece->getType() == Piece::O)
 	{
 		return;
 	}

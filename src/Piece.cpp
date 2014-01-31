@@ -9,17 +9,16 @@ Piece::PieceType intToPieceType(int num)
 {
 	switch(num)
 	{
-	case 0: return Piece::PIECE_O;
-	case 1: return Piece::PIECE_I;
-	case 2: return Piece::PIECE_L;
-	case 3: return Piece::PIECE_J;
-	case 4: return Piece::PIECE_Z;
-	case 5: return Piece::PIECE_S;
-	case 6: return Piece::PIECE_T;
-	case 7: return Piece::PIECE_MAX;
-	case 8: return Piece::PIECE_DUMMY;
+	case 0: return Piece::O;
+	case 1: return Piece::I;
+	case 2: return Piece::L;
+	case 3: return Piece::J;
+	case 4: return Piece::Z;
+	case 5: return Piece::S;
+	case 6: return Piece::T;
+	case 7: return Piece::MAX;
 	}
-	return Piece::PIECE_DUMMY;
+	return Piece::MAX;
 }
 
 Piece::PieceType Piece::random()
@@ -40,12 +39,12 @@ Piece::PieceType Piece::random()
 	if (Globals::Game::random_algorithm == 1)
 	{
 		int i,j;
-		int size = PIECE_MAX;
+		int size = Piece::MAX;
 
-		static Piece::PieceType bag[PIECE_MAX];
-		static int piece = PIECE_MAX;
+		static Piece::PieceType bag[Piece::MAX];
+		static int piece = Piece::MAX;
 
-		if (piece >= PIECE_MAX)
+		if (piece >= Piece::MAX)
 		{
 			piece = 0;
 
@@ -78,7 +77,7 @@ Piece::PieceType Piece::random()
 	else
 	{
 		// Simple srand() algorithm
-		return intToPieceType(Utils::Random::between(0, (PIECE_MAX - 1)));
+		return intToPieceType(Utils::Random::between(0, (Piece::MAX - 1)));
 	}
 }
 
@@ -90,23 +89,18 @@ Piece::Piece(Piece::PieceType type, int x, int y):
 {
 	switch(type)
 	{
-	case PIECE_S: this->block = Globals::Theme::piece_S; break;
-	case PIECE_Z: this->block = Globals::Theme::piece_Z; break;
-	case PIECE_O: this->block = Globals::Theme::piece_O; break;
-	case PIECE_I: this->block = Globals::Theme::piece_I; break;
-	case PIECE_L: this->block = Globals::Theme::piece_L; break;
-	case PIECE_J: this->block = Globals::Theme::piece_J; break;
-	case PIECE_T: this->block = Globals::Theme::piece_T; break;
+	case Piece::S: this->block = Globals::Theme::piece_S; break;
+	case Piece::Z: this->block = Globals::Theme::piece_Z; break;
+	case Piece::O: this->block = Globals::Theme::piece_O; break;
+	case Piece::I: this->block = Globals::Theme::piece_I; break;
+	case Piece::L: this->block = Globals::Theme::piece_L; break;
+	case Piece::J: this->block = Globals::Theme::piece_J; break;
+	case Piece::T: this->block = Globals::Theme::piece_T; break;
 
 	default:
 		this->block = Globals::Theme::piece_colorless;
 		break;
 	}
-
-	/* The starting positions are derived from the SRS */
-	// p.x = BOARD_WIDTH/2 + global_pieces_position[p.type][p.rotation][0];
-	// p.y = global_pieces_position[p.type][p.rotation][1];
-
 }
 void Piece::draw(Window* win)
 {

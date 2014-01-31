@@ -41,6 +41,7 @@ void GameModeSurvival::start()
 	// And the first piece
 	this->pieceCurrent = this->getNextPiece();
 
+	this->pieceGhost = new PieceGhost();
 	this->pieceHold = NULL;
 
 	this->rotationSystem = new RotationSystemSRS();
@@ -94,7 +95,7 @@ void GameModeSurvival::handleInput(int c)
 }
 void GameModeSurvival::update()
 {
-	// Droping piece if enough time has passed
+	// Dropping piece if enough time has passed
 	this->pieceTimer.pause();
 	if (this->pieceTimer.delta_ms() >= 800)
 	{
@@ -115,6 +116,9 @@ void GameModeSurvival::update()
 	}
 	else
 		this->pieceTimer.unpause();
+
+	this->pieceGhost->update(this->pieceCurrent,
+	                         this->board);
 
 	int lines = this->board->clearFullLines(this->layout->board);
 
@@ -142,6 +146,7 @@ void GameModeSurvival::draw()
 	this->layout->board->clear();
 	this->board->draw(this->layout->board);
 	this->pieceCurrent->draw(this->layout->board);
+	this->pieceGhost->draw(this->layout->board);
 	this->layout->board->refresh();
 
 	if (this->pieceHold)
@@ -170,13 +175,13 @@ void GameModeSurvival::lockCurrentPiece()
 
 	switch(this->pieceCurrent->getType())
 	{
-	case Piece::PIECE_O: this->stats.O++; break;
-	case Piece::PIECE_I: this->stats.I++; break;
-	case Piece::PIECE_L: this->stats.L++; break;
-	case Piece::PIECE_J: this->stats.J++; break;
-	case Piece::PIECE_Z: this->stats.Z++; break;
-	case Piece::PIECE_S: this->stats.S++; break;
-	case Piece::PIECE_T: this->stats.T++; break;
+	case Piece::O: this->stats.O++; break;
+	case Piece::I: this->stats.I++; break;
+	case Piece::L: this->stats.L++; break;
+	case Piece::J: this->stats.J++; break;
+	case Piece::Z: this->stats.Z++; break;
+	case Piece::S: this->stats.S++; break;
+	case Piece::T: this->stats.T++; break;
 	default: break;
 	}
 
