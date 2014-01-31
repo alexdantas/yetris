@@ -27,8 +27,12 @@ public:
 	/// Moves a piece only if it's possible within the board.
 	void movePieceIfPossible(Piece::PieceDirection direction);
 
+	Piece* getNextPiece(int x, int y);
+
 	/// Locks current piece on the board and gets the next one.
 	void lockCurrentPiece();
+
+	void holdCurrentPiece();
 
 private:
 	/// If we'll quit the game right away.
@@ -59,6 +63,8 @@ private:
 	bool movedPieceDown;
 
 	Statistics stats;
+
+	bool canHold;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

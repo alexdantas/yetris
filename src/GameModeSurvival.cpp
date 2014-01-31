@@ -9,7 +9,8 @@ GameModeSurvival::GameModeSurvival(LayoutGame* layout):
 	pieceGhost(NULL),
 	pieceHold(NULL),
 	board(NULL),
-	movedPieceDown(NULL)
+	movedPieceDown(NULL),
+	canHold(true)
 { }
 
 void GameModeSurvival::start()
@@ -30,6 +31,7 @@ void GameModeSurvival::start()
 	this->gameOver = false;
 
 	this->pieceCurrent = new Piece(Piece::random(), 0, 0);
+	this->pieceHold = NULL;
 
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
@@ -80,6 +82,10 @@ void GameModeSurvival::handleInput(int c)
 	{
 		this->board->hardDrop(this->pieceCurrent);
 		this->lockCurrentPiece();
+	}
+	else if (c == Globals::Input::hold)
+	{
+		this->holdCurrentPiece();
 	}
 }
 void GameModeSurvival::update()
@@ -171,12 +177,46 @@ void GameModeSurvival::lockCurrentPiece()
 
 	// Getting next piece
 	delete this->pieceCurrent;
-	this->pieceCurrent = new Piece(this->nextPieces[0], 0, 0);
+	this->pieceCurrent = this->getNextPiece(0, 0);
+
+	// Since we've dropped the piece, we can hold now
+	this->canHold = true;
+}
+Piece* GameModeSurvival::getNextPiece(int x, int y)
+{
+	Piece* next = new Piece(this->nextPieces[0], x, y);
 
 	// Adjusting the text pieces array
 	for (unsigned int i = 0; i < (this->nextPieces.size() - 1); i++)
 		this->nextPieces[i] = this->nextPieces[i + 1];
 
 	this->nextPieces[this->nextPieces.size() - 1] = Piece::random();
+
+	return next;
+}
+void GameModeSurvival::holdCurrentPiece()
+{
+	if ((! Globals::Game::can_hold) ||
+	    (! this->canHold))
+		return;
+
+	this->canHold = false;
+
+	Piece* tmp = this->pieceHold;
+
+	this->pieceHold = new Piece(this->pieceCurrent->getType(), 0, 0);
+
+	if (this->pieceCurrent)
+		delete this->pieceCurrent;
+
+	if (! tmp)
+	{
+		// First time holding
+		this->pieceCurrent = this->getNextPiece(0, 0);
+	}
+	else
+	{
+		this->pieceCurrent = tmp;
+	}
 }
 
