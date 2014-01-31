@@ -40,11 +40,13 @@ public:
 	void holdCurrentPiece();
 
 	/// If we'll quit the game right away.
-	bool willQuit;
+	bool willQuit();
 
 private:
 	/// If the game is over (board is full of blocks).
 	bool gameOver;
+
+	bool userAskedToQuit;
 
 	Piece* pieceCurrent;
 	PieceGhost* pieceGhost;

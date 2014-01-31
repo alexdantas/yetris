@@ -29,6 +29,9 @@ public:
 	/// Tells if the game ended.
 	virtual bool isOver() = 0;
 
+	/// Tells that we need to quit right now.
+	virtual bool willQuit() = 0;
+
 protected:
 	LayoutGame* layout;
 };

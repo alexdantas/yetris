@@ -1,37 +1,34 @@
+#include "StateManager.hpp"
 #include "Ncurses.hpp"
-#include "Window.hpp"
-#include "LayoutGameDefault.hpp"
-#include "Utils.hpp"
-#include "GameModeSurvival.hpp"
 #include "Globals.hpp"
+#include "Utils.hpp"
+#include "Colors.hpp"
 
 int main(int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
 
-	Globals::init();
-	Utils::Random::seed();
-	Ncurses::init();
-	Colors::init();
-
-	LayoutGame* layout = new LayoutGameDefault(80, 24);
-
-	GameModeSurvival game(layout);
-	game.start();
-
-	while (! game.willQuit)
+	try
 	{
-		game.handleInput(Ncurses::getInput(100));
-		game.update();
+		Globals::init();
+		Utils::Random::seed();
+		Ncurses::init();
+		Colors::init();
 
-		if (game.isOver())
-			game.start();
+		StateManager states;
+		states.run();
 
-		game.draw();
+		Ncurses::exit();
+	}
+	catch (...)
+	{
+		// I dont really have a nice exception-handling scheme right
+		// now. I must learn how to properly deal with them.
+		Ncurses::exit();
+		return 666;
 	}
 
-	Ncurses::exit();
 	return 0;
 }
 

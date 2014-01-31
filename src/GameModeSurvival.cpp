@@ -28,7 +28,7 @@ void GameModeSurvival::start()
 	SAFE_DELETE(this->board);
 	this->nextPieces.clear();
 
-	this->willQuit = false;
+	this->userAskedToQuit = false;
 	this->gameOver = false;
 
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
@@ -54,7 +54,7 @@ void GameModeSurvival::handleInput(int c)
 {
 	if (c == Globals::Input::quit)
 	{
-		this->willQuit = true;
+		this->userAskedToQuit = true;
 	}
 	else if (c == Globals::Input::left)
 	{
@@ -245,5 +245,9 @@ void GameModeSurvival::holdCurrentPiece()
 
 		this->pieceCurrent->moveTo(x, y);
 	}
+}
+bool GameModeSurvival::willQuit()
+{
+	return this->userAskedToQuit;
 }
 
