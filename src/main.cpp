@@ -4,6 +4,7 @@
 #include "Board.hpp"
 #include "Globals.hpp"
 #include "Utils.hpp"
+#include "RotationSystemSRS.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +15,8 @@ int main(int argc, char *argv[])
 	Utils::Random::seed();
 	Ncurses::init();
 	Colors::init();
+
+	RotationSystem* rot = new RotationSystemSRS();
 
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
@@ -65,6 +68,10 @@ int main(int argc, char *argv[])
 
 			break;
 		}
+		case 'w':
+			rot->rotate(&piece, &board, 1);
+			break;
+
 		case ' ':
 		{
 			board.lockPiece(&piece);

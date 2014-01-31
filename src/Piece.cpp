@@ -148,6 +148,11 @@ void Piece::move(Piece::PieceDirection direction)
 	this->x += delta_x;
 	this->y += delta_y;
 }
+void Piece::move(int dx, int dy)
+{
+	this->x += dx;
+	this->y -= dy;
+}
 int Piece::getX()
 {
 	return this->x;

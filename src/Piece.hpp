@@ -6,6 +6,8 @@
 ///
 class Piece
 {
+	friend class RotationSystem;
+
 public:
 	enum PieceType
 	{
@@ -31,6 +33,13 @@ public:
 	void draw(Window* win);
 	void rotate(short rotation);
 	void move(PieceDirection direction);
+
+	/// Moves Piece by deltas #dx and #dy.
+	///
+	/// @note This function shouldn't exist!
+	///       It's here because of RotationSystems.
+	/// @todo Remove it.
+	void move(int dx, int dy);
 
 	int getX();
 	int getY();
