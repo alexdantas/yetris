@@ -27,17 +27,17 @@ public:
 	/// Moves a piece only if it's possible within the board.
 	void movePieceIfPossible(Piece::PieceDirection direction);
 
-	Piece* getNextPiece(int x, int y);
+	Piece* getNextPiece();
 
 	/// Locks current piece on the board and gets the next one.
 	void lockCurrentPiece();
 
 	void holdCurrentPiece();
 
-private:
 	/// If we'll quit the game right away.
 	bool willQuit;
 
+private:
 	/// If the game is over (board is full of blocks).
 	bool gameOver;
 

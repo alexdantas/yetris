@@ -34,12 +34,8 @@ public:
 	void rotate(short rotation);
 	void move(PieceDirection direction);
 
-	/// Moves Piece by deltas #dx and #dy.
-	///
-	/// @note This function shouldn't exist!
-	///       It's here because of RotationSystems.
-	/// @todo Remove it.
-	void move(int dx, int dy);
+	void moveBy(int dx, int dy);
+	void moveTo(int x, int y);
 
 	int getX();
 	int getY();

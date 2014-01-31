@@ -21,10 +21,14 @@ int main(int argc, char *argv[])
 	GameModeSurvival game(&layout);
 	game.start();
 
-	while (! game.isOver())
+	while (! game.willQuit)
 	{
 		game.handleInput(Ncurses::getInput(100));
 		game.update();
+
+		if (game.isOver())
+			game.start();
+
 		game.draw();
 	}
 

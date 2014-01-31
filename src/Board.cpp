@@ -39,6 +39,9 @@ void Board::lockPiece(Piece* p)
 				int block_x = p->getX() + i;
 				int block_y = p->getY() + j;
 
+				if (block_x < 0 || block_y < 0)
+					continue;
+
 				this->block[block_x][block_y] = p->getBlock();
 
 				if (Globals::Theme::lock_piece_color)
@@ -201,5 +204,21 @@ void Board::hardDrop(Piece* piece)
 {
 	while (this->pieceCanMove(piece, Piece::DIR_DOWN))
 		piece->move(Piece::DIR_DOWN);
+}
+int Board::getX()
+{
+	return this->x;
+}
+int Board::getY()
+{
+	return this->y;
+}
+int Board::getW()
+{
+	return this->width;
+}
+int Board::getH()
+{
+	return this->height;
 }
 

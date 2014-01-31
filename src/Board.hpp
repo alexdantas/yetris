@@ -45,6 +45,11 @@ public:
 	/// Forces #piece to move all the way down inside this Board.
 	void hardDrop(Piece* piece);
 
+	int getX();
+	int getY();
+	int getW();
+	int getH();
+
 private:
 	int x;
 	int y;

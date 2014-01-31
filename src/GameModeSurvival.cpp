@@ -1,6 +1,7 @@
 #include "GameModeSurvival.hpp"
 #include "RotationSystemSRS.hpp"
 #include "Globals.hpp"
+#include "PieceDefinitions.hpp"
 
 GameModeSurvival::GameModeSurvival(LayoutGame* layout):
 	GameMode(layout),
@@ -30,16 +31,19 @@ void GameModeSurvival::start()
 	this->willQuit = false;
 	this->gameOver = false;
 
-	this->pieceCurrent = new Piece(Piece::random(), 0, 0);
-	this->pieceHold = NULL;
-
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
-	this->rotationSystem = new RotationSystemSRS();
-
+	// Populating all the next pieces
 	this->nextPieces.resize(Globals::Game::next_pieces);
 	for (unsigned int i = 0; i < (this->nextPieces.size()); i++)
 		this->nextPieces[i] = Piece::random();
+
+	// And the first piece
+	this->pieceCurrent = this->getNextPiece();
+
+	this->pieceHold = NULL;
+
+	this->rotationSystem = new RotationSystemSRS();
 
 	this->pieceTimer.start();
 
@@ -145,7 +149,7 @@ void GameModeSurvival::draw()
 }
 bool GameModeSurvival::isOver()
 {
-	return (this->willQuit);
+	return (this->gameOver);
 }
 void GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 {
@@ -177,14 +181,20 @@ void GameModeSurvival::lockCurrentPiece()
 
 	// Getting next piece
 	delete this->pieceCurrent;
-	this->pieceCurrent = this->getNextPiece(0, 0);
+
+	this->pieceCurrent = this->getNextPiece();
 
 	// Since we've dropped the piece, we can hold now
 	this->canHold = true;
 }
-Piece* GameModeSurvival::getNextPiece(int x, int y)
+Piece* GameModeSurvival::getNextPiece()
 {
-	Piece* next = new Piece(this->nextPieces[0], x, y);
+	Piece::PieceType new_type = this->nextPieces[0];
+
+	int x = (this->board->getW()/2) + global_pieces_position[new_type][0][0];
+	int y = global_pieces_position[new_type][0][1];
+
+	Piece* next = new Piece(new_type, x, y);
 
 	// Adjusting the text pieces array
 	for (unsigned int i = 0; i < (this->nextPieces.size() - 1); i++)
@@ -204,19 +214,23 @@ void GameModeSurvival::holdCurrentPiece()
 
 	Piece* tmp = this->pieceHold;
 
-	this->pieceHold = new Piece(this->pieceCurrent->getType(), 0, 0);
-
-	if (this->pieceCurrent)
-		delete this->pieceCurrent;
+	this->pieceHold = this->pieceCurrent;
+	this->pieceHold->moveTo(0, 0);
 
 	if (! tmp)
 	{
-		// First time holding
-		this->pieceCurrent = this->getNextPiece(0, 0);
+		this->pieceCurrent = this->getNextPiece();
 	}
 	else
 	{
 		this->pieceCurrent = tmp;
+
+		Piece::PieceType new_type = tmp->getType();
+
+		int x = (this->board->getW()/2) + global_pieces_position[new_type][0][0];
+		int y = global_pieces_position[new_type][0][1];
+
+		this->pieceCurrent->moveTo(x, y);
 	}
 }
 

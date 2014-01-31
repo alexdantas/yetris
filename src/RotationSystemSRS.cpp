@@ -212,19 +212,19 @@ void RotationSystemSRS::rotate(Piece* piece, Board* board, short rotation)
 		// Remember, the piece #tmp has already been rotated.
 		// Here we just try to move it,
 		// making it perform wall/floor kicks
-		tmp.move(dx, dy);
+		tmp.moveBy(dx, dy);
 
 		// alright, if it worked for #tmp, it will work for #p
 		if (board->isPieceValid(&tmp))
 		{
 			piece->rotate(rotation);
-			piece->move(dx, dy);
+			piece->moveBy(dx, dy);
 			return;
 		}
 
 		// Well, it didnt work, so lets return #tmp
 		// to its initial position
-		tmp.move(-dx, -dy);
+		tmp.moveBy(-dx, -dy);
 	}
 }
 
