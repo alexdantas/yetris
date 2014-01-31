@@ -10,6 +10,7 @@ public:
 	Timer();
 
 	/// Sets a starting point for the timer.
+	/// If called multiple times, will restart.
 	void start();
 
 	/// Temporarily stops the timer.

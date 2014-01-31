@@ -8,7 +8,8 @@ GameModeSurvival::GameModeSurvival(LayoutGame* layout):
 	pieceCurrent(NULL),
 	pieceGhost(NULL),
 	pieceHold(NULL),
-	board(NULL)
+	board(NULL),
+	movedPieceDown(NULL)
 { }
 
 void GameModeSurvival::start()
@@ -39,6 +40,8 @@ void GameModeSurvival::start()
 		this->nextPieces[i] = Piece::random();
 
 	this->pieceTimer.start();
+
+	this->stats = Statistics();
 }
 void GameModeSurvival::handleInput(int c)
 {
@@ -49,14 +52,17 @@ void GameModeSurvival::handleInput(int c)
 	else if (c == Globals::Input::left)
 	{
 		movePieceIfPossible(Piece::DIR_LEFT);
+		this->movedPieceDown = true;
 	}
 	else if (c == Globals::Input::down)
 	{
 		movePieceIfPossible(Piece::DIR_DOWN);
+		this->movedPieceDown = true;
 	}
 	else if (c == Globals::Input::right)
 	{
 		movePieceIfPossible(Piece::DIR_RIGHT);
+		this->movedPieceDown = true;
 	}
 	else if (c == Globals::Input::rotate_clockwise)
 	{
@@ -81,19 +87,39 @@ void GameModeSurvival::update()
 	this->pieceTimer.pause();
 	if (this->pieceTimer.delta_ms() >= 500)
 	{
-		Piece tmp = *(this->pieceCurrent);
-		tmp.move(Piece::DIR_DOWN);
+		if (! this->movedPieceDown)
+		{
+			Piece tmp = *(this->pieceCurrent);
+			tmp.move(Piece::DIR_DOWN);
 
-		if (this->board->isPieceValid(&tmp))
-			this->pieceCurrent->move(Piece::DIR_DOWN);
+			if (this->board->isPieceValid(&tmp))
+				this->pieceCurrent->move(Piece::DIR_DOWN);
+			else
+				this->lockCurrentPiece();
+		}
 		else
-			this->lockCurrentPiece();
+			this->movedPieceDown = false;
+
+		this->pieceTimer.start();
 	}
 	else
 		this->pieceTimer.unpause();
 
 	int lines = this->board->clearFullLines(this->layout->board);
 
+	// Statistics
+	this->stats.lines += lines;
+	switch(lines)
+	{
+	case 1: this->stats.singles++; break;
+	case 2: this->stats.doubles++; break;
+	case 3: this->stats.triples++; break;
+	case 4: this->stats.tetris++;  break;
+	}
+
+	// Score
+
+	// Checking if game over
 	if (this->board->isFull())
 		this->gameOver = true;
 }
@@ -124,11 +150,29 @@ void GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 }
 void GameModeSurvival::lockCurrentPiece()
 {
+	// Statistics
+	this->stats.pieces++;
+
+	switch(this->pieceCurrent->getType())
+	{
+	case Piece::PIECE_O: this->stats.O++; break;
+	case Piece::PIECE_I: this->stats.I++; break;
+	case Piece::PIECE_L: this->stats.L++; break;
+	case Piece::PIECE_J: this->stats.J++; break;
+	case Piece::PIECE_Z: this->stats.Z++; break;
+	case Piece::PIECE_S: this->stats.S++; break;
+	case Piece::PIECE_T: this->stats.T++; break;
+	default: break;
+	}
+
+	// Actually locking the current piece
 	this->board->lockPiece(this->pieceCurrent);
 
+	// Getting next piece
 	delete this->pieceCurrent;
 	this->pieceCurrent = new Piece(this->nextPieces[0], 0, 0);
 
+	// Adjusting the text pieces array
 	for (unsigned int i = 0; i < (this->nextPieces.size() - 1); i++)
 		this->nextPieces[i] = this->nextPieces[i + 1];
 

@@ -7,6 +7,7 @@
 #include "RotationSystem.hpp"
 #include <vector>
 #include "Timer.hpp"
+#include "Statistics.hpp"
 
 ///
 class GameModeSurvival: public GameMode
@@ -47,6 +48,17 @@ private:
 	RotationSystem* rotationSystem;
 
 	Timer pieceTimer;
+
+	/// Tells if on this frame we've moved a piece down.
+	///
+	/// That's needed so when the player move a piece
+	/// the drop theme restarts.
+	/// But only once each drop (otherwise the player
+	/// could keep the piece on the air forever).
+	///
+	bool movedPieceDown;
+
+	Statistics stats;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

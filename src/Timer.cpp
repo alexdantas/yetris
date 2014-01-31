@@ -23,8 +23,6 @@ Timer::Timer():
 {}
 void Timer::start()
 {
-    if (this->running) return;
-
     this->startMark  = get_ticks();
     this->stopMark   = 0;
     this->pausedMark = 0;
