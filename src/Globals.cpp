@@ -1,5 +1,6 @@
 #include "Globals.hpp"
 #include "Block.hpp"
+#include <ncurses.h>
 
 int Globals::version[3] = { 0, 0, 1 };
 
@@ -66,6 +67,28 @@ Block* Globals::Theme::piece_T = NULL;
 
 std::string Globals::Config::config_filename = "";
 std::string Globals::Config::hscore_filename = "";
+
+//  _   _      ___   _    _____
+// | | | |\ | | |_) | | |  | |
+// |_| |_| \| |_|   \_\_/  |_|
+
+int Globals::Input::left                    = KEY_LEFT;
+int Globals::Input::right                   = KEY_RIGHT;
+int Globals::Input::up                      = KEY_UP;
+int Globals::Input::down                    = KEY_DOWN;
+int Globals::Input::drop                    = ' ';
+int Globals::Input::rotate_clockwise        = 'x';
+int Globals::Input::rotate_counterclockwise = 'z';
+int Globals::Input::pause                   = 'p';
+int Globals::Input::hold                    = 'c';
+int Globals::Input::toggle_statistics       = '2';
+int Globals::Input::help                    = 'h';
+int Globals::Input::high_scores             = '1';
+int Globals::Input::quit                    = 'q';
+
+//  _   _      _  _____
+// | | | |\ | | |  | |
+// |_| |_| \| |_|  |_|
 
 void Globals::init()
 {

@@ -70,11 +70,26 @@ namespace Globals
 		extern Block* piece_J;
 		extern Block* piece_T;
 	};
-
 	namespace Config
 	{
 		extern std::string config_filename;
 		extern std::string hscore_filename;
+	};
+	namespace Input
+	{
+		extern int left;
+		extern int right;
+		extern int up;
+		extern int down;
+		extern int drop;
+		extern int rotate_clockwise;
+		extern int rotate_counterclockwise;
+		extern int pause;
+		extern int hold;
+		extern int toggle_statistics;
+		extern int help;
+		extern int high_scores;
+		extern int quit;
 	};
 };
 

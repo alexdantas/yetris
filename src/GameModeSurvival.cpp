@@ -42,33 +42,37 @@ void GameModeSurvival::start()
 }
 void GameModeSurvival::handleInput(int c)
 {
-	switch(c)
+	if (c == Globals::Input::quit)
 	{
-	case 'q':
 		this->willQuit = true;
-		break;
-
-	case 'a':
+	}
+	else if (c == Globals::Input::left)
+	{
 		movePieceIfPossible(Piece::DIR_LEFT);
-		break;
-
-	case 's':
+	}
+	else if (c == Globals::Input::down)
+	{
 		movePieceIfPossible(Piece::DIR_DOWN);
-		break;
-
-	case 'd':
+	}
+	else if (c == Globals::Input::right)
+	{
 		movePieceIfPossible(Piece::DIR_RIGHT);
-		break;
-
-	case 'w':
+	}
+	else if (c == Globals::Input::rotate_clockwise)
+	{
 		this->rotationSystem->rotate(this->pieceCurrent,
 		                             this->board,
 		                             1);
-		break;
-
-	case ' ':
-		this->lockCurrentPiece();
-		break;
+	}
+	else if (c == Globals::Input::rotate_counterclockwise)
+	{
+		this->rotationSystem->rotate(this->pieceCurrent,
+		                             this->board,
+		                             -1);
+	}
+	else if (c == Globals::Input::drop)
+	{
+		// Drop piece
 	}
 }
 void GameModeSurvival::update()
@@ -88,7 +92,7 @@ void GameModeSurvival::update()
 	else
 		this->pieceTimer.unpause();
 
-	this->board->clearFullLines(this->layout->board);
+	int lines = this->board->clearFullLines(this->layout->board);
 
 	if (this->board->isFull())
 		this->gameOver = true;
