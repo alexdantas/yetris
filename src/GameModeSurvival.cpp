@@ -34,6 +34,8 @@ void GameModeSurvival::start()
 	this->nextPieces.resize(Globals::Game::next_pieces);
 	for (unsigned int i = 0; i < (this->nextPieces.size()); i++)
 		this->nextPieces[i] = Piece::random();
+
+	this->pieceTimer.start();
 }
 void GameModeSurvival::handleInput(int c)
 {
@@ -62,22 +64,26 @@ void GameModeSurvival::handleInput(int c)
 		break;
 
 	case ' ':
-	{
-		this->board->lockPiece(this->pieceCurrent);
-
-		delete this->pieceCurrent;
-		this->pieceCurrent = new Piece(this->nextPieces[0], 0, 0);
-
-		for (unsigned int i = 0; i < (this->nextPieces.size() - 1); i++)
-			this->nextPieces[i] = this->nextPieces[i + 1];
-
-		this->nextPieces[this->nextPieces.size() - 1] = Piece::random();
+		this->lockCurrentPiece();
 		break;
-	}
 	}
 }
 void GameModeSurvival::update()
 {
+	// Droping piece if enough time has passed
+	this->pieceTimer.pause();
+	if (this->pieceTimer.delta_ms() >= 500)
+	{
+		Piece tmp = *(this->pieceCurrent);
+		tmp.move(Piece::DIR_DOWN);
+
+		if (this->board->isPieceValid(&tmp))
+			this->pieceCurrent->move(Piece::DIR_DOWN);
+		else
+			this->lockCurrentPiece();
+	}
+	else
+		this->pieceTimer.unpause();
 
 }
 void GameModeSurvival::draw(LayoutGame* layout)
@@ -94,7 +100,6 @@ bool GameModeSurvival::isOver()
 {
 	return (this->willQuit);
 }
-// Local function that moves a piece only if it's possible
 void GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 {
 	Piece tmp = *(this->pieceCurrent);
@@ -102,5 +107,17 @@ void GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 
 	if (this->board->isPieceValid(&tmp))
 		this->pieceCurrent->move(direction);
+}
+void GameModeSurvival::lockCurrentPiece()
+{
+	this->board->lockPiece(this->pieceCurrent);
+
+	delete this->pieceCurrent;
+	this->pieceCurrent = new Piece(this->nextPieces[0], 0, 0);
+
+	for (unsigned int i = 0; i < (this->nextPieces.size() - 1); i++)
+		this->nextPieces[i] = this->nextPieces[i + 1];
+
+	this->nextPieces[this->nextPieces.size() - 1] = Piece::random();
 }
 

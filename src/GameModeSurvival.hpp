@@ -6,6 +6,7 @@
 #include "Board.hpp"
 #include "RotationSystem.hpp"
 #include <vector>
+#include "Timer.hpp"
 
 ///
 class GameModeSurvival: public GameMode
@@ -25,6 +26,9 @@ public:
 	/// Moves a piece only if it's possible within the board.
 	void movePieceIfPossible(Piece::PieceDirection direction);
 
+	/// Locks current piece on the board and gets the next one.
+	void lockCurrentPiece();
+
 private:
 	/// If we'll quit the game right away.
 	bool willQuit;
@@ -38,6 +42,8 @@ private:
 	Board* board;
 
 	RotationSystem* rotationSystem;
+
+	Timer pieceTimer;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

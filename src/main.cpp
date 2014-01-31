@@ -1,10 +1,9 @@
 #include "Ncurses.hpp"
 #include "Window.hpp"
 #include "LayoutGame.hpp"
-#include "Globals.hpp"
 #include "Utils.hpp"
-#include "RotationSystemSRS.hpp"
 #include "GameModeSurvival.hpp"
+#include "Globals.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -25,7 +24,7 @@ int main(int argc, char *argv[])
 	while (! game.isOver())
 	{
 		game.handleInput(Ncurses::getInput(100));
-
+		game.update();
 		game.draw(&layout);
 	}
 

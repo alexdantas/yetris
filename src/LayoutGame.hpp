@@ -9,7 +9,6 @@
 class LayoutGame: public Layout
 {
 public:
-
 	LayoutGame(int width, int height);
 	virtual ~LayoutGame();
 
