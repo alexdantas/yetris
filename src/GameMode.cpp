@@ -1,8 +1,9 @@
 #include "GameMode.hpp"
 
-GameMode::GameMode()
-{
-}
+GameMode::GameMode(LayoutGame* layout):
+	layout(layout)
+{ }
+
 GameMode::~GameMode()
-{
-}
+{ }
+

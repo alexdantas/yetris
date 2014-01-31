@@ -45,9 +45,10 @@ namespace Globals
 		extern short random_algorithm;
 
 		extern bool has_game_over_animation;
-		extern bool line_clear_timeout;
 		extern bool slide_left;
 		extern bool slide_right;
+
+		extern int line_clear_timeout_us;
 	};
 	namespace Theme
 	{

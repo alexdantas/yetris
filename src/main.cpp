@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
 	LayoutGame layout(80, 24);
 	layout.windowsInit();
 
-	GameModeSurvival game;
+	GameModeSurvival game(&layout);
 	game.start();
 
 	while (! game.isOver())
 	{
 		game.handleInput(Ncurses::getInput(100));
 		game.update();
-		game.draw(&layout);
+		game.draw();
 	}
 
 	Ncurses::exit();

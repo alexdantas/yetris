@@ -14,13 +14,13 @@ class GameModeSurvival: public GameMode
 public:
 	// For documentation, see GameMode.hpp
 
-	GameModeSurvival();
+	GameModeSurvival(LayoutGame* layout);
 	~GameModeSurvival() {};
 
 	void start();
 	void handleInput(int c);
 	void update();
-	void draw(LayoutGame* layout);
+	void draw();
 	bool isOver();
 
 	/// Moves a piece only if it's possible within the board.
@@ -32,6 +32,9 @@ public:
 private:
 	/// If we'll quit the game right away.
 	bool willQuit;
+
+	/// If the game is over (board is full of blocks).
+	bool gameOver;
 
 	Piece* pieceCurrent;
 	Piece* pieceGhost;

@@ -2,7 +2,9 @@
 #include "RotationSystemSRS.hpp"
 #include "Globals.hpp"
 
-GameModeSurvival::GameModeSurvival():
+GameModeSurvival::GameModeSurvival(LayoutGame* layout):
+	GameMode(layout),
+	gameOver(false),
 	pieceCurrent(NULL),
 	pieceGhost(NULL),
 	pieceHold(NULL),
@@ -24,6 +26,7 @@ void GameModeSurvival::start()
 	this->nextPieces.clear();
 
 	this->willQuit = false;
+	this->gameOver = false;
 
 	this->pieceCurrent = new Piece(Piece::random(), 0, 0);
 
@@ -85,16 +88,23 @@ void GameModeSurvival::update()
 	else
 		this->pieceTimer.unpause();
 
+	this->board->clearFullLines(this->layout->board);
+
+	if (this->board->isFull())
+		this->gameOver = true;
 }
-void GameModeSurvival::draw(LayoutGame* layout)
+void GameModeSurvival::draw()
 {
-	layout->board->clear();
+	if (! this->layout)
+		return;
 
-	this->board->draw(layout->board);
+	this->layout->board->clear();
 
-	this->pieceCurrent->draw(layout->board);
+	this->board->draw(this->layout->board);
 
-	layout->board->refresh();
+	this->pieceCurrent->draw(this->layout->board);
+
+	this->layout->board->refresh();
 }
 bool GameModeSurvival::isOver()
 {

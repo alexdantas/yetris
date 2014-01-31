@@ -8,7 +8,7 @@ class GameMode
 {
 public:
 
-	GameMode();
+	GameMode(LayoutGame* layout);
 	virtual ~GameMode();
 
 	/// Starts (and restarts) the game.
@@ -24,10 +24,13 @@ public:
 
 	/// Shows everything on the screen, printing on the
 	/// available Windows on #layout.
-	virtual void draw(LayoutGame* layout) = 0;
+	virtual void draw() = 0;
 
 	/// Tells if the game ended.
 	virtual bool isOver() = 0;
+
+protected:
+	LayoutGame* layout;
 };
 
 #endif //GAMEMODE_H_DEFINED

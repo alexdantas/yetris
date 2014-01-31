@@ -32,7 +32,7 @@ bool Globals::Game::has_line_statistics = true;
 short Globals::Game::random_algorithm = 0;
 
 bool Globals::Game::has_game_over_animation = true;
-bool Globals::Game::line_clear_timeout      = 20000; // microseconds
+int  Globals::Game::line_clear_timeout_us   = 200000; // microseconds
 
 bool Globals::Game::slide_left  = false;
 bool Globals::Game::slide_right = false;
