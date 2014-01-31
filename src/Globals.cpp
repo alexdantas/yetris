@@ -101,7 +101,7 @@ void Globals::init()
 	Globals::Theme::piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
 	                ' ', ' ');
 
-	Globals::Theme::ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	Globals::Theme::ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, true),
 	                '[', ']');
 
 	Globals::Theme::locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE, false),

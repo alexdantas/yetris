@@ -145,8 +145,10 @@ void GameModeSurvival::draw()
 
 	this->layout->board->clear();
 	this->board->draw(this->layout->board);
-	this->pieceCurrent->draw(this->layout->board);
+
 	this->pieceGhost->draw(this->layout->board);
+	this->pieceCurrent->draw(this->layout->board);
+
 	this->layout->board->refresh();
 
 	if (this->pieceHold)
@@ -225,8 +227,8 @@ void GameModeSurvival::holdCurrentPiece()
 
 	Piece* tmp = this->pieceHold;
 
-	this->pieceHold = this->pieceCurrent;
-	this->pieceHold->moveTo(0, 0);
+	this->pieceHold = new Piece(this->pieceCurrent->getType(),
+	                            0, 0);
 
 	if (! tmp)
 	{
