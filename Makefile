@@ -63,15 +63,16 @@ CONFIG_FILE = config.ini
 # Build info
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
-CXXFLAGS      = $(CDEBUG) -Wall -Wextra -std=c++0x
+CXXFLAGS      = $(CDEBUG) -Wall -Wextra -std=c++0x -I"src/"
 LDFLAGS     = -lncurses
 INCLUDESDIR =
 LIBSDIR     =
 
 # All source files
-CFILES  = $(shell find src -maxdepth 1 -type f -name '*.cpp') \
-          $(shell find src -maxdepth 1 -type f -name '*.c')
-OBJECTS = $(CFILES:.cpp=.o)
+CFILES   = $(shell find src -type f -name '*.c')
+CXXFILES = $(shell find src -type f -name '*.cpp')
+OBJECTS = $(CFILES:.c=.o) \
+          $(CXXFILES:.cpp=.o)
 
 DEFINES = -DVERSION=\""$(VERSION)"\"         \
           -DPACKAGE=\""$(PACKAGE)"\"         \
@@ -80,7 +81,7 @@ DEFINES = -DVERSION=\""$(VERSION)"\"         \
           -DCONFIG_FILE=\""$(CONFIG_FILE)"\"
 
 # iniparser stuff
-INIDIR     = src/iniparser
+INIDIR     = deps/iniparser
 INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra
 INI_OBJS   = $(INIDIR)/inidictionary.o \
              $(INIDIR)/iniparser.o

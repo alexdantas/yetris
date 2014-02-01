@@ -1,8 +1,8 @@
-#include "StateManager.hpp"
-#include "Ncurses.hpp"
-#include "Globals.hpp"
-#include "Utils.hpp"
-#include "Colors.hpp"
+#include <Flow/StateManager.hpp>
+#include <Interface/Ncurses.hpp>
+#include <Interface/Colors.hpp>
+#include <Config/Globals.hpp>
+#include <Misc/Utils.hpp>
 
 int main(int argc, char *argv[])
 {
