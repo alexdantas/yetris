@@ -1,8 +1,6 @@
 #ifndef GAMESTATEGAME_H_DEFINED
 #define GAMESTATEGAME_H_DEFINED
 
-#include <vector>
-#include <cstdlib>
 #include "GameState.hpp"
 #include "LayoutGame.hpp"
 #include "GameMode.hpp"
@@ -59,11 +57,6 @@ private:
 	GameMode* game;
 
 	bool willQuit;
-
-    // Internal state-specific methods.
-    //
-    // They're here to ease reading -  each one of them gets
-    // called once per frame.
 };
 
 #endif //GAMESTATEGAME_H_DEFINED
