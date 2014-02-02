@@ -121,4 +121,8 @@ std::vector<std::string> Utils::String::split(const std::string& str, char delim
 
 	return elems;
 }
+void Utils::delay_us(useconds_t delay)
+{
+	usleep(delay);
+}
 

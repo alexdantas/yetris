@@ -295,6 +295,16 @@ void LayoutGameDefault::draw()
 
 	this->board->refresh();
 
+	if (this->game->willClearLines)
+	{
+		// Waiting a lil bit
+		this->board->clear();
+		this->game->board->draw(this->board);
+		this->board->refresh();
+
+		Utils::delay_us(Globals::Game::line_clear_timeout_us);
+	}
+
 	if (this->game->pieceHold)
 	{
 		this->hold->clear();

@@ -12,7 +12,8 @@ GameModeSurvival::GameModeSurvival():
 	pieceHold(NULL),
 	board(NULL),
 	movedPieceDown(NULL),
-	canHold(true)
+	canHold(true),
+	willClearLines(true)
 { }
 
 void GameModeSurvival::start()
@@ -115,9 +116,16 @@ void GameModeSurvival::update()
 	this->pieceGhost->update(this->pieceCurrent,
 	                         this->board);
 
-// DISABLING TEMPORARILY BECAUSE WE DONT HAVE LAYOUT ANYMORE
-//	int lines = this->board->clearFullLines(this->layout->board);
-	int lines = 0;
+	if (this->willClearLines)
+	{
+		this->board->clearFullLines();
+		this->willClearLines = false;
+	}
+
+	int lines = this->board->markFullLines();
+
+	if (lines != 0)
+		this->willClearLines = true;
 
 	// Statistics
 	this->stats.lines += lines;

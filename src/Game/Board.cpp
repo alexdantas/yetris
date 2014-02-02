@@ -137,7 +137,7 @@ void Board::addNoise(int height)
 	for (int i = 0; i < height; i++)
 		this->pushUp();
 }
-int Board::clearFullLines(Window* win)
+int Board::markFullLines()
 {
 	int lines_cleared = 0;
 
@@ -172,15 +172,10 @@ int Board::clearFullLines(Window* win)
 			this->block[i][k] = Globals::Theme::clear_line;
 	}
 
-	if (lines_cleared == 0)
-		return 0;
-
-	// Redrawing the board and sleeping for a few moments
-	win->clear();
-	this->draw(win);
-	win->refresh();
-	usleep(Globals::Game::line_clear_timeout_us);
-
+	return lines_cleared;
+}
+void Board::clearFullLines()
+{
 	for (int k = 0; k < (this->height); k++)
 	{
 		if (! (this->block[0][k] == Globals::Theme::clear_line))
@@ -193,7 +188,6 @@ int Board::clearFullLines(Window* win)
 			for (int i = 0; i < (this->width); i++)
 				this->block[i][j] = this->block[i][j - 1];
 	}
-	return lines_cleared;
 }
 bool Board::pieceCanMove(Piece* piece, Piece::PieceDirection direction)
 {

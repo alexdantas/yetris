@@ -33,12 +33,9 @@ public:
 	/// Removes all filled lines, pushing others down.
 	///
 	/// @return The amount of lines cleared.
-	/// @note This method pauses a little to show an
-	///       animation on #win.
-	/// @todo Refactor this so we shouldn't explicitly
-	///       depend on making the animation inside Board.
-	///
-	int clearFullLines(Window* win);
+
+	int markFullLines();
+	void clearFullLines();
 
 	/// Tells if #piece can move to #direction inside this Board.
 	bool pieceCanMove(Piece* piece, Piece::PieceDirection direction);

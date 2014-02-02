@@ -81,6 +81,8 @@ private:
 
 	/// Tells if the player can hold a piece right now.
 	bool canHold;
+
+	bool willClearLines;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

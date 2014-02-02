@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 /// Random useful things accumulated over the years.
 ///
@@ -48,6 +49,9 @@ namespace Utils
 		///
 		std::vector<std::string> split(const std::string& str, char delim);
 	};
+
+	/// Stops execution for #delay microseconds.
+	void delay_us(useconds_t delay);
 };
 
 // Useful #defines collected over the years.
