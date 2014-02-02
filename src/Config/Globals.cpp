@@ -22,7 +22,7 @@ bool Globals::Screen::use_colors = true;
 // / /`_  / /\  | |\/| | |_
 // \_\_/ /_/--\ |_|  | |_|__
 
-int Globals::Game::next_pieces   = 5;
+int Globals::Game::next_pieces   = 6;
 int Globals::Game::initial_noise = 0;
 
 bool Globals::Game::has_ghost = true;

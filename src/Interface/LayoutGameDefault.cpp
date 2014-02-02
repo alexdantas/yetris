@@ -301,5 +301,19 @@ void LayoutGameDefault::draw()
 		this->game->pieceHold->draw(this->hold);
 		this->hold->refresh();
 	}
+
+	for (int i = 0; i < Globals::Game::next_pieces; i++)
+	{
+		Window* w = this->next[i];
+		w->clear();
+
+		Piece p(this->game->nextPieces[i], -1, -1);
+		if (p.getType() == Piece::O)
+			p.moveBy(0, 1);
+
+		p.draw(w);
+
+		w->refresh();
+	}
 }
 
