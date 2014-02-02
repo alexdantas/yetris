@@ -1,23 +1,31 @@
 #ifndef LAYOUTGAMEDEFAULT_H_DEFINED
 #define LAYOUTGAMEDEFAULT_H_DEFINED
 
+#include <Interface/Layout.hpp>
+#include <Game/GameModeSurvival.hpp>
 #include <vector>
 
-#include <Interface/LayoutGame.hpp>
-
-/// The default game layout, suited for most
-/// single-player game modes.
+/// Default game layout, suited for most  single-player
+/// game modes.
 ///
-class LayoutGameDefault: public LayoutGame
+class LayoutGameDefault: public Layout
 {
 public:
-	LayoutGameDefault(int width, int height);
+	LayoutGameDefault(GameModeSurvival* game, int width, int height);
 	virtual ~LayoutGameDefault();
 
 	void windowsInit();
 	void windowsExit();
 
+	void draw();
+
 private:
+	GameModeSurvival* game;
+
+	Window* board;
+	Window* info;
+	Window* help;
+
 	Window* leftmost;
 	Window* middle_left;
 	Window* middle_right;
@@ -29,11 +37,9 @@ private:
 	Window* leftmost_container;
 	Window* score;
 	Window* help_container;
-	Window* help;
 	Window* hscores_container;
 	Window* hscores;
-	Window* input_container;
-	Window* input;
+	Window* hold;
 };
 
 #endif //LAYOUTGAMEDEFAULT_H_DEFINED

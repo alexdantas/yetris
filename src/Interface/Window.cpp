@@ -83,7 +83,7 @@ void Window::printChar(int c, int x, int y, ColorPair pair)
 
 	mvwaddch(this->win, y, x, c);
 }
-void Window::setBackground(chtype ch, unsigned long pair)
+void Window::setBackground(chtype ch, ColorPair pair)
 {
 	wbkgd(this->win, ch | pair);
 }

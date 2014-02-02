@@ -1,74 +1,37 @@
 #include <Interface/LayoutMainMenu.hpp>
-#include <Interface/Ncurses.hpp>
-#include <Config/Globals.hpp>
+#include <Interface/Colors.hpp>
 
 #include <iostream>
 
 LayoutMainMenu::LayoutMainMenu(int width, int height):
-	main(NULL)
+	Layout(width, height)
 {
-	/* Gets the current width and height */
-	int current_height, current_width;
-	getmaxyx(stdscr, current_height, current_width);
-
-	if ((current_width  < width) ||
-	    (current_height < height))
-	{
-		Ncurses::exit();
-		std::cerr << "Error! Your console screen is smaller than"
-		          << width << "x" << height << std::endl
-		          << "Please resize your window and try again"
-		          << std::endl;
-
-		exit(EXIT_FAILURE);
-	}
-
-	this->width  = current_width;
-	this->height = current_height;
-
-	this->originalWidth  = width;
-	this->originalHeight = height;
+	this->windowsInit();
 }
 LayoutMainMenu::~LayoutMainMenu()
-{ }
+{
+	this->windowsExit();
+}
 void LayoutMainMenu::windowsInit()
 {
-	// We'll start all the windows inside the Layout
-
-	int main_x = 0;
-	int main_y = 0;
-
-	if (Globals::Screen::center_horizontally)
-		main_x = this->width/2 - this->originalWidth/2;
-
-	if (Globals::Screen::center_vertically)
-		main_y = this->height/2 - this->originalHeight/2;
-
-	// Main window, wrapper of all others
-	this->main = new Window(main_x,
-	                        main_y,
-	                        originalWidth,
-	                        originalHeight);
-
-	if (Globals::Screen::show_borders)
-	{
-		this->main->borders(Globals::Screen::fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
-	}
-	this->main->refresh();
+	// Only the main window for now
 }
 void LayoutMainMenu::windowsExit()
+{ }
+void LayoutMainMenu::draw()
 {
-#define SAFE_DELETE(n) \
-	{				   \
-		if (n)		   \
-		{			   \
-			delete(n); \
-			n = NULL;  \
-		}			   \
-	}
+	this->main->clear();
 
-	SAFE_DELETE(this->main);
+	this->main->print(" _     ____ _____  ___   _   __  ", 1, 1, Colors::pair(COLOR_RED, COLOR_DEFAULT));
+	this->main->print("\\ \\_/ | |_   | |  | |_) | | ( (` ", 1, 2, Colors::pair(COLOR_RED, COLOR_DEFAULT));
+	this->main->print(" |_|  |_|__  |_|  |_| \\ |_| _)_) ", 1, 3, Colors::pair(COLOR_RED, COLOR_DEFAULT));
+
+
+	this->main->print("Press <enter> to start",
+	                          1,
+	                          this->main->getH() - 2,
+	                          Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+
+	this->main->refresh();
 }
 

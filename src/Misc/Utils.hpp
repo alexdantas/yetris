@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-/// Random things accumulated over the years.
-///
+/// Random useful things accumulated over the years.
 ///
 namespace Utils
 {
@@ -50,6 +49,26 @@ namespace Utils
 		std::vector<std::string> split(const std::string& str, char delim);
 	};
 };
+
+// Useful #defines collected over the years.
+
+/// Deletes #pointer if valid, invalidating it after.
+#define SAFE_DELETE(pointer) \
+	{ \
+		if (pointer) \
+		{ \
+			delete(pointer); \
+			pointer = nullptr; \
+		} \
+	}
+
+/// Tells the compiler we're not using #thing as an argument.
+/// Don't forget ';' after it!
+#define UNUSED(thing) \
+	{ \
+		(void)(thing); \
+	  \
+	}
 
 #endif //UTILS_H_DEFINED
 

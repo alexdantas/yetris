@@ -1,6 +1,7 @@
 #include <Flow/StateManager.hpp>
 #include <Flow/GameStateGame.hpp>
 #include <Flow/GameStateMainMenu.hpp>
+#include <Misc/Utils.hpp>
 
 StateManager::StateManager():
 	currentState(nullptr),
@@ -8,19 +9,14 @@ StateManager::StateManager():
 {
 	// The first state, Hardcoded
 	this->currentState = new GameStateMainMenu();
-
 	this->currentState->load();
-	this->sharedInfo = 0;
 }
 StateManager::~StateManager()
 {
 	if (this->currentState)
-	{
 		this->currentState->unload();
-		delete this->currentState;
 
-		this->currentState = nullptr; // you never know
-	}
+	SAFE_DELETE(this->currentState);
 }
 void StateManager::run()
 {

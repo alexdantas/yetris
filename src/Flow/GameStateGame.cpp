@@ -3,6 +3,7 @@
 #include <Game/GameModeSurvival.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Interface/LayoutGameDefault.hpp>
+#include <Misc/Utils.hpp>
 
 GameStateGame::GameStateGame():
 	layout(nullptr),
@@ -15,15 +16,15 @@ void GameStateGame::load(int stack)
 {
 	(void)(stack);
 
-	this->layout = new LayoutGameDefault(80, 24);
+	this->game = new GameModeSurvival();
+	this->layout = new LayoutGameDefault((GameModeSurvival*)game, 80, 24);
 
-	this->game = new GameModeSurvival(this->layout);
 	this->game->start();
 }
 int GameStateGame::unload()
 {
-	delete this->game;
-	delete this->layout;
+	SAFE_DELETE(this->game);
+	SAFE_DELETE(this->layout);
 
 	return 0;
 }
@@ -48,6 +49,6 @@ GameState::StateCode GameStateGame::update()
 }
 void GameStateGame::draw()
 {
-	this->game->draw();
+	this->layout->draw();
 }
 

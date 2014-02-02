@@ -2,9 +2,10 @@
 #include <Game/RotationSystemSRS.hpp>
 #include <Game/PieceDefinitions.hpp>
 #include <Config/Globals.hpp>
+#include <Misc/Utils.hpp>
 
-GameModeSurvival::GameModeSurvival(LayoutGame* layout):
-	GameMode(layout),
+GameModeSurvival::GameModeSurvival():
+	GameMode(),
 	gameOver(false),
 	pieceCurrent(NULL),
 	pieceGhost(NULL),
@@ -16,12 +17,6 @@ GameModeSurvival::GameModeSurvival(LayoutGame* layout):
 
 void GameModeSurvival::start()
 {
-#define SAFE_DELETE(a) \
-	{ \
-		if (a) \
-			delete(a); \
-	}
-
 	SAFE_DELETE(this->pieceCurrent);
 	SAFE_DELETE(this->pieceGhost);
 	SAFE_DELETE(this->pieceHold);
@@ -120,7 +115,9 @@ void GameModeSurvival::update()
 	this->pieceGhost->update(this->pieceCurrent,
 	                         this->board);
 
-	int lines = this->board->clearFullLines(this->layout->board);
+// DISABLING TEMPORARILY BECAUSE WE DONT HAVE LAYOUT ANYMORE
+//	int lines = this->board->clearFullLines(this->layout->board);
+	int lines = 0;
 
 	// Statistics
 	this->stats.lines += lines;
@@ -137,26 +134,6 @@ void GameModeSurvival::update()
 	// Checking if game over
 	if (this->board->isFull())
 		this->gameOver = true;
-}
-void GameModeSurvival::draw()
-{
-	if (! this->layout)
-		return;
-
-	this->layout->board->clear();
-	this->board->draw(this->layout->board);
-
-	this->pieceGhost->draw(this->layout->board);
-	this->pieceCurrent->draw(this->layout->board);
-
-	this->layout->board->refresh();
-
-	if (this->pieceHold)
-	{
-		this->layout->hold->clear();
-		this->pieceHold->draw(this->layout->hold);
-		this->layout->hold->refresh();
-	}
 }
 bool GameModeSurvival::isOver()
 {

@@ -1,21 +1,24 @@
 #include <Interface/LayoutGameDefault.hpp>
 #include <Config/Globals.hpp>
+#include <Misc/Utils.hpp>
 
-LayoutGameDefault::LayoutGameDefault(int width, int height):
-	LayoutGame(width, height),
-	leftmost(NULL),
-	middle_left(NULL),
-	middle_right(NULL),
-	rightmost(NULL),
-	next_container(NULL),
-	leftmost_container(NULL),
-	score(NULL),
-	help_container(NULL),
-	help(NULL),
-	hscores_container(NULL),
-	hscores(NULL),
-	input_container(NULL),
-	input(NULL)
+LayoutGameDefault::LayoutGameDefault(GameModeSurvival* game, int width, int height):
+	Layout(width, height),
+	game(game),
+	board(nullptr),
+	info(nullptr),
+	help(nullptr),
+	leftmost(nullptr),
+	middle_left(nullptr),
+	middle_right(nullptr),
+	rightmost(nullptr),
+	next_container(nullptr),
+	leftmost_container(nullptr),
+	score(nullptr),
+	help_container(nullptr),
+	hscores_container(nullptr),
+	hscores(nullptr),
+	hold(nullptr)
 {
 	this->windowsInit();
 }
@@ -26,29 +29,6 @@ LayoutGameDefault::~LayoutGameDefault()
 void LayoutGameDefault::windowsInit()
 {
 	// We'll start all the windows inside the Layout
-
-	int main_x = 0;
-	int main_y = 0;
-
-	if (Globals::Screen::center_horizontally)
-		main_x = this->width/2 - this->originalWidth/2;
-
-	if (Globals::Screen::center_vertically)
-		main_y = this->height/2 - this->originalHeight/2;
-
-	// Main window, wrapper of all others
-	this->main = new Window(main_x,
-	                        main_y,
-	                        originalWidth,
-	                        originalHeight);
-
-	if (Globals::Screen::show_borders)
-	{
-		this->main->borders(Globals::Screen::fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
-	}
-	this->main->refresh();
 
 	// Leftmost window
 	this->leftmost = new Window(this->main,
@@ -278,15 +258,6 @@ void LayoutGameDefault::windowsInit()
 }
 void LayoutGameDefault::windowsExit()
 {
-#define SAFE_DELETE(n) \
-	{				   \
-		if (n)		   \
-		{			   \
-			delete(n); \
-			n = NULL;  \
-		}			   \
-	}
-
 	SAFE_DELETE(this->main);
 
 	SAFE_DELETE(this->leftmost);
@@ -309,8 +280,26 @@ void LayoutGameDefault::windowsExit()
 	SAFE_DELETE(this->help);
 	SAFE_DELETE(this->hscores_container);
 	SAFE_DELETE(this->hscores);
-	SAFE_DELETE(this->input_container);
-	SAFE_DELETE(this->input);
 }
+void LayoutGameDefault::draw()
+{
+	if (! this->game)
+		return;
 
+	this->board->clear();
+
+	this->game->board->draw(this->board);
+
+	this->game->pieceGhost->draw(this->board);
+	this->game->pieceCurrent->draw(this->board);
+
+	this->board->refresh();
+
+	if (this->game->pieceHold)
+	{
+		this->hold->clear();
+		this->game->pieceHold->draw(this->hold);
+		this->hold->refresh();
+	}
+}
 

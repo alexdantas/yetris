@@ -29,7 +29,7 @@ public:
 	void print(std::string str, int x, int y, ColorPair pair=0);
 	void printChar(int c, int x, int y, ColorPair pair=0);
 
-	void setBackground(chtype ch, unsigned long pair);
+	void setBackground(chtype ch, ColorPair pair);
 
 	void refresh();
 

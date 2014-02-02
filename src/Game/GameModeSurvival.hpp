@@ -8,22 +8,24 @@
 #include <Game/Statistics.hpp>
 #include <Game/PieceGhost.hpp>
 #include <Misc/Timer.hpp>
+#include <Interface/Layout.hpp>
 
 #include <vector>
 
 ///
 class GameModeSurvival: public GameMode
 {
+	friend class LayoutGameDefault;
+
 public:
 	// For documentation, see GameMode.hpp
 
-	GameModeSurvival(LayoutGame* layout);
+	GameModeSurvival();
 	~GameModeSurvival() {};
 
 	void start();
 	void handleInput(int c);
 	void update();
-	void draw();
 	bool isOver();
 
 	/// Moves a piece only if it's possible within the board.

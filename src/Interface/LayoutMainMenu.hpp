@@ -5,7 +5,7 @@
 #include <Interface/Window.hpp>
 
 ///
-class LayoutMainMenu
+class LayoutMainMenu: public Layout
 {
 public:
 	LayoutMainMenu(int width, int height);
@@ -14,12 +14,7 @@ public:
 	void windowsInit();
 	void windowsExit();
 
-	Window* main;
-
-	int width;
-	int height;
-	int originalWidth;
-	int originalHeight;
+	void draw();
 };
 
 #endif //LAYOUTMAINMENU_H_DEFINED

@@ -1,9 +1,9 @@
 #ifndef GAMESTATEGAME_H_DEFINED
 #define GAMESTATEGAME_H_DEFINED
 
-#include <Game/GameMode.hpp>
-#include <Interface/LayoutGame.hpp>
 #include <Flow/GameState.hpp>
+#include <Game/GameMode.hpp>
+#include <Interface/Layout.hpp>
 
 /// This represents the actual game taking place.
 ///
@@ -51,11 +51,12 @@ public:
 
 private:
 	/// How the things on the screen are displayed.
-	LayoutGame* layout;
+	Layout* layout;
 
 	/// The rules of the current game.
 	GameMode* game;
 
+	/// Keeps the game running.
 	bool willQuit;
 };
 
