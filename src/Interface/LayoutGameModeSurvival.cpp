@@ -250,10 +250,6 @@ void LayoutGameModeSurvival::windowsInit()
 	/* wnoutrefresh(w.win); */
 	/* s->score = w; */
 
-	this->info->print("Loading",
-	                  0,
-	                  this->info->getH() - 1,
-	                  Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
 	this->info->refresh();
 }
 void LayoutGameModeSurvival::windowsExit()

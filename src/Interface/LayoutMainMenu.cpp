@@ -7,6 +7,7 @@ LayoutMainMenu::LayoutMainMenu(int width, int height):
 	Layout(width, height)
 {
 	this->windowsInit();
+	this->main->setTitle("MainMenu");
 }
 LayoutMainMenu::~LayoutMainMenu()
 {
@@ -28,26 +29,26 @@ void LayoutMainMenu::draw()
 
 
 	this->main->print("1. Survival",
-	                  1,
+	                  2,
 	                  5,
 	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
 
 	this->main->print("2. Invisible",
-	                  1,
+	                  2,
 	                  6,
 	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
 
 	this->main->print("3. Slide Left",
-	                  1,
+	                  2,
 	                  7,
 	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
 
 	this->main->print("4. Slide Right",
-	                  1,
+	                  2,
 	                  8,
 	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
 
-	this->main->print("Press <enter> to start",
+	this->main->print("Press <number> to start",
 	                          1,
 	                          this->main->getH() - 2,
 	                          Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));

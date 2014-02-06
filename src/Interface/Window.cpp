@@ -25,7 +25,8 @@ Window::Window(int x, int y, int w, int h):
 	y(y),
 	width(w),
 	height(h),
-	borderType(BORDER_NONE)
+	borderType(BORDER_NONE),
+	title("")
 {
 	this->win = newwin(height, width, y, x);
 
@@ -34,7 +35,8 @@ Window::Window(int x, int y, int w, int h):
 }
 Window::Window(Window* parent, int x, int y, int width, int height):
 	win(NULL),
-	error(false)
+	error(false),
+	title("")
 {
 	// if we want to include the window inside a `parent`
 	// that has borders
@@ -99,6 +101,11 @@ void Window::clear()
 	// Redrawing borders if existing
 	if (this->borderType != BORDER_NONE)
 		this->borders(this->borderType);
+
+	if (! this->title.empty())
+		this->print(this->title, 1, 0, Colors::pair(COLOR_BLUE,
+		                                            COLOR_DEFAULT));
+
 }
 int Window::getW() const
 {
@@ -145,5 +152,9 @@ void Window::horizontalLine(int x, int y, int c, int width, ColorPair pair)
 {
 	Colors::pairActivate(this->win, pair);
 	mvwhline(this->win, y, x, c, width);
+}
+void Window::setTitle(std::string title)
+{
+	this->title = title;
 }
 

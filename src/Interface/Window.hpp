@@ -44,6 +44,8 @@ public:
 
 	void horizontalLine(int x, int y, int c, int width, ColorPair pair);
 
+	void setTitle(std::string title);
+
 protected:
 	/// Ncurses' internal data structure.
 	WINDOW* win;
@@ -57,6 +59,8 @@ protected:
 	int height;
 
 	BorderType borderType;
+
+	std::string title;
 };
 
 #endif //WINDOW_H_DEFINED
