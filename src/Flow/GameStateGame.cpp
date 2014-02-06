@@ -1,30 +1,34 @@
 #include <Flow/GameStateGame.hpp>
 #include <Flow/StateManager.hpp>
 #include <Game/GameModeSurvival.hpp>
-#include <Interface/Ncurses.hpp>
-#include <Interface/LayoutGameDefault.hpp>
 #include <Misc/Utils.hpp>
+#include <Interface/Ncurses.hpp>
+#include <Config/Globals.hpp>
 
 GameStateGame::GameStateGame():
-	layout(nullptr),
 	game(nullptr),
 	willQuit(false)
 { }
 GameStateGame::~GameStateGame()
 { }
-void GameStateGame::load(int stack)
+void GameStateGame::load(int gameMode)
 {
-	(void)(stack);
+	switch(gameMode)
+	{
+	case 2:
+		Globals::Game::invisible = true;
+		break;
+
+	default:
+		break;
+	}
 
 	this->game = new GameModeSurvival();
-	this->layout = new LayoutGameDefault((GameModeSurvival*)game, 80, 24);
-
 	this->game->start();
 }
 int GameStateGame::unload()
 {
 	SAFE_DELETE(this->game);
-	SAFE_DELETE(this->layout);
 
 	return 0;
 }
@@ -49,6 +53,6 @@ GameState::StateCode GameStateGame::update()
 }
 void GameStateGame::draw()
 {
-	this->layout->draw();
+	this->game->draw();
 }
 

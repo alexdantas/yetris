@@ -38,7 +38,7 @@ int  Globals::Game::line_clear_timeout_us   = 200000; // microseconds
 
 bool Globals::Game::slide_left  = false;
 bool Globals::Game::slide_right = false;
-
+bool Globals::Game::invisible = false;
 // _____  _     ____  _      ____
 //  | |  | |_| | |_  | |\/| | |_
 //  |_|  |_| | |_|__ |_|  | |_|__
@@ -53,6 +53,7 @@ Block* Globals::Theme::piece_colorless = NULL;
 Block* Globals::Theme::piece           = NULL;
 Block* Globals::Theme::ghost           = NULL;
 Block* Globals::Theme::locked          = NULL;
+Block* Globals::Theme::invisible       = NULL;
 
 Block* Globals::Theme::piece_S = NULL;
 Block* Globals::Theme::piece_Z = NULL;
@@ -93,28 +94,31 @@ int Globals::Input::quit                    = 'q';
 
 void Globals::init()
 {
-	Globals::Theme::clear_line = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false),
+	Globals::Theme::clear_line = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
 	                ':', ':');
 
-	Globals::Theme::piece_colorless = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	Globals::Theme::piece_colorless = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
 	                ' ', ' ');
 
-	Globals::Theme::piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, false),
+	Globals::Theme::piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
 	                ' ', ' ');
 
 	Globals::Theme::ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, true),
 	                '[', ']');
 
-	Globals::Theme::locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE, false),
+	Globals::Theme::locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE),
 	                ' ', ' ');
 
-	Globals::Theme::piece_S = new Block(Colors::pair(COLOR_WHITE, COLOR_GREEN, false),
+	Globals::Theme::invisible = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+	                                      ' ', ' ');
+
+	Globals::Theme::piece_S = new Block(Colors::pair(COLOR_WHITE, COLOR_GREEN),
 	                ' ', ' ');
 
-	Globals::Theme::piece_Z = new Block(Colors::pair(COLOR_WHITE, COLOR_RED, false),
+	Globals::Theme::piece_Z = new Block(Colors::pair(COLOR_WHITE, COLOR_RED),
 	                ' ', ' ');
 
-	Globals::Theme::piece_O = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, false),
+	Globals::Theme::piece_O = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW),
 	                ' ', ' ');
 
 	Globals::Theme::piece_I = new Block(Colors::pair(COLOR_WHITE, COLOR_CYAN, true),
@@ -123,11 +127,10 @@ void Globals::init()
 	Globals::Theme::piece_L = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, true),
 	                ' ', ' ');
 
-	Globals::Theme::piece_J = new Block(Colors::pair(COLOR_WHITE, COLOR_BLUE, false),
+	Globals::Theme::piece_J = new Block(Colors::pair(COLOR_WHITE, COLOR_BLUE),
 	                ' ', ' ');
 
-	Globals::Theme::piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA, false),
+	Globals::Theme::piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
 	                ' ', ' ');
-
 }
 

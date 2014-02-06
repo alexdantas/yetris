@@ -217,4 +217,20 @@ int Board::getH()
 {
 	return this->height;
 }
+void Board::turnInvisible(bool option)
+{
+	for (int i = 0; i < (this->width); i++)
+		for (int j = 0; j < (this->height); j++)
+
+			if (option)
+			{
+				if (this->block[i][j])
+					this->block[i][j] = Globals::Theme::invisible;
+			}
+			else
+			{
+				if (this->block[i][j] == Globals::Theme::invisible)
+					this->block[i][j] = Globals::Theme::piece;
+			}
+}
 

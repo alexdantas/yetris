@@ -8,14 +8,16 @@
 #include <Game/Statistics.hpp>
 #include <Game/PieceGhost.hpp>
 #include <Misc/Timer.hpp>
-#include <Interface/Layout.hpp>
 
 #include <vector>
 
 ///
+class LayoutGameModeSurvival;
+
+///
 class GameModeSurvival: public GameMode
 {
-	friend class LayoutGameDefault;
+	friend class LayoutGameModeSurvival;
 
 public:
 	// For documentation, see GameMode.hpp
@@ -26,6 +28,8 @@ public:
 	void start();
 	void handleInput(int c);
 	void update();
+	void draw();
+
 	bool isOver();
 
 	/// Moves a piece only if it's possible within the board.
@@ -37,7 +41,7 @@ public:
 	Piece* getNextPiece();
 
 	/// Locks current piece on the board and gets the next one.
-	void lockCurrentPiece();
+	virtual void lockCurrentPiece();
 
 	/// Holds current piece and gets the next accordingly.
 	void holdCurrentPiece();
@@ -45,7 +49,9 @@ public:
 	/// If we'll quit the game right away.
 	bool willQuit();
 
-private:
+protected:
+	LayoutGameModeSurvival* layout;
+
 	/// If the game is over (board is full of blocks).
 	bool gameOver;
 
@@ -65,7 +71,7 @@ private:
 	RotationSystem* rotationSystem;
 
 	/// Timer that tells when to force the piece down.
-	Timer pieceTimer;
+	Timer timerPiece;
 
 	/// Tells if on this frame we've moved a piece down.
 	///
@@ -83,6 +89,10 @@ private:
 	bool canHold;
 
 	bool willClearLines;
+
+	// Things related to the invisible game mode
+	Timer timerInvisible;
+	bool isInvisible;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

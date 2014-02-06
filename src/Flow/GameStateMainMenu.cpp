@@ -3,10 +3,9 @@
 #include <Misc/Utils.hpp>
 
 GameStateMainMenu::GameStateMainMenu():
-	layout(NULL)
-{
-
-}
+	layout(NULL),
+	gameMode(0)
+{ }
 GameStateMainMenu::~GameStateMainMenu()
 {
 
@@ -22,7 +21,7 @@ int GameStateMainMenu::unload()
 {
 	SAFE_DELETE(this->layout);
 
-	return 0;
+	return this->gameMode;
 }
 
 GameState::StateCode GameStateMainMenu::update()
@@ -32,7 +31,12 @@ GameState::StateCode GameStateMainMenu::update()
 	case 'q':
 		return GameState::QUIT;
 
-	case '\n':
+	case '1':
+		this->gameMode = 1;
+		return GameState::GAME_START;
+
+	case '2':
+		this->gameMode = 2;
 		return GameState::GAME_START;
 	}
 

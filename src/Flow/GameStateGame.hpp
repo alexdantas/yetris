@@ -3,7 +3,6 @@
 
 #include <Flow/GameState.hpp>
 #include <Game/GameMode.hpp>
-#include <Interface/Layout.hpp>
 
 /// This represents the actual game taking place.
 ///
@@ -34,7 +33,7 @@ public:
     virtual ~GameStateGame();
 
     /// Constructs everything necessary for the game.
-    void load(int stack=0);
+    void load(int gameMode=0);
 
     /// Destroys anything builded during the game
     int unload();
@@ -50,9 +49,6 @@ public:
     void draw();
 
 private:
-	/// How the things on the screen are displayed.
-	Layout* layout;
-
 	/// The rules of the current game.
 	GameMode* game;
 

@@ -42,12 +42,14 @@ void StateManager::run()
 			break;
 
 		case GameState::GAME_START:
-			this->currentState->unload();
+		{
+			int mode = this->currentState->unload();
 			delete this->currentState;
 
 			this->currentState = new GameStateGame();
-			this->currentState->load();
+			this->currentState->load(mode);
 			break;
+		}
 
 		default:
 			break;

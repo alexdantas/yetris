@@ -22,6 +22,7 @@ public:
 
 private:
 	LayoutMainMenu* layout;
+	int gameMode;
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

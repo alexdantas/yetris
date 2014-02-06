@@ -27,6 +27,16 @@ void LayoutMainMenu::draw()
 	this->main->print(" |_|  |_|__  |_|  |_| \\ |_| _)_) ", 1, 3, Colors::pair(COLOR_RED, COLOR_DEFAULT));
 
 
+	this->main->print("1. Survival",
+	                  1,
+	                  5,
+	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
+
+	this->main->print("2. Invisible",
+	                  1,
+	                  6,
+	                  Colors::pair(COLOR_GREEN, COLOR_DEFAULT));
+
 	this->main->print("Press <enter> to start",
 	                          1,
 	                          this->main->getH() - 2,

@@ -48,13 +48,16 @@ public:
 	int getW();
 	int getH();
 
+	void turnInvisible(bool option);
+
+	// HACK, do we need this?
+	std::vector< std::vector <Block*> > block;
+
 private:
 	int x;
 	int y;
 	int width;
 	int height;
-
-	std::vector< std::vector <Block*> > block;
 };
 
 #endif //BOARD_H_DEFINED

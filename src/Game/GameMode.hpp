@@ -26,6 +26,9 @@ public:
 	/// Updates internal game state.
 	virtual void update() = 0;
 
+	/// Shows the game on the screen.
+	virtual void draw() = 0;
+
 	/// Tells if the game ended.
 	virtual bool isOver() = 0;
 

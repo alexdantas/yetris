@@ -1,8 +1,8 @@
-#include <Interface/LayoutGameDefault.hpp>
+#include <Interface/LayoutGameModeSurvival.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 
-LayoutGameDefault::LayoutGameDefault(GameModeSurvival* game, int width, int height):
+LayoutGameModeSurvival::LayoutGameModeSurvival(GameModeSurvival* game, int width, int height):
 	Layout(width, height),
 	game(game),
 	board(nullptr),
@@ -22,11 +22,11 @@ LayoutGameDefault::LayoutGameDefault(GameModeSurvival* game, int width, int heig
 {
 	this->windowsInit();
 }
-LayoutGameDefault::~LayoutGameDefault()
+LayoutGameModeSurvival::~LayoutGameModeSurvival()
 {
 	this->windowsExit();
 }
-void LayoutGameDefault::windowsInit()
+void LayoutGameModeSurvival::windowsInit()
 {
 	// We'll start all the windows inside the Layout
 
@@ -256,7 +256,7 @@ void LayoutGameDefault::windowsInit()
 	                  Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
 	this->info->refresh();
 }
-void LayoutGameDefault::windowsExit()
+void LayoutGameModeSurvival::windowsExit()
 {
 	SAFE_DELETE(this->main);
 
@@ -281,7 +281,7 @@ void LayoutGameDefault::windowsExit()
 	SAFE_DELETE(this->hscores_container);
 	SAFE_DELETE(this->hscores);
 }
-void LayoutGameDefault::draw()
+void LayoutGameModeSurvival::draw()
 {
 	if (! this->game)
 		return;

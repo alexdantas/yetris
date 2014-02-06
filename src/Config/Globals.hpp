@@ -49,6 +49,8 @@ namespace Globals
 		extern bool slide_right;
 
 		extern int line_clear_timeout_us;
+
+		extern bool invisible;
 	};
 	namespace Theme
 	{
@@ -62,6 +64,8 @@ namespace Globals
 		extern Block* piece;
 		extern Block* ghost;
 		extern Block* locked;
+		extern Block* invisible;
+
 		extern Block* piece_S;
 		extern Block* piece_Z;
 		extern Block* piece_O;

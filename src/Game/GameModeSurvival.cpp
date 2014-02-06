@@ -3,9 +3,13 @@
 #include <Game/PieceDefinitions.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
+#include <Interface/LayoutGameModeSurvival.hpp>
+
+#include <stdlib.h>
 
 GameModeSurvival::GameModeSurvival():
 	GameMode(),
+	layout(NULL),
 	gameOver(false),
 	pieceCurrent(NULL),
 	pieceGhost(NULL),
@@ -13,7 +17,8 @@ GameModeSurvival::GameModeSurvival():
 	board(NULL),
 	movedPieceDown(NULL),
 	canHold(true),
-	willClearLines(true)
+	willClearLines(true),
+	isInvisible(false)
 { }
 
 void GameModeSurvival::start()
@@ -26,6 +31,8 @@ void GameModeSurvival::start()
 
 	this->userAskedToQuit = false;
 	this->gameOver = false;
+
+	this->layout = new LayoutGameModeSurvival(this, 80, 24);
 
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
@@ -42,9 +49,10 @@ void GameModeSurvival::start()
 
 	this->rotationSystem = new RotationSystemSRS();
 
-	this->pieceTimer.start();
-
+	this->timerPiece.start();
 	this->stats = Statistics();
+
+	this->timerInvisible.start();
 }
 void GameModeSurvival::handleInput(int c)
 {
@@ -88,12 +96,16 @@ void GameModeSurvival::handleInput(int c)
 	{
 		this->holdCurrentPiece();
 	}
+	else if (c == 'o')
+	{
+		this->board->turnInvisible(false);
+	}
 }
 void GameModeSurvival::update()
 {
 	// Dropping piece if enough time has passed
-	this->pieceTimer.pause();
-	if (this->pieceTimer.delta_ms() >= 800)
+	this->timerPiece.pause();
+	if (this->timerPiece.delta_ms() >= 800)
 	{
 		if (! this->movedPieceDown)
 		{
@@ -108,10 +120,10 @@ void GameModeSurvival::update()
 		else
 			this->movedPieceDown = false;
 
-		this->pieceTimer.start();
+		this->timerPiece.start();
 	}
 	else
-		this->pieceTimer.unpause();
+		this->timerPiece.unpause();
 
 	this->pieceGhost->update(this->pieceCurrent,
 	                         this->board);
@@ -142,6 +154,40 @@ void GameModeSurvival::update()
 	// Checking if game over
 	if (this->board->isFull())
 		this->gameOver = true;
+
+	// If on invisible mode, will flash the pieces
+	// once in a while
+	if (Globals::Game::invisible)
+	{
+		this->timerInvisible.pause();
+		if (this->isInvisible)
+		{
+			if (this->timerInvisible.delta_s() > 3)
+			{
+				this->board->turnInvisible(false);
+				this->timerInvisible.start();
+				this->isInvisible = false;
+			}
+			else
+				this->timerInvisible.unpause();
+		}
+		else
+		{
+
+			if (this->timerInvisible.delta_ms() > 500)
+			{
+				this->board->turnInvisible(true);
+				this->timerInvisible.start();
+				this->isInvisible = true;
+			}
+			else
+				this->timerInvisible.unpause();
+		}
+	}
+}
+void GameModeSurvival::draw()
+{
+	this->layout->draw();
 }
 bool GameModeSurvival::isOver()
 {
@@ -172,18 +218,21 @@ void GameModeSurvival::lockCurrentPiece()
 	default: break;
 	}
 
+	// Invisible game mode! Yay!
+	if (Globals::Game::invisible)
+		this->pieceCurrent->block = Globals::Theme::invisible;
+
 	// Actually locking the current piece
 	this->board->lockPiece(this->pieceCurrent);
 
 	// Getting next piece
 	delete this->pieceCurrent;
-
 	this->pieceCurrent = this->getNextPiece();
 
 	// Since we've dropped the piece, we can hold now
 	this->canHold = true;
 
-	this->pieceTimer.start();
+	this->timerPiece.start();
 }
 Piece* GameModeSurvival::getNextPiece()
 {

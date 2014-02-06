@@ -49,10 +49,17 @@ public:
 	PieceType getType();
 	short getRotation();
 
+	// Hacks that need to be fixed
+	bool isVisible;
+
 protected:
 	PieceType type;
+
+	// HACK to make piece invisible right before locking
+public:
 	Block* block;
 
+protected:
 	int x;
 	int y;
 
