@@ -38,6 +38,14 @@ GameState::StateCode GameStateMainMenu::update()
 	case '2':
 		this->gameMode = 2;
 		return GameState::GAME_START;
+
+	case '3':
+		this->gameMode = 3;
+		return GameState::GAME_START;
+
+	case '4':
+		this->gameMode = 4;
+		return GameState::GAME_START;
 	}
 
 	return GameState::CONTINUE;

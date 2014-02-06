@@ -19,6 +19,14 @@ void GameStateGame::load(int gameMode)
 		Globals::Game::invisible = true;
 		break;
 
+	case 3:
+		Globals::Game::slide_left = true;
+		break;
+
+	case 4:
+		Globals::Game::slide_right = true;
+		break;
+
 	default:
 		break;
 	}

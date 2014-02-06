@@ -225,6 +225,12 @@ void GameModeSurvival::lockCurrentPiece()
 	// Actually locking the current piece
 	this->board->lockPiece(this->pieceCurrent);
 
+	if (Globals::Game::slide_right)
+		this->board->pushRight();
+
+	if (Globals::Game::slide_left)
+		this->board->pushLeft();
+
 	// Getting next piece
 	delete this->pieceCurrent;
 	this->pieceCurrent = this->getNextPiece();
