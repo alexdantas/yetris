@@ -291,9 +291,10 @@ void LayoutGameModeSurvival::draw()
 
 	this->board->refresh();
 
+	// Awkward way of clearing lines.
+	// We first clear the lines then wait for a little bit.
 	if (this->game->willClearLines)
 	{
-		// Waiting a lil bit
 		this->board->clear();
 		this->game->board->draw(this->board);
 		this->board->refresh();
@@ -301,6 +302,7 @@ void LayoutGameModeSurvival::draw()
 		Utils::delay_us(Globals::Game::line_clear_timeout_us);
 	}
 
+	// Hold piece
 	if (this->game->pieceHold)
 	{
 		this->hold->clear();
@@ -308,6 +310,7 @@ void LayoutGameModeSurvival::draw()
 		this->hold->refresh();
 	}
 
+	// Next pieces
 	for (int i = 0; i < Globals::Game::next_pieces; i++)
 	{
 		Window* w = this->next[i];
@@ -320,6 +323,68 @@ void LayoutGameModeSurvival::draw()
 		p.draw(w);
 
 		w->refresh();
+	}
+
+	// Statistics on the left side
+	// A mess of direct Ncurses calls - fix this later
+	this->score->clear();
+
+	ColorPair hilite = Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true);
+
+	this->score->print("High Score", 1, 3, hilite);
+	this->score->print("Score", 1, 6, hilite);
+	this->score->print("Lines", 1, 9, hilite);
+	this->score->print("Level", 1, 12, hilite);
+
+	// Default color
+	wattrset(this->score->win, COLOR_PAIR(0));
+	mvwprintw(this->score->win, 4,  1, "%10d", 666);
+	mvwprintw(this->score->win, 7,  1, "%10d", 1);
+	mvwprintw(this->score->win, 10, 1, "%10d", this->game->stats.lines);
+	mvwprintw(this->score->win, 13, 9, "%02d", 12);
+
+	this->score->refresh();
+
+	// Statistics on the right part of the screen
+	if (Globals::Screen::show_statistics)
+	{
+		this->info->clear();
+		this->info->print("Statistics", 0, 0, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+
+		this->info->print("[I]", 2, 2, Globals::Theme::piece_I->color);
+		this->info->print("[T]", 2, 3, Globals::Theme::piece_T->color);
+		this->info->print("[L]", 2, 4, Globals::Theme::piece_L->color);
+		this->info->print("[J]", 2, 5, Globals::Theme::piece_J->color);
+		this->info->print("[S]", 2, 6, Globals::Theme::piece_S->color);
+		this->info->print("[Z]", 2, 7, Globals::Theme::piece_Z->color);
+		this->info->print("[O]", 2, 8, Globals::Theme::piece_O->color);
+
+		this->info->print("Singles", 15, 2, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Doubles", 15, 3, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Triples", 15, 4, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Tetris",  15, 5, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+
+		this->info->print("Pieces", 15, 7, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Lines",  15, 8, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+
+		wattrset(this->info->win, COLOR_PAIR(0));
+		mvwprintw(this->info->win, 2, 6, "x %3d", this->game->stats.I);
+		mvwprintw(this->info->win, 3, 6, "x %3d", this->game->stats.T);
+		mvwprintw(this->info->win, 4, 6, "x %3d", this->game->stats.L);
+		mvwprintw(this->info->win, 6, 6, "x %3d", this->game->stats.J);
+		mvwprintw(this->info->win, 5, 6, "x %3d", this->game->stats.S);
+		mvwprintw(this->info->win, 7, 6, "x %3d", this->game->stats.Z);
+		mvwprintw(this->info->win, 8, 6, "x %3d", this->game->stats.O);
+
+		mvwprintw(this->info->win, 2, 23, "x %3d", this->game->stats.singles);
+		mvwprintw(this->info->win, 3, 23, "x %3d", this->game->stats.doubles);
+		mvwprintw(this->info->win, 4, 23, "x %3d", this->game->stats.triples);
+		mvwprintw(this->info->win, 5, 23, "x %3d", this->game->stats.tetris);
+
+		mvwprintw(this->info->win, 7, 23, "x %3d", this->game->stats.pieces);
+		mvwprintw(this->info->win, 8, 23, "x %3d", this->game->stats.lines);
+
+		this->info->refresh();
 	}
 }
 

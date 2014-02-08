@@ -30,6 +30,8 @@ namespace Globals
 		extern bool outer_border;
 
 		extern bool use_colors;
+
+		extern bool show_statistics;
 	};
 	namespace Game
 	{

@@ -50,7 +50,6 @@ void GameModeSurvival::start()
 	this->rotationSystem = new RotationSystemSRS();
 
 	this->timerPiece.start();
-	this->stats = Statistics();
 
 	this->timerInvisible.start();
 }

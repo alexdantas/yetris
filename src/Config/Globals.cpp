@@ -18,6 +18,8 @@ bool Globals::Screen::outer_border  = true;
 
 bool Globals::Screen::use_colors = true;
 
+bool Globals::Screen::show_statistics = true;
+
 //  __     __    _      ____
 // / /`_  / /\  | |\/| | |_
 // \_\_/ /_/--\ |_|  | |_|__

@@ -46,10 +46,13 @@ public:
 
 	void setTitle(std::string title);
 
-protected:
+
 	/// Ncurses' internal data structure.
+	/// IT'S PUBLIC BECAUSE SOMETIMES I NEED TO CALL DIRECT
+	/// NCURSES CALLS - FIX THIS
 	WINDOW* win;
 
+protected:
 	/// Tells if we've got some initialization error.
 	bool error;
 
