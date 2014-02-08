@@ -46,7 +46,9 @@ void GameModeSurvival::start()
 	// And the first piece
 	this->pieceCurrent = this->getNextPiece();
 
-	this->pieceGhost = new PieceGhost();
+	if (Globals::Game::has_ghost)
+		this->pieceGhost = new PieceGhost();
+
 	this->pieceHold = NULL;
 
 	this->rotationSystem = new RotationSystemSRS();
@@ -136,8 +138,11 @@ void GameModeSurvival::update()
 	else
 		this->timerPiece.unpause();
 
-	this->pieceGhost->update(this->pieceCurrent,
-	                         this->board);
+	if (Globals::Game::has_ghost)
+	{
+		this->pieceGhost->update(this->pieceCurrent,
+		                         this->board);
+	}
 
 	// Clearing lines previously marked as full
 	if (this->willClearLines)

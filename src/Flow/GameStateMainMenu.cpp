@@ -9,7 +9,9 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	START_GAME,
 	INVISIBLE,
 	SLIDE_LEFT,
-	SLIDE_RIGHT
+	SLIDE_RIGHT,
+	HOLD_PIECE,
+	GHOST_PIECE
 };
 
 GameStateMainMenu::GameStateMainMenu():
@@ -43,6 +45,12 @@ void GameStateMainMenu::load(int stack)
 
 	check = new MenuItemCheckbox("Slide Right", SLIDE_RIGHT);
 	menu->add(check);
+
+	check = new MenuItemCheckbox("Hold Piece", HOLD_PIECE, true);
+	menu->add(check);
+
+	check = new MenuItemCheckbox("Ghost Piece", GHOST_PIECE, true);
+	menu->add(check);
 }
 
 int GameStateMainMenu::unload()
@@ -69,6 +77,9 @@ GameState::StateCode GameStateMainMenu::update()
 		Globals::Game::invisible   = this->menu->getBool(INVISIBLE);
 		Globals::Game::slide_left  = this->menu->getBool(SLIDE_LEFT);
 		Globals::Game::slide_right = this->menu->getBool(SLIDE_RIGHT);
+		Globals::Game::can_hold    = this->menu->getBool(HOLD_PIECE);
+		Globals::Game::can_hold    = this->menu->getBool(HOLD_PIECE);
+		Globals::Game::has_ghost   = this->menu->getBool(GHOST_PIECE);
 
 		// And then exit based on the selected option.
 		if (this->menu->getSelectedValue() == START_GAME)

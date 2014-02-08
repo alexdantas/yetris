@@ -1,9 +1,9 @@
 #include <Interface/MenuItemCheckbox.hpp>
 #include <Config/Globals.hpp>
 
-MenuItemCheckbox::MenuItemCheckbox(std::string label, int value):
+MenuItemCheckbox::MenuItemCheckbox(std::string label, int value, bool initial):
 	MenuItem(label, value),
-	checked(false)
+	checked(initial)
 {
 	this->type = MenuItem::CHECKBOX; // placing it above wont work
 }

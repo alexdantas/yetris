@@ -186,7 +186,9 @@ void LayoutGameModeSurvival::draw()
 
 	this->game->board->draw(this->board);
 
-	this->game->pieceGhost->draw(this->board);
+	if (Globals::Game::has_ghost)
+		this->game->pieceGhost->draw(this->board);
+
 	this->game->pieceCurrent->draw(this->board);
 
 	this->board->refresh();
