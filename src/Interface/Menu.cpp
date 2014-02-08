@@ -40,6 +40,16 @@ void Menu::draw(Window* window)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
 	{
+		// <rant>
+		// THIS IS VERY UGLY
+		// HOW CAN I LAY DOWN A CLASS HIERARCHY
+		// AND OVERRIDE PARENT FUNCTIONS ON CHILD CLASSES
+		// IF WHEN I HAVE A PARENT POINTER I CANT LET THE
+		// COMPILER DECIDE WETHER TO CALL PARENT OR CHILD
+		// FUNCTIONS?
+		// </rant>
+
+//		MenuItemCheckbox* pCheckbox = dynamic_cast<MenuItemCheckbox*>a
 		if (this->item[i] == this->current)
 		{
 			this->item[i]->draw(window,
@@ -148,5 +158,24 @@ int Menu::getSelectedValue()
 		return -1;
 
 	return (this->selectedItem->value);
+}
+bool Menu::getBool(int value)
+{
+	for (unsigned int i = 0; i < (this->item.size()); i++)
+	{
+		if (this->item[i]->value == value)
+		{
+			// Either the type got messed up or we have
+			// two items with the same value.
+			if (this->item[i]->type != MenuItem::CHECKBOX)
+				return false;
+
+			// This cast may be dangerous if the type was
+			// somehow changed.
+			MenuItemCheckbox* c = (MenuItemCheckbox*)this->item[i];
+			return c->isChecked();
+		}
+	}
+	return false;
 }
 

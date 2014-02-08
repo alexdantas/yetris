@@ -1,8 +1,9 @@
 #ifndef MENU_H_DEFINED
 #define MENU_H_DEFINED
 
-#include <Interface/MenuItem.hpp>
 #include <Interface/Window.hpp>
+#include <Interface/MenuItem.hpp>
+#include <Interface/MenuItemCheckbox.hpp>
 
 #include <vector>
 
@@ -29,6 +30,10 @@ public:
 
 	/// Returns the user-specified value of the selected item.
 	int getSelectedValue();
+
+	/// Returns the bool value of item that has #value.
+	/// @note Meaning the item must be a MenuItemCheckbox.
+	bool getBool(int value);
 
 private:
 

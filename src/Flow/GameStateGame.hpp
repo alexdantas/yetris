@@ -33,7 +33,7 @@ public:
     virtual ~GameStateGame();
 
     /// Constructs everything necessary for the game.
-    void load(int gameMode=0);
+    void load(int stack=0);
 
     /// Destroys anything builded during the game
     int unload();

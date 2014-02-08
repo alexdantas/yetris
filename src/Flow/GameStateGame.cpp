@@ -11,25 +11,9 @@ GameStateGame::GameStateGame():
 { }
 GameStateGame::~GameStateGame()
 { }
-void GameStateGame::load(int gameMode)
+void GameStateGame::load(int stack)
 {
-	switch(gameMode)
-	{
-	case 2:
-		Globals::Game::invisible = true;
-		break;
-
-	case 3:
-		Globals::Game::slide_left = true;
-		break;
-
-	case 4:
-		Globals::Game::slide_right = true;
-		break;
-
-	default:
-		break;
-	}
+	UNUSED(stack);
 
 	this->game = new GameModeSurvival();
 	this->game->start();

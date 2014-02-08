@@ -21,13 +21,14 @@ struct MenuItem
 
 	/// Create a MenuItem, duh.
 	MenuItem(std::string label, int value);
+	virtual ~MenuItem() { };
 
 	/// Shows this item at #x, #y with #width.
 	///
 	/// If this is the current item, send #hilite as true.
 	///
 	/// @note Yeah, height is always 1.
-	void draw(Window* window, int x, int y, int width, bool hilite=false);
+	virtual void draw(Window* window, int x, int y, int width, bool hilite=false);
 
 	/// Reacts according to #input.
 	///
@@ -37,7 +38,7 @@ struct MenuItem
 	/// whatever.
 	///
 	/// When inheriting this, make sure to implement it.
-	void handleInput(int input);
+	virtual void handleInput(int input);
 
 	/// Specific type of this widget.
 	/// @note It is set on the Constructor,

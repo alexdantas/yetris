@@ -1,10 +1,19 @@
 #include <Flow/GameStateMainMenu.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Misc/Utils.hpp>
+#include <Config/Globals.hpp>
+
+// Small local enum to ease reading
+enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
+{
+	START_GAME,
+	INVISIBLE,
+	SLIDE_LEFT,
+	SLIDE_RIGHT
+};
 
 GameStateMainMenu::GameStateMainMenu():
 	layout(NULL),
-	gameMode(0),
 	menu(NULL)
 { }
 GameStateMainMenu::~GameStateMainMenu()
@@ -17,21 +26,23 @@ void GameStateMainMenu::load(int stack)
 
 
 	// Creating the Menu and Items
-	this->menu = new Menu(34, 7, 10, 5);
+	this->menu = new Menu(24, 7, 32, 5);
 
 	MenuItem* item;
 
-	item = new MenuItem("Survival", 1);
+	item = new MenuItem("Start Game", START_GAME);
 	menu->add(item);
 
-	item = new MenuItem("Invisible", 2);
-	menu->add(item);
+	MenuItemCheckbox* check;
 
-	item = new MenuItem("Slide Left", 3);
-	menu->add(item);
+	check = new MenuItemCheckbox("Invisible", INVISIBLE);
+	menu->add(check);
 
-	item = new MenuItem("Slide Right", 4);
-	menu->add(item);
+	check = new MenuItemCheckbox("Slide Left", SLIDE_LEFT);
+	menu->add(check);
+
+	check = new MenuItemCheckbox("Slide Right", SLIDE_RIGHT);
+	menu->add(check);
 }
 
 int GameStateMainMenu::unload()
@@ -39,7 +50,7 @@ int GameStateMainMenu::unload()
 	SAFE_DELETE(this->layout);
 	SAFE_DELETE(this->menu);
 
-	return this->gameMode;
+	return 0;
 }
 
 GameState::StateCode GameStateMainMenu::update()
@@ -55,26 +66,13 @@ GameState::StateCode GameStateMainMenu::update()
 	{
 		// User selected an option
 		// Let's get values from menu items
+		Globals::Game::invisible   = this->menu->getBool(INVISIBLE);
+		Globals::Game::slide_left  = this->menu->getBool(SLIDE_LEFT);
+		Globals::Game::slide_right = this->menu->getBool(SLIDE_RIGHT);
 
 		// And then exit based on the selected option.
-		switch(this->menu->getSelectedValue())
-		{
-		case 1:
-			this->gameMode = 1;
+		if (this->menu->getSelectedValue() == START_GAME)
 			return GameState::GAME_START;
-
-		case 2:
-			this->gameMode = 2;
-			return GameState::GAME_START;
-
-		case 3:
-			this->gameMode = 3;
-			return GameState::GAME_START;
-
-		case 4:
-			this->gameMode = 4;
-			return GameState::GAME_START;
-		}
 	}
 
 	return GameState::CONTINUE;

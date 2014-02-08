@@ -23,7 +23,6 @@ public:
 
 private:
 	LayoutMainMenu* layout;
-	int gameMode;
 
 	/// The actual items on the menu.
 	Menu* menu;
