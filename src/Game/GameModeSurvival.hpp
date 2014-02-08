@@ -50,6 +50,13 @@ public:
 	/// If we'll quit the game right away.
 	bool willQuit();
 
+	/// Returns the game level for how many #lines were cleared.
+	int getLevel(int lines);
+
+	/// Returns how much time (millisseconds) we need to wait
+	/// for the piece to fall for a specific #level.
+	int getDelay(int level);
+
 protected:
 	LayoutGameModeSurvival* layout;
 

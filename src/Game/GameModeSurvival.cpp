@@ -109,8 +109,12 @@ void GameModeSurvival::handleInput(int c)
 void GameModeSurvival::update()
 {
 	// Dropping piece if enough time has passed
+	// (time based on current level which is based on how
+	//  many lines were cleared)
 	this->timerPiece.pause();
-	if (this->timerPiece.delta_ms() >= 800)
+	int delta = this->getDelay(this->score->level);
+
+	if (this->timerPiece.delta_ms() >= delta)
 	{
 		if (! this->movedPieceDown)
 		{
@@ -174,7 +178,8 @@ void GameModeSurvival::update()
 		this->score->points += line_score;
 	}
 
-
+	// Updating level based on total lines cleared.
+	this->score->level = this->getLevel(this->score->lines);
 
 	// Checking if game over
 	if (this->board->isFull())
@@ -322,5 +327,53 @@ void GameModeSurvival::holdCurrentPiece()
 bool GameModeSurvival::willQuit()
 {
 	return this->userAskedToQuit;
+}
+int GameModeSurvival::getLevel(int lines)
+{
+	// this is getting too long - need to create a math function
+
+	if (lines < 5)   return 1;
+	if (lines < 10)  return 2;
+	if (lines < 15)  return 3;
+	if (lines < 20)  return 4;
+	if (lines < 25)  return 5;
+	if (lines < 30)  return 6;
+	if (lines < 40)  return 7;
+	if (lines < 50)  return 8;
+	if (lines < 60)  return 9;
+	if (lines < 70)  return 10;
+	if (lines < 100) return 11;
+	if (lines < 120) return 12;
+	if (lines < 140) return 13;
+	if (lines < 160) return 14;
+	if (lines < 180) return 15;
+	if (lines < 210) return 16;
+	if (lines < 240) return 17;
+
+	return 0;
+}
+int GameModeSurvival::getDelay(int level)
+{
+	// returning delay in milliseconds
+	if (level < 2)  return 1000;
+	if (level < 3)  return 900;
+	if (level < 4)  return 850;
+	if (level < 5)  return 800;
+	if (level < 6)  return 750;
+	if (level < 7)  return 700;
+	if (level < 8)  return 650;
+	if (level < 9)  return 600;
+	if (level < 10)  return 550;
+	if (level < 11) return 500;
+	if (level < 12) return 450;
+	if (level < 13) return 400;
+	if (level < 14) return 350;
+	if (level < 15) return 300;
+	if (level < 16) return 250;
+	if (level < 17) return 200;
+	if (level < 18) return 150;
+	if (level < 19) return 100;
+
+	return 0;
 }
 

@@ -33,7 +33,7 @@ bool Globals::Game::can_hold  = true;
 bool Globals::Game::has_statistics      = true;
 bool Globals::Game::has_line_statistics = true;
 
-short Globals::Game::random_algorithm = 0;
+short Globals::Game::random_algorithm = 1;
 
 bool Globals::Game::has_game_over_animation = true;
 int  Globals::Game::line_clear_timeout_us   = 200000; // microseconds

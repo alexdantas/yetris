@@ -13,6 +13,7 @@ struct Score
 
 	unsigned int points;
 	unsigned int lines;
+	unsigned int level;
 
 	Score();
 };

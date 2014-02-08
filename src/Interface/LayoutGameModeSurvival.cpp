@@ -229,7 +229,7 @@ void LayoutGameModeSurvival::draw()
 
 	mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", 9000);
 	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", this->game->score->points);
-	mvwprintw(this->score->win, lowest_y    , 1, "%8d", 1);
+	mvwprintw(this->score->win, lowest_y    , 1, "%8d", this->game->score->level);
 
 	this->score->refresh();
 
@@ -275,8 +275,8 @@ void LayoutGameModeSurvival::draw()
 		mvwprintw(this->rightmost->win, 4, x_offset + 8, "x %3d", this->game->stats.triples);
 		mvwprintw(this->rightmost->win, 5, x_offset + 8, "x %3d", this->game->stats.tetris);
 
-		mvwprintw(this->rightmost->win, 7, x_offset + 8, "x %3d", this->game->stats.pieces);
-		mvwprintw(this->rightmost->win, 8, x_offset + 8, "x %3d", this->game->stats.lines);
+		mvwprintw(this->rightmost->win, 7, x_offset + 7, "x %4d", this->game->stats.pieces);
+		mvwprintw(this->rightmost->win, 8, x_offset + 7, "x %4d", this->game->stats.lines);
 
 		// Timer - how much time has passed since game start
 		this->rightmost->print("Timer", 2, 10, hilite);
@@ -290,6 +290,12 @@ void LayoutGameModeSurvival::draw()
 		wattrset(this->rightmost->win, COLOR_PAIR(0));
 
 		mvwprintw(this->rightmost->win, 10, 8, "%02d:%02d:%02d", hours, minutes, seconds);
+
+		// Delay
+		this->rightmost->print("Delay", 2, 12, hilite);
+		wattrset(this->rightmost->win, COLOR_PAIR(0));
+
+		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(this->game->score->level));
 
 		// Bottom line - version and Help
 		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
