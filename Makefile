@@ -63,8 +63,8 @@ CONFIG_FILE = config.ini
 # Build info
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
-CXXFLAGS      = $(CDEBUG) -Wall -Wextra -std=c++0x -I"src/"
-LDFLAGS     = -lncurses
+CXXFLAGS    = $(CDEBUG) -Wall -Wextra -std=c++0x -I"src/" -m32
+LDFLAGS     = -lncurses -m32
 INCLUDESDIR =
 LIBSDIR     =
 
@@ -82,7 +82,7 @@ DEFINES = -DVERSION=\""$(VERSION)"\"         \
 
 # iniparser stuff
 INIDIR     = deps/iniparser
-INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra
+INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra -m32
 INI_OBJS   = $(INIDIR)/inidictionary.o \
              $(INIDIR)/iniparser.o
 
