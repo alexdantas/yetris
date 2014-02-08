@@ -30,9 +30,6 @@ int Globals::Game::initial_noise = 0;
 bool Globals::Game::has_ghost = true;
 bool Globals::Game::can_hold  = true;
 
-bool Globals::Game::has_statistics      = true;
-bool Globals::Game::has_line_statistics = true;
-
 short Globals::Game::random_algorithm = 1;
 
 bool Globals::Game::has_game_over_animation = true;

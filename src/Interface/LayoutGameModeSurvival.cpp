@@ -22,10 +22,19 @@ LayoutGameModeSurvival::~LayoutGameModeSurvival()
 void LayoutGameModeSurvival::windowsInit()
 {
 	// We'll start all the windows inside the Layout
+	this->main->clear();
+
+	// If we're not going to show statistics, will
+	// leave a big hole on the left.
+	// Let's align it then.
+	int leftmost_x = 0;
+
+	if (! Globals::Screen::show_statistics)
+		leftmost_x = 18;
 
 	// Leftmost window
 	this->leftmost = new Window(this->main,
-	                            0,
+	                            leftmost_x,
 	                            0,
 	                            4*2 + 2, // width of a piece
 	                            0);
@@ -130,39 +139,43 @@ void LayoutGameModeSurvival::windowsInit()
 		this->next[i]->refresh();
 	}
 
-	// Container for Statistics and Miscellaneous information.
-	this->rightmost = new Window(this->main,
-	                             this->middle_right->getX() + this->middle_right->getW(),
-	                             0,
-	                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
-	                             0);
-
-	if (Globals::Screen::show_borders)
+	// Will only show the right window if statistics is enabled
+	if (Globals::Screen::show_statistics)
 	{
-		this->rightmost->borders(Globals::Screen::fancy_borders ?
-		                         Window::BORDER_FANCY :
-		                         Window::BORDER_REGULAR);
+		// Container for Statistics and Miscellaneous information.
+		this->rightmost = new Window(this->main,
+		                             this->middle_right->getX() + this->middle_right->getW(),
+		                             0,
+		                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
+		                             0);
+
+		if (Globals::Screen::show_borders)
+		{
+			this->rightmost->borders(Globals::Screen::fancy_borders ?
+			                         Window::BORDER_FANCY :
+			                         Window::BORDER_REGULAR);
+		}
+		this->rightmost->setTitle("Statistics");
+		this->rightmost->clear();
+		this->rightmost->refresh();
 	}
-	this->rightmost->setTitle("Statistics");
-	this->rightmost->clear();
-	this->rightmost->refresh();
 }
 void LayoutGameModeSurvival::windowsExit()
 {
-	SAFE_DELETE(this->main);
-
 	SAFE_DELETE(this->leftmost);
 	SAFE_DELETE(this->hold);
 	SAFE_DELETE(this->middle_left);
 	SAFE_DELETE(this->board);
 	SAFE_DELETE(this->middle_right);
 	SAFE_DELETE(this->rightmost);
-	SAFE_DELETE(this->rightmost);
 
 	for (unsigned int i = 0; i < this->next.size(); i++)
 		SAFE_DELETE(this->next[i]);
 
-	this->next.clear();
+	this->next.clear(); // clear() as in std::vector
+
+	this->main->clear(); // clear() as in Window
+	this->main->refresh(); // clear() as in Window
 }
 void LayoutGameModeSurvival::draw()
 {

@@ -41,9 +41,6 @@ namespace Globals
 		extern bool has_ghost;
 		extern bool can_hold;
 
-		extern bool has_statistics;
-		extern bool has_line_statistics;
-
 		extern short random_algorithm;
 
 		extern bool has_game_over_animation;
