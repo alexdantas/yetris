@@ -23,10 +23,12 @@ void LayoutMainMenu::draw()
 {
 	this->main->clear();
 
-	this->main->print(" _     ____ _____  ___   _   __  ", 1, 1, Colors::pair(COLOR_RED, COLOR_DEFAULT));
-	this->main->print("\\ \\_/ | |_   | |  | |_) | | ( (` ", 1, 2, Colors::pair(COLOR_RED, COLOR_DEFAULT));
-	this->main->print(" |_|  |_|__  |_|  |_| \\ |_| _)_) ", 1, 3, Colors::pair(COLOR_RED, COLOR_DEFAULT));
-
+	this->main->print_multiline("             __        __       \n"
+	                            ".--.--.-----|  |_.----|__.-----.\n"
+	                            "|  |  |  -__|   _|   _|  |__ --|\n"
+	                            "|___  |_____|____|__| |__|_____|\n"
+	                            "|_____|                         ",
+	                            24, 1, Colors::pair(COLOR_RED, COLOR_DEFAULT));
 
 	this->main->print("1. Survival",
 	                  2,

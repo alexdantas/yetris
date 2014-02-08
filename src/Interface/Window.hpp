@@ -27,6 +27,8 @@ public:
 	bool isValid();
 
 	void print(std::string str, int x, int y, ColorPair pair=0);
+	void print_multiline(std::string str, int x, int y, ColorPair pair=0);
+
 	void printChar(int c, int x, int y, ColorPair pair=0);
 
 	void setBackground(chtype ch, ColorPair pair);
