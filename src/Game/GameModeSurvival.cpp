@@ -96,6 +96,24 @@ void GameModeSurvival::handleInput(int c)
 			this->timerPiece.pause();
 		}
 	}
+	else if (c == 'h' || c == 'H')
+	{
+		// Toggling Pause and Help window
+		if (this->isPaused)
+		{
+			this->isPaused = false;
+			this->showHelp = false;
+			this->timer.unpause();
+			this->timerPiece.unpause();
+		}
+		else
+		{
+			this->isPaused = true;
+			this->showHelp = true;
+			this->timer.pause();
+			this->timerPiece.pause();
+		}
+	}
 
 	// Other keys are not used when paused.
 	if (this->isPaused)

@@ -48,6 +48,14 @@ private:
 	/// Miscellaneous information and Statistics.
 	/// Optional for the player.
 	Window* rightmost;
+
+	// The following Windows appear only when requested.
+
+	/// Contains the pause menu.
+	Window* pause;
+
+	/// Contains the help screen.
+	Window* help;
 };
 
 #endif //LAYOUTGAMEMODESURVIVAL_H_DEFINED
