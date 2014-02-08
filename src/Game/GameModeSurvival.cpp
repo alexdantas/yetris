@@ -297,7 +297,9 @@ void GameModeSurvival::holdCurrentPiece()
 	Piece* tmp = this->pieceHold;
 
 	this->pieceHold = new Piece(this->pieceCurrent->getType(),
-	                            0, 0);
+	                            -1, -1); // so we can draw nicely
+	if (this->pieceHold->getType() == Piece::O) // this too
+		this->pieceHold->moveBy(0, 1);
 
 	if (! tmp)
 	{

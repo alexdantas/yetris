@@ -34,7 +34,7 @@ void LayoutGameModeSurvival::windowsInit()
 	this->leftmost = new Window(this->main,
 	                            0,
 	                            0,
-	                            6*2 + 2,
+	                            4*2 + 2,
 	                            0);
 
 	if (Globals::Screen::fancy_borders)
@@ -49,35 +49,35 @@ void LayoutGameModeSurvival::windowsInit()
 			// hold and score windows
 			this->leftmost->printChar(ACS_LLCORNER,
 			                          0,
-			                          5,
+			                          3,
 			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
 			this->leftmost->horizontalLine(1,
-			                               5,
+			                               3,
 			                               ACS_HLINE,
 			                               this->leftmost->getW() - 2,
 			                               Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
 			this->leftmost->printChar(ACS_LRCORNER,
 			                          this->leftmost->getW() - 1,
-			                          5,
+			                          3,
 			                          Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 
 			// Making the bottom line
 			// between hold and score windows
 			this->leftmost->printChar(ACS_ULCORNER,
 			                          0,
-			                          6,
+			                          4,
 			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
 
 			this->leftmost->horizontalLine(1,
-			                               6,
+			                               4,
 			                               ACS_HLINE,
 			                               this->leftmost->getW() - 2,
 			                               Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
 
 			this->leftmost->printChar(ACS_URCORNER,
 			                          this->leftmost->getW() - 1,
-			                          6,
+			                          4,
 			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
 		}
 	}
@@ -85,7 +85,7 @@ void LayoutGameModeSurvival::windowsInit()
 	{
 		this->leftmost->borders(Window::BORDER_FANCY);
 		this->leftmost->horizontalLine(1,
-		                               5,
+		                               3,
 		                               '-',
 		                               this->leftmost->getW() - 2,
 		                               Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
@@ -234,7 +234,7 @@ void LayoutGameModeSurvival::windowsInit()
 	                        0,
 	                        0,
 	                        this->leftmost_container->getW(),
-	                        4);
+	                        2);
 
 	this->score = new Window(this->leftmost_container,
 	                         0,
@@ -331,18 +331,16 @@ void LayoutGameModeSurvival::draw()
 
 	ColorPair hilite = Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true);
 
-	this->score->print("High Score", 1, 3, hilite);
-	this->score->print("Score", 1, 6, hilite);
-	this->score->print("Lines", 1, 9, hilite);
-	this->score->print("Level", 1, 12, hilite);
+	this->score->print("Hi-Score",  0, 8, hilite);
+	this->score->print("Score",     0, 11, hilite);
+	this->score->print("Level",     0, 14, hilite);
 
 	// Default color
 	wattrset(this->score->win, COLOR_PAIR(0));
 
-	mvwprintw(this->score->win, 4,  1, "%10u", 9000);
-	mvwprintw(this->score->win, 7,  1, "%10u", this->game->score->points);
-	mvwprintw(this->score->win, 10, 1, "%10u", this->game->stats.lines);
-	mvwprintw(this->score->win, 13, 9, "%02d", 1);
+	mvwprintw(this->score->win, 9,  0, "%8u", 9000);
+	mvwprintw(this->score->win, 12, 0, "%8u", this->game->score->points);
+	mvwprintw(this->score->win, 15, 0, "%8d", 1);
 
 	this->score->refresh();
 
@@ -365,30 +363,32 @@ void LayoutGameModeSurvival::draw()
 		this->info->print("[Z]", 1, 7, Globals::Theme::piece_Z->color);
 		this->info->print("[O]", 1, 8, Globals::Theme::piece_O->color);
 
-		this->info->print("Singles", 15, 2, hilite);
-		this->info->print("Doubles", 15, 3, hilite);
-		this->info->print("Triples", 15, 4, hilite);
-		this->info->print("Tetris",  15, 5, hilite);
+		int x_offset = this->info->getW() - 13;
 
-		this->info->print("Pieces", 15, 7, hilite);
-		this->info->print("Lines",  15, 8, hilite);
+		this->info->print("Singles", x_offset, 2, hilite);
+		this->info->print("Doubles", x_offset, 3, hilite);
+		this->info->print("Triples", x_offset, 4, hilite);
+		this->info->print("Tetris",  x_offset, 5, hilite);
+
+		this->info->print("Pieces", x_offset, 7, hilite);
+		this->info->print("Lines",  x_offset, 8, hilite);
 
 		wattrset(this->info->win, COLOR_PAIR(0));
 		mvwprintw(this->info->win, 2, 5, "x %3d", this->game->stats.I);
 		mvwprintw(this->info->win, 3, 5, "x %3d", this->game->stats.T);
 		mvwprintw(this->info->win, 4, 5, "x %3d", this->game->stats.L);
-		mvwprintw(this->info->win, 6, 5, "x %3d", this->game->stats.J);
-		mvwprintw(this->info->win, 5, 5, "x %3d", this->game->stats.S);
+		mvwprintw(this->info->win, 5, 5, "x %3d", this->game->stats.J);
+		mvwprintw(this->info->win, 6, 5, "x %3d", this->game->stats.S);
 		mvwprintw(this->info->win, 7, 5, "x %3d", this->game->stats.Z);
 		mvwprintw(this->info->win, 8, 5, "x %3d", this->game->stats.O);
 
-		mvwprintw(this->info->win, 2, 23, "x %3d", this->game->stats.singles);
-		mvwprintw(this->info->win, 3, 23, "x %3d", this->game->stats.doubles);
-		mvwprintw(this->info->win, 4, 23, "x %3d", this->game->stats.triples);
-		mvwprintw(this->info->win, 5, 23, "x %3d", this->game->stats.tetris);
+		mvwprintw(this->info->win, 2, x_offset + 8, "x %3d", this->game->stats.singles);
+		mvwprintw(this->info->win, 3, x_offset + 8, "x %3d", this->game->stats.doubles);
+		mvwprintw(this->info->win, 4, x_offset + 8, "x %3d", this->game->stats.triples);
+		mvwprintw(this->info->win, 5, x_offset + 8, "x %3d", this->game->stats.tetris);
 
-		mvwprintw(this->info->win, 7, 23, "x %3d", this->game->stats.pieces);
-		mvwprintw(this->info->win, 8, 23, "x %3d", this->game->stats.lines);
+		mvwprintw(this->info->win, 7, x_offset + 8, "x %3d", this->game->stats.pieces);
+		mvwprintw(this->info->win, 8, x_offset + 8, "x %3d", this->game->stats.lines);
 
 		// Timer - how much time has passed since game start
 		this->info->print("Timer", 0, 10, hilite);
