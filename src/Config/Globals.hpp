@@ -2,6 +2,7 @@
 #define GLOBALS_H_DEFINED
 
 #include <Game/Block.hpp>
+#include <Interface/Colors.hpp>
 
 /// All global settings to the game.
 ///
@@ -53,6 +54,9 @@ namespace Globals
 	};
 	namespace Theme
 	{
+		extern ColorPair text;
+		extern ColorPair hilite_text;
+
 		extern bool piece_has_colors;
 		extern bool ghost_has_colors;
 		extern bool show_pivot_block;

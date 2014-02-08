@@ -3,6 +3,7 @@
 
 #include <Interface/Layout.hpp>
 #include <Interface/Window.hpp>
+#include <Interface/Menu.hpp>
 
 ///
 class LayoutMainMenu: public Layout
@@ -14,7 +15,8 @@ public:
 	void windowsInit();
 	void windowsExit();
 
-	void draw();
+	/// Shows the Main Menu screen, along with drawing #menu.
+	void draw(Menu* menu);
 };
 
 #endif //LAYOUTMAINMENU_H_DEFINED

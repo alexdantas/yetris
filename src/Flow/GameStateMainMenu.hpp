@@ -3,6 +3,7 @@
 
 #include <Flow/GameState.hpp>
 #include <Interface/LayoutMainMenu.hpp>
+#include <Interface/Menu.hpp>
 
 /// The Main Menu.
 ///
@@ -23,6 +24,9 @@ public:
 private:
 	LayoutMainMenu* layout;
 	int gameMode;
+
+	/// The actual items on the menu.
+	Menu* menu;
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

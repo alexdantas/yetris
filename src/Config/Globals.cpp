@@ -42,6 +42,9 @@ bool Globals::Game::invisible = false;
 //  | |  | |_| | |_  | |\/| | |_
 //  |_|  |_| | |_|__ |_|  | |_|__
 
+ColorPair Globals::Theme::text = Colors::pair(COLOR_WHITE, COLOR_DEFAULT);
+ColorPair Globals::Theme::hilite_text = Colors::pair(COLOR_BLUE, COLOR_DEFAULT);
+
 bool Globals::Theme::piece_has_colors = true;
 bool Globals::Theme::ghost_has_colors = true;
 bool Globals::Theme::show_pivot_block = false;
