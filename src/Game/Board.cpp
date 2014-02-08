@@ -112,13 +112,28 @@ void Board::pushRight()
 }
 void Board::pushUp()
 {
+	// Pushing everything up except for the bottom line
 	for (int j = 0; j < (this->height - 1); j++)
 		for (int i = 0; i < (this->width); i++)
 			this->block[i][j] = this->block[i][j + 1];
 
+	// Adding random blocks on the bottom line.
+	//
+	// We have to assure there's at least a blank block
+	// or else it will get cleared.
+	int blank = Utils::Random::between(0, (this->width - 1));
+
 	for (int i = 0; i < (this->width); i++)
+	{
+		if (i == blank)
+		{
+			this->block[i][this->height - 1] = NULL;
+			continue;
+		}
+
 		if (Utils::Random::boolean())
 			this->block[i][this->height - 1] = Globals::Theme::piece_colorless;
+	}
 }
 void Board::pushDown()
 {
