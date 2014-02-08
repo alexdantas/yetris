@@ -194,6 +194,7 @@ void LayoutGameModeSurvival::windowsExit()
 {
 	SAFE_DELETE(this->leftmost);
 	SAFE_DELETE(this->hold);
+	SAFE_DELETE(this->score);
 	SAFE_DELETE(this->middle_left);
 	SAFE_DELETE(this->board);
 	SAFE_DELETE(this->middle_right);

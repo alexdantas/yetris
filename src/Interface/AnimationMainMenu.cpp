@@ -83,7 +83,10 @@ void AnimationMainMenu::update(Window* window)
 	while (i != std::end(this->bubbles))
 	{
 		if ((*i)->y <= 0)
+		{
+			SAFE_DELETE(*i);
 			i = this->bubbles.erase(i);
+		}
 		else
 			++i;
 	}

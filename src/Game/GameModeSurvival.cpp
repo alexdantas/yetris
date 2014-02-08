@@ -9,13 +9,14 @@
 
 GameModeSurvival::GameModeSurvival():
 	GameMode(),
-	layout(NULL),
+	layout(nullptr),
 	gameOver(false),
-	pieceCurrent(NULL),
-	pieceGhost(NULL),
-	pieceHold(NULL),
-	board(NULL),
-	movedPieceDown(NULL),
+	pieceCurrent(nullptr),
+	pieceGhost(nullptr),
+	pieceHold(nullptr),
+	board(nullptr),
+	rotationSystem(nullptr),
+	movedPieceDown(nullptr),
 	canHold(true),
 	willClearLines(true),
 	isInvisible(false),
@@ -30,8 +31,12 @@ void GameModeSurvival::start()
 	SAFE_DELETE(this->pieceCurrent);
 	SAFE_DELETE(this->pieceGhost);
 	SAFE_DELETE(this->pieceHold);
+	SAFE_DELETE(this->rotationSystem);
 	SAFE_DELETE(this->board);
 	SAFE_DELETE(this->score);
+	SAFE_DELETE(this->layout);
+	SAFE_DELETE(this->pieceGhost);
+
 	this->nextPieces.clear();
 
 	this->userAskedToQuit = false;
@@ -56,7 +61,7 @@ void GameModeSurvival::start()
 	if (Globals::Game::has_ghost)
 		this->pieceGhost = new PieceGhost();
 
-	this->pieceHold = NULL;
+	this->pieceHold = nullptr;
 
 	this->rotationSystem = new RotationSystemSRS();
 
