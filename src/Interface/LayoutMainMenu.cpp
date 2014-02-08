@@ -8,7 +8,9 @@
 LayoutMainMenu::LayoutMainMenu(int width, int height):
 	Layout(width, height),
 	logo(nullptr),
-	menu(nullptr)
+	menu(nullptr),
+	animationContainer(nullptr),
+	animation(nullptr)
 {
 	this->windowsInit();
 }
@@ -47,15 +49,24 @@ void LayoutMainMenu::windowsInit()
 		                    Window::BORDER_REGULAR);
 	}
 	this->menu->refresh();
+
+	this->animationContainer = new Window(this->main, 0, 0, 0, 0);
+	this->animation = new AnimationMainMenu(this->animationContainer,
+		25);
 }
 void LayoutMainMenu::windowsExit()
 {
 	SAFE_DELETE(this->menu);
 	SAFE_DELETE(this->logo);
+	SAFE_DELETE(this->animationContainer);
+	SAFE_DELETE(this->animation);
 }
 void LayoutMainMenu::draw(Menu* menu)
 {
 	this->main->clear();
+
+	this->animation->update(this->animationContainer);
+	this->animation->draw(this->animationContainer);
 
 	this->logo->clear();
 	this->logo->print_multiline("             __        __       \n"
