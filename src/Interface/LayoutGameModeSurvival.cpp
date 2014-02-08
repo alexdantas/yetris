@@ -5,20 +5,13 @@
 LayoutGameModeSurvival::LayoutGameModeSurvival(GameModeSurvival* game, int width, int height):
 	Layout(width, height),
 	game(game),
-	board(nullptr),
-	info(nullptr),
-	help(nullptr),
 	leftmost(nullptr),
-	middle_left(nullptr),
-	middle_right(nullptr),
-	rightmost(nullptr),
-	next_container(nullptr),
-	leftmost_container(nullptr),
+	hold(nullptr),
 	score(nullptr),
-	help_container(nullptr),
-	hscores_container(nullptr),
-	hscores(nullptr),
-	hold(nullptr)
+	middle_left(nullptr),
+	board(nullptr),
+	middle_right(nullptr),
+	rightmost(nullptr)
 {
 	this->windowsInit();
 }
@@ -34,69 +27,60 @@ void LayoutGameModeSurvival::windowsInit()
 	this->leftmost = new Window(this->main,
 	                            0,
 	                            0,
-	                            4*2 + 2,
+	                            4*2 + 2, // width of a piece
 	                            0);
 
-	if (Globals::Screen::fancy_borders)
+	if (Globals::Game::can_hold)
 	{
-		this->leftmost->borders(Window::BORDER_FANCY);
+		this->hold = new Window(this->leftmost,
+		                        0,
+		                        0,
+		                        this->leftmost->getW(),
+		                        4);
 
-		// If the player has no hold,
-		// doesn't make sense printing these parts
-		if (Globals::Game::can_hold)
+		if (Globals::Screen::show_borders)
 		{
-			// making the top line between
-			// hold and score windows
-			this->leftmost->printChar(ACS_LLCORNER,
-			                          0,
-			                          3,
-			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
-			this->leftmost->horizontalLine(1,
-			                               3,
-			                               ACS_HLINE,
-			                               this->leftmost->getW() - 2,
-			                               Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-
-			this->leftmost->printChar(ACS_LRCORNER,
-			                          this->leftmost->getW() - 1,
-			                          3,
-			                          Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-
-			// Making the bottom line
-			// between hold and score windows
-			this->leftmost->printChar(ACS_ULCORNER,
-			                          0,
-			                          4,
-			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
-
-			this->leftmost->horizontalLine(1,
-			                               4,
-			                               ACS_HLINE,
-			                               this->leftmost->getW() - 2,
-			                               Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
-
-			this->leftmost->printChar(ACS_URCORNER,
-			                          this->leftmost->getW() - 1,
-			                          4,
-			                          Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
+			this->hold->borders(Globals::Screen::fancy_borders ?
+			                    Window::BORDER_FANCY :
+			                    Window::BORDER_REGULAR);
 		}
-	}
-	else
-	{
-		this->leftmost->borders(Window::BORDER_FANCY);
-		this->leftmost->horizontalLine(1,
-		                               3,
-		                               '-',
-		                               this->leftmost->getW() - 2,
-		                               Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-	}
-	this->leftmost->refresh();
+		this->hold->refresh();
 
-	// Middle-left
+		this->hold->setTitle("Hold");
+		this->hold->clear();
+		this->hold->refresh();
+	}
+
+	// This window will span all available height if
+	// we can't hold.
+	int score_y = ((this->hold) ?
+	               this->hold->getH():
+	               0);
+
+	int score_height = ((this->hold) ?
+	                    this->leftmost->getH() - this->hold->getH():
+	                    this->leftmost->getH());
+
+	this->score = new Window(this->leftmost,
+	                         0,
+	                         score_y,
+	                         0,
+	                         score_height);
+
+
+	if (Globals::Screen::show_borders)
+	{
+		this->score->borders(Globals::Screen::fancy_borders ?
+		                     Window::BORDER_FANCY :
+		                     Window::BORDER_REGULAR);
+	}
+	this->score->refresh();
+
+	// Middle-left, container for the board
 	this->middle_left = new Window(this->main,
 	                               this->leftmost->getX() + this->leftmost->getW(),
-	                               1,
-	                               10 * 2 + 2,
+	                               0,
+	                               10*2 + 2, // 10 blocks + borders
 	                               0);
 
 	if (Globals::Screen::show_borders)
@@ -107,65 +91,49 @@ void LayoutGameModeSurvival::windowsInit()
 	}
 	this->middle_left->refresh();
 
-	// Middle-right
+	// The actual game border, inside that container.
+	this->board = new Window(this->middle_left, 0, 0, 0, 0);
+
+	// Middle-right, container of all the next pieces.
+	// It's height depents on how many next pieces we're showing.
+	int middle_right_height = Globals::Game::next_pieces * 3 + 1;
+
 	this->middle_right = new Window(this->main,
 	                                this->middle_left->getX() + this->middle_left->getW(),
-	                                1,
-	                                4 * 2 + 2,
-	                                0);
+	                                0,
+	                                4*2 + 2, // 4 blocks + borders
+	                                middle_right_height);
 
-	if (Globals::Screen::fancy_borders)
+	if (Globals::Screen::show_borders)
 	{
-		this->middle_right->borders(Window::BORDER_FANCY);
-
-		// Making the top line between 1st next and the rest
-		this->middle_right->printChar(ACS_LLCORNER,
-		                              0,
-		                              3,
-		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT, false));
-
-		this->middle_right->horizontalLine(1,
-		                                   3,
-		                                   ACS_HLINE,
-		                                   this->middle_right->getW() - 2,
-		                                   Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-
-		this->middle_right->printChar(ACS_LRCORNER,
-		                              this->middle_right->getW() - 1,
-		                              3,
-
-		                              Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-
-		// Making the bottom line between 1st next and the rest
-		this->middle_right->printChar(ACS_ULCORNER,
-		                              0,
-		                              4,
-		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true));
-
-		this->middle_right->horizontalLine(1,
-		                                   4,
-		                                   ACS_HLINE,
-		                                   this->middle_right->getW() - 2,
-		                                   Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
-
-		this->middle_right->printChar(ACS_URCORNER,
-		                              this->middle_right->getW() - 1,
-		                              4,
-		                              Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
+		this->middle_right->borders(Globals::Screen::fancy_borders ?
+		                            Window::BORDER_FANCY :
+		                            Window::BORDER_REGULAR);
 	}
-	else
-	{
-		this->middle_right->borders(Window::BORDER_REGULAR);
-
-		// wattrset(w.win, Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
-		// mvwhline(w.win, 3, 1, '-', w->getW() - 2);
-	}
+	this->middle_right->setTitle("Next");
+	this->middle_right->clear();
 	this->middle_right->refresh();
 
-	// Right-most
+	// First next piece
+	this->next.resize(Globals::Game::next_pieces);
+	this->next[0] = new Window(this->middle_right, 0, 0, 0, 2);
+
+	// The rest of the next pieces
+	for (unsigned int i = 1; i < (this->next.size()); i++)
+	{
+		this->next[i] = new Window(this->middle_right,
+		                           0,
+		                           this->next[i - 1]->getY() + this->next[i - 1]->getH() + 1,
+		                           0,
+		                           2);
+
+		this->next[i]->refresh();
+	}
+
+	// Container for Statistics and Miscellaneous information.
 	this->rightmost = new Window(this->main,
 	                             this->middle_right->getX() + this->middle_right->getW(),
-	                             1,
+	                             0,
 	                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
 	                             0);
 
@@ -175,107 +143,26 @@ void LayoutGameModeSurvival::windowsInit()
 		                         Window::BORDER_FANCY :
 		                         Window::BORDER_REGULAR);
 	}
+	this->rightmost->setTitle("Statistics");
+	this->rightmost->clear();
 	this->rightmost->refresh();
-
-	// Next Piece Container
-	this->next_container = new Window(this->middle_right,
-	                                  1,
-	                                  1,
-	                                  0,
-	                                  0);
-	this->next_container->refresh();
-
-	// First next piece
-	this->next.resize(Globals::Game::next_pieces);
-	this->next[0] = new Window(this->next_container,
-	                           0,
-	                           0,
-	                           this->next_container->getW(),
-	                           2);
-	this->next[0]->refresh();
-
-	// The rest of the next pieces
-	int y_offset = 2;
-
-	for (unsigned int i = 1; i < this->next.size(); i++)
-	{
-		/* making all the next pieces 1 line lower */
-		if (i != 1)
-			y_offset = 0;
-
-		this->next[i] = new Window(this->next_container,
-		                           0,
-		                           this->next[i - 1]->getY() + this->next[i - 1]->getH() + 1 + y_offset,
-		                           this->next_container->getW(),
-		                           2);
-
-		this->next[i]->refresh();
-	}
-
-	this->board = new Window(this->middle_left,
-	                         1,
-	                         1,
-	                         0,
-	                         0);
-
-	this->info = new Window(this->rightmost,
-	                        2,
-	                        1,
-	                        this->rightmost->getW() - 4,
-	                        0);
-
-	this->leftmost_container = new Window(this->leftmost,
-	                                      1,
-	                                      1,
-	                                      0,
-	                                      0);
-
-	this->hold = new Window(this->leftmost_container,
-	                        0,
-	                        0,
-	                        this->leftmost_container->getW(),
-	                        2);
-
-	this->score = new Window(this->leftmost_container,
-	                         0,
-	                         this->hold->getY() + this->hold->getH() + 2,
-	                         this->leftmost_container->getW(),
-	                         this->leftmost_container->getH() - (this->hold->getH()) - 2);
-
-	/* w->getW()  = s->leftmost_container->getW(); */
-	/* w->getH() = s->leftmost_container->getH() - (s->hold->getH()) - 2; */
-	/* w->getX()      = 0; */
-	/* w->getY()      = s->hold->getY() + s->hold->getH() + 2; */
-	/* w.win    = derwin(s->leftmost_container.win, w->getH(), w->getW(), w->getY(), w->getX()); */
-	/* wnoutrefresh(w.win); */
-	/* s->score = w; */
-
-	this->info->refresh();
 }
 void LayoutGameModeSurvival::windowsExit()
 {
 	SAFE_DELETE(this->main);
 
 	SAFE_DELETE(this->leftmost);
+	SAFE_DELETE(this->hold);
 	SAFE_DELETE(this->middle_left);
+	SAFE_DELETE(this->board);
 	SAFE_DELETE(this->middle_right);
 	SAFE_DELETE(this->rightmost);
-	SAFE_DELETE(this->next_container);
-	SAFE_DELETE(this->board);
-	SAFE_DELETE(this->info);
+	SAFE_DELETE(this->rightmost);
 
 	for (unsigned int i = 0; i < this->next.size(); i++)
 		SAFE_DELETE(this->next[i]);
 
 	this->next.clear();
-
-	SAFE_DELETE(this->hold);
-	SAFE_DELETE(this->leftmost_container);
-	SAFE_DELETE(this->score);
-	SAFE_DELETE(this->help_container);
-	SAFE_DELETE(this->help);
-	SAFE_DELETE(this->hscores_container);
-	SAFE_DELETE(this->hscores);
 }
 void LayoutGameModeSurvival::draw()
 {
@@ -331,16 +218,18 @@ void LayoutGameModeSurvival::draw()
 
 	ColorPair hilite = Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true);
 
-	this->score->print("Hi-Score",  0, 8, hilite);
-	this->score->print("Score",     0, 11, hilite);
-	this->score->print("Level",     0, 14, hilite);
+	int lowest_y = this->score->getH() - 2; // border
+
+	this->score->print("Hi-Score", 1, lowest_y - 7, hilite);
+	this->score->print("Score",    1, lowest_y - 4, hilite);
+	this->score->print("Level",    1, lowest_y - 1, hilite);
 
 	// Default color
 	wattrset(this->score->win, COLOR_PAIR(0));
 
-	mvwprintw(this->score->win, 9,  0, "%8u", 9000);
-	mvwprintw(this->score->win, 12, 0, "%8u", this->game->score->points);
-	mvwprintw(this->score->win, 15, 0, "%8d", 1);
+	mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", 9000);
+	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", this->game->score->points);
+	mvwprintw(this->score->win, lowest_y    , 1, "%8d", 1);
 
 	this->score->refresh();
 
@@ -348,50 +237,49 @@ void LayoutGameModeSurvival::draw()
 	// on the right part of the screen
 	if (Globals::Screen::show_statistics)
 	{
-		this->info->clear();
-		this->info->print("Statistics", 0, 0, hilite);
+		this->rightmost->clear();
 
 		// User name
-		this->info->print(this->game->score->name, this->info->getW() -this->game->score->name.size(), 0, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
+		this->rightmost->print(this->game->score->name, this->rightmost->getW() - this->game->score->name.size() - 2, 01, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
 
 		// Piece and Line Statistics
-		this->info->print("[I]", 1, 2, Globals::Theme::piece_I->color);
-		this->info->print("[T]", 1, 3, Globals::Theme::piece_T->color);
-		this->info->print("[L]", 1, 4, Globals::Theme::piece_L->color);
-		this->info->print("[J]", 1, 5, Globals::Theme::piece_J->color);
-		this->info->print("[S]", 1, 6, Globals::Theme::piece_S->color);
-		this->info->print("[Z]", 1, 7, Globals::Theme::piece_Z->color);
-		this->info->print("[O]", 1, 8, Globals::Theme::piece_O->color);
+		this->rightmost->print("[I]", 2, 2, Globals::Theme::piece_I->color);
+		this->rightmost->print("[T]", 2, 3, Globals::Theme::piece_T->color);
+		this->rightmost->print("[L]", 2, 4, Globals::Theme::piece_L->color);
+		this->rightmost->print("[J]", 2, 5, Globals::Theme::piece_J->color);
+		this->rightmost->print("[S]", 2, 6, Globals::Theme::piece_S->color);
+		this->rightmost->print("[Z]", 2, 7, Globals::Theme::piece_Z->color);
+		this->rightmost->print("[O]", 2, 8, Globals::Theme::piece_O->color);
 
-		int x_offset = this->info->getW() - 13;
+		int x_offset = this->rightmost->getW() - 15;
 
-		this->info->print("Singles", x_offset, 2, hilite);
-		this->info->print("Doubles", x_offset, 3, hilite);
-		this->info->print("Triples", x_offset, 4, hilite);
-		this->info->print("Tetris",  x_offset, 5, hilite);
+		this->rightmost->print("Singles", x_offset, 2, hilite);
+		this->rightmost->print("Doubles", x_offset, 3, hilite);
+		this->rightmost->print("Triples", x_offset, 4, hilite);
+		this->rightmost->print("Tetris",  x_offset, 5, hilite);
 
-		this->info->print("Pieces", x_offset, 7, hilite);
-		this->info->print("Lines",  x_offset, 8, hilite);
+		this->rightmost->print("Pieces", x_offset, 7, hilite);
+		this->rightmost->print("Lines",  x_offset, 8, hilite);
 
-		wattrset(this->info->win, COLOR_PAIR(0));
-		mvwprintw(this->info->win, 2, 5, "x %3d", this->game->stats.I);
-		mvwprintw(this->info->win, 3, 5, "x %3d", this->game->stats.T);
-		mvwprintw(this->info->win, 4, 5, "x %3d", this->game->stats.L);
-		mvwprintw(this->info->win, 5, 5, "x %3d", this->game->stats.J);
-		mvwprintw(this->info->win, 6, 5, "x %3d", this->game->stats.S);
-		mvwprintw(this->info->win, 7, 5, "x %3d", this->game->stats.Z);
-		mvwprintw(this->info->win, 8, 5, "x %3d", this->game->stats.O);
+		wattrset(this->rightmost->win, COLOR_PAIR(0));
+		mvwprintw(this->rightmost->win, 2, 6, "x %3d", this->game->stats.I);
+		mvwprintw(this->rightmost->win, 3, 6, "x %3d", this->game->stats.T);
+		mvwprintw(this->rightmost->win, 4, 6, "x %3d", this->game->stats.L);
+		mvwprintw(this->rightmost->win, 5, 6, "x %3d", this->game->stats.J);
+		mvwprintw(this->rightmost->win, 6, 6, "x %3d", this->game->stats.S);
+		mvwprintw(this->rightmost->win, 7, 6, "x %3d", this->game->stats.Z);
+		mvwprintw(this->rightmost->win, 8, 6, "x %3d", this->game->stats.O);
 
-		mvwprintw(this->info->win, 2, x_offset + 8, "x %3d", this->game->stats.singles);
-		mvwprintw(this->info->win, 3, x_offset + 8, "x %3d", this->game->stats.doubles);
-		mvwprintw(this->info->win, 4, x_offset + 8, "x %3d", this->game->stats.triples);
-		mvwprintw(this->info->win, 5, x_offset + 8, "x %3d", this->game->stats.tetris);
+		mvwprintw(this->rightmost->win, 2, x_offset + 8, "x %3d", this->game->stats.singles);
+		mvwprintw(this->rightmost->win, 3, x_offset + 8, "x %3d", this->game->stats.doubles);
+		mvwprintw(this->rightmost->win, 4, x_offset + 8, "x %3d", this->game->stats.triples);
+		mvwprintw(this->rightmost->win, 5, x_offset + 8, "x %3d", this->game->stats.tetris);
 
-		mvwprintw(this->info->win, 7, x_offset + 8, "x %3d", this->game->stats.pieces);
-		mvwprintw(this->info->win, 8, x_offset + 8, "x %3d", this->game->stats.lines);
+		mvwprintw(this->rightmost->win, 7, x_offset + 8, "x %3d", this->game->stats.pieces);
+		mvwprintw(this->rightmost->win, 8, x_offset + 8, "x %3d", this->game->stats.lines);
 
 		// Timer - how much time has passed since game start
-		this->info->print("Timer", 0, 10, hilite);
+		this->rightmost->print("Timer", 2, 10, hilite);
 
 		long delta_s = this->game->timer.delta_s();
 
@@ -399,16 +287,16 @@ void LayoutGameModeSurvival::draw()
 		int minutes = (delta_s / 60) % 60;
 		int hours   = ((delta_s / 60) / 60) % 24;
 
-		wattrset(this->info->win, COLOR_PAIR(0));
+		wattrset(this->rightmost->win, COLOR_PAIR(0));
 
-		mvwprintw(this->info->win, 10, 6, "%02d:%02d:%02d", hours, minutes, seconds);
+		mvwprintw(this->rightmost->win, 10, 8, "%02d:%02d:%02d", hours, minutes, seconds);
 
 		// Bottom line - version and Help
-		this->info->print("yetris v" VERSION, 0, this->info->getH() - 1, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
+		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
 
-		this->info->print("H", this->info->getW() - 4, this->info->getH() - 1, Colors::pair(COLOR_YELLOW, COLOR_DEFAULT));
-		this->info->print("elp", this->info->getW() - 3, this->info->getH() - 1, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
-		this->info->refresh();
+		this->rightmost->print("H", this->rightmost->getW() - 5, this->rightmost->getH() - 2, Colors::pair(COLOR_YELLOW, COLOR_DEFAULT));
+		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
+		this->rightmost->refresh();
 	}
 }
 

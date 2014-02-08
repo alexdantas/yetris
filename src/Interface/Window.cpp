@@ -36,6 +36,7 @@ Window::Window(int x, int y, int w, int h):
 Window::Window(Window* parent, int x, int y, int width, int height):
 	win(NULL),
 	error(false),
+	borderType(BORDER_NONE),
 	title("")
 {
 	// if we want to include the window inside a `parent`
@@ -45,7 +46,7 @@ Window::Window(Window* parent, int x, int y, int width, int height):
 		if (x == 0) x = 1;
 		if (y == 0) y = 1;
 
-		if (width == 0)  width  = parent->width  - 2;
+		if (width  == 0) width  = parent->width  - 2;
 		if (height == 0) height = parent->height - 2;
 	}
 

@@ -24,7 +24,7 @@ bool Globals::Screen::show_statistics = true;
 // / /`_  / /\  | |\/| | |_
 // \_\_/ /_/--\ |_|  | |_|__
 
-int Globals::Game::next_pieces   = 6;
+int Globals::Game::next_pieces   = 7;
 int Globals::Game::initial_noise = 0;
 
 bool Globals::Game::has_ghost = true;
