@@ -36,7 +36,11 @@ void GameModeSurvival::start()
 
 	this->layout = new LayoutGameModeSurvival(this, 80, 24);
 
+	// Creating the board and adding noise.
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
+
+	if (Globals::Game::initial_noise != 0)
+		this->board->addNoise(Globals::Game::initial_noise);
 
 	// Populating all the next pieces
 	this->nextPieces.resize(Globals::Game::next_pieces);
@@ -54,6 +58,7 @@ void GameModeSurvival::start()
 	this->rotationSystem = new RotationSystemSRS();
 
 	this->score = new Score();
+	this->score->level = Globals::Game::starting_level;
 
 	this->timerPiece.start();
 	this->stats = Statistics();
@@ -186,7 +191,15 @@ void GameModeSurvival::update()
 	}
 
 	// Updating level based on total lines cleared.
-	this->score->level = this->getLevel(this->score->lines);
+	//
+	// Will only update the level if it's greater than
+	// what currently is.
+	// It allows you to set a high current level even
+	// without clearing enough lines to get there.
+	unsigned int new_level = this->getLevel(this->score->lines);
+
+	if (new_level > this->score->level)
+		this->score->level = new_level;
 
 	// Checking if game over
 	if (this->board->isFull())

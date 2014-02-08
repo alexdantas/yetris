@@ -7,6 +7,8 @@
 enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
 	START_GAME,
+	STARTING_LEVEL,
+	INITIAL_NOISE,
 	INVISIBLE,
 	SLIDE_LEFT,
 	SLIDE_RIGHT,
@@ -34,6 +36,14 @@ void GameStateMainMenu::load(int stack)
 
 	item = new MenuItem("Start Game", START_GAME);
 	menu->add(item);
+
+	MenuItemNumberbox* number;
+
+	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, 1);
+	menu->add(number);
+
+	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, 0);
+	menu->add(number);
 
 	MenuItemCheckbox* check;
 
@@ -74,6 +84,9 @@ GameState::StateCode GameStateMainMenu::update()
 	{
 		// User selected an option
 		// Let's get values from menu items
+		Globals::Game::initial_noise = this->menu->getInt(INITIAL_NOISE);
+		Globals::Game::starting_level = this->menu->getInt(STARTING_LEVEL);
+
 		Globals::Game::invisible   = this->menu->getBool(INVISIBLE);
 		Globals::Game::slide_left  = this->menu->getBool(SLIDE_LEFT);
 		Globals::Game::slide_right = this->menu->getBool(SLIDE_RIGHT);

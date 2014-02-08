@@ -4,6 +4,7 @@
 #include <Interface/Window.hpp>
 #include <Interface/MenuItem.hpp>
 #include <Interface/MenuItemCheckbox.hpp>
+#include <Interface/MenuItemNumberbox.hpp>
 
 #include <vector>
 
@@ -34,6 +35,8 @@ public:
 	/// Returns the bool value of item that has #value.
 	/// @note Meaning the item must be a MenuItemCheckbox.
 	bool getBool(int value);
+
+	int getInt(int value);
 
 private:
 

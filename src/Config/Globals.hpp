@@ -38,6 +38,7 @@ namespace Globals
 	{
 		extern int next_pieces;
 		extern int initial_noise;
+		extern unsigned int starting_level;
 
 		extern bool has_ghost;
 		extern bool can_hold;

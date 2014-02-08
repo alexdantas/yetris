@@ -10,9 +10,9 @@ MenuItemCheckbox::MenuItemCheckbox(std::string label, int value, bool initial):
 
 void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite)
 {
-	int posx = x + width;
+	MenuItem::draw(window, x, y, width - 9, hilite); // button width
 
-	MenuItem::draw(window, x, y, width, hilite);
+	int posx = x + width;
 
 	window->print("[", posx - 8, y, Globals::Theme::text);
 

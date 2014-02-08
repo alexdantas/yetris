@@ -178,4 +178,23 @@ bool Menu::getBool(int value)
 	}
 	return false;
 }
+int Menu::getInt(int value)
+{
+	for (unsigned int i = 0; i < (this->item.size()); i++)
+	{
+		if (this->item[i]->value == value)
+		{
+			// Either the type got messed up or we have
+			// two items with the same value.
+			if (this->item[i]->type != MenuItem::NUMBERBOX)
+				return -1;
+
+			// This cast may be dangerous if the type was
+			// somehow changed.
+			MenuItemNumberbox* c = (MenuItemNumberbox*)this->item[i];
+			return c->current;
+		}
+	}
+	return -1;
+}
 
