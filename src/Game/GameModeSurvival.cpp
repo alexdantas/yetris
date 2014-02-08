@@ -18,7 +18,8 @@ GameModeSurvival::GameModeSurvival():
 	movedPieceDown(NULL),
 	canHold(true),
 	willClearLines(true),
-	isInvisible(false)
+	isInvisible(false),
+	score(nullptr)
 { }
 
 void GameModeSurvival::start()
@@ -27,6 +28,7 @@ void GameModeSurvival::start()
 	SAFE_DELETE(this->pieceGhost);
 	SAFE_DELETE(this->pieceHold);
 	SAFE_DELETE(this->board);
+	SAFE_DELETE(this->score);
 	this->nextPieces.clear();
 
 	this->userAskedToQuit = false;
@@ -48,6 +50,8 @@ void GameModeSurvival::start()
 	this->pieceHold = NULL;
 
 	this->rotationSystem = new RotationSystemSRS();
+
+	this->score = new Score();
 
 	this->timerPiece.start();
 	this->stats = Statistics();
@@ -129,28 +133,48 @@ void GameModeSurvival::update()
 	this->pieceGhost->update(this->pieceCurrent,
 	                         this->board);
 
+	// Clearing lines previously marked as full
 	if (this->willClearLines)
 	{
 		this->board->clearFullLines();
 		this->willClearLines = false;
 	}
 
+	// How many lines will be cleared on the next frame.
 	int lines = this->board->markFullLines();
 
 	if (lines != 0)
+	{
 		this->willClearLines = true;
 
-	// Statistics
-	this->stats.lines += lines;
-	switch(lines)
-	{
-	case 1: this->stats.singles++; break;
-	case 2: this->stats.doubles++; break;
-	case 3: this->stats.triples++; break;
-	case 4: this->stats.tetris++;  break;
+		// Statistics
+		this->stats.lines += lines;
+		this->score->lines += lines;
+		switch(lines)
+		{
+		case 1: this->stats.singles++; break;
+		case 2: this->stats.doubles++; break;
+		case 3: this->stats.triples++; break;
+		case 4: this->stats.tetris++;  break;
+		}
+
+		// Applying score (kinda complex)
+
+		// Score according to how many lines were cleared now
+		int line_score = 0;
+		switch (lines)
+		{
+		case 1:  line_score = 100; break;
+		case 2:  line_score = 300; break;
+		case 3:  line_score = 500; break;
+		case 4:  line_score = 800; break;
+		default: line_score = -1;  break; // someone's cheating...
+		}
+
+		this->score->points += line_score;
 	}
 
-	// Score
+
 
 	// Checking if game over
 	if (this->board->isFull())
@@ -226,6 +250,10 @@ void GameModeSurvival::lockCurrentPiece()
 	// Actually locking the current piece
 	this->board->lockPiece(this->pieceCurrent);
 
+	// Free score
+	this->score->points += 10;
+
+	// Sliding left/right based on options
 	if (Globals::Game::slide_right)
 		this->board->pushRight();
 

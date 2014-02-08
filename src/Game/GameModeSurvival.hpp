@@ -7,6 +7,7 @@
 #include <Game/RotationSystem.hpp>
 #include <Game/Statistics.hpp>
 #include <Game/PieceGhost.hpp>
+#include <Game/Score.hpp>
 #include <Misc/Timer.hpp>
 
 #include <vector>
@@ -96,6 +97,8 @@ protected:
 
 	// Times how long the user have been playing the game.
 	Timer timer;
+
+	Score* score;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

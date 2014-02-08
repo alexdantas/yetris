@@ -338,10 +338,11 @@ void LayoutGameModeSurvival::draw()
 
 	// Default color
 	wattrset(this->score->win, COLOR_PAIR(0));
-	mvwprintw(this->score->win, 4,  1, "%10d", 666);
-	mvwprintw(this->score->win, 7,  1, "%10d", 1);
-	mvwprintw(this->score->win, 10, 1, "%10d", this->game->stats.lines);
-	mvwprintw(this->score->win, 13, 9, "%02d", 12);
+
+	mvwprintw(this->score->win, 4,  1, "%10u", 9000);
+	mvwprintw(this->score->win, 7,  1, "%10u", this->game->score->points);
+	mvwprintw(this->score->win, 10, 1, "%10u", this->game->stats.lines);
+	mvwprintw(this->score->win, 13, 9, "%02d", 1);
 
 	this->score->refresh();
 
@@ -352,6 +353,10 @@ void LayoutGameModeSurvival::draw()
 		this->info->clear();
 		this->info->print("Statistics", 0, 0, hilite);
 
+		// User name
+		this->info->print(this->game->score->name, this->info->getW() -this->game->score->name.size(), 0, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
+
+		// Piece and Line Statistics
 		this->info->print("[I]", 1, 2, Globals::Theme::piece_I->color);
 		this->info->print("[T]", 1, 3, Globals::Theme::piece_T->color);
 		this->info->print("[L]", 1, 4, Globals::Theme::piece_L->color);
