@@ -28,9 +28,11 @@ void GameStateMainMenu::load(int stack)
 
 	this->layout = new LayoutMainMenu(80, 24);
 
-
 	// Creating the Menu and Items
-	this->menu = new Menu(24, 7, 32, 5);
+	this->menu = new Menu(1,
+	                      1,
+	                      this->layout->menu->getW() - 2,
+	                      this->layout->menu->getH() - 2);
 
 	MenuItem* item;
 

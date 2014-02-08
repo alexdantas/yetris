@@ -17,6 +17,9 @@ public:
 
 	/// Shows the Main Menu screen, along with drawing #menu.
 	void draw(Menu* menu);
+
+	Window* logo;
+	Window* menu;
 };
 
 #endif //LAYOUTMAINMENU_H_DEFINED
