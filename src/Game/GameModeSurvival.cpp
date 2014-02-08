@@ -19,7 +19,10 @@ GameModeSurvival::GameModeSurvival():
 	canHold(true),
 	willClearLines(true),
 	isInvisible(false),
-	score(nullptr)
+	score(nullptr),
+	isPaused(false),
+	showPauseMenu(false),
+	showHelp(false)
 { }
 
 void GameModeSurvival::start()
@@ -68,11 +71,37 @@ void GameModeSurvival::start()
 }
 void GameModeSurvival::handleInput(int c)
 {
+	// The only two absolute inputs are to quit and pause.
+	// Others depend if the game is paused or not.
+
 	if (c == Globals::Input::quit)
 	{
 		this->userAskedToQuit = true;
 	}
-	else if (c == Globals::Input::left)
+	else if (c == Globals::Input::pause)
+	{
+		// Toggling Pause
+		if (this->isPaused)
+		{
+			this->isPaused = false;
+			this->showPauseMenu = false;
+			this->timer.unpause();
+			this->timerPiece.unpause();
+		}
+		else
+		{
+			this->isPaused = true;
+			this->showPauseMenu = true;
+			this->timer.pause();
+			this->timerPiece.pause();
+		}
+	}
+
+	// Other keys are not used when paused.
+	if (this->isPaused)
+		return;
+
+	if (c == Globals::Input::left)
 	{
 		movePieceIfPossible(Piece::DIR_LEFT);
 		this->movedPieceDown = true;
@@ -110,13 +139,12 @@ void GameModeSurvival::handleInput(int c)
 	{
 		this->holdCurrentPiece();
 	}
-	else if (c == 'o')
-	{
-		this->board->turnInvisible(false);
-	}
 }
 void GameModeSurvival::update()
 {
+	if (this->isPaused)
+		return;
+
 	// Dropping piece if enough time has passed
 	// (time based on current level which is based on how
 	//  many lines were cleared)

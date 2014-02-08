@@ -1,5 +1,6 @@
 #include <Interface/LayoutMainMenu.hpp>
 #include <Interface/Colors.hpp>
+#include <Config/Globals.hpp>
 
 #include <iostream>
 

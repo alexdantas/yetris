@@ -107,6 +107,18 @@ protected:
 	Timer timer;
 
 	Score* score;
+
+	/// If the game is paused.
+	/// May show other Windows while paused.
+	bool isPaused;
+
+	/// If it's showing the pause menu.
+	/// Goes together with #isPaused.
+	bool showPauseMenu;
+
+	/// If it's showing the help screen.
+	/// Goes together with #isPaused.
+	bool showHelp;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED
