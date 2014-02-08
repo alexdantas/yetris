@@ -34,7 +34,8 @@ public:
 	bool isOver();
 
 	/// Moves a piece only if it's possible within the board.
-	void movePieceIfPossible(Piece::PieceDirection direction);
+	/// Returns if moved.
+	bool movePieceIfPossible(Piece::PieceDirection direction);
 
 	/// Returns the next piece on the line,
 	/// bumping all the subsequent Pieces on the array.

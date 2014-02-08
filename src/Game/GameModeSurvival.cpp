@@ -72,7 +72,9 @@ void GameModeSurvival::handleInput(int c)
 	}
 	else if (c == Globals::Input::down)
 	{
-		movePieceIfPossible(Piece::DIR_DOWN);
+		if (! movePieceIfPossible(Piece::DIR_DOWN))
+			this->lockCurrentPiece();
+
 		this->movedPieceDown = true;
 	}
 	else if (c == Globals::Input::right)
@@ -223,13 +225,17 @@ bool GameModeSurvival::isOver()
 {
 	return (this->gameOver);
 }
-void GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
+bool GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 {
 	Piece tmp = *(this->pieceCurrent);
 	tmp.move(direction);
 
 	if (this->board->isPieceValid(&tmp))
+	{
 		this->pieceCurrent->move(direction);
+		return true;
+	}
+	return false;
 }
 void GameModeSurvival::lockCurrentPiece()
 {
