@@ -246,6 +246,20 @@ void LayoutGameModeSurvival::draw()
 		return;
 	}
 
+	// First, updating all the container windows
+	// (we need to do this otherwise when we draw something
+	//  on top of them, they'll be broken with dirty things
+	//  left on top)
+	this->leftmost->clear();
+	this->leftmost->refresh();
+	this->middle_left->clear();
+	this->middle_left->refresh();
+	this->middle_right->clear();
+	this->middle_right->refresh();
+	this->rightmost->clear();
+	this->rightmost->refresh();
+
+	// Now we'll draw the internal windows
 	this->board->clear();
 
 	this->game->board->draw(this->board);
@@ -269,10 +283,13 @@ void LayoutGameModeSurvival::draw()
 	}
 
 	// Hold piece
-	if (this->game->pieceHold)
+	if (Globals::Game::can_hold)
 	{
 		this->hold->clear();
-		this->game->pieceHold->draw(this->hold);
+
+		if (this->game->pieceHold)
+			this->game->pieceHold->draw(this->hold);
+
 		this->hold->refresh();
 	}
 
