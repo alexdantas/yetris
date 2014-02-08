@@ -93,6 +93,9 @@ protected:
 	// Things related to the invisible game mode
 	Timer timerInvisible;
 	bool isInvisible;
+
+	// Times how long the user have been playing the game.
+	Timer timer;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

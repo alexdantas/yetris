@@ -345,36 +345,37 @@ void LayoutGameModeSurvival::draw()
 
 	this->score->refresh();
 
-	// Statistics on the right part of the screen
+	// Statistics and Misc. info
+	// on the right part of the screen
 	if (Globals::Screen::show_statistics)
 	{
 		this->info->clear();
-		this->info->print("Statistics", 0, 0, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Statistics", 0, 0, hilite);
 
-		this->info->print("[I]", 2, 2, Globals::Theme::piece_I->color);
-		this->info->print("[T]", 2, 3, Globals::Theme::piece_T->color);
-		this->info->print("[L]", 2, 4, Globals::Theme::piece_L->color);
-		this->info->print("[J]", 2, 5, Globals::Theme::piece_J->color);
-		this->info->print("[S]", 2, 6, Globals::Theme::piece_S->color);
-		this->info->print("[Z]", 2, 7, Globals::Theme::piece_Z->color);
-		this->info->print("[O]", 2, 8, Globals::Theme::piece_O->color);
+		this->info->print("[I]", 1, 2, Globals::Theme::piece_I->color);
+		this->info->print("[T]", 1, 3, Globals::Theme::piece_T->color);
+		this->info->print("[L]", 1, 4, Globals::Theme::piece_L->color);
+		this->info->print("[J]", 1, 5, Globals::Theme::piece_J->color);
+		this->info->print("[S]", 1, 6, Globals::Theme::piece_S->color);
+		this->info->print("[Z]", 1, 7, Globals::Theme::piece_Z->color);
+		this->info->print("[O]", 1, 8, Globals::Theme::piece_O->color);
 
-		this->info->print("Singles", 15, 2, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
-		this->info->print("Doubles", 15, 3, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
-		this->info->print("Triples", 15, 4, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
-		this->info->print("Tetris",  15, 5, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Singles", 15, 2, hilite);
+		this->info->print("Doubles", 15, 3, hilite);
+		this->info->print("Triples", 15, 4, hilite);
+		this->info->print("Tetris",  15, 5, hilite);
 
-		this->info->print("Pieces", 15, 7, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
-		this->info->print("Lines",  15, 8, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+		this->info->print("Pieces", 15, 7, hilite);
+		this->info->print("Lines",  15, 8, hilite);
 
 		wattrset(this->info->win, COLOR_PAIR(0));
-		mvwprintw(this->info->win, 2, 6, "x %3d", this->game->stats.I);
-		mvwprintw(this->info->win, 3, 6, "x %3d", this->game->stats.T);
-		mvwprintw(this->info->win, 4, 6, "x %3d", this->game->stats.L);
-		mvwprintw(this->info->win, 6, 6, "x %3d", this->game->stats.J);
-		mvwprintw(this->info->win, 5, 6, "x %3d", this->game->stats.S);
-		mvwprintw(this->info->win, 7, 6, "x %3d", this->game->stats.Z);
-		mvwprintw(this->info->win, 8, 6, "x %3d", this->game->stats.O);
+		mvwprintw(this->info->win, 2, 5, "x %3d", this->game->stats.I);
+		mvwprintw(this->info->win, 3, 5, "x %3d", this->game->stats.T);
+		mvwprintw(this->info->win, 4, 5, "x %3d", this->game->stats.L);
+		mvwprintw(this->info->win, 6, 5, "x %3d", this->game->stats.J);
+		mvwprintw(this->info->win, 5, 5, "x %3d", this->game->stats.S);
+		mvwprintw(this->info->win, 7, 5, "x %3d", this->game->stats.Z);
+		mvwprintw(this->info->win, 8, 5, "x %3d", this->game->stats.O);
 
 		mvwprintw(this->info->win, 2, 23, "x %3d", this->game->stats.singles);
 		mvwprintw(this->info->win, 3, 23, "x %3d", this->game->stats.doubles);
@@ -384,6 +385,24 @@ void LayoutGameModeSurvival::draw()
 		mvwprintw(this->info->win, 7, 23, "x %3d", this->game->stats.pieces);
 		mvwprintw(this->info->win, 8, 23, "x %3d", this->game->stats.lines);
 
+		// Timer - how much time has passed since game start
+		this->info->print("Timer", 0, 10, hilite);
+
+		long delta_s = this->game->timer.delta_s();
+
+		int seconds = delta_s % 60;
+		int minutes = (delta_s / 60) % 60;
+		int hours   = ((delta_s / 60) / 60) % 24;
+
+		wattrset(this->info->win, COLOR_PAIR(0));
+
+		mvwprintw(this->info->win, 10, 6, "%02d:%02d:%02d", hours, minutes, seconds);
+
+		// Bottom line - version and Help
+		this->info->print("yetris v" VERSION, 0, this->info->getH() - 1, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
+
+		this->info->print("H", this->info->getW() - 4, this->info->getH() - 1, Colors::pair(COLOR_YELLOW, COLOR_DEFAULT));
+		this->info->print("elp", this->info->getW() - 3, this->info->getH() - 1, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
 		this->info->refresh();
 	}
 }
