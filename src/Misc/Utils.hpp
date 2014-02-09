@@ -51,7 +51,7 @@ namespace Utils
 	};
 
 	/// Stops execution for #delay microseconds.
-	void delay_us(useconds_t delay);
+	void delay_ms(int delay);
 };
 
 // Useful #defines collected over the years.

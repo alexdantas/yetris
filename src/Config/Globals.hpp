@@ -49,7 +49,7 @@ namespace Globals
 		extern bool slide_left;
 		extern bool slide_right;
 
-		extern int line_clear_timeout_us;
+		extern int line_clear_delay; // ms
 
 		extern bool invisible;
 	};

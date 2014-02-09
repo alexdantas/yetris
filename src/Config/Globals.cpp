@@ -34,7 +34,7 @@ bool Globals::Game::can_hold  = true;
 short Globals::Game::random_algorithm = 1;
 
 bool Globals::Game::has_game_over_animation = true;
-int  Globals::Game::line_clear_timeout_us   = 200000; // microseconds
+int  Globals::Game::line_clear_delay = 200; // ms
 
 bool Globals::Game::slide_left  = false;
 bool Globals::Game::slide_right = false;

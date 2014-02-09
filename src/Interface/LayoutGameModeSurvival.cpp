@@ -280,7 +280,7 @@ void LayoutGameModeSurvival::draw()
 		this->game->board->draw(this->board);
 		this->board->refresh();
 
-		Utils::delay_us(Globals::Game::line_clear_timeout_us);
+		Utils::delay_ms(Globals::Game::line_clear_delay);
 	}
 
 	// Hold piece
