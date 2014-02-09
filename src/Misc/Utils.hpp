@@ -23,6 +23,10 @@ namespace Utils
 
 		/// Random boolean.
 		bool boolean();
+
+		/// Random boolean with chance of #percent.
+		/// @note Precision up to 2 decimal digits.
+		bool booleanWithChance(float percent);
 	};
 
 	/// Converts `num` into a `std::string`.

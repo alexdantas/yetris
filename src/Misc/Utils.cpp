@@ -52,6 +52,13 @@ bool Utils::Random::boolean()
 	return ((distance(engine) % 2) == 0);
 }
 
+bool Utils::Random::booleanWithChance(float percent)
+{
+	int x = Utils::Random::between(0, 9999);
+
+	return (x < (percent * 100));
+}
+
 std::string Utils::intToString(int num)
 {
 	// C++11
