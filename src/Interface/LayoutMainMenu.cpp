@@ -1,8 +1,9 @@
 #include <Interface/LayoutMainMenu.hpp>
 #include <Interface/Colors.hpp>
+#include <Interface/Ncurses.hpp>
+#include <Interface/Animation/AnimationFire.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
-#include <Interface/Ncurses.hpp>
 
 #include <iostream>
 
@@ -51,9 +52,19 @@ void LayoutMainMenu::windowsInit()
 	}
 	this->menu->refresh();
 
-	this->animationContainer = new Window(this->main, 0, 0, 0, 0);
-	this->animation = new AnimationMainMenu(this->animationContainer,
-		25);
+	// Just need to create the animation below the logo
+	int height = this->main->getH() - this->logo->getH() - 1;
+	int posy   = this->main->getH() - height - 1;
+
+	this->animationContainer = new Window(this->main,
+	                                      0,
+	                                      posy,
+	                                      0,
+	                                      height);
+
+	// DECIDE HERE THE TYPE OF THE ANIMATION
+	this->animation = new AnimationFire(this->animationContainer);
+	this->animation->load();
 }
 void LayoutMainMenu::windowsExit()
 {
@@ -66,8 +77,12 @@ void LayoutMainMenu::draw(Menu* menu)
 {
 	this->main->clear();
 
-	this->animation->update(this->animationContainer);
-	this->animation->draw(this->animationContainer);
+	this->animationContainer->clear();
+
+	this->animation->update();
+	this->animation->draw();
+
+	this->animationContainer->refresh();
 
 	this->logo->clear();
 	this->logo->print_multiline("             __        __       \n"

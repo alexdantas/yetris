@@ -4,7 +4,7 @@
 #include <Interface/Layout.hpp>
 #include <Interface/Window.hpp>
 #include <Interface/Menu.hpp>
-#include <Interface/AnimationMainMenu.hpp>
+#include <Interface/Animation/Animation.hpp>
 
 ///
 class LayoutMainMenu: public Layout
@@ -24,7 +24,7 @@ public:
 
 	// Sweet animation, beyb.
 	Window* animationContainer;
-	AnimationMainMenu* animation;
+	Animation* animation;
 };
 
 #endif //LAYOUTMAINMENU_H_DEFINED
