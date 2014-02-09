@@ -260,8 +260,12 @@ void LayoutGameModeSurvival::draw()
 	this->middle_left->refresh();
 	this->middle_right->clear();
 	this->middle_right->refresh();
-	this->rightmost->clear();
-	this->rightmost->refresh();
+
+	if (Globals::Screen::show_statistics)
+	{
+		this->rightmost->clear();
+		this->rightmost->refresh();
+	}
 
 	// Now we'll draw the internal windows
 
