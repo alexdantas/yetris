@@ -244,6 +244,9 @@ void LayoutGameModeSurvival::draw()
 			                            Globals::Theme::text);
 			this->help->refresh();
 		}
+
+		// NCURSES NEEDS THIS
+		refresh();
 		return;
 	}
 
@@ -261,27 +264,6 @@ void LayoutGameModeSurvival::draw()
 	this->rightmost->refresh();
 
 	// Now we'll draw the internal windows
-	this->board->clear();
-
-	this->game->board->draw(this->board);
-
-	if (Globals::Game::has_ghost)
-		this->game->pieceGhost->draw(this->board);
-
-	this->game->pieceCurrent->draw(this->board);
-
-	this->board->refresh();
-
-	// Awkward way of clearing lines.
-	// We first clear the lines then wait for a little bit.
-	if (this->game->willClearLines)
-	{
-		this->board->clear();
-		this->game->board->draw(this->board);
-		this->board->refresh();
-
-		Utils::delay_ms(Globals::Game::line_clear_delay);
-	}
 
 	// Hold piece
 	if (Globals::Game::can_hold)
@@ -401,5 +383,33 @@ void LayoutGameModeSurvival::draw()
 		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
 		this->rightmost->refresh();
 	}
+
+	// Board and main game stuff
+
+	// This is an awkward way of clearing lines.
+	// We first clear the lines then wait for a little bit.
+	// FIXME
+	if (this->game->willClearLines)
+	{
+		this->board->clear();
+		this->game->board->draw(this->board);
+		this->board->refresh();
+
+		Utils::delay_ms(Globals::Game::line_clear_delay);
+	}
+
+	this->board->clear();
+
+	this->game->board->draw(this->board);
+
+	if (Globals::Game::has_ghost)
+		this->game->pieceGhost->draw(this->board);
+
+	this->game->pieceCurrent->draw(this->board);
+
+	this->board->refresh();
+
+	// NCURSES NEEDS THIS
+	refresh();
 }
 

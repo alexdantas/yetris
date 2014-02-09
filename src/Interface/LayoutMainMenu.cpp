@@ -2,6 +2,7 @@
 #include <Interface/Colors.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
+#include <Interface/Ncurses.hpp>
 
 #include <iostream>
 
@@ -85,5 +86,8 @@ void LayoutMainMenu::draw(Menu* menu)
 	this->menu->refresh();
 
 	this->main->refresh();
+
+	// NCURSES NEEDS THIS
+	refresh();
 }
 

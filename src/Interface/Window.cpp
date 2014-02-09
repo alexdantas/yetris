@@ -109,8 +109,16 @@ void Window::setBackground(chtype ch, ColorPair pair)
 }
 void Window::refresh()
 {
-	wrefresh(this->win);
-	//wnoutrefresh?
+	//wrefresh(this->win);
+
+	// I've changed all calls to wrefresh() to wnoutrefresh
+	// because when I have several WINDOW*, it gets heavy
+	// to do the former.
+	//
+	// As a tradeoff, I need to call `refresh()` at the end
+	// of every draw cycle.
+	//
+	wnoutrefresh(this->win);
 }
 void Window::clear()
 {
