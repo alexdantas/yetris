@@ -39,6 +39,14 @@ public:
 
 	int getInt(int value);
 
+	/// Makes the menu able to be selected again.
+	///
+	/// When the user selects an item, #willQuit() returns
+	/// true.
+	/// By calling this function, you make possible to select
+	/// things again.
+	void reset();
+
 private:
 
 	/// Container of all the options inside the menu.

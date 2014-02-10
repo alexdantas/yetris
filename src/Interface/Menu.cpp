@@ -235,4 +235,10 @@ int Menu::getInt(int value)
 	}
 	return -1;
 }
+void Menu::reset()
+{
+	this->selected = false;
+	this->selectedItem = nullptr;
+}
+
 
