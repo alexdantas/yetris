@@ -9,6 +9,7 @@
 #include <Game/PieceGhost.hpp>
 #include <Game/Score.hpp>
 #include <Misc/Timer.hpp>
+#include <Interface/Menu.hpp>
 
 #include <vector>
 
@@ -57,6 +58,8 @@ public:
 	/// Returns how much time (millisseconds) we need to wait
 	/// for the piece to fall for a specific #level.
 	int getDelay(int level);
+
+	void pause(bool option);
 
 protected:
 	LayoutGameModeSurvival* layout;
@@ -119,6 +122,9 @@ protected:
 	/// If it's showing the help screen.
 	/// Goes together with #isPaused.
 	bool showHelp;
+
+	/// Menu that's shown only when the user presses Pause.
+	Menu* pauseMenu;
 };
 
 #endif //GAMEMODESURVIVAL_H_DEFINED

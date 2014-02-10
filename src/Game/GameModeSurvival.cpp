@@ -7,6 +7,11 @@
 
 #include <stdlib.h>
 
+enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
+{
+	RESUME, QUIT_MENU, QUIT_GAME
+};
+
 GameModeSurvival::GameModeSurvival():
 	GameMode(),
 	layout(nullptr),
@@ -23,7 +28,8 @@ GameModeSurvival::GameModeSurvival():
 	score(nullptr),
 	isPaused(false),
 	showPauseMenu(false),
-	showHelp(false)
+	showHelp(false),
+	pauseMenu(nullptr)
 { }
 
 void GameModeSurvival::start()
@@ -36,6 +42,7 @@ void GameModeSurvival::start()
 	SAFE_DELETE(this->score);
 	SAFE_DELETE(this->layout);
 	SAFE_DELETE(this->pieceGhost);
+	SAFE_DELETE(this->pauseMenu);
 
 	this->nextPieces.clear();
 
@@ -68,6 +75,26 @@ void GameModeSurvival::start()
 	this->score = new Score();
 	this->score->level = Globals::Game::starting_level;
 
+	// Creating the menu and adding each item
+	this->pauseMenu = new Menu(1,
+	                           1,
+	                           this->layout->pause->getW() - 2,
+	                           this->layout->pause->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Resume", RESUME);
+	this->pauseMenu->add(item);
+
+	this->pauseMenu->addBlank();
+
+	item = new MenuItem("Quit to Main Menu", QUIT_MENU);
+	this->pauseMenu->add(item);
+
+	item = new MenuItem("Quit Game", QUIT_GAME);
+	this->pauseMenu->add(item);
+
+	// Starting timers
 	this->timerPiece.start();
 	this->stats = Statistics();
 
@@ -85,20 +112,21 @@ void GameModeSurvival::handleInput(int c)
 	}
 	else if (c == Globals::Input::pause)
 	{
-		// Toggling Pause
-		if (this->isPaused)
+		(this->isPaused) ?
+			this->pause(false) :
+			this->pause(true);
+
+		return;
+	}
+	else if ((c == '\n') || (c == KEY_ENTER))
+	{
+		if (! this->isPaused)
 		{
-			this->isPaused = false;
-			this->showPauseMenu = false;
-			this->timer.unpause();
-			this->timerPiece.unpause();
-		}
-		else
-		{
-			this->isPaused = true;
-			this->showPauseMenu = true;
-			this->timer.pause();
-			this->timerPiece.pause();
+			this->pause(true);
+			return;
+			// This needs to be here otherwise
+			// ENTER goes to the menu and immediately
+			// unpauses the game.
 		}
 	}
 	else if (c == 'h' || c == 'H')
@@ -122,7 +150,10 @@ void GameModeSurvival::handleInput(int c)
 
 	// Other keys are not used when paused.
 	if (this->isPaused)
+	{
+		this->pauseMenu->handleInput(c);
 		return;
+	}
 
 	if (c == Globals::Input::left)
 	{
@@ -165,8 +196,28 @@ void GameModeSurvival::handleInput(int c)
 }
 void GameModeSurvival::update()
 {
+	// If we're paused, only handle the menu.
 	if (this->isPaused)
+	{
+		if (this->pauseMenu->willQuit())
+		{
+			int option = this->pauseMenu->getSelectedValue();
+
+			switch(option)
+			{
+			case RESUME:
+				this->pause(false);
+				break;
+
+			case QUIT_GAME:
+				this->userAskedToQuit = true;
+				break;
+			}
+			this->pauseMenu->reset();
+		}
+
 		return;
+	}
 
 	// Dropping piece if enough time has passed
 	// (time based on current level which is based on how
@@ -288,7 +339,7 @@ void GameModeSurvival::update()
 }
 void GameModeSurvival::draw()
 {
-	this->layout->draw();
+	this->layout->draw(this->pauseMenu);
 }
 bool GameModeSurvival::isOver()
 {
@@ -450,5 +501,28 @@ int GameModeSurvival::getDelay(int level)
 	if (level < 19) return 100;
 
 	return 0;
+}
+void GameModeSurvival::pause(bool option)
+{
+	if (option)
+	{
+		if (this->isPaused)
+			return;
+
+		this->isPaused = true;
+		this->showPauseMenu = true;
+		this->timer.pause();
+		this->timerPiece.pause();
+	}
+	else
+	{
+		if (! this->isPaused)
+			return;
+
+		this->isPaused = false;
+		this->showPauseMenu = false;
+		this->timer.unpause();
+		this->timerPiece.unpause();
+	}
 }
 

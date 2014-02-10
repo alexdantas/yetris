@@ -2,6 +2,7 @@
 #define LAYOUTGAMEMODESURVIVAL_H_DEFINED
 
 #include <Interface/Layout.hpp>
+#include <Interface/Menu.hpp>
 #include <Game/GameModeSurvival.hpp>
 
 #include <vector>
@@ -15,7 +16,7 @@ public:
 	void windowsInit();
 	void windowsExit();
 
-	void draw();
+	void draw(Menu* menu);
 
 private:
 	GameModeSurvival* game;
@@ -51,6 +52,9 @@ private:
 
 	// The following Windows appear only when requested.
 
+// HACK so we can get width and height to create menu
+//      on the GameModeSurvival
+public:
 	/// Contains the pause menu.
 	Window* pause;
 

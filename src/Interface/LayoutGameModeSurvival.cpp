@@ -165,7 +165,7 @@ void LayoutGameModeSurvival::windowsInit()
 	                         this->main->getW() / 4,
 	                         this->main->getH() / 2 - 1, //center
 	                         this->main->getW() / 2,
-	                         2);
+	                         6);
 
 	if (Globals::Screen::show_borders)
 	{
@@ -210,7 +210,7 @@ void LayoutGameModeSurvival::windowsExit()
 	this->main->clear(); // clear() as in Window
 	this->main->refresh(); // clear() as in Window
 }
-void LayoutGameModeSurvival::draw()
+void LayoutGameModeSurvival::draw(Menu* menu)
 {
 	if (! this->game)
 		return;
@@ -221,6 +221,7 @@ void LayoutGameModeSurvival::draw()
 		if (this->game->showPauseMenu)
 		{
 			this->pause->clear();
+			menu->draw(this->pause);
 			this->pause->refresh();
 		}
 		else if (this->game->showHelp)

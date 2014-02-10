@@ -3,7 +3,6 @@
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
 
-// Small local enum to ease reading
 enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
 	START_GAME,
