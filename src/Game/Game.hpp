@@ -1,7 +1,6 @@
-#ifndef GAMEMODESURVIVAL_H_DEFINED
-#define GAMEMODESURVIVAL_H_DEFINED
+#ifndef GAME_H_DEFINED
+#define GAME_H_DEFINED
 
-#include <Game/GameMode.hpp>
 #include <Game/Piece.hpp>
 #include <Game/Board.hpp>
 #include <Game/RotationSystem.hpp>
@@ -13,19 +12,18 @@
 
 #include <vector>
 
-///
-class LayoutGameModeSurvival;
+/// Pre-defining it's layout to avoid circular dependency.
+class LayoutGame;
 
+/// All the rules and behaviour of a T*tris game.
 ///
-class GameModeSurvival: public GameMode
+class Game
 {
-	friend class LayoutGameModeSurvival;
+	friend class LayoutGame;
 
 public:
-	// For documentation, see GameMode.hpp
-
-	GameModeSurvival();
-	~GameModeSurvival() {};
+	Game();
+	virtual ~Game() {};
 
 	void start();
 	void handleInput(int c);
@@ -52,6 +50,9 @@ public:
 	/// If we'll quit the game right away.
 	bool willQuit();
 
+	/// If we'll return to the main menu.
+	bool willReturnToMenu();
+
 	/// Returns the game level for how many #lines were cleared.
 	int getLevel(int lines);
 
@@ -62,12 +63,13 @@ public:
 	void pause(bool option);
 
 protected:
-	LayoutGameModeSurvival* layout;
+	LayoutGame* layout;
 
 	/// If the game is over (board is full of blocks).
 	bool gameOver;
 
 	bool userAskedToQuit;
+	bool userAskedToGoToMenu;
 
 	Piece* pieceCurrent;
 	PieceGhost* pieceGhost;
@@ -127,5 +129,5 @@ protected:
 	Menu* pauseMenu;
 };
 
-#endif //GAMEMODESURVIVAL_H_DEFINED
+#endif //GAME_H_DEFINED
 

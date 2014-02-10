@@ -3,15 +3,15 @@
 
 #include <Interface/Layout.hpp>
 #include <Interface/Menu.hpp>
-#include <Game/GameModeSurvival.hpp>
+#include <Game/Game.hpp>
 
 #include <vector>
 
-class LayoutGameModeSurvival: public Layout
+class LayoutGame: public Layout
 {
 public:
-	LayoutGameModeSurvival(GameModeSurvival* game, int width, int height);
-	virtual ~LayoutGameModeSurvival();
+	LayoutGame(Game* game, int width, int height);
+	virtual ~LayoutGame();
 
 	void windowsInit();
 	void windowsExit();
@@ -19,7 +19,7 @@ public:
 	void draw(Menu* menu);
 
 private:
-	GameModeSurvival* game;
+	Game* game;
 
 	// On `Layout` we have a `main` Window, where
 	// everything's inside
@@ -53,7 +53,7 @@ private:
 	// The following Windows appear only when requested.
 
 // HACK so we can get width and height to create menu
-//      on the GameModeSurvival
+//      on the Game
 public:
 	/// Contains the pause menu.
 	Window* pause;

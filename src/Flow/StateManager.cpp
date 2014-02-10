@@ -51,6 +51,16 @@ void StateManager::run()
 			break;
 		}
 
+		case GameState::MAIN_MENU:
+		{
+			this->currentState->unload();
+			delete this->currentState;
+
+			this->currentState = new GameStateMainMenu();
+			this->currentState->load();
+			break;
+		}
+
 		default:
 			break;
 		}

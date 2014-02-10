@@ -1,6 +1,5 @@
 #include <Flow/GameStateGame.hpp>
 #include <Flow/StateManager.hpp>
-#include <Game/GameModeSurvival.hpp>
 #include <Misc/Utils.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Config/Globals.hpp>
@@ -15,7 +14,7 @@ void GameStateGame::load(int stack)
 {
 	UNUSED(stack);
 
-	this->game = new GameModeSurvival();
+	this->game = new Game();
 	this->game->start();
 }
 int GameStateGame::unload()
@@ -40,6 +39,9 @@ GameState::StateCode GameStateGame::update()
 
 	if (this->game->willQuit())
 		this->willQuit = true;
+
+	if (this->game->willReturnToMenu())
+		return GameState::MAIN_MENU;
 
 	return GameState::CONTINUE;
 }

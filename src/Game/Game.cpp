@@ -1,9 +1,9 @@
-#include <Game/GameModeSurvival.hpp>
+#include <Game/Game.hpp>
 #include <Game/RotationSystemSRS.hpp>
 #include <Game/PieceDefinitions.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
-#include <Interface/LayoutGameModeSurvival.hpp>
+#include <Interface/LayoutGame.hpp>
 
 #include <stdlib.h>
 
@@ -12,8 +12,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	RESUME, QUIT_MENU, QUIT_GAME
 };
 
-GameModeSurvival::GameModeSurvival():
-	GameMode(),
+Game::Game():
 	layout(nullptr),
 	gameOver(false),
 	pieceCurrent(nullptr),
@@ -32,7 +31,7 @@ GameModeSurvival::GameModeSurvival():
 	pauseMenu(nullptr)
 { }
 
-void GameModeSurvival::start()
+void Game::start()
 {
 	SAFE_DELETE(this->pieceCurrent);
 	SAFE_DELETE(this->pieceGhost);
@@ -47,9 +46,10 @@ void GameModeSurvival::start()
 	this->nextPieces.clear();
 
 	this->userAskedToQuit = false;
+	this->userAskedToGoToMenu = false;
 	this->gameOver = false;
 
-	this->layout = new LayoutGameModeSurvival(this, 80, 24);
+	this->layout = new LayoutGame(this, 80, 24);
 
 	// Creating the board and adding noise.
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
@@ -101,7 +101,7 @@ void GameModeSurvival::start()
 	this->timerInvisible.start();
 	this->timer.start();
 }
-void GameModeSurvival::handleInput(int c)
+void Game::handleInput(int c)
 {
 	// The only two absolute inputs are to quit and pause.
 	// Others depend if the game is paused or not.
@@ -194,7 +194,7 @@ void GameModeSurvival::handleInput(int c)
 		this->holdCurrentPiece();
 	}
 }
-void GameModeSurvival::update()
+void Game::update()
 {
 	// If we're paused, only handle the menu.
 	if (this->isPaused)
@@ -207,6 +207,10 @@ void GameModeSurvival::update()
 			{
 			case RESUME:
 				this->pause(false);
+				break;
+
+			case QUIT_MENU:
+				this->userAskedToGoToMenu = true;
 				break;
 
 			case QUIT_GAME:
@@ -337,15 +341,15 @@ void GameModeSurvival::update()
 		}
 	}
 }
-void GameModeSurvival::draw()
+void Game::draw()
 {
 	this->layout->draw(this->pauseMenu);
 }
-bool GameModeSurvival::isOver()
+bool Game::isOver()
 {
 	return (this->gameOver);
 }
-bool GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
+bool Game::movePieceIfPossible(Piece::PieceDirection direction)
 {
 	Piece tmp = *(this->pieceCurrent);
 	tmp.move(direction);
@@ -357,7 +361,7 @@ bool GameModeSurvival::movePieceIfPossible(Piece::PieceDirection direction)
 	}
 	return false;
 }
-void GameModeSurvival::lockCurrentPiece()
+void Game::lockCurrentPiece()
 {
 	// Statistics
 	this->stats.pieces++;
@@ -400,7 +404,7 @@ void GameModeSurvival::lockCurrentPiece()
 
 	this->timerPiece.start();
 }
-Piece* GameModeSurvival::getNextPiece()
+Piece* Game::getNextPiece()
 {
 	Piece::PieceType new_type = this->nextPieces[0];
 
@@ -417,7 +421,7 @@ Piece* GameModeSurvival::getNextPiece()
 
 	return next;
 }
-void GameModeSurvival::holdCurrentPiece()
+void Game::holdCurrentPiece()
 {
 	if ((! Globals::Game::can_hold) ||
 	    (! this->canHold))
@@ -450,11 +454,15 @@ void GameModeSurvival::holdCurrentPiece()
 		this->pieceCurrent->moveTo(x, y);
 	}
 }
-bool GameModeSurvival::willQuit()
+bool Game::willQuit()
 {
 	return this->userAskedToQuit;
 }
-int GameModeSurvival::getLevel(int lines)
+bool Game::willReturnToMenu()
+{
+	return this->userAskedToGoToMenu;
+}
+int Game::getLevel(int lines)
 {
 	// this is getting too long - need to create a math function
 
@@ -478,7 +486,7 @@ int GameModeSurvival::getLevel(int lines)
 
 	return 0;
 }
-int GameModeSurvival::getDelay(int level)
+int Game::getDelay(int level)
 {
 	// returning delay in milliseconds
 	if (level < 2)  return 1000;
@@ -502,7 +510,7 @@ int GameModeSurvival::getDelay(int level)
 
 	return 0;
 }
-void GameModeSurvival::pause(bool option)
+void Game::pause(bool option)
 {
 	if (option)
 	{

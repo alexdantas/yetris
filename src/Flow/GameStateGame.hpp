@@ -2,7 +2,7 @@
 #define GAMESTATEGAME_H_DEFINED
 
 #include <Flow/GameState.hpp>
-#include <Game/GameMode.hpp>
+#include <Game/Game.hpp>
 
 /// This represents the actual game taking place.
 ///
@@ -50,7 +50,7 @@ public:
 
 private:
 	/// The rules of the current game.
-	GameMode* game;
+	Game* game;
 
 	/// Keeps the game running.
 	bool willQuit;

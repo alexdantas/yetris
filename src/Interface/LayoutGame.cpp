@@ -1,8 +1,8 @@
-#include <Interface/LayoutGameModeSurvival.hpp>
+#include <Interface/LayoutGame.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 
-LayoutGameModeSurvival::LayoutGameModeSurvival(GameModeSurvival* game, int width, int height):
+LayoutGame::LayoutGame(Game* game, int width, int height):
 	Layout(width, height),
 	game(game),
 	leftmost(nullptr),
@@ -15,11 +15,11 @@ LayoutGameModeSurvival::LayoutGameModeSurvival(GameModeSurvival* game, int width
 {
 	this->windowsInit();
 }
-LayoutGameModeSurvival::~LayoutGameModeSurvival()
+LayoutGame::~LayoutGame()
 {
 	this->windowsExit();
 }
-void LayoutGameModeSurvival::windowsInit()
+void LayoutGame::windowsInit()
 {
 	// We'll start all the windows inside the Layout
 	this->main->clear();
@@ -190,7 +190,7 @@ void LayoutGameModeSurvival::windowsInit()
 	this->help->setTitle("Help");
 
 }
-void LayoutGameModeSurvival::windowsExit()
+void LayoutGame::windowsExit()
 {
 	SAFE_DELETE(this->leftmost);
 	SAFE_DELETE(this->hold);
@@ -210,7 +210,7 @@ void LayoutGameModeSurvival::windowsExit()
 	this->main->clear(); // clear() as in Window
 	this->main->refresh(); // clear() as in Window
 }
-void LayoutGameModeSurvival::draw(Menu* menu)
+void LayoutGame::draw(Menu* menu)
 {
 	if (! this->game)
 		return;
