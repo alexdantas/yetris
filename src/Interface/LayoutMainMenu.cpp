@@ -27,7 +27,7 @@ void LayoutMainMenu::windowsInit()
 	                        0,
 	                        0,
 	                        0,
-	                        7);
+	                        9);
 
 	if (Globals::Screen::show_borders)
 	{
@@ -85,14 +85,17 @@ void LayoutMainMenu::draw(Menu* menu)
 	this->animationContainer->refresh();
 
 	this->logo->clear();
-	this->logo->print_multiline("             __        __       \n"
-	                            ".--.--.-----|  |_.----|__.-----.\n"
-	                            "|  |  |  -__|   _|   _|  |__ --|\n"
-	                            "|___  |_____|____|__| |__|_____|\n"
-	                            "|_____|                         ",
-	                            this->logo->getW() / 2 - 32/2,
+	this->logo->print_multiline(" __ __    ___ ______  ____   ____ _____\n"
+	                            "|  |  |  /  _]      ||    \\ |    / ___/\n"
+	                            "|  |  | /  [_|      ||  D  ) |  (   \\_\n"
+	                            "|  ~  ||    _]_|  |_||    /  |  |\\__  |\n"
+	                            "|___, ||   [_  |  |  |    \\  |  |/  \\ |\n"
+	                            "|     ||     | |  |  |  .  \\ |  |\\    |\n"
+	                            "|____/ |_____| |__|  |__|\\_||____|\\___|",
+	                            this->logo->getW() / 2 - 39/2 - 1,
 	                            1,
 	                            Colors::pair(COLOR_RED, COLOR_DEFAULT));
+
 	this->logo->refresh();
 
 	// Yay!
