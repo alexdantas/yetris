@@ -16,17 +16,19 @@
 # Also, the following commandline arguments customize
 # default actions:
 #
-#  V       Verbose mode, off by default.
-#          To turn on for the current command,
-#          add `V=1` when calling `make`.
-#          To turn on permanently, uncomment the line
-#          specified below
-#  DESTDIR Installs the package on a custom root directory
-#          (other than `/`). For example `DESTDIR=~/`.
-#  PREFIX  Installs the package on a custom directory
-#          (overwrites root)
-#  CFLAGS  Changes the C flags used on compilation
-#  CDEBUG  If you wish to build on debug mode, add 'CDEBUG=-g'
+#  V        Verbose mode, off by default.
+#           To turn on for the current command,
+#           add `V=1` when calling `make`.
+#           To turn on permanently, uncomment the line
+#           specified below
+#  DESTDIR  Installs the package on a custom root directory
+#           (other than `/`). For example `DESTDIR=~/`.
+#  PREFIX   Installs the package on a custom directory
+#           (overwrites root)
+#  CFLAGS   Changes the C flags used on compilation
+#  CDEBUG   If you wish to build on debug mode, add 'CDEBUG=-g'
+#  PLATFORM To force a specific architecture, set it as
+#           'PLATFORM=-m32' or 'PLATFORM=-m64' for 32 or 64 bits.
 #
 
 # Uncomment line below to tun on verbose mode permanently
@@ -63,7 +65,7 @@ CONFIG_FILE = config.ini
 # Build info
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
-PLATFORM    = -m32 # forcing 32-bit build
+PLATFORM    =
 CXXFLAGS    = $(CDEBUG) -Wall -Wextra -std=c++0x -I"src/" $(PLATFORM)
 LDFLAGS     = -lncurses $(PLATFORM)
 INCLUDESDIR =
