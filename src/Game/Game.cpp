@@ -45,9 +45,9 @@ void Game::start()
 
 	this->nextPieces.clear();
 
-	this->userAskedToQuit = false;
+	this->userAskedToQuit     = false;
 	this->userAskedToGoToMenu = false;
-	this->gameOver = false;
+	this->gameOver            = false;
 
 	this->layout = new LayoutGame(this, 80, 24);
 

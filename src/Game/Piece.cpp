@@ -107,6 +107,9 @@ void Piece::draw(Window* win)
 	if (!this->block)
 		return;
 
+	if (this->type >= PieceType::MAX)
+		return;
+
 	// Looking up the global table of
 	// possible piece positions and rotations
 	for (int i = 0; i < 5; i++)
