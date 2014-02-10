@@ -2,6 +2,7 @@
 #include <Interface/Colors.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Interface/Animation/AnimationFire.hpp>
+#include <Interface/Animation/AnimationWater.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 
@@ -62,8 +63,18 @@ void LayoutMainMenu::windowsInit()
 	                                      0,
 	                                      height);
 
-	// DECIDE HERE THE TYPE OF THE ANIMATION
-	this->animation = new AnimationFire(this->animationContainer);
+	// Deciding randomly the type of the Animation
+	switch(Utils::Random::between(0, 1))
+	{
+	case 0:
+		this->animation = new AnimationWater(this->animationContainer);
+		break;
+
+	default:
+		this->animation = new AnimationFire(this->animationContainer);
+		break;
+	}
+
 	this->animation->load();
 }
 void LayoutMainMenu::windowsExit()

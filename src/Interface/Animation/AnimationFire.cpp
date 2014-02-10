@@ -2,19 +2,19 @@
 #include <Interface/Colors.hpp>
 #include <Misc/Utils.hpp>
 
-ColorPair red        = Colors::pair(COLOR_RED, COLOR_DEFAULT);
-ColorPair redBold    = Colors::pair(COLOR_RED, COLOR_DEFAULT, true);
-ColorPair white      = 0;
-ColorPair yellow     = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT);
-ColorPair yellowBold = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT, true);
+static ColorPair red        = Colors::pair(COLOR_RED, COLOR_DEFAULT);
+static ColorPair redBold    = Colors::pair(COLOR_RED, COLOR_DEFAULT, true);
+static ColorPair white      = 0;
+static ColorPair yellow     = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT);
+static ColorPair yellowBold = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT, true);
 
 // An ASCII gray scale :)
 // Characters will be accessed proportionally to the intensity
 // int gray_scale_size = 70;
 // char gray_scale[71] = ".\'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$ ";
 
-int gray_scale_size = 12;
-char gray_scale[13] = " .':-=+*#%@#";
+static int gray_scale_size = 12;
+static char gray_scale[13] = " .':-=+*#%@#";
 
 AnimationFire::AnimationFire(Window* window):
 	Animation(window),
