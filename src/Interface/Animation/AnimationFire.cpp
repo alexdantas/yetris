@@ -8,6 +8,14 @@ ColorPair white      = 0;
 ColorPair yellow     = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT);
 ColorPair yellowBold = Colors::pair(COLOR_YELLOW, COLOR_DEFAULT, true);
 
+// An ASCII gray scale :)
+// Characters will be accessed proportionally to the intensity
+// int gray_scale_size = 70;
+// char gray_scale[71] = ".\'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$ ";
+
+int gray_scale_size = 12;
+char gray_scale[13] = " .':-=+*#%@#";
+
 AnimationFire::AnimationFire(Window* window):
 	Animation(window),
 	particle(nullptr)
@@ -18,40 +26,59 @@ AnimationFire::~AnimationFire()
 }
 void AnimationFire::load()
 {
-	particle = new Array2D<ParticleFire>(window->getW(),
-	                                           window->getH());
+	unsigned int width  = window->getW();
+	unsigned int height = window->getH();
 
-	for (unsigned int i = 0; i < (particle->width()); i++)
-	{
-		for (unsigned int j = 0; j < (particle->height()); j++)
-		{
-			particle->at(i, j).x = Utils::Random::between(0, particle->width());
-			particle->at(i, j).y = Utils::Random::between(0, particle->height());
-		}
-	}
+	particle = new Array2D<ParticleFire>(width, height);
+
+	// Creating the cooling map
+	coolingMap = new Array2D<int>(width, height);
+
+	for (unsigned int i = 0; i < width; i++)
+		for (unsigned int j = 0; j < height; j++)
+			coolingMap->at(i, j) = Utils::Random::between(INTENSITY_MIN,
+			                                              INTENSITY_PERCENT(13));
+
+	// Will smooth the cooling map a number of times
+	for (int n = 0; n < 10; n++)
+		for (unsigned int i = 1; i < width-1; i++)
+			for (unsigned int j = 1; j < height-1; j++)
+				coolingMap->at(i, j) = (coolingMap->at(i-1, j) +
+				                        coolingMap->at(i+1, j) +
+				                        coolingMap->at(i, j+1) +
+				                        coolingMap->at(i, j-1)) / 4;
 
 	timer.start();
 }
 void AnimationFire::update()
 {
 	// Updating only at the right time!
-	if (timer.delta_ms() < 300)
+	if (timer.delta_ms() < 100)
 		return;
 
 	// How fast the fire cools down each frame
 	int cooling_ratio = Utils::Random::between(INTENSITY_PERCENT(3),
-	                                           INTENSITY_PERCENT(16));
+	                                           INTENSITY_PERCENT(12));
+
+	// Slim chance of a sudden burst of fire
+	bool burst = Utils::Random::booleanWithChance(9.98);
+	if (burst)
+		cooling_ratio = 1;
 
 	// Spawning high-intensity flames on the bottom particles
-	for (unsigned int i = 0; i < (particle->width()-1); i++)
+	for (unsigned int i = 0; i < (particle->width()); i++)
 		particle->at(i, particle->height() - 1).intensity = Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX);
 
-	for (unsigned int i = 0; i < (particle->width()-1); i++)
+	// Copying values from up to down
+	for (unsigned int i = 0; i < (particle->width()); i++)
 	{
 		for (unsigned int j = 0; j < (particle->height()-1); j++)
 		{
 			// Cooling all particles based on the ones below
 			particle->at(i, j).intensity = particle->at(i, j + 1).intensity - cooling_ratio;
+
+			// Cooling based on the cooling map
+			particle->at(i, j).intensity -= coolingMap->at(i, j);
 		}
 	}
 
@@ -68,50 +95,39 @@ void AnimationFire::draw()
 			int       s = particle->at(i, j).intensity;
 
 			if (s > INTENSITY_PERCENT(90))
-			{
-				c = '#';
 				p = white;
-			}
+
 			else if (s > INTENSITY_PERCENT(80))
-			{
-				c = '@';
 				p = yellowBold;
-			}
+
 			else if (s > INTENSITY_PERCENT(70))
-			{
-				c = '%';
-				p = yellow;
-			}
+				p = yellowBold;
+
 			else if (s > INTENSITY_PERCENT(60))
-			{
-				c = '*';
-				p = redBold;
-			}
+				p = yellow;
+
 			else if (s > INTENSITY_PERCENT(50))
-			{
-				c = '*';
-				p = red;
-			}
+				p = redBold;
+
 			else if (s > INTENSITY_PERCENT(40))
-			{
-				c = '"';
-				p = red;
-			}
+				p = redBold;
+
 			else if (s > INTENSITY_PERCENT(30))
-			{
-				c = '\'';
 				p = red;
-			}
+
 			else if (s > INTENSITY_PERCENT(20))
-			{
-				c = '.';
 				p = red;
-			}
+
 			else
-			{
-				// Too low intensity
+				continue; // Too low intensity
+
+
+			if ((s > INTENSITY_MAX) || (s < INTENSITY_MIN))
 				continue;
-			}
+
+			else
+				c = gray_scale[(s - INTENSITY_MIN) * (gray_scale_size-1)/INTENSITY_MAX];
+
 			window->printChar(c, i, j, p);
 		}
 	}

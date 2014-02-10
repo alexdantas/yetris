@@ -20,12 +20,10 @@
 class ParticleFire
 {
 public:
-	int x;
-	int y;
 	int intensity;
 
 	ParticleFire():
-		x(0), y(0), intensity(0)
+		intensity(0)
 	{ };
 };
 
@@ -43,7 +41,7 @@ public:
 private:
 	/// All particles.
 	Array2D<ParticleFire>* particle;
-
+	Array2D<int>* coolingMap;
 	Timer timer;
 };
 
