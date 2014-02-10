@@ -15,6 +15,7 @@ public:
 	virtual ~Menu();
 
 	void add(MenuItem* item);
+	void addBlank();
 
 	void draw(Window* window);
 

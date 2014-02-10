@@ -1,5 +1,6 @@
 #include <Interface/Menu.hpp>
 #include <Misc/Utils.hpp>
+#include <Config/Globals.hpp>
 
 Menu::Menu(int x, int y, int width, int height):
 	current(nullptr),
@@ -36,6 +37,10 @@ void Menu::add(MenuItem* item)
 
 	this->last = this->item.back();
 }
+void Menu::addBlank()
+{
+	this->item.push_back(nullptr);
+}
 void Menu::draw(Window* window)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
@@ -50,6 +55,21 @@ void Menu::draw(Window* window)
 		// </rant>
 
 //		MenuItemCheckbox* pCheckbox = dynamic_cast<MenuItemCheckbox*>a
+
+		// Blank Menu Item, will show horizontal line
+		if (! this->item[i])
+		{
+			for (int j = 0; j < (this->width); j++)
+				window->printChar(((Globals::Screen::fancy_borders) ?
+				                   ACS_HLINE :
+				                   '-'),
+				                  this->x + j,
+				                  this->y + i,
+				                  Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
+
+			continue;
+		}
+
 		if (this->item[i] == this->current)
 		{
 			this->item[i]->draw(window,
@@ -122,6 +142,9 @@ void Menu::goNext()
 		this->currentIndex++;
 		this->current = this->item[this->currentIndex];
 	}
+
+	if (! this->current)
+		this->goNext();
 }
 void Menu::goPrevious()
 {
@@ -135,16 +158,25 @@ void Menu::goPrevious()
 		this->currentIndex--;
 		this->current = this->item[this->currentIndex];
 	}
+
+	if (! this->current)
+		this->goPrevious();
 }
 void Menu::goFirst()
 {
 	this->current = this->first;
 	this->currentIndex = 0;
+
+	if (! this->current)
+		this->goNext();
 }
 void Menu::goLast()
 {
 	this->current = this->last;
 	this->currentIndex = (this->item.size() - 1);
+
+	if (! this->current)
+		this->goPrevious();
 }
 bool Menu::willQuit()
 {
@@ -163,6 +195,9 @@ bool Menu::getBool(int value)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
 	{
+		if (! this->item[i])
+			continue;
+
 		if (this->item[i]->value == value)
 		{
 			// Either the type got messed up or we have
@@ -182,6 +217,9 @@ int Menu::getInt(int value)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
 	{
+		if (! this->item[i])
+			continue;
+
 		if (this->item[i]->value == value)
 		{
 			// Either the type got messed up or we have

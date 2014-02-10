@@ -40,6 +40,8 @@ void GameStateMainMenu::load(int stack)
 	item = new MenuItem("Start Game", START_GAME);
 	menu->add(item);
 
+	menu->addBlank();
+
 	MenuItemNumberbox* number;
 
 	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, 1);
