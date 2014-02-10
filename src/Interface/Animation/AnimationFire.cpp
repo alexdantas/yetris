@@ -60,16 +60,28 @@ void AnimationFire::update()
 	int cooling_ratio = Utils::Random::between(INTENSITY_PERCENT(3),
 	                                           INTENSITY_PERCENT(12));
 
-	// Slim chance of a sudden burst of fire
-	bool burst = Utils::Random::booleanWithChance(9.98);
-	if (burst)
-		cooling_ratio = 1;
+	// Slim chance of a sudden burst or dim of the fire
+	bool burst = Utils::Random::booleanWithChance(1.66);
+	bool dim   = Utils::Random::booleanWithChance(1.24);
+	if (burst) cooling_ratio = INTENSITY_PERCENT(1);
+	if (dim)   cooling_ratio = INTENSITY_PERCENT(30);
 
 	// Spawning high-intensity flames on the bottom particles
 	for (unsigned int i = 0; i < (particle->width()); i++)
 		particle->at(i, particle->height() - 1).intensity = Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX);
 
-	// Copying values from up to down
+	// Randomly adding Sparks - high-intensity flames little higher
+	for (unsigned int i = 0; i < (particle->width()); i++)
+	{
+		if (Utils::Random::booleanWithChance(2.31))
+		{
+			int height = particle->height() - Utils::Random::between(3, 6);
+
+			particle->at(i, height).intensity = Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX);
+		}
+	}
+
+	// Making all particles climb up
 	for (unsigned int i = 0; i < (particle->width()); i++)
 	{
 		for (unsigned int j = 0; j < (particle->height()-1); j++)
