@@ -193,6 +193,15 @@ void Utils::File::mkdir_p(std::string path)
 	}
 	mkdir(tmp.c_str(), S_IRWXU);
 }
+bool Utils::File::create(std::string path)
+{
+	FILE* fp = fopen(path.c_str(), "w");
+	if (! fp)
+		return false;
+
+	fclose(fp);
+	return true;
+}
 bool Utils::File::isDirectory(std::string path)
 {
 	struct stat s;
@@ -238,6 +247,10 @@ std::vector<std::string> Utils::File::ls(std::string path)
 	while ((ent = readdir(dir)))
 	{
 		std::string s(path + ent->d_name);
+
+		// Skipping obvious '.' and '..' dirs
+		if ((s == (path + '.')) || (s == (path + "..")))
+			continue;
 
 		v.push_back(s);
 	}

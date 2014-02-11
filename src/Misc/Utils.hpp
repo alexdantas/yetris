@@ -84,6 +84,13 @@ namespace Utils
 		/// just like UNIX command `mkdir -p`.
 		void mkdir_p(std::string path);
 
+		/// Creates empty file #path.
+		///
+		/// @note If file already exists, will
+		///       erase everything inside!
+		/// @return If we could create the file at all.
+		bool create(std::string path);
+
 		/// Tells if #path is a directory.
 		///
 		/// @note Returns false also if something wrong happened.
