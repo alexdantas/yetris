@@ -3,7 +3,10 @@
 
 #include <ncurses.h>
 
-int Globals::version[3] = { 0, 0, 1 };
+// VERSION is formatted like "0.0.1" - i'm skipping the dots
+int Globals::version[3] = { VERSION[0] - '0',
+                            VERSION[2] - '0',
+                            VERSION[4] - '0'};
 
 //  __   __    ___   ____  ____  _
 // ( (` / /`  | |_) | |_  | |_  | |\ |
