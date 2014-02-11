@@ -20,7 +20,14 @@ bool Profile::load()
 	std::vector<std::string> dirs;
 	for (unsigned int i = 0; i < files.size(); i++)
 		if (Utils::File::isDirectory(files[i]))
-			dirs.push_back(files[i]);
+		{
+			// Sending the user name (last part of dir name)
+			if (files[i].back() == '/')
+				files[i].pop_back();
+			size_t pos = files[i].rfind('/');
+
+			dirs.push_back(files[i].substr(pos + 1));
+		}
 
 	if (dirs.empty())
 	{
@@ -39,7 +46,21 @@ bool Profile::load()
 Profile::Profile(std::string name):
 	name(name)
 {
-	// Will load profile's files.
+	std::string root   = Globals::Config::directory + name + "/";
+	std::string config = root + "settings.ini";
+	std::string stats  = root + "statistics.bin";
+
+	// Make sure directory and files exist
+	if (! Utils::File::isDirectory(root))
+		Utils::File::mkdir_p(root);
+
+	if (! Utils::File::exists(config))
+		Utils::File::create(config);
+
+	if (! Utils::File::exists(stats))
+		Utils::File::create(stats);
+
+	// Now will load it's files.
 }
 Profile::~Profile()
 {
