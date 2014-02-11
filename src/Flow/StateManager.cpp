@@ -1,6 +1,7 @@
 #include <Flow/StateManager.hpp>
 #include <Flow/GameStateGame.hpp>
 #include <Flow/GameStateMainMenu.hpp>
+#include <Flow/GameStateFirstTime.hpp>
 #include <Misc/Utils.hpp>
 #include <Game/Profile.hpp>
 #include <Config/Globals.hpp>
@@ -17,9 +18,9 @@ StateManager::StateManager():
 		if (! Globals::Profiles::default_name.empty())
 			Globals::Profiles::default_name = "";
 
-		// go to the GameStateCreateDefaultProfile or whatever
-		// for now, lets fuck things up
-		throw "WTF Error";
+		// Let's ask for the user
+		this->currentState = new GameStateFirstTime();
+		this->currentState->load();
 	}
 	else
 	{

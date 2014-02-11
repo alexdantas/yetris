@@ -6,7 +6,8 @@
 #include <Interface/Menu.hpp>
 #include <Interface/Animation/Animation.hpp>
 
-///
+/// How we show the screen at GameStateMainMenu.
+/// See it's documentation there.
 class LayoutMainMenu: public Layout
 {
 public:
