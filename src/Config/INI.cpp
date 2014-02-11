@@ -12,11 +12,21 @@ INI::~INI()
 
 bool INI::load(std::string file)
 {
+	if (this->ini)
+		this->free();
+
 	this->ini = iniparser_load(file.c_str());
 
 	return (this->ini ?
 	        true :
 	        false);
+}
+void INI::create()
+{
+	if (this->ini)
+		this->free();
+
+	this->ini = dictionary_new(0);
 }
 void INI::free()
 {
@@ -69,9 +79,31 @@ std::string INI::get(std::string where, std::string default_value)
 	// Finally!
 	return iniparser_getstring(this->ini, where.c_str(), s);
 }
+void INI::set(std::string what, std::string value)
+{
+	size_t pos = what.find(':');
+	if (pos != std::string::npos)
+	{
+		// User's adding a section - like "section:key".
+		// Let's make sure it exists
+		std::string section = what.substr(0, pos);
+
+		if (iniparser_find_entry(this->ini, section.c_str()) == 0)
+		{
+			// Doesn't exist - creating...
+			this->set(section, "");
+		}
+	}
+
+	iniparser_set(this->ini, what.c_str(), value.c_str());
+}
+void INI::unset(std::string what)
+{
+	iniparser_unset(this->ini, what.c_str());
+}
 void INI::save(std::string file)
 {
-	FILE* fp = fopen(file.c_str(), "r");
+	FILE* fp = fopen(file.c_str(), "w");
 	if (fp)
 	{
 		this->save(fp);

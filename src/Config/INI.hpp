@@ -7,18 +7,37 @@
 
 /// Loads settings from a file with `.ini` configuration format.
 ///
+/// ## INI file
+///
+/// An `.ini` file has sections, keys and values.
+/// Like:
+///
+///     ; comment style 1
+///     # comment style 2
+///     [section]
+///     key = value
+///     [section2]
+///     key2 = value2
+///
+/// It is mandatory that all keys are stored within sections.
+/// Blank lines are allowed.
+///
+/// Sections and keys are case-insensitive.
+/// Values can be:
+///
+/// * Boolean: yes/no, YES/NO, true/false, TRUE/FALSE, 1/0
+/// * Integer: 42 (decimal), 042 (octal), 0x42 (hex)
+/// * Double: 1.12321, 543.92502
+/// * String: any sequence of characters to the end of line
+///
 /// ## Usage
 ///
 ///     INI ini;
-///
 ///     if (! ini.load("filename.ini"))
 ///         // Woops, something bad happened.
 ///         // File doensn't exist, whatever
-///
 ///     bool var = ini.get("section1:booleanValue", true);
-///
 ///     int otherVar = ini.get("section2:intValue", 2);
-///
 ///     std::string another = ini.get("section3:string", "4");
 ///
 /// ## get() path format
@@ -27,7 +46,6 @@
 ///
 ///     [section1]
 ///     key = value
-///
 ///     [section2]
 ///     otherKey = 2
 ///
@@ -45,6 +63,11 @@ public:
 	///
 	/// @return If we've successfuly loaded the file.
 	bool load(std::string file);
+
+	/// Creates a blank ini file in memory.
+	///
+	/// @see save()
+	void create();
 
 	/// Cleans up internal allocated memory.
 	///
@@ -89,6 +112,15 @@ public:
 	/// @return The value or #default_value if it doesn't exist,
 	///         the file itself isn't there or something happened.
 	std::string get(std::string where, std::string default_value);
+
+	/// Sets #what to #value.
+	/// If it exists, will get overriden. If not, creates it.
+	/// @see save()
+	void set(std::string what, std::string value);
+
+	/// Removes #what entry from internal ini contents.
+	/// @see save()
+	void unset(std::string what);
 
 	/// Saves all internal ini key-values to #file.
 	///
