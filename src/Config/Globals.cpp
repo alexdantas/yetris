@@ -8,6 +8,8 @@ int Globals::version[3] = { VERSION[0] - '0',
                             VERSION[2] - '0',
                             VERSION[4] - '0'};
 
+Profile* Globals::profile = NULL;
+
 //  __   __    ___   ____  ____  _
 // ( (` / /`  | |_) | |_  | |_  | |\ |
 // _)_) \_\_, |_| \ |_|__ |_|__ |_| \|

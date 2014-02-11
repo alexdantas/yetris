@@ -2,11 +2,28 @@
 #include <Flow/GameStateGame.hpp>
 #include <Flow/GameStateMainMenu.hpp>
 #include <Misc/Utils.hpp>
+#include <Game/Profile.hpp>
+#include <Config/Globals.hpp>
+
+// Local function that assures #name is loaded.
+void loadProfile(std::string name)
+{
+	SAFE_DELETE(Globals::profile); // you never know
+
+	Globals::profile = new Profile(name);
+}
 
 StateManager::StateManager():
 	currentState(nullptr),
 	sharedInfo(0)
 {
+	// First we'll load the default profile.
+	std::string name = Profile::load();
+	if (! name.empty())
+		loadProfile(name);
+	else
+		loadProfile("default");
+
 	// The first state, Hardcoded
 	this->currentState = new GameStateMainMenu();
 	this->currentState->load();

@@ -3,6 +3,7 @@
 
 #include <Game/Block.hpp>
 #include <Interface/Colors.hpp>
+#include <Game/Profile.hpp>
 
 /// All global settings to the game.
 ///
@@ -20,6 +21,8 @@ namespace Globals
 
 	/// Game version (format MMP - Major Minor Patch)
 	extern int version[3];
+
+	extern Profile* profile;
 
 	namespace Screen
 	{

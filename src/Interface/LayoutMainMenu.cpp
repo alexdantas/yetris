@@ -36,6 +36,16 @@ void LayoutMainMenu::windowsInit()
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}
+	// Profile name with an "'s" appended
+	// (like "Rachel's" or "Chris'")
+	std::string name = Globals::profile->getName();
+	if (name.back() == 's')
+		name += '\'';
+	else
+		name += "'s";
+
+	this->logo->setTitle(name);
+	this->logo->clear();
 	this->logo->refresh();
 
 	// MENU
