@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <unistd.h>
+#include <sys/stat.h> // mkdir() and off_t
 
 /// Random useful things accumulated over the years.
 ///
@@ -54,8 +54,28 @@ namespace Utils
 		std::vector<std::string> split(const std::string& str, char delim);
 	};
 
-	/// Stops execution for #delay microseconds.
-	void delay_ms(int delay);
+	namespace Time
+	{
+		/// Stops execution for #delay microseconds.
+		void delay_ms(int delay);
+	};
+
+	/// File I/O and Operational System's utilities.
+	namespace File
+	{
+		/// Tells if #path exists.
+		/// @note It could be a file or directory.
+		bool exists(std::string path);
+
+		/// Returns the file size of #path in bytes.
+		/// @return The size or -1 if it doesn't exist
+		///         (or something strange happened).
+		off_t size(std::string path);
+
+		/// Creates #path directory hierarchy recursively,
+		/// just like UNIX command `mkdir -p`.
+		void mkdir_p(std::string path);
+	};
 };
 
 // Useful #defines collected over the years.

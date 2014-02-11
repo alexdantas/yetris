@@ -5,20 +5,28 @@
 // |                                                         |
 // | Adventurers, beware...                                  |
 // |                                                         |
-// | The following file has lots of methods accumulated over |
-// | the years.                                              |
+// | * The following file has lots of methods accumulated    |
+// |   over the years.                                       |
+// | * There isn't too much cohesion between them, so try    |
+// |   to understand them individually.                      |
 // |                                                         |
-// | They're mostly poor-coded, sorry 'bout that.            |
+// |                                                         |
+// | * They're mostly poor-coded, sorry 'bout that.          |
 // |                                                         |
 // `---------------------------------------------------------'
 
 #include <Misc/Utils.hpp>
 
-#include <sstream>   // sstream
-#include <algorithm> // find_if
-#include <utility>   // C++11
-#include <random>    // C++11
-#include <ctime>     // time()
+#include <sstream>    // sstream
+#include <algorithm>  // find_if
+#include <utility>    // C++11
+#include <random>     // C++11
+#include <ctime>      // time()
+#include <unistd.h>	  // usleep()
+
+//  ___    __    _      ___   ___   _
+// | |_)  / /\  | |\ | | | \ / / \ | |\/|
+// |_| \ /_/--\ |_| \| |_|_/ \_\_/ |_|  |
 
 namespace Utils
 {
@@ -59,6 +67,10 @@ bool Utils::Random::booleanWithChance(float percent)
 	return (x < (percent * 100));
 }
 
+//  ___  _____  _     ____  ___   __
+// / / \  | |  | |_| | |_  | |_) ( (`
+// \_\_/  |_|  |_| | |_|__ |_| \ _)_)
+
 std::string Utils::intToString(int num)
 {
 	// C++11
@@ -70,6 +82,10 @@ int Utils::stringToInt(std::string text)
 	// C++11
 	return std::stoi(text);
 }
+
+//  __  _____  ___   _   _      __
+// ( (`  | |  | |_) | | | |\ | / /`_
+// _)_)  |_|  |_| \ |_| |_| \| \_\_/
 
 std::string& Utils::String::ltrim(std::string &str)
 {
@@ -128,8 +144,51 @@ std::vector<std::string> Utils::String::split(const std::string& str, char delim
 
 	return elems;
 }
-void Utils::delay_ms(int delay)
+
+// _____  _   _      ____
+//  | |  | | | |\/| | |_
+//  |_|  |_| |_|  | |_|__
+
+void Utils::Time::delay_ms(int delay)
 {
 	usleep((useconds_t)delay * 100);
+}
+
+//  ____  _   _     ____
+// | |_  | | | |   | |_
+// |_|   |_| |_|__ |_|__
+
+bool Utils::File::exists(std::string path)
+{
+	return (Utils::File::size(path) != -1);
+}
+off_t Utils::File::size(std::string path)
+{
+	struct stat s;
+
+	if (stat(path.c_str(), &s) < 0)
+		return -1;
+
+	return s.st_size;
+}
+void Utils::File::mkdir_p(std::string path)
+{
+	std::string tmp(path);
+
+	if (tmp.back() == '/')
+		tmp[tmp.size() - 1] = '\0';
+
+	for (std::string::iterator p = tmp.begin();
+	     (*p) != '\0';
+	     p++)
+	{
+		if (*p == '/')
+		{
+			*p = '\0';
+			mkdir(tmp.c_str(), S_IRWXU);
+			*p = '/';
+		}
+	}
+	mkdir(tmp.c_str(), S_IRWXU);
 }
 

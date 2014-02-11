@@ -400,7 +400,7 @@ void LayoutGame::draw(Menu* menu)
 		this->game->board->draw(this->board);
 		this->board->refresh();
 
-		Utils::delay_ms(Globals::Game::line_clear_delay);
+		Utils::Time::delay_ms(Globals::Game::line_clear_delay);
 	}
 
 	this->board->clear();
