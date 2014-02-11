@@ -54,18 +54,18 @@ void Game::start()
 	// Creating the board and adding noise.
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
-	if (Globals::Game::initial_noise != 0)
-		this->board->addNoise(Globals::Game::initial_noise);
+	if (Globals::Profiles::current->settings.game.initial_noise != 0)
+		this->board->addNoise(Globals::Profiles::current->settings.game.initial_noise);
 
 	// Populating all the next pieces
-	this->nextPieces.resize(Globals::Game::next_pieces);
+	this->nextPieces.resize(Globals::Profiles::current->settings.game.next_pieces);
 	for (unsigned int i = 0; i < (this->nextPieces.size()); i++)
 		this->nextPieces[i] = Piece::random();
 
 	// And the first piece
 	this->pieceCurrent = this->getNextPiece();
 
-	if (Globals::Game::has_ghost)
+	if (Globals::Profiles::current->settings.game.has_ghost)
 		this->pieceGhost = new PieceGhost();
 
 	this->pieceHold = nullptr;
@@ -73,7 +73,7 @@ void Game::start()
 	this->rotationSystem = new RotationSystemSRS();
 
 	this->score = new Score();
-	this->score->level = Globals::Game::starting_level;
+	this->score->level = Globals::Profiles::current->settings.game.starting_level;
 
 	// Creating the menu and adding each item
 	this->pauseMenu = new Menu(1,
@@ -106,11 +106,11 @@ void Game::handleInput(int c)
 	// The only two absolute inputs are to quit and pause.
 	// Others depend if the game is paused or not.
 
-	if (c == Globals::Input::quit)
+	if (c == Globals::Profiles::current->settings.input.quit)
 	{
 		this->userAskedToQuit = true;
 	}
-	else if (c == Globals::Input::pause)
+	else if (c == Globals::Profiles::current->settings.input.pause)
 	{
 		(this->isPaused) ?
 			this->pause(false) :
@@ -155,41 +155,41 @@ void Game::handleInput(int c)
 		return;
 	}
 
-	if (c == Globals::Input::left)
+	if (c == Globals::Profiles::current->settings.input.left)
 	{
 		movePieceIfPossible(Piece::DIR_LEFT);
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Input::down)
+	else if (c == Globals::Profiles::current->settings.input.down)
 	{
 		if (! movePieceIfPossible(Piece::DIR_DOWN))
 			this->lockCurrentPiece();
 
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Input::right)
+	else if (c == Globals::Profiles::current->settings.input.right)
 	{
 		movePieceIfPossible(Piece::DIR_RIGHT);
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Input::rotate_clockwise)
+	else if (c == Globals::Profiles::current->settings.input.rotate_clockwise)
 	{
 		this->rotationSystem->rotate(this->pieceCurrent,
 		                             this->board,
 		                             1);
 	}
-	else if (c == Globals::Input::rotate_counterclockwise)
+	else if (c == Globals::Profiles::current->settings.input.rotate_counterclockwise)
 	{
 		this->rotationSystem->rotate(this->pieceCurrent,
 		                             this->board,
 		                             -1);
 	}
-	else if (c == Globals::Input::drop)
+	else if (c == Globals::Profiles::current->settings.input.drop)
 	{
 		this->board->hardDrop(this->pieceCurrent);
 		this->lockCurrentPiece();
 	}
-	else if (c == Globals::Input::hold)
+	else if (c == Globals::Profiles::current->settings.input.hold)
 	{
 		this->holdCurrentPiece();
 	}
@@ -249,7 +249,7 @@ void Game::update()
 	else
 		this->timerPiece.unpause();
 
-	if (Globals::Game::has_ghost)
+	if (Globals::Profiles::current->settings.game.has_ghost)
 	{
 		this->pieceGhost->update(this->pieceCurrent,
 		                         this->board);
@@ -313,7 +313,7 @@ void Game::update()
 
 	// If on invisible mode, will flash the pieces
 	// once in a while
-	if (Globals::Game::invisible)
+	if (Globals::Profiles::current->settings.game.invisible)
 	{
 		this->timerInvisible.pause();
 		if (this->isInvisible)
@@ -379,8 +379,8 @@ void Game::lockCurrentPiece()
 	}
 
 	// Invisible game mode! Yay!
-	if (Globals::Game::invisible)
-		this->pieceCurrent->block = Globals::Theme::invisible;
+	if (Globals::Profiles::current->settings.game.invisible)
+		this->pieceCurrent->block = Globals::Profiles::current->settings.theme.invisible;
 
 	// Actually locking the current piece
 	this->board->lockPiece(this->pieceCurrent);
@@ -389,10 +389,10 @@ void Game::lockCurrentPiece()
 	this->score->points += 10;
 
 	// Sliding left/right based on options
-	if (Globals::Game::slide_right)
+	if (Globals::Profiles::current->settings.game.slide_right)
 		this->board->pushRight();
 
-	if (Globals::Game::slide_left)
+	if (Globals::Profiles::current->settings.game.slide_left)
 		this->board->pushLeft();
 
 	// Getting next piece
@@ -423,7 +423,7 @@ Piece* Game::getNextPiece()
 }
 void Game::holdCurrentPiece()
 {
-	if ((! Globals::Game::can_hold) ||
+	if ((! Globals::Profiles::current->settings.game.can_hold) ||
 	    (! this->canHold))
 		return;
 

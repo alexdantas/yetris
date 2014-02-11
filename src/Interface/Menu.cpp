@@ -60,7 +60,7 @@ void Menu::draw(Window* window)
 		if (! this->item[i])
 		{
 			for (int j = 0; j < (this->width); j++)
-				window->printChar(((Globals::Screen::fancy_borders) ?
+				window->printChar(((Globals::Profiles::current->settings.screen.fancy_borders) ?
 				                   ACS_HLINE :
 				                   '-'),
 				                  this->x + j,

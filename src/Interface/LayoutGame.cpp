@@ -29,7 +29,7 @@ void LayoutGame::windowsInit()
 	// Let's align it then.
 	int leftmost_x = 0;
 
-	if (! Globals::Screen::show_statistics)
+	if (! Globals::Profiles::current->settings.screen.show_statistics)
 		leftmost_x = 18;
 
 	// Leftmost window
@@ -39,7 +39,7 @@ void LayoutGame::windowsInit()
 	                            4*2 + 2, // width of a piece
 	                            0);
 
-	if (Globals::Game::can_hold)
+	if (Globals::Profiles::current->settings.game.can_hold)
 	{
 		this->hold = new Window(this->leftmost,
 		                        0,
@@ -47,9 +47,9 @@ void LayoutGame::windowsInit()
 		                        this->leftmost->getW(),
 		                        4);
 
-		if (Globals::Screen::show_borders)
+		if (Globals::Profiles::current->settings.screen.show_borders)
 		{
-			this->hold->borders(Globals::Screen::fancy_borders ?
+			this->hold->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 			                    Window::BORDER_FANCY :
 			                    Window::BORDER_REGULAR);
 		}
@@ -77,9 +77,9 @@ void LayoutGame::windowsInit()
 	                         score_height);
 
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->score->borders(Globals::Screen::fancy_borders ?
+		this->score->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                     Window::BORDER_FANCY :
 		                     Window::BORDER_REGULAR);
 	}
@@ -92,9 +92,9 @@ void LayoutGame::windowsInit()
 	                               10*2 + 2, // 10 blocks + borders
 	                               0);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->middle_left->borders(Globals::Screen::fancy_borders ?
+		this->middle_left->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                           Window::BORDER_FANCY :
 		                           Window::BORDER_REGULAR);
 	}
@@ -105,7 +105,7 @@ void LayoutGame::windowsInit()
 
 	// Middle-right, container of all the next pieces.
 	// It's height depents on how many next pieces we're showing.
-	int middle_right_height = Globals::Game::next_pieces * 3 + 1;
+	int middle_right_height = Globals::Profiles::current->settings.game.next_pieces * 3 + 1;
 
 	this->middle_right = new Window(this->main,
 	                                this->middle_left->getX() + this->middle_left->getW(),
@@ -113,9 +113,9 @@ void LayoutGame::windowsInit()
 	                                4*2 + 2, // 4 blocks + borders
 	                                middle_right_height);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->middle_right->borders(Globals::Screen::fancy_borders ?
+		this->middle_right->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                            Window::BORDER_FANCY :
 		                            Window::BORDER_REGULAR);
 	}
@@ -124,7 +124,7 @@ void LayoutGame::windowsInit()
 	this->middle_right->refresh();
 
 	// First next piece
-	this->next.resize(Globals::Game::next_pieces);
+	this->next.resize(Globals::Profiles::current->settings.game.next_pieces);
 	this->next[0] = new Window(this->middle_right, 0, 0, 0, 2);
 
 	// The rest of the next pieces
@@ -140,7 +140,7 @@ void LayoutGame::windowsInit()
 	}
 
 	// Will only show the right window if statistics is enabled
-	if (Globals::Screen::show_statistics)
+	if (Globals::Profiles::current->settings.screen.show_statistics)
 	{
 		// Container for Statistics and Miscellaneous information.
 		this->rightmost = new Window(this->main,
@@ -149,9 +149,9 @@ void LayoutGame::windowsInit()
 		                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
 		                             0);
 
-		if (Globals::Screen::show_borders)
+		if (Globals::Profiles::current->settings.screen.show_borders)
 		{
-			this->rightmost->borders(Globals::Screen::fancy_borders ?
+			this->rightmost->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 			                         Window::BORDER_FANCY :
 			                         Window::BORDER_REGULAR);
 		}
@@ -167,9 +167,9 @@ void LayoutGame::windowsInit()
 	                         this->main->getW() / 2,
 	                         6);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->pause->borders(Globals::Screen::fancy_borders ?
+		this->pause->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                     Window::BORDER_FANCY :
 		                     Window::BORDER_REGULAR);
 	}
@@ -181,9 +181,9 @@ void LayoutGame::windowsInit()
 	                        this->main->getH() / 4,
 	                        this->main->getW() / 2,
 	                        this->main->getH() / 2);
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->help->borders(Globals::Screen::fancy_borders ?
+		this->help->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                     Window::BORDER_FANCY :
 		                     Window::BORDER_REGULAR);
 	}
@@ -230,7 +230,7 @@ void LayoutGame::draw(Menu* menu)
 			this->help->print("Game keys",
 			                  this->help->getW()/2 - 9/2, // center
 			                  1,
-			                  Globals::Theme::hilite_text);
+			                  Globals::Profiles::current->settings.theme.hilite_text);
 
 			this->help->print_multiline("Arrow keys     Move piece\n"
 			                            "Space bar      Drop piece\n"
@@ -242,7 +242,7 @@ void LayoutGame::draw(Menu* menu)
 			                            "h              Show help",
 			                            1,
 			                            3,
-			                            Globals::Theme::text);
+			                            Globals::Profiles::current->settings.theme.text);
 			this->help->refresh();
 		}
 
@@ -262,7 +262,7 @@ void LayoutGame::draw(Menu* menu)
 	this->middle_right->clear();
 	this->middle_right->refresh();
 
-	if (Globals::Screen::show_statistics)
+	if (Globals::Profiles::current->settings.screen.show_statistics)
 	{
 		this->rightmost->clear();
 		this->rightmost->refresh();
@@ -271,7 +271,7 @@ void LayoutGame::draw(Menu* menu)
 	// Now we'll draw the internal windows
 
 	// Hold piece
-	if (Globals::Game::can_hold)
+	if (Globals::Profiles::current->settings.game.can_hold)
 	{
 		this->hold->clear();
 
@@ -282,7 +282,7 @@ void LayoutGame::draw(Menu* menu)
 	}
 
 	// Next pieces
-	for (int i = 0; i < Globals::Game::next_pieces; i++)
+	for (int i = 0; i < Globals::Profiles::current->settings.game.next_pieces; i++)
 	{
 		Window* w = this->next[i];
 		w->clear();
@@ -319,7 +319,7 @@ void LayoutGame::draw(Menu* menu)
 
 	// Statistics and Misc. info
 	// on the right part of the screen
-	if (Globals::Screen::show_statistics)
+	if (Globals::Profiles::current->settings.screen.show_statistics)
 	{
 		this->rightmost->clear();
 
@@ -327,13 +327,13 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->print(this->game->score->name, this->rightmost->getW() - this->game->score->name.size() - 2, 01, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
 
 		// Piece and Line Statistics
-		this->rightmost->print("[I]", 2, 2, Globals::Theme::piece_I->color);
-		this->rightmost->print("[T]", 2, 3, Globals::Theme::piece_T->color);
-		this->rightmost->print("[L]", 2, 4, Globals::Theme::piece_L->color);
-		this->rightmost->print("[J]", 2, 5, Globals::Theme::piece_J->color);
-		this->rightmost->print("[S]", 2, 6, Globals::Theme::piece_S->color);
-		this->rightmost->print("[Z]", 2, 7, Globals::Theme::piece_Z->color);
-		this->rightmost->print("[O]", 2, 8, Globals::Theme::piece_O->color);
+		this->rightmost->print("[I]", 2, 2, Globals::Profiles::current->settings.theme.piece_I->color);
+		this->rightmost->print("[T]", 2, 3, Globals::Profiles::current->settings.theme.piece_T->color);
+		this->rightmost->print("[L]", 2, 4, Globals::Profiles::current->settings.theme.piece_L->color);
+		this->rightmost->print("[J]", 2, 5, Globals::Profiles::current->settings.theme.piece_J->color);
+		this->rightmost->print("[S]", 2, 6, Globals::Profiles::current->settings.theme.piece_S->color);
+		this->rightmost->print("[Z]", 2, 7, Globals::Profiles::current->settings.theme.piece_Z->color);
+		this->rightmost->print("[O]", 2, 8, Globals::Profiles::current->settings.theme.piece_O->color);
 
 		int x_offset = this->rightmost->getW() - 15;
 
@@ -400,14 +400,14 @@ void LayoutGame::draw(Menu* menu)
 		this->game->board->draw(this->board);
 		this->board->refresh();
 
-		Utils::Time::delay_ms(Globals::Game::line_clear_delay);
+		Utils::Time::delay_ms(Globals::Profiles::current->settings.game.line_clear_delay);
 	}
 
 	this->board->clear();
 
 	this->game->board->draw(this->board);
 
-	if (Globals::Game::has_ghost)
+	if (Globals::Profiles::current->settings.game.has_ghost)
 		this->game->pieceGhost->draw(this->board);
 
 	this->game->pieceCurrent->draw(this->board);

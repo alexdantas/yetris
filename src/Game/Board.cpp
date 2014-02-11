@@ -45,8 +45,8 @@ void Board::lockPiece(Piece* p)
 
 				this->block[block_x][block_y] = p->getBlock();
 
-				if (Globals::Theme::lock_piece_color)
-					this->block[block_x][block_y] = Globals::Theme::locked;
+				if (Globals::Profiles::current->settings.theme.lock_piece_color)
+					this->block[block_x][block_y] = Globals::Profiles::current->settings.theme.locked;
 			}
 }
 bool Board::isPieceValid(Piece* p)
@@ -132,7 +132,7 @@ void Board::pushUp()
 		}
 
 		if (Utils::Random::boolean())
-			this->block[i][this->height - 1] = Globals::Theme::piece_colorless;
+			this->block[i][this->height - 1] = Globals::Profiles::current->settings.theme.piece_colorless;
 	}
 }
 void Board::pushDown()
@@ -184,7 +184,7 @@ int Board::markFullLines()
 		// cleared and waiting for a little bit
 
 		for (int i = 0; i < (this->width); i++)
-			this->block[i][k] = Globals::Theme::clear_line;
+			this->block[i][k] = Globals::Profiles::current->settings.theme.clear_line;
 	}
 
 	return lines_cleared;
@@ -193,7 +193,7 @@ void Board::clearFullLines()
 {
 	for (int k = 0; k < (this->height); k++)
 	{
-		if (! (this->block[0][k] == Globals::Theme::clear_line))
+		if (! (this->block[0][k] == Globals::Profiles::current->settings.theme.clear_line))
 			continue;
 
 		// Moves all upper lines one row down,
@@ -240,12 +240,12 @@ void Board::turnInvisible(bool option)
 			if (option)
 			{
 				if (this->block[i][j])
-					this->block[i][j] = Globals::Theme::invisible;
+					this->block[i][j] = Globals::Profiles::current->settings.theme.invisible;
 			}
 			else
 			{
-				if (this->block[i][j] == Globals::Theme::invisible)
-					this->block[i][j] = Globals::Theme::piece;
+				if (this->block[i][j] == Globals::Profiles::current->settings.theme.invisible)
+					this->block[i][j] = Globals::Profiles::current->settings.theme.piece;
 			}
 }
 

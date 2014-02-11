@@ -2,6 +2,7 @@
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
 #include <Config/INI.hpp>
+#include <Interface/Colors.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -87,14 +88,121 @@ Profile::Profile(std::string name):
 	if (! Utils::File::exists(stats))
 		Utils::File::create(stats);
 
+	// Starting all settings with default, hardcoded values.
+
+	// Screen
+
+	settings.screen.center_horizontally = true;
+	settings.screen.center_vertically   = true;
+
+	settings.screen.show_borders  = true;
+	settings.screen.fancy_borders = true;
+	settings.screen.outer_border  = true;
+
+	settings.screen.use_colors = true;
+
+	settings.screen.show_statistics = true;
+
+	// Game
+
+	settings.game.next_pieces = 7;
+	settings.game.initial_noise = 0;
+	settings.game.starting_level = 1;
+
+	settings.game.has_ghost = true;
+	settings.game.can_hold  = true;
+
+	settings.game.random_algorithm = 1;
+
+	settings.game.has_game_over_animation = true;
+	settings.game.line_clear_delay = 200; 		// ms
+
+	settings.game.slide_left  = false;
+	settings.game.slide_right = false;
+	settings.game.invisible = false;
+
+	// Theme
+
+	settings.theme.text = Colors::pair(COLOR_WHITE, COLOR_DEFAULT);
+	settings.theme.hilite_text = Colors::pair(COLOR_BLUE, COLOR_DEFAULT);
+
+	settings.theme.piece_has_colors = true;
+	settings.theme.ghost_has_colors = true;
+	settings.theme.show_pivot_block = false;
+	settings.theme.lock_piece_color = false;
+
+	settings.theme.clear_line = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+	                ':', ':');
+
+	settings.theme.piece_colorless = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
+	                ' ', ' ');
+
+	settings.theme.piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
+	                ' ', ' ');
+
+	settings.theme.ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, true),
+	                '[', ']');
+
+	settings.theme.locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE),
+	                ' ', ' ');
+
+	settings.theme.invisible = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+	                                      ' ', ' ');
+
+	settings.theme.piece_S = new Block(Colors::pair(COLOR_WHITE, COLOR_GREEN),
+	                ' ', ' ');
+
+	settings.theme.piece_Z = new Block(Colors::pair(COLOR_WHITE, COLOR_RED),
+	                ' ', ' ');
+
+	settings.theme.piece_O = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW),
+	                ' ', ' ');
+
+	settings.theme.piece_I = new Block(Colors::pair(COLOR_WHITE, COLOR_CYAN, true),
+	                ' ', ' ');
+
+	settings.theme.piece_L = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, true),
+	                ' ', ' ');
+
+	settings.theme.piece_J = new Block(Colors::pair(COLOR_WHITE, COLOR_BLUE),
+	                ' ', ' ');
+
+	settings.theme.piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
+	                ' ', ' ');
+
+	// Input
+
+	settings.input.left                    = KEY_LEFT;
+	settings.input.right                   = KEY_RIGHT;
+	settings.input.up                      = KEY_UP;
+	settings.input.down                    = KEY_DOWN;
+	settings.input.drop                    = ' ';
+	settings.input.rotate_clockwise        = 'x';
+	settings.input.rotate_counterclockwise = 'z';
+	settings.input.pause                   = 'p';
+	settings.input.hold                    = 'c';
+	settings.input.toggle_statistics       = '2';
+	settings.input.help                    = 'h';
+	settings.input.high_scores             = '1';
+	settings.input.quit                    = 'q';
+
 	// Now will actuall load the files.
 }
 Profile::~Profile()
 {
+	SAFE_DELETE(settings.theme.clear_line);
+	SAFE_DELETE(settings.theme.piece_colorless);
+	SAFE_DELETE(settings.theme.piece);
+	SAFE_DELETE(settings.theme.ghost);
+	SAFE_DELETE(settings.theme.locked);
+	SAFE_DELETE(settings.theme.invisible);
 
-}
-std::string Profile::getName()
-{
-	return this->name;
+	SAFE_DELETE(settings.theme.piece_S);
+	SAFE_DELETE(settings.theme.piece_Z);
+	SAFE_DELETE(settings.theme.piece_O);
+	SAFE_DELETE(settings.theme.piece_I);
+	SAFE_DELETE(settings.theme.piece_L);
+	SAFE_DELETE(settings.theme.piece_J);
+	SAFE_DELETE(settings.theme.piece_T);
 }
 

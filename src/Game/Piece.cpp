@@ -36,7 +36,7 @@ Piece::PieceType Piece::random()
 	// of the same piece and guarantee a certain
 	// degree of piece rotativity ("I WANT TEH LINES!11!!").
 	//
-	if (Globals::Game::random_algorithm == 1)
+	if (Globals::Profiles::current->settings.game.random_algorithm == 1)
 	{
 		int i,j;
 		int size = Piece::MAX;
@@ -70,7 +70,7 @@ Piece::PieceType Piece::random()
 		piece++;
 		return bag[piece - 1];
 	}
-	// else if (Globals::Game::random_algorithm == 2)
+	// else if (Globals::Profiles::current->settings.game.random_algorithm == 2)
 	// {
 	// 	// Dummy random algorithm
 	// }
@@ -89,16 +89,16 @@ Piece::Piece(Piece::PieceType type, int x, int y):
 {
 	switch(type)
 	{
-	case Piece::S: this->block = Globals::Theme::piece_S; break;
-	case Piece::Z: this->block = Globals::Theme::piece_Z; break;
-	case Piece::O: this->block = Globals::Theme::piece_O; break;
-	case Piece::I: this->block = Globals::Theme::piece_I; break;
-	case Piece::L: this->block = Globals::Theme::piece_L; break;
-	case Piece::J: this->block = Globals::Theme::piece_J; break;
-	case Piece::T: this->block = Globals::Theme::piece_T; break;
+	case Piece::S: this->block = Globals::Profiles::current->settings.theme.piece_S; break;
+	case Piece::Z: this->block = Globals::Profiles::current->settings.theme.piece_Z; break;
+	case Piece::O: this->block = Globals::Profiles::current->settings.theme.piece_O; break;
+	case Piece::I: this->block = Globals::Profiles::current->settings.theme.piece_I; break;
+	case Piece::L: this->block = Globals::Profiles::current->settings.theme.piece_L; break;
+	case Piece::J: this->block = Globals::Profiles::current->settings.theme.piece_J; break;
+	case Piece::T: this->block = Globals::Profiles::current->settings.theme.piece_T; break;
 
 	default:
-		this->block = Globals::Theme::piece_colorless;
+		this->block = Globals::Profiles::current->settings.theme.piece_colorless;
 		break;
 	}
 }

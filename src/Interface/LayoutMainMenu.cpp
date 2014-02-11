@@ -30,15 +30,15 @@ void LayoutMainMenu::windowsInit()
 	                        0,
 	                        9);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->logo->borders(Globals::Screen::fancy_borders ?
+		this->logo->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}
 	// Profile name with an "'s" appended
 	// (like "Rachel's" or "Chris'")
-	std::string name = Globals::Profiles::current->getName();
+	std::string name = Globals::Profiles::current->name;
 	if (name.back() == 's')
 		name += '\'';
 	else
@@ -55,9 +55,9 @@ void LayoutMainMenu::windowsInit()
 	                        this->main->getW() / 3,
 	                        12);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->menu->borders(Globals::Screen::fancy_borders ?
+		this->menu->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}

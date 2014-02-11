@@ -91,16 +91,16 @@ GameState::StateCode GameStateMainMenu::update()
 	{
 		// User selected an option
 		// Let's get values from menu items
-		Globals::Game::initial_noise = this->menu->getInt(INITIAL_NOISE);
-		Globals::Game::starting_level = this->menu->getInt(STARTING_LEVEL);
+		Globals::Profiles::current->settings.game.initial_noise = this->menu->getInt(INITIAL_NOISE);
+		Globals::Profiles::current->settings.game.starting_level = this->menu->getInt(STARTING_LEVEL);
 
-		Globals::Game::invisible   = this->menu->getBool(INVISIBLE);
-		Globals::Game::slide_left  = this->menu->getBool(SLIDE_LEFT);
-		Globals::Game::slide_right = this->menu->getBool(SLIDE_RIGHT);
-		Globals::Game::can_hold    = this->menu->getBool(HOLD_PIECE);
-		Globals::Game::can_hold    = this->menu->getBool(HOLD_PIECE);
-		Globals::Game::has_ghost   = this->menu->getBool(GHOST_PIECE);
-		Globals::Screen::show_statistics = this->menu->getBool(SHOW_STATISTICS);
+		Globals::Profiles::current->settings.game.invisible   = this->menu->getBool(INVISIBLE);
+		Globals::Profiles::current->settings.game.slide_left  = this->menu->getBool(SLIDE_LEFT);
+		Globals::Profiles::current->settings.game.slide_right = this->menu->getBool(SLIDE_RIGHT);
+		Globals::Profiles::current->settings.game.can_hold    = this->menu->getBool(HOLD_PIECE);
+		Globals::Profiles::current->settings.game.can_hold    = this->menu->getBool(HOLD_PIECE);
+		Globals::Profiles::current->settings.game.has_ghost   = this->menu->getBool(GHOST_PIECE);
+		Globals::Profiles::current->settings.screen.show_statistics = this->menu->getBool(SHOW_STATISTICS);
 
 		// And then exit based on the selected option.
 		if (this->menu->getSelectedValue() == START_GAME)

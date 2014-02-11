@@ -32,18 +32,18 @@ Layout::Layout(int width, int height):
 
 	// Creating the main window for this layout.
 	int main_x = 0;
-	if (Globals::Screen::center_horizontally)
+	if (Globals::Profiles::current->settings.screen.center_horizontally)
 		main_x = current_width/2 - width/2;
 
 	int main_y = 0;
-	if (Globals::Screen::center_vertically)
+	if (Globals::Profiles::current->settings.screen.center_vertically)
 		main_y = current_height/2 - height/2;
 
 	this->main = new Window(main_x, main_y, width, height);
 
-	if (Globals::Screen::show_borders)
+	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
-		this->main->borders(Globals::Screen::fancy_borders ?
+		this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}

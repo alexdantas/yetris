@@ -14,19 +14,19 @@ void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite
 
 	int posx = x + width;
 
-	window->print("[", posx - 8, y, Globals::Theme::text);
+	window->print("[", posx - 8, y, Globals::Profiles::current->settings.theme.text);
 
 	window->print("ON", posx - 7, y, ((this->checked) ?
-	                                   Globals::Theme::hilite_text:
-	                                   Globals::Theme::text));
+	                                  Globals::Profiles::current->settings.theme.hilite_text:
+	                                  Globals::Profiles::current->settings.theme.text));
 
-	window->print("|", posx - 5, y, Globals::Theme::text);
+	window->print("|", posx - 5, y, Globals::Profiles::current->settings.theme.text);
 
 	window->print("OFF", posx - 4, y, ((this->checked) ?
-	                                    Globals::Theme::text :
-	                                    Globals::Theme::hilite_text));
+	                                   Globals::Profiles::current->settings.theme.text :
+	                                   Globals::Profiles::current->settings.theme.hilite_text));
 
-	window->print("]", posx - 1, y, Globals::Theme::text);
+	window->print("]", posx - 1, y, Globals::Profiles::current->settings.theme.text);
 }
 void MenuItemCheckbox::handleInput(int input)
 {

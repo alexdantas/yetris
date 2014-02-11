@@ -4,7 +4,7 @@
 PieceGhost::PieceGhost():
 	Piece(Piece::MAX, 0, 0)
 {
-	this->block = Globals::Theme::ghost;
+	this->block = Globals::Profiles::current->settings.theme.ghost;
 }
 PieceGhost::~PieceGhost()
 { }
