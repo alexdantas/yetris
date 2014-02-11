@@ -91,6 +91,12 @@ namespace Utils
 		/// @return If we could create the file at all.
 		bool create(std::string path);
 
+		/// Writes #contents to #path.
+		///
+		/// @note If #path doesn't exist, creates it.
+		/// @note If #path exist, overwrites everything on it.
+		void write(std::string path, std::string contents);
+
 		/// Tells if #path is a directory.
 		///
 		/// @note Returns false also if something wrong happened.

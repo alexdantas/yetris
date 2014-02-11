@@ -25,6 +25,8 @@
 #include <unistd.h>    // usleep()
 #include <sys/types.h> // opendir(), readdir()
 #include <dirent.h>    // readdir()
+#include <iostream>	   // ofstream
+#include <fstream>	   // ofstream
 
 //  ___    __    _      ___   ___   _
 // | |_)  / /\  | |\ | | | \ / / \ | |\/|
@@ -201,6 +203,12 @@ bool Utils::File::create(std::string path)
 
 	fclose(fp);
 	return true;
+}
+void Utils::File::write(std::string path, std::string contents)
+{
+	std::ofstream file;
+	file.open(path);
+	file << contents;
 }
 bool Utils::File::isDirectory(std::string path)
 {
