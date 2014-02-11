@@ -66,16 +66,16 @@ CONFIG_FILE = config.ini
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
 PLATFORM    =
-CXXFLAGS    = $(CDEBUG) -Wall -Wextra -std=c++0x -I"src/" $(PLATFORM)
+CXXFLAGS    = $(CDEBUG) -Wall -Wextra -std=c++0x $(PLATFORM)
 LDFLAGS     = -lncurses $(PLATFORM)
-INCLUDESDIR =
+INCLUDESDIR = -I"src/" -I"deps/"
 LIBSDIR     =
 
 # All source files
 CFILES   = $(shell find src -type f -name '*.c')
 CXXFILES = $(shell find src -type f -name '*.cpp')
-OBJECTS = $(CFILES:.c=.o) \
-          $(CXXFILES:.cpp=.o)
+OBJECTS  = $(CFILES:.c=.o) \
+           $(CXXFILES:.cpp=.o)
 
 DEFINES = -DVERSION=\""$(VERSION)"\"         \
           -DPACKAGE=\""$(PACKAGE)"\"         \
@@ -86,7 +86,7 @@ DEFINES = -DVERSION=\""$(VERSION)"\"         \
 # iniparser stuff
 INIDIR     = deps/iniparser
 INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra $(PLATFORM)
-INI_OBJS   = $(INIDIR)/inidictionary.o \
+INI_OBJS   = $(INIDIR)/dictionary.o \
              $(INIDIR)/iniparser.o
 
 # Distribution tarball
@@ -114,7 +114,7 @@ CDEBUG =
 endif
 
 # Make targets
-all: dirs $(EXE)
+all: $(EXE)
 	# Build successful!
 
 install: all
@@ -158,9 +158,6 @@ $(DISTDIR):
 	-$(MUTE)cp -r src/* $(DISTDIR)/src
 	-$(MUTE)cp -r doc/* $(DISTDIR)/doc
 
-dirs:
-	@-mkdir -p bin
-
 run: all
 	# Running...
 	$(MUTE)./bin/$(EXE)
@@ -178,14 +175,15 @@ docclean:
 	# Removing documentation...
 	-$(MUTE)rm $(VTAG) -rf doc/html
 
-.PHONY: clean doc docclean uninstall dirs
+.PHONY: clean doc docclean uninstall
 
 # iniparser stuff
 
-$(INIDIR)/iniparser.o: $(INIDIR)/iniparser.c
-	# Compiling iniparser...
-	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/iniparser.c  -c -o $(INIDIR)/iniparser.o
+$(INIDIR)/dictionary.o: $(INIDIR)/dictionary.c
+	# Compiling $@...
+	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
 
-$(INIDIR)/inidictionary.o: $(INIDIR)/dictionary.c
-	$(MUTE)$(CC) $(INI_CFLAGS) $(INIDIR)/dictionary.c -c -o $(INIDIR)/inidictionary.o
+$(INIDIR)/iniparser.o: $(INIDIR)/iniparser.c
+	# Compiling $@...
+	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
 
