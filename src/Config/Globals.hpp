@@ -22,8 +22,11 @@ namespace Globals
 	/// Game version (format MMP - Major Minor Patch)
 	extern int version[3];
 
-	extern Profile* profile;
-
+	namespace Profiles
+	{
+		extern Profile* current;
+		extern std::string default_name;
+	};
 	namespace Screen
 	{
 		extern bool center_horizontally;

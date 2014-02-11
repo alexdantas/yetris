@@ -5,28 +5,34 @@
 #include <Game/Profile.hpp>
 #include <Config/Globals.hpp>
 
-// Local function that assures #name is loaded.
-void loadProfile(std::string name)
-{
-	SAFE_DELETE(Globals::profile); // you never know
-
-	Globals::profile = new Profile(name);
-}
-
 StateManager::StateManager():
 	currentState(nullptr),
 	sharedInfo(0)
 {
 	// First we'll load the default profile.
-	std::string name = Profile::load();
-	if (! name.empty())
-		loadProfile(name);
-	else
-		loadProfile("default");
+	if (! Profile::load())
+	{
+		// Couldn't find any profiles - first time!
 
-	// The first state, Hardcoded
-	this->currentState = new GameStateMainMenu();
-	this->currentState->load();
+		if (! Globals::Profiles::default_name.empty())
+			Globals::Profiles::default_name = "";
+
+		// go to the GameStateCreateDefaultProfile or whatever
+		// for now, lets fuck things up
+		throw "WTF Error";
+	}
+	else
+	{
+		// Alright, let's load it!
+		if (Globals::Profiles::default_name.empty())
+			Globals::Profiles::default_name = Profile::profiles.front();
+
+		Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
+
+		// The first state, Hardcoded
+		this->currentState = new GameStateMainMenu();
+		this->currentState->load();
+	}
 }
 StateManager::~StateManager()
 {

@@ -9,7 +9,12 @@ int Globals::version[3] = { VERSION[0] - '0',
                             VERSION[2] - '0',
                             VERSION[4] - '0'};
 
-Profile* Globals::profile = NULL;
+//  ___   ___   ___   ____  _   _     ____  __
+// | |_) | |_) / / \ | |_  | | | |   | |_  ( (`
+// |_|   |_| \ \_\_/ |_|   |_| |_|__ |_|__ _)_)
+
+Profile* Globals::Profiles::current = NULL;
+std::string Globals::Profiles::default_name = "";
 
 //  __   __    ___   ____  ____  _
 // ( (` / /`  | |_) | |_  | |_  | |\ |
@@ -146,5 +151,9 @@ void Globals::init()
 	Globals::Config::directory = (Utils::File::getHome() +
 	                              ".local/share/" +
 	                              PACKAGE + "/");
+
+	// Getting default profile name - should be at a
+	// file 'global-settings.ini'.
+	Globals::Profiles::default_name = "";
 }
 

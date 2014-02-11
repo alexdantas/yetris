@@ -38,7 +38,7 @@ void LayoutMainMenu::windowsInit()
 	}
 	// Profile name with an "'s" appended
 	// (like "Rachel's" or "Chris'")
-	std::string name = Globals::profile->getName();
+	std::string name = Globals::Profiles::current->getName();
 	if (name.back() == 's')
 		name += '\'';
 	else

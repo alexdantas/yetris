@@ -1,6 +1,7 @@
 #ifndef PROFILE_H_DEFINED
 #define PROFILE_H_DEFINED
 
+#include <vector>
 #include <string>
 
 /// Maximum size that each profile name may have.
@@ -25,14 +26,19 @@ class Profile
 {
 public:
 	/// Loads all existing profiles.
-	/// @return The default profile name or an empty string
-	///         if there's no profiles yet (first time playing).
-	static std::string load();
+	///
+	/// @return If we could load profiles. If not, this is
+	///         probably the first time playing.
+	static bool load();
 
 	Profile(std::string name);
 	virtual ~Profile();
 
 	std::string getName();
+
+
+	/// All profiles present on the time of execution.
+	static std::vector<std::string> profiles;
 
 private:
 	std::string name;
