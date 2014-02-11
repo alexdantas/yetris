@@ -1,6 +1,7 @@
 #include <Game/Profile.hpp>
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
+#include <Config/INI.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -49,15 +50,33 @@ Profile::Profile(std::string name):
 	std::string root   = Globals::Config::directory + name + "/";
 	std::string config = root + "settings.ini";
 	std::string stats  = root + "statistics.bin";
-	std::string global_settings = Globals::Config::directory + "global-settings.ini";
 
-	// Make sure directory and files exist
-	if (! Utils::File::exists(global_settings))
+	// Make sure we can load a default profile at startup
+	// (meaning the global settings file must have a profile
+	//  name at `profiles:default`)
+
+	if (! Utils::File::exists(Globals::Config::file))
 	{
-		Utils::File::write(global_settings,
-		                   "[profiles]\n"
-		                   "default = " + name + "\n");
+		INI ini;
+		ini.create();
+		ini.set("profiles:default", name);
+		ini.save(Globals::Config::file);
 	}
+	else
+	{
+		INI ini;
+		ini.load(Globals::Config::file);
+		std::string default_name = ini.get("profiles:default", "");
+
+		if (default_name.empty())
+		{
+			ini.set("profiles:default", name);
+			ini.save(Globals::Config::file);
+		}
+	}
+
+
+	// Making sure default directories and files exist.
 
 	if (! Utils::File::isDirectory(root))
 		Utils::File::mkdir_p(root);
@@ -68,7 +87,7 @@ Profile::Profile(std::string name):
 	if (! Utils::File::exists(stats))
 		Utils::File::create(stats);
 
-	// Now will load it's files.
+	// Now will actuall load the files.
 }
 Profile::~Profile()
 {

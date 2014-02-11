@@ -82,8 +82,9 @@ Block* Globals::Theme::piece_T = NULL;
 // / /`  / / \ | |\ | | |_  | | / /`_
 // \_\_, \_\_/ |_| \| |_|   |_| \_\_/
 
-// real initialization below
+// real initialization at init()
 std::string Globals::Config::directory = "";
+std::string Globals::Config::file      = "";
 
 //  _   _      ___   _    _____
 // | | | |\ | | |_) | | |  | |
@@ -149,19 +150,41 @@ void Globals::init()
 	                ' ', ' ');
 
 	// Making sure default config directory exists
+	// By default it's `~/.local/share/yetris/`
+
 	Globals::Config::directory = (Utils::File::getHome() +
 	                              ".local/share/" +
 	                              PACKAGE + "/");
 
+	if (Globals::Config::directory.front() != '/')
+	{
+		// We couldn't get user's home directory,
+		// so let's fallback to `/tmp/.local/share...`
+		Globals::Config::directory = ("/tmp/" +
+		                              Globals::Config::directory);
+	}
+
+	Globals::Config::file = (Globals::Config::directory +
+	                         "global-settings.ini");
+
 	if (! Utils::File::isDirectory(Globals::Config::directory))
 		Utils::File::mkdir_p(Globals::Config::directory);
 
-	// Getting default profile name - should be at a
-	// file 'global-settings.ini'.
-	if (Utils::File::exists(Globals::Config::directory + "global-settings.ini"))
+	if (! Utils::File::isDirectory(Globals::Config::directory))
+	{
+		// We REALLY can't access the disk by any means.
+		// Let's throw everything away and give up.
+		Globals::Config::directory = "/dev/";
+		Globals::Config::file      = "/dev/null";
+		return;
+	}
+
+	// Getting default profile name - should be at the
+	// global settings file.
+	if (Utils::File::exists(Globals::Config::file))
 	{
 		INI ini;
-		if (ini.load(Globals::Config::directory + "global-settings.ini"))
+		if (ini.load(Globals::Config::file))
 		{
 			Globals::Profiles::default_name = ini.get("profiles:default", Globals::Profiles::default_name);
 		}

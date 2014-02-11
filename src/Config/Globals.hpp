@@ -94,8 +94,17 @@ namespace Globals
 		/// Root directory where we place configurations.
 		///
 		/// It's `~/.local/share/yetris/`.
-		/// Note it has a trailing '/'.
+		///
+		/// @note It has a trailing '/'.
 		extern std::string directory;
+
+		/// Main file where global settings reside.
+		///
+		/// It's `~/.local/share/yetris/global-settings.ini`.
+		///
+		/// @note Most settings are user-wide, according to
+		///       it's Profile.
+		extern std::string file;
 	};
 	namespace Input
 	{
