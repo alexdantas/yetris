@@ -47,9 +47,16 @@ double INI::get(std::string where, double default_value)
 {
 	return iniparser_getdouble(this->ini, where.c_str(), default_value);
 }
-std::string INI::get(std::string where, char* default_value)
+std::string INI::get(std::string where, const char* default_value)
 {
-	return iniparser_getstring(this->ini, where.c_str(), default_value);
+	// All this because I can't convert `const char*` to `char*`
+	size_t len = strlen(default_value);
+
+	char s[len+1];
+	strncpy(s, default_value, len);
+
+	// Finally!
+	return iniparser_getstring(this->ini, where.c_str(), s);
 }
 std::string INI::get(std::string where, std::string default_value)
 {
@@ -57,7 +64,6 @@ std::string INI::get(std::string where, std::string default_value)
 	size_t len = default_value.size();
 
 	char s[len+1];
-
 	strncpy(s, default_value.c_str(), len);
 
 	// Finally!
