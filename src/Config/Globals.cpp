@@ -158,10 +158,13 @@ void Globals::init()
 
 	// Getting default profile name - should be at a
 	// file 'global-settings.ini'.
-	INI ini;
-	if (ini.load(Globals::Config::directory + "global-settings.ini"))
+	if (Utils::File::exists(Globals::Config::directory + "global-settings.ini"))
 	{
-		Globals::Profiles::default_name = ini.get("profiles:default", Globals::Profiles::default_name);
+		INI ini;
+		if (ini.load(Globals::Config::directory + "global-settings.ini"))
+		{
+			Globals::Profiles::default_name = ini.get("profiles:default", Globals::Profiles::default_name);
+		}
 	}
 }
 

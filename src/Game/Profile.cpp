@@ -49,8 +49,16 @@ Profile::Profile(std::string name):
 	std::string root   = Globals::Config::directory + name + "/";
 	std::string config = root + "settings.ini";
 	std::string stats  = root + "statistics.bin";
+	std::string global_settings = Globals::Config::directory + "global-settings.ini";
 
 	// Make sure directory and files exist
+	if (! Utils::File::exists(global_settings))
+	{
+		Utils::File::write(global_settings,
+		                   "[profiles]\n"
+		                   "default = " + name + "\n");
+	}
+
 	if (! Utils::File::isDirectory(root))
 		Utils::File::mkdir_p(root);
 
