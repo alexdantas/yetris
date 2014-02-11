@@ -83,8 +83,11 @@ namespace Globals
 	};
 	namespace Config
 	{
-		extern std::string config_filename;
-		extern std::string hscore_filename;
+		/// Root directory where we place configurations.
+		///
+		/// It's `~/.local/share/yetris/`.
+		/// Note it has a trailing '/'.
+		extern std::string directory;
 	};
 	namespace Input
 	{

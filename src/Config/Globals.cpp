@@ -1,5 +1,6 @@
 #include <Config/Globals.hpp>
 #include <Game/Block.hpp>
+#include <Misc/Utils.hpp>
 
 #include <ncurses.h>
 
@@ -75,8 +76,8 @@ Block* Globals::Theme::piece_T = NULL;
 // / /`  / / \ | |\ | | |_  | | / /`_
 // \_\_, \_\_/ |_| \| |_|   |_| \_\_/
 
-std::string Globals::Config::config_filename = "";
-std::string Globals::Config::hscore_filename = "";
+// real initialization below
+std::string Globals::Config::directory = "";
 
 //  _   _      ___   _    _____
 // | | | |\ | | |_) | | |  | |
@@ -140,5 +141,10 @@ void Globals::init()
 
 	Globals::Theme::piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
 	                ' ', ' ');
+
+	// Initializing directories and stuff
+	Globals::Config::directory = (Utils::File::getHome() +
+	                              ".local/share/" +
+	                              PACKAGE + "/");
 }
 
