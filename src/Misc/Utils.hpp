@@ -61,20 +61,46 @@ namespace Utils
 	};
 
 	/// File I/O and Operational System's utilities.
+	///
+	/// Note, I'm using several POSIX functions.
+	/// So the following functions surely aren't
+	/// portable to Windows.
+	/// Other systems are kinda unpredictable.
+	///
 	namespace File
 	{
 		/// Tells if #path exists.
-		/// @note It could be a file or directory.
+		///
+		/// @note It could be a file, directory or whatever.
 		bool exists(std::string path);
 
 		/// Returns the file size of #path in bytes.
-		/// @return The size or -1 if it doesn't exist
+		///
+		/// @return It's size or -1 if it doesn't exist
 		///         (or something strange happened).
 		off_t size(std::string path);
 
 		/// Creates #path directory hierarchy recursively,
 		/// just like UNIX command `mkdir -p`.
 		void mkdir_p(std::string path);
+
+		/// Tells if #path is a directory.
+		///
+		/// @note Returns false also if something wrong happened.
+		bool isDirectory(std::string path);
+
+		/// Tells if #path is a regular file
+		/// (not a directory, socket, FIFO device or whatever).
+		///
+		/// @note Returns false also if something wrong happened.
+		bool isFile(std::string path);
+
+		/// Lists all files withing #path.
+		///
+		/// @note The returned vecor is not ordered and
+		///       all file names contain the full #path
+		///       before them.
+		std::vector<std::string> ls(std::string path);
 	};
 };
 

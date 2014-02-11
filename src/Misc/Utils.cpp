@@ -17,12 +17,14 @@
 
 #include <Misc/Utils.hpp>
 
-#include <sstream>    // sstream
-#include <algorithm>  // find_if
-#include <utility>    // C++11
-#include <random>     // C++11
-#include <ctime>      // time()
-#include <unistd.h>	  // usleep()
+#include <sstream>     // sstream
+#include <algorithm>   // find_if
+#include <utility>     // C++11
+#include <random>      // C++11
+#include <ctime>       // time()
+#include <unistd.h>    // usleep()
+#include <sys/types.h> // opendir(), readdir()
+#include <dirent.h>    // readdir()
 
 //  ___    __    _      ___   ___   _
 // | |_)  / /\  | |\ | | | \ / / \ | |\/|
@@ -190,5 +192,57 @@ void Utils::File::mkdir_p(std::string path)
 		}
 	}
 	mkdir(tmp.c_str(), S_IRWXU);
+}
+bool Utils::File::isDirectory(std::string path)
+{
+	struct stat s;
+
+	if (stat(path.c_str(), &s) < 0)
+		return false;
+
+	return ((S_ISDIR(s.st_mode))?
+	        true:
+	        false);
+}
+bool Utils::File::isFile(std::string path)
+{
+	struct stat s;
+
+	if (stat(path.c_str(), &s) < 0)
+		return false;
+
+	return ((S_ISREG(s.st_mode))?
+	        true:
+	        false);
+}
+std::vector<std::string> Utils::File::ls(std::string path)
+{
+	std::vector<std::string> v;
+
+	if (! Utils::File::isDirectory(path))
+		return v;
+
+	// Opening directory
+	DIR* dir;
+
+	if (! (dir = opendir(path.c_str())))
+		return v;
+
+	// Assuring 'path' ends with '/'
+	if (path.back() != '/')
+		path.push_back('/');
+
+	// Getting contents
+	struct dirent* ent;
+
+	while ((ent = readdir(dir)))
+	{
+		std::string s(path + ent->d_name);
+
+		v.push_back(s);
+	}
+	closedir(dir);
+
+	return v;
 }
 
