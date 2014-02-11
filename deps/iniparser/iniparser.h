@@ -1,3 +1,7 @@
+/** Safeguard for C++ name-mangling */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -305,3 +309,10 @@ dictionary * iniparser_load(const char * ininame);
 void iniparser_freedict(dictionary * d);
 
 #endif
+
+/** Safeguard for C++ name-mangling */
+#ifdef __cplusplus
+}
+#endif
+
+

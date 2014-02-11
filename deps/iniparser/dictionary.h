@@ -1,3 +1,7 @@
+/** Safeguard for C++ name-mangling */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -163,3 +167,9 @@ void dictionary_unset(dictionary * d, const char * key);
 void dictionary_dump(dictionary * d, FILE * out);
 
 #endif
+
+/** Safeguard for C++ name-mangling */
+#ifdef __cplusplus
+}
+#endif
+
