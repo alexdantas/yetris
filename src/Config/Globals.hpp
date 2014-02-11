@@ -19,6 +19,11 @@ namespace Globals
 	///
 	void init();
 
+	// Accessing version numbers - version[MAJOR] for example
+	#define MAJOR 0
+	#define MINOR 1
+	#define PATCH 2
+
 	/// Game version (format MMP - Major Minor Patch)
 	extern int version[3];
 

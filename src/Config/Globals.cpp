@@ -1,4 +1,5 @@
 #include <Config/Globals.hpp>
+#include <Config/INI.hpp>
 #include <Game/Block.hpp>
 #include <Misc/Utils.hpp>
 
@@ -147,13 +148,20 @@ void Globals::init()
 	Globals::Theme::piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
 	                ' ', ' ');
 
-	// Initializing directories and stuff
+	// Making sure default config directory exists
 	Globals::Config::directory = (Utils::File::getHome() +
 	                              ".local/share/" +
 	                              PACKAGE + "/");
 
+	if (! Utils::File::isDirectory(Globals::Config::directory))
+		Utils::File::mkdir_p(Globals::Config::directory);
+
 	// Getting default profile name - should be at a
 	// file 'global-settings.ini'.
-	Globals::Profiles::default_name = "";
+	INI ini;
+	if (ini.load(Globals::Config::directory + "global-settings.ini"))
+	{
+		Globals::Profiles::default_name = ini.get("profiles:default", Globals::Profiles::default_name);
+	}
 }
 
