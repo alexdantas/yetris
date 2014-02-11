@@ -101,6 +101,16 @@ namespace Utils
 		///       all file names contain the full #path
 		///       before them.
 		std::vector<std::string> ls(std::string path);
+
+		/// Gets the full path of the home directory for
+		/// the user running this program.
+		///
+		/// @return The path or an empty string.
+		/// @note We guarantee that the path has a trailing '/'.
+		std::string getHome();
+
+		/// Gets the user name of the person running this program.
+		std::string getUser();
 	};
 };
 

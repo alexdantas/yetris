@@ -245,4 +245,32 @@ std::vector<std::string> Utils::File::ls(std::string path)
 
 	return v;
 }
+std::string Utils::File::getHome()
+{
+	if (! getenv("HOME"))
+		return "";
+
+	std::string s(getenv("HOME"));
+	if (s.back() != '/')
+		s.push_back('/');
+
+	return s;
+}
+std::string Utils::File::getUser()
+{
+	std::string s = Utils::File::getHome();
+	if (s.empty())
+		return "";
+
+	// Removing trailing '/'
+	s.pop_back();
+
+	// Getting everything after other '/'
+	size_t pos = s.rfind('/');
+
+	if (pos == std::string::npos) // woah, wtf
+		return "";
+
+	return s.substr(pos + 1);
+}
 
