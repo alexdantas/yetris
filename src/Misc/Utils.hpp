@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <sys/stat.h> // mkdir() and off_t
+#include <sstream>
+#include <stdexcept>
 
 /// Random useful things accumulated over the years.
 ///
@@ -12,7 +14,7 @@ namespace Utils
 	/// Better random number generator.
 	namespace Random
 	{
-		/// Must be called.
+		/// Must be called before any of those.
 		void seed();
 
 		/// Random number between `min` and `max`.
@@ -27,31 +29,6 @@ namespace Utils
 		/// Random boolean with chance of #percent.
 		/// @note Precision up to 2 decimal digits.
 		bool booleanWithChance(float percent);
-	};
-
-	/// Converts `num` into a `std::string`.
-	std::string intToString(int num);
-
-	/// Converts `text` into an int`.
-	int stringToInt(std::string text);
-
-	namespace String
-	{
-		/// Removes all space on the left of `str`.
-		std::string& ltrim(std::string &str);
-
-		/// Removes all space on the right of `str`.
-		std::string& rtrim(std::string& str);
-
-		/// Removes all space on both sides of `str`.
-		std::string& trim(std::string& str);
-
-		/// Splits `str` according to `delimt`.
-		///
-		/// @return A vector with two elements - string
-		///         before and string after `delimit`.
-		///
-		std::vector<std::string> split(const std::string& str, char delim);
 	};
 
 	namespace Time
@@ -124,6 +101,68 @@ namespace Utils
 
 		/// Gets the user name of the person running this program.
 		std::string getUser();
+	};
+
+	namespace String
+	{
+		/// Converts from any type that supports the
+		/// << operator to std::string.
+		///
+		/// @note Due to templates, we must place the definition
+		///       on the header.
+		/// @note Call it like `Utils::String::toString(var)`
+		template <typename T>
+		inline std::string toString(T const& x)
+		{
+			std::ostringstream o;
+			if (!(o << x))
+				throw std::runtime_error("Utils::String::toString");
+
+			return o.str();
+		}
+
+		/// Converts from std::string to any type
+		/// that supports the << operator.
+		///
+		/// @note Due to templates, we must place the definition
+		///       on the header.
+		/// @note Call it like `Utils::String::convert(string, var)`
+		template <typename T>
+		inline void convert(std::string const& s, T& x,
+		                    bool failIfLeftOverChars=true)
+		{
+			std::istringstream i(s);
+			char c;
+			if (!(i >> x) || (failIfLeftOverChars && i.get(c)))
+				throw std::runtime_error("Utils::String::convert");
+		}
+
+		/// An easier way to call previous function.
+		/// @note Call it like `Utils::String::to<int>(string)`
+		template <typename T>
+		inline T to(std::string const& s,
+		            bool failIfLeftOverChars=true)
+		{
+			T x;
+			convert(s, x, failIfLeftOverChars);
+			return x;
+		}
+
+		/// Removes all space on the left of `str`.
+		std::string& ltrim(std::string &str);
+
+		/// Removes all space on the right of `str`.
+		std::string& rtrim(std::string& str);
+
+		/// Removes all space on both sides of `str`.
+		std::string& trim(std::string& str);
+
+		/// Splits `str` according to `delimt`.
+		///
+		/// @return A vector with two elements - string
+		///         before and string after `delimit`.
+		///
+		std::vector<std::string> split(const std::string& str, char delim);
 	};
 };
 
