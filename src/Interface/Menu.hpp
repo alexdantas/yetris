@@ -47,10 +47,13 @@ public:
 	/// things again.
 	void reset();
 
-private:
+	// FIXME: create an iterator so I dont need to expose
+	//        this vector
 
 	/// Container of all the options inside the menu.
 	std::vector<MenuItem*> item;
+
+private:
 
 	/// Index of the currently selected item.
 	MenuItem* current;

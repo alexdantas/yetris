@@ -239,7 +239,7 @@ void Profile::loadSettings()
 
 	INI_GET(settings.game.next_pieces,    "game:next_pieces");
 	INI_GET(settings.game.initial_noise,  "game:initial_noise");
-	// INI_GET(settings.game.starting_level, "game:starting_level");
+	INI_GET(settings.game.starting_level, "game:starting_level");
 
 	INI_GET(settings.game.has_ghost, "game:ghost");
 	INI_GET(settings.game.can_hold,  "game:hold");
@@ -321,11 +321,11 @@ void Profile::saveSettings()
 	}
 
 	INI_SET("screen:center_horizontal", settings.screen.center_horizontally);
-	INI_SET("screen:center_vertical", settings.screen.center_vertically);
+	INI_SET("screen:center_vertical",   settings.screen.center_vertically);
 
-	INI_SET("screen:borders", settings.screen.show_borders);
+	INI_SET("screen:borders",       settings.screen.show_borders);
 	INI_SET("screen:fancy_borders", settings.screen.fancy_borders);
-	INI_SET("screen:outer_border", settings.screen.outer_border);
+	INI_SET("screen:outer_border",  settings.screen.outer_border);
 
 	INI_SET("screen:colors", settings.screen.use_colors);
 
@@ -333,21 +333,21 @@ void Profile::saveSettings()
 
 	// Game
 
-	INI_SET("game:next_pieces", settings.game.next_pieces);
-	INI_SET("game:initial_noise", settings.game.initial_noise);
+	INI_SET("game:next_pieces",    settings.game.next_pieces);
+	INI_SET("game:initial_noise",  settings.game.initial_noise);
 	INI_SET("game:starting_level", settings.game.starting_level);
 
 	INI_SET("game:ghost", settings.game.has_ghost);
-	INI_SET("game:hold", settings.game.can_hold);
+	INI_SET("game:hold",  settings.game.can_hold);
 
 	INI_SET("game:random_algorithm", settings.game.random_algorithm);
 
 	INI_SET("game:game_over_animation", settings.game.has_game_over_animation);
-	INI_SET("game:line_clear_delay", settings.game.line_clear_delay);
+	INI_SET("game:line_clear_delay",    settings.game.line_clear_delay);
 
-	INI_SET("game:slide_left", settings.game.slide_left);
+	INI_SET("game:slide_left",  settings.game.slide_left);
 	INI_SET("game:slide_right", settings.game.slide_right);
-	INI_SET("game:invisible", settings.game.invisible);
+	INI_SET("game:invisible",   settings.game.invisible);
 
 	// Input
 	// TODO: Validate keys

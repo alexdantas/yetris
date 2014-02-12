@@ -63,6 +63,10 @@ void StateManager::run()
 			break;
 
 		case GameState::QUIT:
+			this->currentState->unload();
+			delete this->currentState;
+			this->currentState = NULL;
+
 			letsQuit = true;
 			break;
 
@@ -90,7 +94,8 @@ void StateManager::run()
 			break;
 		}
 
-		this->currentState->draw();
+		if (this->currentState)
+			this->currentState->draw();
 	}
 
 	// Right before quitting...
