@@ -92,6 +92,14 @@ public:
 	///         the file itself isn't there or something happened.
 	int get(std::string where, int default_value);
 
+	/// Gets an unsigned integer value located at #where inside
+	/// the file.
+	/// Check the class documentation for it's format.
+	///
+	/// @return The value or #default_value if it doesn't exist,
+	///         the file itself isn't there or something happened.
+	unsigned int get(std::string where, unsigned int default_value);
+
 	/// Gets a double value located at #where inside the file.
 	/// Check the class documentation for it's format.
 	///

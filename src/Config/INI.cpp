@@ -53,6 +53,10 @@ int INI::get(std::string where, int default_value)
 {
 	return iniparser_getint(this->ini, where.c_str(), default_value);
 }
+unsigned int INI::get(std::string where, unsigned int default_value)
+{
+	return (unsigned int)iniparser_getint(this->ini, where.c_str(), default_value);
+}
 double INI::get(std::string where, double default_value)
 {
 	return iniparser_getdouble(this->ini, where.c_str(), default_value);

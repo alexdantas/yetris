@@ -335,7 +335,7 @@ void Profile::saveSettings()
 
 	INI_SET("game:next_pieces", settings.game.next_pieces);
 	INI_SET("game:initial_noise", settings.game.initial_noise);
-	// INI_SET(settings.game.starting_level, "game:starting_level");
+	INI_SET("game:starting_level", settings.game.starting_level);
 
 	INI_SET("game:ghost", settings.game.has_ghost);
 	INI_SET("game:hold", settings.game.can_hold);
