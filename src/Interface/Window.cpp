@@ -44,10 +44,12 @@ Window::Window(Window* parent, int x, int y, int width, int height):
 {
 	// By sending any parameter as 0, we want it to expand
 	// until possible.
+	// Let's expand based if the parent window has borders
+	// or not.
 	if (parent->borderType == BORDER_NONE)
 	{
-		if (width  == 0) width  = parent->width  - 1;
-		if (height == 0) height = parent->height - 1;
+		if (width  == 0) width  = parent->width;
+		if (height == 0) height = parent->height;
 	}
 	else
 	{
