@@ -42,10 +42,16 @@ Window::Window(Window* parent, int x, int y, int width, int height):
 	borderType(BORDER_NONE),
 	title("")
 {
-	// if we want to include the window inside a `parent`
-	// that has borders
-	if (parent->borderType != BORDER_NONE)
+	// By sending any parameter as 0, we want it to expand
+	// until possible.
+	if (parent->borderType == BORDER_NONE)
 	{
+		if (width  == 0) width  = parent->width  - 1;
+		if (height == 0) height = parent->height - 1;
+	}
+	else
+	{
+		// Has borders
 		if (x == 0) x = 1;
 		if (y == 0) y = 1;
 
