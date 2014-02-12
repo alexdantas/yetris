@@ -40,7 +40,7 @@ bool INI::get(std::string where, bool default_value)
 {
 	int test = -666;
 
-	test = iniparser_getboolean(this->ini, where.c_str(), -1);
+	test = iniparser_getboolean(this->ini, where.c_str(), test);
 
 	if (test == -666)
 		return default_value;
