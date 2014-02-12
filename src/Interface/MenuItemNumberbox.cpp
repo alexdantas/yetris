@@ -15,7 +15,7 @@ void MenuItemNumberbox::draw(Window* window, int x, int y, int width, bool hilit
 {
 	MenuItem::draw(window, x, y, width, hilite);
 
-	std::string number = Utils::intToString(this->current);
+	std::string number = Utils::String::toString(this->current);
 
 	window->print(number, (width + x - number.size()), y, Globals::Profiles::current->settings.theme.hilite_text);
 }
