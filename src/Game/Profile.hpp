@@ -37,7 +37,27 @@ public:
 	Profile(std::string name);
 	virtual ~Profile();
 
+	/// The user name.
+	/// Also defines the directory where to place config files.
 	std::string name;
+
+	/// Root directory to store things of this Profile.
+	std::string directory;
+
+	/// Main settings file name of this Profile.
+	std::string fileSettings;
+
+	/// Where we store piece's appearances and colors.
+	std::string fileTheme;
+
+	/// Where we store statistics of this Profile.
+	std::string fileStatistics;
+
+	/// Loads settings based on the user configuration file.
+	void loadSettings();
+
+	/// Saves current settings on the user configuration file.
+	void saveSettings();
 
 	/// Contains all the settings for this individual Profile.
 	///

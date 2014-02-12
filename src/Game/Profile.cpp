@@ -46,12 +46,12 @@ bool Profile::load()
 }
 
 Profile::Profile(std::string name):
-	name(name)
+	name(name),
+	directory(Globals::Config::directory + name + "/"),
+	fileSettings(directory + "settings.ini"),
+	fileTheme(directory + "theme.ini"),
+	fileStatistics(directory + "statistics.bin")
 {
-	std::string root   = Globals::Config::directory + name + "/";
-	std::string config = root + "settings.ini";
-	std::string stats  = root + "statistics.bin";
-
 	// Make sure we can load a default profile at startup
 	// (meaning the global settings file must have a profile
 	//  name at `profiles:default`)
@@ -76,17 +76,19 @@ Profile::Profile(std::string name):
 		}
 	}
 
-
 	// Making sure default directories and files exist.
 
-	if (! Utils::File::isDirectory(root))
-		Utils::File::mkdir_p(root);
+	if (! Utils::File::isDirectory(this->directory))
+		Utils::File::mkdir_p(this->directory);
 
-	if (! Utils::File::exists(config))
-		Utils::File::create(config);
+	if (! Utils::File::exists(this->fileSettings))
+		Utils::File::create(this->fileSettings);
 
-	if (! Utils::File::exists(stats))
-		Utils::File::create(stats);
+	if (! Utils::File::exists(this->fileTheme))
+		Utils::File::create(this->fileTheme);
+
+	if (! Utils::File::exists(this->fileStatistics))
+		Utils::File::create(this->fileStatistics);
 
 	// Starting all settings with default, hardcoded values.
 
@@ -185,8 +187,6 @@ Profile::Profile(std::string name):
 	settings.input.help                    = 'h';
 	settings.input.high_scores             = '1';
 	settings.input.quit                    = 'q';
-
-	// Now will actuall load the files.
 }
 Profile::~Profile()
 {
@@ -204,5 +204,209 @@ Profile::~Profile()
 	SAFE_DELETE(settings.theme.piece_L);
 	SAFE_DELETE(settings.theme.piece_J);
 	SAFE_DELETE(settings.theme.piece_T);
+}
+void Profile::loadSettings()
+{
+	INI ini;
+	if (! ini.load(this->fileSettings))
+		return;
+
+// Small macro to avoid unnecessary typing.
+//
+// To get something from the ini file we send the
+// text (to identify some value) and the default
+// value in case it doesn't exist.
+//
+// For the last one I send the variable itself,
+// so we fallback to the default values.
+#define INI_GET(var, text) \
+	{ \
+		var = ini.get(text, var); \
+	}
+
+	INI_GET(settings.screen.center_horizontally, "screen:center_horizontal");
+	INI_GET(settings.screen.center_vertically,   "screen:center_vertical");
+
+	INI_GET(settings.screen.show_borders,  "screen:borders");
+	INI_GET(settings.screen.fancy_borders, "screen:fancy_borders");
+	INI_GET(settings.screen.outer_border,  "screen:outer_border");
+
+	INI_GET(settings.screen.use_colors, "screen:colors");
+
+	INI_GET(settings.screen.show_statistics, "screen:statistics");
+
+	// Game
+
+	INI_GET(settings.game.next_pieces,    "game:next_pieces");
+	INI_GET(settings.game.initial_noise,  "game:initial_noise");
+	// INI_GET(settings.game.starting_level, "game:starting_level");
+
+	INI_GET(settings.game.has_ghost, "game:ghost");
+	INI_GET(settings.game.can_hold,  "game:hold");
+
+	INI_GET(settings.game.random_algorithm, "game:random_algorithm");
+
+	INI_GET(settings.game.has_game_over_animation, "game:game_over_animation");
+	INI_GET(settings.game.line_clear_delay,        "game:line_clear_delay");
+
+	INI_GET(settings.game.slide_left,  "game:slide_left");
+	INI_GET(settings.game.slide_right, "game:slide_right");
+	INI_GET(settings.game.invisible,   "game:invisible");
+
+	// Input
+	// TODO: Validate keys
+
+	// INT_GET(settings.input.left,  "input:left");
+	// INI_GET(settings.input.right, "input:right");
+	// INI_GET(settings.input.up,    "input:up");
+	// INI_GET(settings.input.down,  "input:down");
+	// INI_GET(settings.input.drop,  "input:drop");
+	// INI_GET(settings.input.rotate_clockwise,        "input:rotate_clockwise");
+	// INI_GET(settings.input.rotate_counterclockwise, "input:rotate_counterclockwise");
+	// INI_GET(settings.input.pause,             "input:pause");
+	// INI_GET(settings.input.hold,              "input:hold");
+	// INI_GET(settings.input.toggle_statistics, "input:toggle_statistics");
+	// INI_GET(settings.input.help,              "input:help");
+	// INI_GET(settings.input.high_scores,       "input:high_scores");
+	// INI_GET(settings.input.quit,              "input:quit");
+
+	// Now, to the Theme file!
+
+	ini.free();
+	if (! ini.load(this->fileTheme))
+		return;
+
+	// FIXME: For now we're not dealing with colors,
+	//        only with block appearances!
+
+	INI_GET(settings.theme.piece_has_colors, "theme:piece_colors");
+	INI_GET(settings.theme.ghost_has_colors, "theme:ghost_colors");
+	INI_GET(settings.theme.show_pivot_block, "theme:show_pivot_block");
+	INI_GET(settings.theme.lock_piece_color, "theme:lock_piece_colors");
+
+// 	std::string tmp;
+
+// #define INI_GET_THEME(var, text) \
+// 	{ \
+// 		tmp = ini.get(text, var.appearance); \
+// 		var.appearance[0] = tmp[0]; \
+// 		var.appearance[1] = tmp[1]; \
+// 	}
+
+// 	INI_GET_THEME(settings.theme.clear_line, "clear_line:block");
+
+// 	INI_GET_THEME(settings.theme.piece_colorless, "piece_colorless:block");
+
+// 	INI_GET_THEME(settings.theme.piece,     "piece:block");
+// 	INI_GET_THEME(settings.theme.ghost,     "ghost:block");
+// 	INI_GET_THEME(settings.theme.locked,    "locked:block");
+// 	INI_GET_THEME(settings.theme.invisible, "invisible:block");
+// 	INI_GET_THEME(settings.theme.piece_S,   "piece_S:block");
+// 	INI_GET_THEME(settings.theme.piece_Z,   "piece_Z:block");
+// 	INI_GET_THEME(settings.theme.piece_O,   "piece_O:block");
+// 	INI_GET_THEME(settings.theme.piece_I,   "piece_I:block");
+// 	INI_GET_THEME(settings.theme.piece_L,   "piece_L:block");
+// 	INI_GET_THEME(settings.theme.piece_J,   "piece_J:block");
+// 	INI_GET_THEME(settings.theme.piece_T,   "piece_T:block");
+}
+void Profile::saveSettings()
+{
+	INI ini;
+	if (! ini.load(this->fileSettings))
+		return;
+
+#define INI_SET(text, var) \
+	{ \
+		ini.set(text, Utils::String::toString(var)); \
+	}
+
+	INI_SET("screen:center_horizontal", settings.screen.center_horizontally);
+	INI_SET("screen:center_vertical", settings.screen.center_vertically);
+
+	INI_SET("screen:borders", settings.screen.show_borders);
+	INI_SET("screen:fancy_borders", settings.screen.fancy_borders);
+	INI_SET("screen:outer_border", settings.screen.outer_border);
+
+	INI_SET("screen:colors", settings.screen.use_colors);
+
+	INI_SET("screen:statistics", settings.screen.show_statistics);
+
+	// Game
+
+	INI_SET("game:next_pieces", settings.game.next_pieces);
+	INI_SET("game:initial_noise", settings.game.initial_noise);
+	// INI_SET(settings.game.starting_level, "game:starting_level");
+
+	INI_SET("game:ghost", settings.game.has_ghost);
+	INI_SET("game:hold", settings.game.can_hold);
+
+	INI_SET("game:random_algorithm", settings.game.random_algorithm);
+
+	INI_SET("game:game_over_animation", settings.game.has_game_over_animation);
+	INI_SET("game:line_clear_delay", settings.game.line_clear_delay);
+
+	INI_SET("game:slide_left", settings.game.slide_left);
+	INI_SET("game:slide_right", settings.game.slide_right);
+	INI_SET("game:invisible", settings.game.invisible);
+
+	// Input
+	// TODO: Validate keys
+
+	// INT_GET(settings.input.left,  "input:left");
+	// INI_SET(settings.input.right, "input:right");
+	// INI_SET(settings.input.up,    "input:up");
+	// INI_SET(settings.input.down,  "input:down");
+	// INI_SET(settings.input.drop,  "input:drop");
+	// INI_SET(settings.input.rotate_clockwise,        "input:rotate_clockwise");
+	// INI_SET(settings.input.rotate_counterclockwise, "input:rotate_counterclockwise");
+	// INI_SET(settings.input.pause,             "input:pause");
+	// INI_SET(settings.input.hold,              "input:hold");
+	// INI_SET(settings.input.toggle_statistics, "input:toggle_statistics");
+	// INI_SET(settings.input.help,              "input:help");
+	// INI_SET(settings.input.high_scores,       "input:high_scores");
+	// INI_SET(settings.input.quit,              "input:quit");
+
+	ini.save(this->fileSettings);
+
+	// Now, to the Theme file!
+
+	ini.free();
+	if (! ini.load(this->fileTheme))
+		return;
+
+	// FIXME: For now we're not dealing with colors,
+	//        only with block appearances!
+
+	INI_SET("theme:piece_colors", settings.theme.piece_has_colors);
+	INI_SET("theme:ghost_colors", settings.theme.ghost_has_colors);
+	INI_SET("theme:show_pivot_block", settings.theme.show_pivot_block);
+	INI_SET("theme:lock_piece_colors", settings.theme.lock_piece_color);
+
+	ini.save(this->fileTheme);
+
+// 	std::string tmp;
+
+// #define INI_SET_THEME(var, text) \
+// 	{ \
+// 		tmp = ini.get(text, var.appearance); \
+// 		var.appearance[0] = tmp[0]; \
+// 		var.appearance[1] = tmp[1]; \
+// 	}
+
+// 	INI_SET_THEME(settings.theme.clear_line, "clear_line:block");
+
+// 	INI_SET_THEME(settings.theme.piece_colorless, "piece_colorless:block");
+
+// 	INI_SET_THEME(settings.theme.piece,     "piece:block");
+// 	INI_SET_THEME(settings.theme.ghost,     "ghost:block");
+// 	INI_SET_THEME(settings.theme.locked,    "locked:block");
+// 	INI_SET_THEME(settings.theme.invisible, "invisible:block");
+// 	INI_SET_THEME(settings.theme.piece_S,   "piece_S:block");
+// 	INI_SET_THEME(settings.theme.piece_Z,   "piece_Z:block");
+// 	INI_SET_THEME(settings.theme.piece_O,   "piece_O:block");
+// 	INI_SET_THEME(settings.theme.piece_I,   "piece_I:block");
+// 	INI_SET_THEME(settings.theme.piece_L,   "piece_L:block");
+// 	INI_SET_THEME(settings.theme.piece_J,   "piece_J:block");
+// 	INI_SET_THEME(settings.theme.piece_T,   "piece_T:block");
 }
 

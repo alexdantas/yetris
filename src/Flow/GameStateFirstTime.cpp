@@ -31,6 +31,7 @@ GameState::StateCode GameStateFirstTime::update()
 	if (input == '\n' || input == KEY_ENTER)
 	{
 		Globals::Profiles::current = new Profile(Utils::File::getUser() + "LEL");
+		Globals::Profiles::current->loadSettings();
 
 		return GameState::MAIN_MENU;
 	}

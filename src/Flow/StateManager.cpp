@@ -29,6 +29,7 @@ StateManager::StateManager():
 			Globals::Profiles::default_name = Profile::profiles.front();
 
 		Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
+		Globals::Profiles::current->loadSettings();
 
 		// The first state, Hardcoded
 		this->currentState = new GameStateMainMenu();
@@ -91,5 +92,8 @@ void StateManager::run()
 
 		this->currentState->draw();
 	}
+
+	// Right before quitting...
+	Globals::Profiles::current->saveSettings();
 }
 
