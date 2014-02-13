@@ -61,6 +61,10 @@ namespace Utils
 		/// just like UNIX command `mkdir -p`.
 		void mkdir_p(std::string path);
 
+		/// Removes recursively all files within directory
+		/// at #path, just like UNIX command `rm -rf`.
+		void rm_rf(std::string path);
+
 		/// Creates empty file #path.
 		///
 		/// @note If file already exists, will

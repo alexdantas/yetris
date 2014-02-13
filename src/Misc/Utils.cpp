@@ -27,6 +27,7 @@
 #include <dirent.h>    // readdir()
 #include <iostream>	   // ofstream
 #include <fstream>	   // ofstream
+#include <stdlib.h>	   // system()
 
 //  ___    __    _      ___   ___   _
 // | |_)  / /\  | |\ | | | \ / / \ | |\/|
@@ -116,6 +117,41 @@ void Utils::File::mkdir_p(std::string path)
 		}
 	}
 	mkdir(tmp.c_str(), S_IRWXU);
+}
+void Utils::File::rm_rf(std::string path)
+{
+	if (! Utils::File::isDirectory(path))
+		return;
+
+	// Another BIG UGY HACK
+	//
+	// Since my program's already non-portable
+	// (POSIX systems only) and I don't have the
+	// time nor means to either use Boost or
+	// implement my own file functions, I'll
+	// have to do a big hack.
+	//
+	// It's ugly, please ignore this function.
+	//
+	// I can't believe you're still reading.
+	// Please don't continue from here.
+	//
+	// I've dishounored my family.
+	// So ashamed of myself.
+	//
+	//
+	// Next thing you know we're throwing gotos
+	// everywhere.
+	//
+	//
+	//
+	// Still reading?
+	//
+	// ...OK, I've warned you
+
+	std::string command("rm -rf " + path);
+
+	system(command.c_str());
 }
 bool Utils::File::create(std::string path)
 {
