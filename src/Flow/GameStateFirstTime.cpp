@@ -39,8 +39,6 @@ GameState::StateCode GameStateFirstTime::update()
 
 void GameStateFirstTime::draw()
 {
-	this->layout->draw(NULL);
-
 	// BIG HACK
 	//
 	// Instead of drawing, we actually query the user for
@@ -49,6 +47,28 @@ void GameStateFirstTime::draw()
 	// NEED to remove this
 	// Are you kidding me?
 	// Direct ncurses calls?
+
+	clear();
+
+	mvaddstr(0, 0,
+	         "Hello, there!\n"
+	         "It seems this is your first time running yetris.\n"
+	         "\n"
+	         "Please enter a profile name.\n"
+	         "It'll store all your settings, scores and game statistics.");
+
+	attron(A_REVERSE);
+	mvaddstr(7, 0, "Profile Name:");
+	attroff(A_REVERSE);
+
+	mvaddstr(8, 0,  "default:");
+	mvaddstr(8, 9, Utils::File::getUser().c_str());
+
+	mvaddstr(10, 0,
+	         "It may not contain the following characters:\n"
+	         "\\ / . ^ ; # = ~");
+
+	refresh();
 
 	// Making everything "right"
 	nocbreak();

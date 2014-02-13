@@ -16,7 +16,7 @@ public:
 	void windowsInit();
 	void windowsExit();
 
-	void draw(Menu* menu);
+	void draw();
 };
 
 #endif //LAYOUTFIRSTTIME_H_DEFINED
