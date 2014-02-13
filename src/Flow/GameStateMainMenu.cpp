@@ -29,6 +29,10 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	PROFILES_NAME
 };
 
+// I need this so when we add/remove/change profiles
+// from the menu things don't get messed up.
+unsigned int profileMenuIndex = 0;
+
 GameStateMainMenu::GameStateMainMenu():
 	layout(NULL),
 	menu(NULL),
@@ -139,16 +143,25 @@ void GameStateMainMenu::load(int stack)
 
 	menuProfiles->addBlank();
 
-	for (unsigned int i = 0; i < (Profile::profiles.size()); i++)
-	{
-		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + i);
-		menuProfiles->add(item);
-	}
+	item = new MenuItem("Back", GO_BACK);
+	menuProfiles->add(item);
 
 	menuProfiles->addBlank();
 
-	item = new MenuItem("Back", GO_BACK);
-	menuProfiles->add(item);
+	// This seems kinda complicated, but we're dealing with
+	// two indexes here.
+	//
+	// We're adding profiles to the menu based on the ones
+	// that exist WHILE keeping account of them,
+	// becase the user might want to create/delete profiles
+	// later.
+	unsigned int i = 0;
+
+	for (profileMenuIndex = 0; i < (Profile::profiles.size()); profileMenuIndex++, i++)
+	{
+		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + profileMenuIndex);
+		menuProfiles->add(item);
+	}
 }
 
 int GameStateMainMenu::unload()
@@ -224,6 +237,86 @@ int GameStateMainMenu::unload()
 	return 0;
 }
 
+// This is a LOCAL FUNCTION that asks the user for a profile.
+//
+// It's a big hack, I know.
+// Blocks the program completely.
+
+#include <cstring>
+#include <cstdlib>
+
+std::string getProfileName(Window* main)
+{
+	// Direct ncurses calls?
+	// Are you kidding me?
+
+	// Making everything "right"
+	nocbreak();					// input requires <enter>
+	curs_set(1);				// showing cursor
+	echo();						// echoing typed characters
+	nodelay(stdscr, FALSE);		// waiting for user
+
+	Window window(main,
+	              main->getW() / 3,
+	              main->getH() / 2 - 10/2,
+	              main->getW() / 3,
+	              10);
+
+	if (Globals::Profiles::current->settings.screen.show_borders)
+	{
+		window.borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		               Window::BORDER_FANCY :
+		               Window::BORDER_REGULAR);
+	}
+	window.setTitle("New Profile");
+
+	window.clear();
+	window.print("Please enter a name:",
+	             1,
+	             1);
+
+	window.print("(default: " +
+	             Utils::File::getUser() +
+	             ")",
+	             1,
+	             4,
+	             Globals::Profiles::current->settings.theme.hilite_text);
+
+	window.print_multiline("It may not contain the\n"
+	                       "following characters:\n"
+	                       "\\ / . ^ ; # = ~",
+	                       1,
+	                       6,
+	                       0);
+
+
+	window.refresh();
+
+
+	char name[256];
+	std::memset(name, '\0', 256);
+
+	mvgetnstr(main->getY() + window.getY() + 3,
+	          main->getX() + window.getX() + 1,
+	          name, 255);
+
+	std::string string_name(name);
+
+	if (Profile::isNameValid(string_name))
+	{
+		if (string_name.empty())
+			string_name = Utils::File::getUser();
+	}
+
+	// Returning to ncurses' "wrong" mode
+	nodelay(stdscr, TRUE);		// won't wait at all
+	noecho();					// dont echo typed chars
+	curs_set(0);				// hiding the cursor
+	cbreak();					// input dont require <enter>
+
+	return string_name;
+}
+
 GameState::StateCode GameStateMainMenu::update()
 {
 	int input = Ncurses::getInput(100);
@@ -281,24 +374,52 @@ GameState::StateCode GameStateMainMenu::update()
 	}
 	else if (this->menuProfilesActivated)
 	{
-		int currentID = this->menuProfiles->currentID();
-
 		if (input == 'd' || input == 'D')
 		{
+			std::string name = this->menuProfiles->currentLabel();
+
 			// Only deleting profile if it's not the current one
-			if (!(Profile::profiles[currentID - PROFILES_NAME] == Globals::Profiles::current->name))
+			if (!(name == Globals::Profiles::current->name))
 			{
-				Profile::remove(Profile::profiles[currentID - PROFILES_NAME]);
-				this->menuProfiles->remove(currentID - PROFILES_NAME);
+				Profile::remove(name);
+				this->menuProfiles->removeByLabel(name);
 			}
 		}
 		else if (input == 's' || input == 'S')
 		{
 			// Switch to profile
+			std::string name = this->menuProfiles->currentLabel();
+
+			if (name != Globals::Profiles::current->name)
+			{
+				Globals::Profiles::current->saveSettings();
+
+				delete Globals::Profiles::current;
+				Globals::Profiles::current = new Profile(name);
+
+				Globals::Profiles::current->loadSettings();
+
+				// Profile name with an "'s" appended
+				// (like "Rachel's" or "Chris'")
+				if (name.back() == 's')
+					name += '\'';
+				else
+					name += "'s";
+
+				this->layout->logo->setTitle(name);
+			}
 		}
 		else if (input == 'c' || input == 'C')
 		{
-			// Create new profile
+			std::string name = getProfileName(this->layout->main);
+
+			if (name != Globals::Profiles::current->name)
+				Profile::create(name);
+
+			MenuItem* item = new MenuItem(name, profileMenuIndex);
+
+			this->menuProfiles->add(item);
+			++profileMenuIndex;
 		}
 		else
 			this->menuProfiles->handleInput(input);

@@ -37,20 +37,6 @@ GameState::StateCode GameStateFirstTime::update()
 	return GameState::CONTINUE;
 }
 
-bool isNameValid(std::string name)
-{
-	// Not allowed characters
-	if ((name.find('/')  != std::string::npos) ||
-	    (name.find('\\') != std::string::npos) ||
-	    (name.find(';')  != std::string::npos) ||
-	    (name.find('#')  != std::string::npos) ||
-	    (name.find('=')  != std::string::npos) ||
-	    (name.find('.')  != std::string::npos))
-		return false;
-
-	return true;
-}
-
 void GameStateFirstTime::draw()
 {
 	this->layout->draw(NULL);
@@ -75,7 +61,7 @@ void GameStateFirstTime::draw()
 
 	mvgetnstr(7, 15, name, 255);
 
-	if (isNameValid(name))
+	if (Profile::isNameValid(name))
 	{
 		if (strlen(name) == 0)
 			this->name = Utils::File::getUser();

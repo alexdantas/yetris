@@ -5,6 +5,7 @@
 #include <Misc/Utils.hpp>
 #include <Game/Profile.hpp>
 #include <Config/Globals.hpp>
+#include <Config/INI.hpp>
 
 StateManager::StateManager():
 	currentState(nullptr),
@@ -25,7 +26,10 @@ StateManager::StateManager():
 	{
 		// Alright, let's load it!
 
-		Globals::Profiles::default_name = Profile::profiles.front();
+		// this is initialized on Config::init - if the
+		// global config file is found
+		if (Globals::Profiles::default_name.empty())
+			Globals::Profiles::default_name = Profile::profiles.front();
 
 		Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
 		Globals::Profiles::current->loadSettings();
@@ -97,7 +101,17 @@ void StateManager::run()
 			this->currentState->draw();
 	}
 
-	// Right before quitting...
+	// Right before quitting, we must save current
+	// user's settings
 	Globals::Profiles::current->saveSettings();
+
+	// And set the current profile as the default
+	// to load next time.
+	INI ini;
+	if (! ini.load(Globals::Config::file))
+		ini.create();
+
+	ini.set("profiles:default", Globals::Profiles::current->name);
+	ini.save(Globals::Config::file);
 }
 

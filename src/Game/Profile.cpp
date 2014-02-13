@@ -44,14 +44,45 @@ bool Profile::load()
 
 	return true;
 }
+bool Profile::isNameValid(std::string name)
+{
+	// Not allowed characters
+	if ((name.find('/')  != std::string::npos) ||
+	    (name.find('\\') != std::string::npos) ||
+	    (name.find(';')  != std::string::npos) ||
+	    (name.find('#')  != std::string::npos) ||
+	    (name.find('=')  != std::string::npos) ||
+	    (name.find('~')  != std::string::npos) ||
+	    (name.find('.')  != std::string::npos))
+		return false;
+
+	return true;
+}
 void Profile::remove(std::string name)
 {
-	if (std::find(Profile::profiles.begin(), Profile::profiles.end(), name) == Profile::profiles.end())
+	auto where = std::find(Profile::profiles.begin(), Profile::profiles.end(), name);
+
+	if (where == Profile::profiles.end())
 		return;
+
+	Profile::profiles.erase(where);
 
 	std::string dir = Globals::Config::directory + name;
 
 	Utils::File::rm_rf(dir);
+}
+void Profile::create(std::string name)
+{
+	// Won't create existing profiles.
+	if (std::find(Profile::profiles.begin(), Profile::profiles.end(), name) != Profile::profiles.end())
+		return;
+
+	Profile::profiles.push_back(name);
+	std::sort(Profile::profiles.begin(), Profile::profiles.end());
+
+	std::string dir = Globals::Config::directory + name;
+
+	Utils::File::mkdir_p(dir);
 }
 
 Profile::Profile(std::string name):
@@ -98,6 +129,14 @@ Profile::Profile(std::string name):
 
 	if (! Utils::File::exists(this->fileStatistics))
 		Utils::File::create(this->fileStatistics);
+
+	// Now that the directories exist, let's make sure
+	// it's on the global list of existing Profiles
+	if (std::find(Profile::profiles.begin(), Profile::profiles.end(), name) == Profile::profiles.end())
+	{
+		Profile::profiles.push_back(name);
+		std::sort(Profile::profiles.begin(), Profile::profiles.end());
+	}
 
 	// Starting all settings with default, hardcoded values.
 

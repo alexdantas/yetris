@@ -9,6 +9,14 @@
 
 #include <vector>
 
+/// List of selectable items.
+///
+/// @warning If you create a menu full of null elements
+///          (with #addBlank()), it'll probably get into
+///          an infinite loop when you call #goNext()
+///          or #goPrevious.
+///          I still have to find a way to fix this.
+///
 class Menu
 {
 public:
@@ -18,20 +26,41 @@ public:
 	void add(MenuItem* item);
 	void addBlank();
 
-	void remove(int id);
+	/// Removes the menu item with #id.
+	void removeByID(int id);
+
+	/// Removes the menu item with #label.
+	///
+	/// @note It'll delete the first entry found with #label.
+	///
+	/// @warning This is far more unreliable than
+	///          #removeById(), provided you have unique IDs.
+	///
+	void removeByLabel(std::string label);
 
 	void draw(Window* window);
 
 	/// Makes the menu react to #input, which is an Ncurses "char".
 	void handleInput(int input);
 
+	/// Makes the menu select the next item.
+	/// @note This is a recursive function to guarantee we'll
+	///       always point to a non-nil element.
 	void goNext();
+
+	/// Makes the menu select the previous item.
+	/// @note This is a recursive function to guarantee we'll
+	///       always point to a non-nil element.
 	void goPrevious();
+
 	void goFirst();
 	void goLast();
 
 	/// Tells if the user selected an item that quits the menu.
 	bool willQuit();
+
+	/// Returns the label of the currently selected item.
+	std::string currentLabel();
 
 	/// Returns the user-specified id of the selected item.
 	int currentID();

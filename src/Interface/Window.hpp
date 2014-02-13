@@ -26,9 +26,21 @@ public:
 
 	bool isValid();
 
+	/// Shows text #str at #x #y on the window with color #pair.
+	///
+	/// @note It defaults to white text on black background.
 	void print(std::string str, int x, int y, ColorPair pair=0);
+
+	/// Shows text #str at #x #y on the window with color #pair.
+	/// The difference is that we respect newlines, showing
+	/// it up at the next line just below text above.
+	///
+	/// @note It also defaults to white text on black background.
 	void print_multiline(std::string str, int x, int y, ColorPair pair=0);
 
+	/// Shows #c at #x #y with color #pair.
+	///
+	/// @note It also defaults to white text on black background.
 	void printChar(int c, int x, int y, ColorPair pair=0);
 
 	void setBackground(chtype ch, ColorPair pair);

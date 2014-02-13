@@ -24,34 +24,68 @@ Menu::~Menu()
 void Menu::add(MenuItem* item)
 {
 	this->item.push_back(item);
-	this->last = this->item.back();
 
-	unsigned int size = this->item.size();
+	// Means we're the first item being added!
+	if (this->item.size() == 1)
+	{
+		this->current      = this->item.back();
+		this->currentIndex = this->item.size() - 1;
+	}
 
-
-	// Checking if this is the first item being added.
-	// Either size is 1 or lll other items are nullptrs
-
-	for (unsigned int i = 0; i < (size - 1); i++)
+	// Means we're the first non-nil item being added!
+	unsigned int i = 0;
+	for (i = 0; i < (this->item.size()); i++)
 		if (this->item[i])
-			return;
+			break;
 
-	this->first        = this->item.back();
-	this->current      = this->item.back();
-	this->currentIndex = size - 1;
+	this->current      = this->item[i];
+	this->currentIndex = i;
 }
 void Menu::addBlank()
 {
 	this->item.push_back(nullptr);
 }
-void Menu::remove(int id)
+void Menu::removeByID(int id)
 {
 	auto it = this->item.begin();
 
 	while (it != this->item.end())
 	{
+		if (!(*it))
+			++it;
+
 		if ((*it)->id == id)
 		{
+			if (this->current == *it)
+			{
+				this->goNext();
+				this->currentIndex--;
+			}
+
+			this->item.erase(it);
+			return;
+		}
+		else
+			++it;
+	}
+}
+void Menu::removeByLabel(std::string label)
+{
+	auto it = this->item.begin();
+
+	while (it != this->item.end())
+	{
+		if (!(*it))
+			++it;
+
+		if ((*it)->label == label)
+		{
+			if (this->current == *it)
+			{
+				this->goNext();
+				this->currentIndex--;
+			}
+
 			this->item.erase(it);
 			return;
 		}
@@ -85,28 +119,26 @@ void Menu::draw(Window* window)
 				                  this->y + i,
 				                  Colors::pair(COLOR_WHITE, COLOR_DEFAULT));
 
-			continue;
-		}
 
-		if (this->item[i] == this->current)
-		{
-			this->item[i]->draw(window,
-			                    this->x,
-			                    this->y + i,
-			                    this->width,
-			                    true);
 		}
 		else
 		{
 			this->item[i]->draw(window,
 			                    this->x,
 			                    this->y + i,
-			                    this->width);
+			                    this->width,
+
+			                    // Highlighting current item if
+			                    // it's the current.
+			                    (this->item[i] == this->current));
 		}
 	}
 }
 void Menu::handleInput(int input)
 {
+	if (input == ERR)
+		return;
+
 	switch(input)
 	{
 	case KEY_DOWN:
@@ -144,45 +176,84 @@ void Menu::handleInput(int input)
 		break;
 
 	default:
-		this->current->handleInput(input);
+		if (this->current)
+			this->current->handleInput(input);
 		break;
 	}
 }
 void Menu::goNext()
 {
-	if (this->current == this->last)
+	// Empty element, piece of cake
+	if (this->item.size() == 0)
+		return;
+
+	// Empty element, also piece of cake
+	if (this->item.size() == 1)
 	{
-		this->current = this->first;
+		this->current = this->item.front();
 		this->currentIndex = 0;
+		return;
 	}
-	else
+
+	// Last element...
+	// Well, if the last element is nil then we have
+	// a problem.
+	if (this->current == this->item.back())
 	{
-		this->currentIndex++;
-		this->current = this->item[this->currentIndex];
+		// Assuming we're not nil, things will go smooth
+		if (this->currentIndex == (this->item.size() - 1))
+		{
+			this->goFirst();
+			return;
+		}
 	}
+
+	this->currentIndex++;
+	this->current = this->item[this->currentIndex];
 
 	if (! this->current)
 		this->goNext();
 }
 void Menu::goPrevious()
 {
-	if (this->current == this->first)
+	if (this->item.size() == 0)
+		return;
+
+	if (this->item.size() == 1)
 	{
-		this->current = this->last;
-		this->currentIndex = (this->item.size() - 1);
+		this->current = this->item.front();
+		this->currentIndex = 0;
+		return;
 	}
-	else
+
+	if (this->current == this->item.front())
 	{
-		this->currentIndex--;
-		this->current = this->item[this->currentIndex];
+		if (this->currentIndex == 0)
+		{
+			this->goLast();
+			return;
+		}
 	}
+
+	this->currentIndex--;
+	this->current = this->item[this->currentIndex];
 
 	if (! this->current)
 		this->goPrevious();
 }
 void Menu::goFirst()
 {
-	this->current = this->first;
+	if (this->item.size() == 0)
+		return;
+
+	if (this->item.size() == 1)
+	{
+		this->current = this->item.front();
+		this->currentIndex = 0;
+		return;
+	}
+
+	this->current = this->item.front();
 	this->currentIndex = 0;
 
 	if (! this->current)
@@ -190,7 +261,17 @@ void Menu::goFirst()
 }
 void Menu::goLast()
 {
-	this->current = this->last;
+	if (this->item.size() == 0)
+		return;
+
+	if (this->item.size() == 1)
+	{
+		this->current = this->item.front();
+		this->currentIndex = 0;
+		return;
+	}
+
+	this->current = this->item.back();
 	this->currentIndex = (this->item.size() - 1);
 
 	if (! this->current)
@@ -202,8 +283,18 @@ bool Menu::willQuit()
 	// and the item selected is valid.
 	return (this->selected && this->selectedItem);
 }
+std::string Menu::currentLabel()
+{
+	if (! this->current)
+		this->goNext();
+
+	return (this->current->label);
+}
 int Menu::currentID()
 {
+	if (! this->current)
+		this->goNext();
+
 	return (this->current->id);
 }
 bool Menu::getBool(int id)

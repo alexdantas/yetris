@@ -38,8 +38,7 @@ void LayoutFirstTime::draw(Menu* menu)
 	                            "Please enter a profile name.\n"
 	                            "It'll store all your settings, scores and game statistics.",
 	                            1,
-	                            1,
-	                            0);
+	                            1);
 
 	this->main->print("Profile Name:", 1, 7, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
 	this->main->print("(default: " +
@@ -50,7 +49,7 @@ void LayoutFirstTime::draw(Menu* menu)
 	                  Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
 
 	this->main->print_multiline("It may not contain the following characters:\n"
-	                            "\\ / . ^ ; # =",
+	                            "\\ / . ^ ; # = ~",
 	                            1,
 	                            10,
 	                            0);

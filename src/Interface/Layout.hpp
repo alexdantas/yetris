@@ -26,7 +26,6 @@ public:
 
 	virtual void draw();
 
-protected:
 	/// Layout's main Window, where all the others are inside.
 	Window* main;
 };

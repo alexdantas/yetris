@@ -34,13 +34,34 @@ public:
 	///         probably the first time playing.
 	static bool load();
 
+	/// Tells if #name is a valid one for creating a Profile.
+	/// It checks for invalid characters.
+	static bool isNameValid(std::string name);
+
 	/// Deletes profile with #name.
 	///
 	/// @warning There's no going back! All settings, scores
 	///          and statistics will be gone!
 	static void remove(std::string name);
 
+	/// Creates profile's files for #name.
+	///
+	/// @note It doesn't load it. This method creates it
+	///       by assuring it's files exist.
+	///       To load settings and stuff, create
+	///       a new Profile class.
+	///
+	static void create(std::string name);
+
+	/// Loads profile with #name.
+	///
+	/// @note If it doesn't exist, will create it.
+	///       If it does exist, will load it's settings.
+	///
+	/// If you just want to create a profile without
+	/// loading it, look towards Profile::create.
 	Profile(std::string name);
+
 	virtual ~Profile();
 
 	/// The user name.
