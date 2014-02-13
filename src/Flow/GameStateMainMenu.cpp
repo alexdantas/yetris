@@ -29,6 +29,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	SHOW_STATISTICS,
 	RANDOM_ALGORITHM,
 	LINE_DELAY,
+	NEXT_PIECES,
 
 	// Profiles Submenu
 	PROFILES_NAME
@@ -450,6 +451,13 @@ void GameStateMainMenu::createOptionsMenu()
 
 	MenuItemNumberbox* box;
 
+	box = new MenuItemNumberbox("Next Pieces",
+	                            NEXT_PIECES,
+	                            1,
+	                            7,
+	                            Globals::Profiles::current->settings.game.next_pieces);
+	menuOptions->add(box);
+
 	box = new MenuItemNumberbox("Random Algorithm",
 	                            RANDOM_ALGORITHM,
 	                            0,
@@ -511,7 +519,7 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
 	current->settings.screen.use_colors    = this->menuOptions->getBool(USE_COLORS);
 	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
-
+	current->settings.game.next_pieces = this->menuOptions->getInt(NEXT_PIECES);
 	current->settings.game.random_algorithm = this->menuOptions->getInt(RANDOM_ALGORITHM);
 	current->settings.game.line_clear_delay = this->menuOptions->getInt(LINE_DELAY);
 }

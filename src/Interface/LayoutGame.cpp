@@ -259,6 +259,8 @@ void LayoutGame::draw(Menu* menu)
 	// (we need to do this otherwise when we draw something
 	//  on top of them, they'll be broken with dirty things
 	//  left on top)
+	this->main->clear();
+	this->main->refresh();
 	this->leftmost->clear();
 	this->leftmost->refresh();
 	this->middle_left->clear();
