@@ -34,7 +34,7 @@ public:
 	bool willQuit();
 
 	/// Returns the user-specified id of the selected item.
-	int getSelectedId();
+	int currentID();
 
 	/// Returns the bool internal value of item that has #id.
 	/// @note Meaning the item must be a MenuItemCheckbox.

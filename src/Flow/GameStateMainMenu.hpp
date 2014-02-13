@@ -9,6 +9,8 @@
 ///
 class GameStateMainMenu: public GameState
 {
+	friend class LayoutMainMenu;
+
 public:
 	GameStateMainMenu();
 	virtual ~GameStateMainMenu();
@@ -31,7 +33,11 @@ private:
 	Menu* menuSinglePlayer;
 	bool menuSinglePlayerActivated;
 
-	// Other menus come here...
+	Menu* menuOptions;
+	bool menuOptionsActvated;
+
+	Menu* menuProfiles;
+	bool menuProfilesActivated;
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

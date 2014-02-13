@@ -202,12 +202,9 @@ bool Menu::willQuit()
 	// and the item selected is valid.
 	return (this->selected && this->selectedItem);
 }
-int Menu::getSelectedId()
+int Menu::currentID()
 {
-	if (! this->willQuit())
-		return -1;
-
-	return (this->selectedItem->id);
+	return (this->current->id);
 }
 bool Menu::getBool(int id)
 {

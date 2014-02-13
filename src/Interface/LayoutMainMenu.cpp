@@ -5,11 +5,13 @@
 #include <Interface/Animation/AnimationWater.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
+#include <Flow/GameStateMainMenu.hpp>
 
 #include <iostream>
 
-LayoutMainMenu::LayoutMainMenu(int width, int height):
+LayoutMainMenu::LayoutMainMenu(int width, int height, GameStateMainMenu* state):
 	Layout(width, height),
+	state(state),
 	logo(nullptr),
 	menu(nullptr),
 	animationContainer(nullptr),
@@ -51,9 +53,9 @@ void LayoutMainMenu::windowsInit()
 	// MENU
 	this->menu = new Window(this->main,
 	                        this->main->getW() / 3,
-	                        10,
+	                        this->logo->getH() + 1,
 	                        this->main->getW() / 3,
-	                        13);
+	                        this->main->getH() - this->logo->getH() - 2);
 
 	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
@@ -121,7 +123,21 @@ void LayoutMainMenu::draw(Menu* menu)
 
 	// Yay!
 	this->menu->clear();
+
+	if (this->state->menuProfilesActivated)
+	{
+		this->menu->print("C", 1, 1, Globals::Profiles::current->settings.theme.hilite_text);
+		this->menu->print("reate new Profile", 2, 1, Globals::Profiles::current->settings.theme.text);
+
+		this->menu->print("D", 1, 2, Globals::Profiles::current->settings.theme.hilite_text);
+		this->menu->print("elete Profile", 2, 2, Globals::Profiles::current->settings.theme.text);
+
+		this->menu->print("S", 1, 3, Globals::Profiles::current->settings.theme.hilite_text);
+		this->menu->print("witch to Profile", 2, 3, Globals::Profiles::current->settings.theme.text);
+
+	}
 	menu->draw(this->menu);
+
 	this->menu->refresh();
 
 	this->main->refresh();

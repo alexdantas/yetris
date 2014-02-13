@@ -201,7 +201,7 @@ void Game::update()
 	{
 		if (this->pauseMenu->willQuit())
 		{
-			int option = this->pauseMenu->getSelectedValue();
+			int option = this->pauseMenu->currentID();
 
 			switch(option)
 			{

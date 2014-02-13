@@ -6,12 +6,21 @@
 #include <Interface/Menu.hpp>
 #include <Interface/Animation/Animation.hpp>
 
+// circular dependence on GameStateMainMenu
+class GameStateMainMenu;
+
 /// How we show the screen at GameStateMainMenu.
-/// See it's documentation there.
+///
+/// This class is merely a wrapper over functions that
+/// print GameStateMainMenu on the screen.
+///
+/// Thus, it needs full access to it's internal values.
+/// So it comes down to this circular dependency.
+///
 class LayoutMainMenu: public Layout
 {
 public:
-	LayoutMainMenu(int width, int height);
+	LayoutMainMenu(int width, int height, GameStateMainMenu* state);
 	virtual ~LayoutMainMenu();
 
 	void windowsInit();
@@ -19,6 +28,10 @@ public:
 
 	/// Shows the Main Menu screen, along with drawing #menu.
 	void draw(Menu* menu);
+
+	/// We need this so we can access the states' flags
+	/// and decide best on how to print it.
+	GameStateMainMenu* state;
 
 	Window* logo;
 	Window* menu;

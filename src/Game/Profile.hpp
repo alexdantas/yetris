@@ -34,6 +34,12 @@ public:
 	///         probably the first time playing.
 	static bool load();
 
+	/// Deletes profile with #name.
+	///
+	/// @warning There's no going back! All settings, scores
+	///          and statistics will be gone!
+	static void remove(std::string name);
+
 	Profile(std::string name);
 	virtual ~Profile();
 

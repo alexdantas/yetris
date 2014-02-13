@@ -44,6 +44,15 @@ bool Profile::load()
 
 	return true;
 }
+void Profile::remove(std::string name)
+{
+	if (std::find(Profile::profiles.begin(), Profile::profiles.end(), name) == Profile::profiles.end())
+		return;
+
+	std::string dir = Globals::Config::directory + name;
+
+	Utils::File::rm_rf(dir);
+}
 
 Profile::Profile(std::string name):
 	name(name),

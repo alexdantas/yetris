@@ -7,6 +7,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
 	// Main Menu
 	SINGLE_PLAYER,
+	OPTIONS,
 	PROFILES,
 	QUIT_GAME,
 
@@ -20,14 +21,23 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	SLIDE_RIGHT,
 	HOLD_PIECE,
 	GHOST_PIECE,
-	SHOW_STATISTICS
+	SHOW_STATISTICS,
+
+	// Options Submenu
+
+	// Profiles Submenu
+	PROFILES_NAME
 };
 
 GameStateMainMenu::GameStateMainMenu():
 	layout(NULL),
 	menu(NULL),
 	menuSinglePlayer(NULL),
-	menuSinglePlayerActivated(false)
+	menuSinglePlayerActivated(false),
+	menuOptions(NULL),
+	menuOptionsActvated(NULL),
+	menuProfiles(NULL),
+	menuProfilesActivated(NULL)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -35,10 +45,10 @@ void GameStateMainMenu::load(int stack)
 {
 	UNUSED(stack);
 
-	this->layout = new LayoutMainMenu(80, 24);
+	this->layout = new LayoutMainMenu(80, 24, this);
 
 	// Creating the Menu and Items.
-	// Their default values will be based on current Profile's
+	// Their default ids will be based on current Profile's
 	// settings.
 	this->menu = new Menu(1,
 	                      1,
@@ -48,6 +58,9 @@ void GameStateMainMenu::load(int stack)
 	MenuItem* item;
 
 	item = new MenuItem("Single Player", SINGLE_PLAYER);
+	menu->add(item);
+
+	item = new MenuItem("Options", OPTIONS);
 	menu->add(item);
 
 	item = new MenuItem("Profiles", PROFILES);
@@ -109,6 +122,33 @@ void GameStateMainMenu::load(int stack)
 	                             SHOW_STATISTICS,
 	                             Globals::Profiles::current->settings.screen.show_statistics);
 	menuSinglePlayer->add(check);
+
+	this->menuOptions = new Menu(1,
+	                             1,
+	                             this->layout->menu->getW() - 2,
+	                             this->layout->menu->getH() - 2);
+
+	item = new MenuItem("Back", GO_BACK);
+	menuOptions->add(item);
+
+	// Profiles menu
+	this->menuProfiles = new Menu(1,
+	                              4,
+	                              this->layout->menu->getW() - 2,
+	                              this->layout->menu->getH() - 2 - 3);
+
+	menuProfiles->addBlank();
+
+	for (unsigned int i = 0; i < (Profile::profiles.size()); i++)
+	{
+		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + i);
+		menuProfiles->add(item);
+	}
+
+	menuProfiles->addBlank();
+
+	item = new MenuItem("Back", GO_BACK);
+	menuProfiles->add(item);
 }
 
 int GameStateMainMenu::unload()
@@ -133,7 +173,7 @@ int GameStateMainMenu::unload()
 		else if (menuSinglePlayer->item[i]->type == MenuItem::CHECKBOX)
 			check = (MenuItemCheckbox*)menuSinglePlayer->item[i];
 
-		switch(menuSinglePlayer->item[i]->value)
+		switch(menuSinglePlayer->item[i]->id)
 		{
 		case STARTING_LEVEL:
 			if (num)
@@ -198,7 +238,7 @@ GameState::StateCode GameStateMainMenu::update()
 		if (this->menuSinglePlayer->willQuit())
 		{
 			// User selected an option
-			// Let's get values from menu items
+			// Let's get ids from menu items
 			Globals::Profiles::current->settings.game.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
 			Globals::Profiles::current->settings.game.starting_level = (unsigned int)this->menuSinglePlayer->getInt(STARTING_LEVEL);
 
@@ -211,7 +251,7 @@ GameState::StateCode GameStateMainMenu::update()
 			Globals::Profiles::current->settings.screen.show_statistics = this->menuSinglePlayer->getBool(SHOW_STATISTICS);
 
 			// And then exit based on the selected option.
-			switch (this->menuSinglePlayer->getSelectedValue())
+			switch (this->menuSinglePlayer->currentID())
 			{
 			case START_GAME:
 				return GameState::GAME_START;
@@ -224,6 +264,53 @@ GameState::StateCode GameStateMainMenu::update()
 			this->menuSinglePlayer->reset();
 		}
 	}
+	else if (this->menuOptionsActvated)
+	{
+		this->menuOptions->handleInput(input);
+
+		if (this->menuOptions->willQuit())
+		{
+			switch(this->menuOptions->currentID())
+			{
+			case GO_BACK:
+				this->menuOptionsActvated = false;
+				break;
+			}
+			this->menuOptions->reset();
+		}
+	}
+	else if (this->menuProfilesActivated)
+	{
+		int currentID = this->menuProfiles->currentID();
+
+		if (input == 'd' || input == 'D')
+		{
+			// Only deleting profile if it's not the current one
+			if (!(Profile::profiles[currentID - PROFILES_NAME] == Globals::Profiles::current->name))
+			{
+				Profile::remove(Profile::profiles[currentID - PROFILES_NAME]);
+				this->menuProfiles->remove(currentID - PROFILES_NAME);
+			}
+		}
+		else if (input == 's' || input == 'S')
+		{
+			// Switch to profile
+		}
+		else if (input == 'c' || input == 'C')
+		{
+			// Create new profile
+		}
+		else
+			this->menuProfiles->handleInput(input);
+
+		if (this->menuProfiles->willQuit())
+		{
+			if (this->menuProfiles->currentID() == GO_BACK)
+				this->menuProfilesActivated = false;
+
+			this->menuProfiles->reset();
+		}
+	}
 	else
 	{
 		// We're still at the Main Menu
@@ -231,14 +318,18 @@ GameState::StateCode GameStateMainMenu::update()
 
 		if (this->menu->willQuit())
 		{
-			switch(this->menu->getSelectedValue())
+			switch(this->menu->currentID())
 			{
 			case SINGLE_PLAYER:
 				this->menuSinglePlayerActivated = true;
 				break;
 
+			case OPTIONS:
+				this->menuOptionsActvated = true;
+				break;
+
 			case PROFILES:
-				// yeah
+				this->menuProfilesActivated = true;
 				break;
 
 			case QUIT_GAME:
@@ -257,6 +348,12 @@ void GameStateMainMenu::draw()
 {
 	if (this->menuSinglePlayerActivated)
 		this->layout->draw(this->menuSinglePlayer);
+
+	else if (this->menuOptionsActvated)
+		this->layout->draw(this->menuOptions);
+
+	else if (this->menuProfilesActivated)
+		this->layout->draw(this->menuProfiles);
 
 	else
 		this->layout->draw(this->menu);
