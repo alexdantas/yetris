@@ -92,7 +92,7 @@ void LayoutGame::windowsInit()
 	                               this->leftmost->getX() + this->leftmost->getW(),
 	                               0,
 	                               10*2 + 2, // 10 blocks + borders
-	                               0);
+	                               22);      // 20 blocks + borders
 
 	if (Globals::Profiles::current->settings.screen.show_borders)
 	{

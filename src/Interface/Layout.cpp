@@ -63,16 +63,14 @@ void Layout::windowsInit()
 	                        intendedWidth,
 	                        intendedHeight);
 
-	if (Globals::Profiles::current)
+	if ((Globals::Profiles::current) &&
+	    (Globals::Profiles::current->settings.screen.outer_border) &&
+	    (Globals::Profiles::current->settings.screen.show_borders))
 	{
-		if (Globals::Profiles::current->settings.screen.show_borders)
-		{
-			this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
-			                    Window::BORDER_FANCY :
-			                    Window::BORDER_REGULAR);
-		}
+		this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		                    Window::BORDER_FANCY :
+		                    Window::BORDER_REGULAR);
 	}
-
 
 	this->main->refresh();
 }

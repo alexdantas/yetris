@@ -25,6 +25,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	// Options Submenu
 	SHOW_BORDERS,
 	FANCY_BORDERS,
+	OUTER_BORDER,
 	USE_COLORS,
 	CENTER_HORIZONTAL,
 	CENTER_VERTICAL,
@@ -441,6 +442,11 @@ void GameStateMainMenu::createOptionsMenu()
 	                             Globals::Profiles::current->settings.screen.fancy_borders);
 	menuOptions->add(check);
 
+	check = new MenuItemCheckbox("Outer Border",
+	                             OUTER_BORDER,
+	                             Globals::Profiles::current->settings.screen.outer_border);
+	menuOptions->add(check);
+
 	check = new MenuItemCheckbox("Center Horizontal",
 	                             CENTER_HORIZONTAL,
 	                             Globals::Profiles::current->settings.screen.center_horizontally);
@@ -524,6 +530,7 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	// Let's get ids from menu items
 	current->settings.screen.show_borders  = this->menuOptions->getBool(SHOW_BORDERS);
 	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
+	current->settings.screen.outer_border = this->menuOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically = this->menuOptions->getBool(CENTER_VERTICAL);
 	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
