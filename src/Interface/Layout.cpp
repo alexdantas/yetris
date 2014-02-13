@@ -31,22 +31,31 @@ Layout::Layout(int width, int height):
 	Layout::screenHeight = current_height;
 
 	// Creating the main window for this layout.
+	// We'll center based on user's settings
 	int main_x = 0;
-	if (Globals::Profiles::current->settings.screen.center_horizontally)
-		main_x = current_width/2 - width/2;
-
 	int main_y = 0;
-	if (Globals::Profiles::current->settings.screen.center_vertically)
-		main_y = current_height/2 - height/2;
+
+	if (Globals::Profiles::current)
+	{
+		if (Globals::Profiles::current->settings.screen.center_horizontally)
+			main_x = current_width/2 - width/2;
+
+		if (Globals::Profiles::current->settings.screen.center_vertically)
+			main_y = current_height/2 - height/2;
+	}
 
 	this->main = new Window(main_x, main_y, width, height);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (Globals::Profiles::current)
 	{
-		this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
+		if (Globals::Profiles::current->settings.screen.show_borders)
+		{
+			this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+			                    Window::BORDER_FANCY :
+			                    Window::BORDER_REGULAR);
+		}
 	}
+
 
 	this->main->refresh();
 }

@@ -15,8 +15,7 @@ StateManager::StateManager():
 	{
 		// Couldn't find any profiles - first time!
 
-		if (! Globals::Profiles::default_name.empty())
-			Globals::Profiles::default_name = "";
+		Globals::Profiles::default_name = "";
 
 		// Let's ask for the user
 		this->currentState = new GameStateFirstTime();
@@ -25,8 +24,8 @@ StateManager::StateManager():
 	else
 	{
 		// Alright, let's load it!
-		if (Globals::Profiles::default_name.empty())
-			Globals::Profiles::default_name = Profile::profiles.front();
+
+		Globals::Profiles::default_name = Profile::profiles.front();
 
 		Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
 		Globals::Profiles::current->loadSettings();

@@ -5,6 +5,8 @@
 #include <Interface/LayoutFirstTime.hpp>
 #include <Interface/Menu.hpp>
 
+#include <string>
+
 /// Will appear only when there's no Profile at the
 /// configuration directory - probably the first time
 /// the game's being run.
@@ -30,7 +32,20 @@ public:
 private:
 	LayoutFirstTime* layout;
 
-	Menu* menu;
+	/// Where we store the Profile name we query the user.
+	///
+	/// This is a big hack so we can ask the user for
+	/// a name to enter as a profile.
+	///
+	/// It exists because to create a Textbox I need a
+	/// default color to print it.
+	/// Since the default color is specified by the
+	/// Profile (and right now we have no Profiles)
+	/// I need to call raw ncurses functions and do other
+	/// nasty things.
+	///
+	/// Check out the implementation.
+	std::string name;
 };
 
 #endif //GAMESTATEFIRSTTIME_H_DEFINED

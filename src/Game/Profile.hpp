@@ -113,6 +113,7 @@ public:
 		{
 			ColorPair text;
 			ColorPair hilite_text;
+			ColorPair textbox;
 
 			bool piece_has_colors;
 			bool ghost_has_colors;

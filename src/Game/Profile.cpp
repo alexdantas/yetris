@@ -127,6 +127,7 @@ Profile::Profile(std::string name):
 
 	settings.theme.text = Colors::pair(COLOR_WHITE, COLOR_DEFAULT);
 	settings.theme.hilite_text = Colors::pair(COLOR_BLUE, COLOR_DEFAULT);
+	settings.theme.textbox = Colors::pair(COLOR_WHITE, COLOR_BLUE);
 
 	settings.theme.piece_has_colors = true;
 	settings.theme.ghost_has_colors = true;

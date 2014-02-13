@@ -3,9 +3,11 @@
 #include <Interface/Ncurses.hpp>
 #include <Config/Globals.hpp>
 
+#include <cstring>
+
 GameStateFirstTime::GameStateFirstTime():
 	layout(NULL),
-	menu(NULL)
+	name("")
 { }
 GameStateFirstTime::~GameStateFirstTime()
 { }
@@ -19,28 +21,72 @@ void GameStateFirstTime::load(int stack)
 int GameStateFirstTime::unload()
 {
 	SAFE_DELETE(this->layout);
-	SAFE_DELETE(this->menu);
 
 	return 0;
 }
 
 GameState::StateCode GameStateFirstTime::update()
 {
-	int input = Ncurses::getInput(100);
-
-	if (input == '\n' || input == KEY_ENTER)
+	// User typed already
+	if (! this->name.empty())
 	{
-		Globals::Profiles::current = new Profile(Utils::File::getUser() + "LEL");
-		Globals::Profiles::current->loadSettings();
-
+		Globals::Profiles::current = new Profile(this->name);
 		return GameState::MAIN_MENU;
 	}
 
 	return GameState::CONTINUE;
 }
 
+bool isNameValid(std::string name)
+{
+	// Not allowed characters
+	if ((name.find('/')  != std::string::npos) ||
+	    (name.find('\\') != std::string::npos) ||
+	    (name.find(';')  != std::string::npos) ||
+	    (name.find('#')  != std::string::npos) ||
+	    (name.find('=')  != std::string::npos) ||
+	    (name.find('.')  != std::string::npos))
+		return false;
+
+	return true;
+}
+
 void GameStateFirstTime::draw()
 {
-	this->layout->draw(this->menu);
+	this->layout->draw(NULL);
+
+	// BIG HACK
+	//
+	// Instead of drawing, we actually query the user for
+	// a profile name
+	//
+	// NEED to remove this
+	// Are you kidding me?
+	// Direct ncurses calls?
+
+	// Making everything "right"
+	nocbreak();
+	curs_set(1);
+	echo();
+	nodelay(stdscr, FALSE);
+
+	char name[256];
+	std::memset(name, '\0', 256);
+
+	mvgetnstr(7, 15, name, 255);
+
+	if (isNameValid(name))
+	{
+		if (strlen(name) == 0)
+			this->name = Utils::File::getUser();
+		else
+			this->name = name;
+	}
+
+	// Returning to ncurses' "wrong" mode
+	nodelay(stdscr, TRUE);
+	noecho();
+	curs_set(0);
+	cbreak();
 }
 

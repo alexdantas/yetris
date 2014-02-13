@@ -16,7 +16,7 @@ struct MenuItem
 	///
 	enum MenuItemType
 	{
-		ITEM, LABEL, CHECKBOX, NUMBERBOX
+		ITEM, LABEL, CHECKBOX, NUMBERBOX, TEXTBOX
 	};
 
 	/// Create a MenuItem, duh.

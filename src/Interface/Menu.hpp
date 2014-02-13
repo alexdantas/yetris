@@ -5,6 +5,7 @@
 #include <Interface/MenuItem.hpp>
 #include <Interface/MenuItemCheckbox.hpp>
 #include <Interface/MenuItemNumberbox.hpp>
+#include <Interface/MenuItemTextbox.hpp>
 
 #include <vector>
 
