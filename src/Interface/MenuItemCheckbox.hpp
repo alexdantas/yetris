@@ -6,7 +6,7 @@
 ///
 struct MenuItemCheckbox: public MenuItem
 {
-	MenuItemCheckbox(std::string label, int value, bool initial=false);
+	MenuItemCheckbox(std::string label, int id, bool initial=false);
 	virtual ~MenuItemCheckbox() { };
 
 

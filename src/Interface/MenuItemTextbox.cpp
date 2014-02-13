@@ -1,8 +1,8 @@
 #include <Interface/MenuItemTextbox.hpp>
 #include <Config/Globals.hpp>
 
-MenuItemTextbox::MenuItemTextbox(std::string label, int value, int width, std::string initial):
-	MenuItem(label, value),
+MenuItemTextbox::MenuItemTextbox(std::string label, int id, int width, std::string initial):
+	MenuItem(label, id),
 	currentText(initial),
 	width(width)
 {
@@ -15,7 +15,7 @@ void MenuItemTextbox::draw(Window* window, int x, int y, int width, bool hilite)
 	// Drawing label before actual textbox
 	MenuItem::draw(window, x, y, width - (this->width) - 1, hilite);
 
-	// Maximum x value
+	// Maximum x id
 	int posx = x + width;
 
 	// Drawing the current text

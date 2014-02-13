@@ -41,13 +41,13 @@ void Menu::addBlank()
 {
 	this->item.push_back(nullptr);
 }
-void Menu::remove(int value)
+void Menu::remove(int id)
 {
 	auto it = this->item.begin();
 
 	while (it != this->item.end())
 	{
-		if ((*it)->value == value)
+		if ((*it)->id == id)
 		{
 			this->item.erase(it);
 			return;
@@ -199,24 +199,24 @@ bool Menu::willQuit()
 	// and the item selected is valid.
 	return (this->selected && this->selectedItem);
 }
-int Menu::getSelectedValue()
+int Menu::getSelectedId()
 {
 	if (! this->willQuit())
 		return -1;
 
-	return (this->selectedItem->value);
+	return (this->selectedItem->id);
 }
-bool Menu::getBool(int value)
+bool Menu::getBool(int id)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
 	{
 		if (! this->item[i])
 			continue;
 
-		if (this->item[i]->value == value)
+		if (this->item[i]->id == id)
 		{
 			// Either the type got messed up or we have
-			// two items with the same value.
+			// two items with the same id.
 			if (this->item[i]->type != MenuItem::CHECKBOX)
 				return false;
 
@@ -228,17 +228,17 @@ bool Menu::getBool(int value)
 	}
 	return false;
 }
-int Menu::getInt(int value)
+int Menu::getInt(int id)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)
 	{
 		if (! this->item[i])
 			continue;
 
-		if (this->item[i]->value == value)
+		if (this->item[i]->id == id)
 		{
 			// Either the type got messed up or we have
-			// two items with the same value.
+			// two items with the same id.
 			if (this->item[i]->type != MenuItem::NUMBERBOX)
 				return -1;
 

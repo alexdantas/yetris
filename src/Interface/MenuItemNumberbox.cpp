@@ -2,8 +2,8 @@
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
 
-MenuItemNumberbox::MenuItemNumberbox(std::string label, int value, int min, int max, int initial):
-	MenuItem(label, value),
+MenuItemNumberbox::MenuItemNumberbox(std::string label, int id, int min, int max, int initial):
+	MenuItem(label, id),
 	min(min),
 	max(max),
 	initial(initial),

@@ -2,10 +2,10 @@
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 
-MenuItem::MenuItem(std::string label, int value):
+MenuItem::MenuItem(std::string label, int id):
 	type(MenuItem::ITEM),
 	label(label),
-	value(value)
+	id(id)
 { }
 
 void MenuItem::draw(Window* window, int x, int y, int width, bool hilite)

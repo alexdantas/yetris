@@ -18,7 +18,7 @@ public:
 	void add(MenuItem* item);
 	void addBlank();
 
-	void remove(int value);
+	void remove(int id);
 
 	void draw(Window* window);
 
@@ -33,14 +33,16 @@ public:
 	/// Tells if the user selected an item that quits the menu.
 	bool willQuit();
 
-	/// Returns the user-specified value of the selected item.
-	int getSelectedValue();
+	/// Returns the user-specified id of the selected item.
+	int getSelectedId();
 
-	/// Returns the bool value of item that has #value.
+	/// Returns the bool internal value of item that has #id.
 	/// @note Meaning the item must be a MenuItemCheckbox.
-	bool getBool(int value);
+	bool getBool(int id);
 
-	int getInt(int value);
+	/// Returns the integer value of the item that has #id.
+	/// @note Meaning the item must be a MenuItemNumberbox.
+	int getInt(int id);
 
 	/// Makes the menu able to be selected again.
 	///

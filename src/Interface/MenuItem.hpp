@@ -6,7 +6,7 @@
 #include <string>
 
 /// Simplest type of item possible, with a label
-/// and user-defined value.
+/// and user-defined id.
 ///
 struct MenuItem
 {
@@ -19,8 +19,12 @@ struct MenuItem
 		ITEM, LABEL, CHECKBOX, NUMBERBOX, TEXTBOX
 	};
 
-	/// Create a MenuItem, duh.
-	MenuItem(std::string label, int value);
+	/// Create a MenuItem, with user-defined #id.
+	///
+	/// @note MenuItems on the same menu should have
+	///       different #id s! If not, results are unpredictable.
+	MenuItem(std::string label, int id);
+
 	virtual ~MenuItem() { };
 
 	/// Shows this item at #x, #y with #width.
@@ -48,8 +52,8 @@ struct MenuItem
 	/// Text that will be shown on the screen.
 	std::string label;
 
-	/// User-defined value to identify this item.
-	int value;
+	/// User-defined id to identify this item.
+	int id;
 };
 
 #endif //MENUITEM_H_DEFINED

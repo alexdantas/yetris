@@ -6,8 +6,8 @@
 ///
 struct MenuItemTextbox: public MenuItem
 {
-	/// Creates the Widet with #initial initial value.
-	MenuItemTextbox(std::string label, int value, int width, std::string initial);
+	/// Creates the Widet with #initial initial id.
+	MenuItemTextbox(std::string label, int id, int width, std::string initial);
 	virtual ~MenuItemTextbox();
 
 	void draw(Window* window, int x, int y, int width, bool hilite=false);

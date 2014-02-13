@@ -6,7 +6,7 @@
 ///
 struct MenuItemNumberbox: public MenuItem
 {
-	MenuItemNumberbox(std::string label, int value, int min, int max, int initial);
+	MenuItemNumberbox(std::string label, int id, int min, int max, int initial);
 	virtual ~MenuItemNumberbox() { };
 
 	void draw(Window* window, int x, int y, int width, bool hilite=false);
