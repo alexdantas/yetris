@@ -25,6 +25,8 @@ LayoutMainMenu::~LayoutMainMenu()
 }
 void LayoutMainMenu::windowsInit()
 {
+	Layout::windowsInit();
+
 	// LOGO
 	this->logo = new Window(this->main,
 	                        0,
@@ -95,6 +97,8 @@ void LayoutMainMenu::windowsExit()
 	SAFE_DELETE(this->logo);
 	SAFE_DELETE(this->animationContainer);
 	SAFE_DELETE(this->animation);
+
+	Layout::windowsExit();
 }
 void LayoutMainMenu::draw(Menu* menu)
 {

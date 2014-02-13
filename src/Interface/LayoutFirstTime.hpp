@@ -17,9 +17,6 @@ public:
 	void windowsExit();
 
 	void draw(Menu* menu);
-
-	/// Where we'll query the profile name.
-	Window* menu;
 };
 
 #endif //LAYOUTFIRSTTIME_H_DEFINED

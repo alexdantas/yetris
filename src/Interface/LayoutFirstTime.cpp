@@ -3,8 +3,7 @@
 #include <Config/Globals.hpp>
 
 LayoutFirstTime::LayoutFirstTime(int width, int height):
-	Layout(width, height),
-	menu(NULL)
+	Layout(width, height)
 {
 	this->windowsInit();
 }
@@ -14,18 +13,13 @@ LayoutFirstTime::~LayoutFirstTime()
 }
 void LayoutFirstTime::windowsInit()
 {
-	this->menu = new Window(this->main,
-	                        5,
-	                        5,
-	                        80,
-	                        24);
-
-	this->menu->setTitle("New Profile");
+	Layout::windowsInit();
 }
 void LayoutFirstTime::windowsExit()
 {
 	clear();
-	SAFE_DELETE(this->menu);
+
+	Layout::windowsExit();
 }
 void LayoutFirstTime::draw(Menu* menu)
 {

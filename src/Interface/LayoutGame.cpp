@@ -21,6 +21,8 @@ LayoutGame::~LayoutGame()
 }
 void LayoutGame::windowsInit()
 {
+	Layout::windowsInit();
+
 	// We'll start all the windows inside the Layout
 	this->main->clear();
 
@@ -209,6 +211,8 @@ void LayoutGame::windowsExit()
 
 	this->main->clear(); // clear() as in Window
 	this->main->refresh(); // clear() as in Window
+
+	Layout::windowsExit();
 }
 void LayoutGame::draw(Menu* menu)
 {

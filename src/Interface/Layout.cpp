@@ -1,6 +1,7 @@
 #include <Interface/Layout.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Config/Globals.hpp>
+#include <Misc/Utils.hpp>
 
 #include <iostream>
 #include <cstdlib>
@@ -8,18 +9,29 @@
 int Layout::screenWidth  = 0;
 int Layout::screenHeight = 0;
 
+static int intendedWidth;
+static int intendedHeight;
+
 Layout::Layout(int width, int height):
 	main(nullptr)
+{
+	intendedWidth  = width;
+	intendedHeight = height;
+}
+Layout::~Layout()
+{ }
+void Layout::windowsInit()
 {
 	// Gets the current width and height of the whole terminal.
 	int current_height, current_width;
 	getmaxyx(stdscr, current_height, current_width);
 
-	if ((current_width < width) || (current_height < height))
+	if ((current_width  < intendedWidth) ||
+	    (current_height < intendedHeight))
 	{
 		Ncurses::exit();
 		std::cerr << "Error! Your console screen is smaller than"
-		          << width << "x" << height << std::endl
+		          << intendedWidth << "x" << intendedHeight << "\n"
 		          << "Please resize your window and try again"
 		          << std::endl;
 
@@ -38,13 +50,16 @@ Layout::Layout(int width, int height):
 	if (Globals::Profiles::current)
 	{
 		if (Globals::Profiles::current->settings.screen.center_horizontally)
-			main_x = current_width/2 - width/2;
+			main_x = current_width/2 - intendedWidth/2;
 
 		if (Globals::Profiles::current->settings.screen.center_vertically)
-			main_y = current_height/2 - height/2;
+			main_y = current_height/2 - intendedHeight/2;
 	}
 
-	this->main = new Window(main_x, main_y, width, height);
+	this->main = new Window(main_x,
+	                        main_y,
+	                        intendedWidth,
+	                        intendedHeight);
 
 	if (Globals::Profiles::current)
 	{
@@ -59,9 +74,9 @@ Layout::Layout(int width, int height):
 
 	this->main->refresh();
 }
-Layout::~Layout()
+void Layout::windowsExit()
 {
-	delete this->main;
+	SAFE_DELETE(this->main);
 }
 void Layout::draw()
 {

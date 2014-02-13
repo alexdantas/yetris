@@ -24,6 +24,9 @@ public:
 	Layout(int width, int height);
 	virtual ~Layout();
 
+	virtual void windowsInit();
+	virtual void windowsExit();
+
 	virtual void draw();
 
 	/// Layout's main Window, where all the others are inside.
