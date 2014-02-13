@@ -21,6 +21,9 @@ void MenuItemNumberbox::draw(Window* window, int x, int y, int width, bool hilit
 }
 void MenuItemNumberbox::handleInput(int input)
 {
+	if (input == ERR)
+		return;
+
 	switch(input)
 	{
 	case KEY_LEFT:

@@ -103,6 +103,9 @@ void Game::start()
 }
 void Game::handleInput(int c)
 {
+	if (c == ERR)
+		return;
+
 	// The only two absolute inputs are to quit and pause.
 	// Others depend if the game is paused or not.
 

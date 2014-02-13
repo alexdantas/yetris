@@ -41,6 +41,9 @@ bool isPrintable(int input)
 
 void MenuItemTextbox::handleInput(int input)
 {
+	if (input == ERR)
+		return;
+
 	if (isPrintable(input))
 	{
 		this->currentText += (char)input;

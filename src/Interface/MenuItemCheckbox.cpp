@@ -30,6 +30,9 @@ void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite
 }
 void MenuItemCheckbox::handleInput(int input)
 {
+	if (input == ERR)
+		return;
+
 	switch(input)
 	{
 	case KEY_LEFT:
