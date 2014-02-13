@@ -193,6 +193,11 @@ GameState::StateCode GameStateMainMenu::update()
 			{
 			case GO_BACK:
 				this->menuOptionsActvated = false;
+
+				// Redrawing the screen to refresh settings
+				saveSettingsMenuOptions();
+				this->layout->windowsExit();
+				this->layout->windowsInit();
 				break;
 			}
 			this->menuOptions->reset();
@@ -239,7 +244,10 @@ GameState::StateCode GameStateMainMenu::update()
 				else
 					name += "'s";
 
+				// Redrawing screen based on user's settings
 				this->layout->logo->setTitle(name);
+				this->layout->windowsExit();
+				this->layout->windowsInit();
 			}
 		}
 		else if (input == 'c' || input == 'C')
@@ -261,6 +269,7 @@ GameState::StateCode GameStateMainMenu::update()
 		{
 			if (this->menuProfiles->currentID() == GO_BACK)
 				this->menuProfilesActivated = false;
+
 
 			this->menuProfiles->reset();
 		}

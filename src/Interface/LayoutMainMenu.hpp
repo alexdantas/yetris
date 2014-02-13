@@ -29,6 +29,10 @@ public:
 	/// Shows the Main Menu screen, along with drawing #menu.
 	void draw(Menu* menu);
 
+	/// Redraws everything from scratch, refreshing borders
+	/// and stuff.
+	void redraw();
+
 	/// We need this so we can access the states' flags
 	/// and decide best on how to print it.
 	GameStateMainMenu* state;
