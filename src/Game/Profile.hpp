@@ -124,7 +124,7 @@ public:
 			bool has_ghost;
 			bool can_hold;
 
-			short random_algorithm;
+			std::string random_algorithm;
 
 			bool has_game_over_animation;
 			bool slide_left;

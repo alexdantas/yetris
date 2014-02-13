@@ -6,8 +6,10 @@
 #include <Interface/MenuItemCheckbox.hpp>
 #include <Interface/MenuItemNumberbox.hpp>
 #include <Interface/MenuItemTextbox.hpp>
+#include <Interface/MenuItemTextlist.hpp>
 
 #include <vector>
+#include <string>
 
 /// List of selectable items.
 ///
@@ -72,6 +74,11 @@ public:
 	/// Returns the integer value of the item that has #id.
 	/// @note Meaning the item must be a MenuItemNumberbox.
 	int getInt(int id);
+
+	/// Returns the string value of the item that has #id.
+	/// @note Meaning the item must be a MenuItemTextbox or
+	///       MenuItemTextlist.
+	std::string getString(int id);
 
 	/// Makes the menu able to be selected again.
 	///

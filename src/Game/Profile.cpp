@@ -162,7 +162,7 @@ Profile::Profile(std::string name):
 	settings.game.has_ghost = true;
 	settings.game.can_hold  = true;
 
-	settings.game.random_algorithm = 1;
+	settings.game.random_algorithm = "regular";
 
 	settings.game.has_game_over_animation = true;
 	settings.game.line_clear_delay = 200; 		// ms
@@ -175,7 +175,7 @@ Profile::Profile(std::string name):
 
 	settings.theme.text = Colors::pair(COLOR_WHITE, COLOR_DEFAULT);
 	settings.theme.hilite_text = Colors::pair(COLOR_BLUE, COLOR_DEFAULT);
-	settings.theme.textbox = Colors::pair(COLOR_WHITE, COLOR_BLUE);
+	settings.theme.textbox = Colors::pair(COLOR_WHITE, COLOR_RED);
 
 	settings.theme.piece_has_colors = true;
 	settings.theme.ghost_has_colors = true;
@@ -335,11 +335,11 @@ void Profile::loadSettings()
 
 // 	std::string tmp;
 
-// #define INI_GET_THEME(var, text) \
-// 	{ \
-// 		tmp = ini.get(text, var.appearance); \
-// 		var.appearance[0] = tmp[0]; \
-// 		var.appearance[1] = tmp[1]; \
+// #define INI_GET_THEME(var, text)
+// 	{
+// 		tmp = ini.get(text, var.appearance);
+// 		var.appearance[0] = tmp[0];
+// 		var.appearance[1] = tmp[1];
 // 	}
 
 // 	INI_GET_THEME(settings.theme.clear_line, "clear_line:block");
@@ -389,7 +389,7 @@ void Profile::saveSettings()
 	INI_SET("game:ghost", settings.game.has_ghost);
 	INI_SET("game:hold",  settings.game.can_hold);
 
-	INI_SET("game:random_algorithm", settings.game.random_algorithm);
+	ini.set("game:random_algorithm", settings.game.random_algorithm);
 
 	INI_SET("game:game_over_animation", settings.game.has_game_over_animation);
 	INI_SET("game:line_clear_delay",    settings.game.line_clear_delay);
@@ -435,11 +435,11 @@ void Profile::saveSettings()
 
 // 	std::string tmp;
 
-// #define INI_SET_THEME(var, text) \
-// 	{ \
-// 		tmp = ini.get(text, var.appearance); \
-// 		var.appearance[0] = tmp[0]; \
-// 		var.appearance[1] = tmp[1]; \
+// #define INI_SET_THEME(var, text)
+// 	{
+// 		tmp = ini.get(text, var.appearance);
+// 		var.appearance[0] = tmp[0];
+// 		var.appearance[1] = tmp[1];
 // 	}
 
 // 	INI_SET_THEME(settings.theme.clear_line, "clear_line:block");

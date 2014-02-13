@@ -341,6 +341,36 @@ int Menu::getInt(int id)
 	}
 	return -1;
 }
+std::string Menu::getString(int id)
+{
+	for (unsigned int i = 0; i < (this->item.size()); i++)
+	{
+		if (! this->item[i])
+			continue;
+
+		if (this->item[i]->id == id)
+		{
+			// Either the type got messed up or we have
+			// two items with the same id.
+			if (this->item[i]->type == MenuItem::TEXTBOX)
+			{
+				MenuItemTextbox* c = (MenuItemTextbox*)this->item[i];
+				return c->currentText;
+			}
+			else if (this->item[i]->type == MenuItem::TEXTLIST)
+			{
+				MenuItemTextlist* c = (MenuItemTextlist*)this->item[i];
+				return c->currentText();
+			}
+			else
+				return "";
+
+			// This cast may be dangerous if the type was
+			// somehow changed.
+		}
+	}
+	return "";
+}
 void Menu::reset()
 {
 	this->selected = false;

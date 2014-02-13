@@ -4,6 +4,8 @@
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 
+#include <Config/INI.hpp>
+
 int main(int argc, char *argv[])
 {
 	UNUSED(argc);

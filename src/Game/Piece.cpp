@@ -36,7 +36,7 @@ Piece::PieceType Piece::random()
 	// of the same piece and guarantee a certain
 	// degree of piece rotativity ("I WANT TEH LINES!11!!").
 	//
-	if (Globals::Profiles::current->settings.game.random_algorithm == 1)
+	if (Globals::Profiles::current->settings.game.random_algorithm == "regular")
 	{
 		int i,j;
 		int size = Piece::MAX;
@@ -70,13 +70,9 @@ Piece::PieceType Piece::random()
 		piece++;
 		return bag[piece - 1];
 	}
-	// else if (Globals::Profiles::current->settings.game.random_algorithm == 2)
-	// {
-	// 	// Dummy random algorithm
-	// }
 	else
 	{
-		// Simple srand() algorithm
+		// Dumb srand() algorithm
 		return intToPieceType(Utils::Random::between(0, (Piece::MAX - 1)));
 	}
 }

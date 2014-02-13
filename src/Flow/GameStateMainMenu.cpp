@@ -471,12 +471,17 @@ void GameStateMainMenu::createOptionsMenu()
 	                            Globals::Profiles::current->settings.game.next_pieces);
 	menuOptions->add(box);
 
-	box = new MenuItemNumberbox("Random Algorithm",
+	std::vector<std::string> options;
+	options.push_back("regular");
+	options.push_back("dumb");
+
+	MenuItemTextlist* list;
+
+	list = new MenuItemTextlist("Random Piece",
 	                            RANDOM_ALGORITHM,
-	                            0,
-	                            1,
+	                            options,
 	                            Globals::Profiles::current->settings.game.random_algorithm);
-	menuOptions->add(box);
+	menuOptions->add(list);
 
 	box = new MenuItemNumberbox("Line clear delay(ms)",
 	                            LINE_DELAY,
@@ -528,15 +533,15 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 
 	// User selected an option
 	// Let's get ids from menu items
-	current->settings.screen.show_borders  = this->menuOptions->getBool(SHOW_BORDERS);
-	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
-	current->settings.screen.outer_border = this->menuOptions->getBool(OUTER_BORDER);
+	current->settings.screen.show_borders        = this->menuOptions->getBool(SHOW_BORDERS);
+	current->settings.screen.fancy_borders       = this->menuOptions->getBool(FANCY_BORDERS);
+	current->settings.screen.outer_border        = this->menuOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuOptions->getBool(CENTER_HORIZONTAL);
-	current->settings.screen.center_vertically = this->menuOptions->getBool(CENTER_VERTICAL);
-	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
-	current->settings.game.next_pieces = this->menuOptions->getInt(NEXT_PIECES);
-	current->settings.game.random_algorithm = this->menuOptions->getInt(RANDOM_ALGORITHM);
-	current->settings.game.line_clear_delay = this->menuOptions->getInt(LINE_DELAY);
+	current->settings.screen.center_vertically   = this->menuOptions->getBool(CENTER_VERTICAL);
+	current->settings.screen.show_statistics     = this->menuOptions->getBool(SHOW_STATISTICS);
+	current->settings.game.next_pieces           = this->menuOptions->getInt(NEXT_PIECES);
+	current->settings.game.random_algorithm      = this->menuOptions->getString(RANDOM_ALGORITHM);
+	current->settings.game.line_clear_delay      = this->menuOptions->getInt(LINE_DELAY);
 }
 void GameStateMainMenu::saveSettingsMenuSinglePlayer()
 {
