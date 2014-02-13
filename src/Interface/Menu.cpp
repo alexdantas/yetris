@@ -24,18 +24,21 @@ Menu::~Menu()
 void Menu::add(MenuItem* item)
 {
 	this->item.push_back(item);
+	this->last = this->item.back();
 
 	unsigned int size = this->item.size();
 
-	// First item added
-	if (size == 1)
-	{
-		this->first = this->item.front();
-		this->current = this->item.front();
-		this->currentIndex = 0;
-	}
 
-	this->last = this->item.back();
+	// Checking if this is the first item being added.
+	// Either size is 1 or lll other items are nullptrs
+
+	for (unsigned int i = 0; i < (size - 1); i++)
+		if (this->item[i])
+			return;
+
+	this->first        = this->item.back();
+	this->current      = this->item.back();
+	this->currentIndex = size - 1;
 }
 void Menu::addBlank()
 {
