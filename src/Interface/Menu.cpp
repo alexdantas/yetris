@@ -41,6 +41,21 @@ void Menu::addBlank()
 {
 	this->item.push_back(nullptr);
 }
+void Menu::remove(int value)
+{
+	auto it = this->item.begin();
+
+	while (it != this->item.end())
+	{
+		if ((*it)->value == value)
+		{
+			this->item.erase(it);
+			return;
+		}
+		else
+			++it;
+	}
+}
 void Menu::draw(Window* window)
 {
 	for (unsigned int i = 0; i < (this->item.size()); i++)

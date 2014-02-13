@@ -18,6 +18,8 @@ public:
 	void add(MenuItem* item);
 	void addBlank();
 
+	void remove(int value);
+
 	void draw(Window* window);
 
 	/// Makes the menu react to #input, which is an Ncurses "char".
