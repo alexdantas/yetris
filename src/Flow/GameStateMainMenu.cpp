@@ -33,23 +33,10 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 // from the menu things don't get messed up.
 unsigned int profileMenuIndex = 0;
 
-GameStateMainMenu::GameStateMainMenu():
-	layout(NULL),
-	menu(NULL),
-	menuSinglePlayer(NULL),
-	menuSinglePlayerActivated(false),
-	menuOptions(NULL),
-	menuOptionsActvated(NULL),
-	menuProfiles(NULL),
-	menuProfilesActivated(NULL)
-{ }
-GameStateMainMenu::~GameStateMainMenu()
-{ }
-void GameStateMainMenu::load(int stack)
+// Local functions to create the menus and submenus
+void GameStateMainMenu::createMainMenu()
 {
-	UNUSED(stack);
-
-	this->layout = new LayoutMainMenu(80, 24, this);
+	SAFE_DELETE(this->menu);
 
 	// Creating the Menu and Items.
 	// Their default ids will be based on current Profile's
@@ -72,12 +59,17 @@ void GameStateMainMenu::load(int stack)
 
 	item = new MenuItem("Quit", QUIT_GAME);
 	menu->add(item);
+}
+void GameStateMainMenu::createSinglePlayerMenu()
+{
+	SAFE_DELETE(this->menuSinglePlayer);
 
 	this->menuSinglePlayer = new Menu(1,
 	                                  1,
 	                                  this->layout->menu->getW() - 2,
 	                                  this->layout->menu->getH() - 2);
 
+	MenuItem* item;
 
 	item = new MenuItem("Start Game", START_GAME);
 	menuSinglePlayer->add(item);
@@ -134,14 +126,19 @@ void GameStateMainMenu::load(int stack)
 
 	item = new MenuItem("Back", GO_BACK);
 	menuOptions->add(item);
+}
+void GameStateMainMenu::createProfilesMenu()
+{
+	SAFE_DELETE(this->menuProfiles);
 
-	// Profiles menu
 	this->menuProfiles = new Menu(1,
 	                              4,
 	                              this->layout->menu->getW() - 2,
 	                              this->layout->menu->getH() - 2 - 3);
 
 	menuProfiles->addBlank();
+
+	MenuItem* item;
 
 	item = new MenuItem("Back", GO_BACK);
 	menuProfiles->add(item);
@@ -162,6 +159,29 @@ void GameStateMainMenu::load(int stack)
 		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + profileMenuIndex);
 		menuProfiles->add(item);
 	}
+}
+
+GameStateMainMenu::GameStateMainMenu():
+	layout(NULL),
+	menu(NULL),
+	menuSinglePlayer(NULL),
+	menuSinglePlayerActivated(false),
+	menuOptions(NULL),
+	menuOptionsActvated(NULL),
+	menuProfiles(NULL),
+	menuProfilesActivated(NULL)
+{ }
+GameStateMainMenu::~GameStateMainMenu()
+{ }
+void GameStateMainMenu::load(int stack)
+{
+	UNUSED(stack);
+
+	this->layout = new LayoutMainMenu(80, 24, this);
+
+	createMainMenu();
+	createSinglePlayerMenu();
+	createProfilesMenu();
 }
 
 int GameStateMainMenu::unload()
@@ -399,7 +419,11 @@ GameState::StateCode GameStateMainMenu::update()
 
 				Globals::Profiles::current->loadSettings();
 
-				// Profile name with an "'s" appended
+				// Re-create menus based on current settings
+				createSinglePlayerMenu();
+
+				// Resetting the title name with current
+				// profile name with an "'s" appended
 				// (like "Rachel's" or "Chris'")
 				if (name.back() == 's')
 					name += '\'';

@@ -38,6 +38,11 @@ private:
 
 	Menu* menuProfiles;
 	bool menuProfilesActivated;
+
+	// easily create internal menus
+	void createMainMenu();
+	void createSinglePlayerMenu();
+	void createProfilesMenu();
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED
