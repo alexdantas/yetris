@@ -22,6 +22,8 @@ Layout::~Layout()
 { }
 void Layout::windowsInit()
 {
+	clear();
+
 	// Gets the current width and height of the whole terminal.
 	int current_height, current_width;
 	getmaxyx(stdscr, current_height, current_width);

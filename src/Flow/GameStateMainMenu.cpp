@@ -26,6 +26,8 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	SHOW_BORDERS,
 	FANCY_BORDERS,
 	USE_COLORS,
+	CENTER_HORIZONTAL,
+	CENTER_VERTICAL,
 	SHOW_STATISTICS,
 	RANDOM_ALGORITHM,
 	LINE_DELAY,
@@ -444,6 +446,16 @@ void GameStateMainMenu::createOptionsMenu()
 	                             Globals::Profiles::current->settings.screen.use_colors);
 	menuOptions->add(check);
 
+	check = new MenuItemCheckbox("Center Horizontal",
+	                             CENTER_HORIZONTAL,
+	                             Globals::Profiles::current->settings.screen.center_horizontally);
+	menuOptions->add(check);
+
+	check = new MenuItemCheckbox("Center Vertical",
+	                             CENTER_VERTICAL,
+	                             Globals::Profiles::current->settings.screen.center_vertically);
+	menuOptions->add(check);
+
 	check = new MenuItemCheckbox("Show Statistics",
 	                             SHOW_STATISTICS,
 	                             Globals::Profiles::current->settings.screen.show_statistics);
@@ -518,6 +530,8 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.show_borders  = this->menuOptions->getBool(SHOW_BORDERS);
 	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
 	current->settings.screen.use_colors    = this->menuOptions->getBool(USE_COLORS);
+	current->settings.screen.center_horizontally = this->menuOptions->getBool(CENTER_HORIZONTAL);
+	current->settings.screen.center_vertically = this->menuOptions->getBool(CENTER_VERTICAL);
 	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
 	current->settings.game.next_pieces = this->menuOptions->getInt(NEXT_PIECES);
 	current->settings.game.random_algorithm = this->menuOptions->getInt(RANDOM_ALGORITHM);
