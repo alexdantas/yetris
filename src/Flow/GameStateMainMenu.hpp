@@ -42,7 +42,10 @@ private:
 	// easily create internal menus
 	void createMainMenu();
 	void createSinglePlayerMenu();
+	void createOptionsMenu();
 	void createProfilesMenu();
+	void saveSettingsMenuOptions();
+	void saveSettingsMenuSinglePlayer();
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED

@@ -21,9 +21,14 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	SLIDE_RIGHT,
 	HOLD_PIECE,
 	GHOST_PIECE,
-	SHOW_STATISTICS,
 
 	// Options Submenu
+	SHOW_BORDERS,
+	FANCY_BORDERS,
+	USE_COLORS,
+	SHOW_STATISTICS,
+	RANDOM_ALGORITHM,
+	LINE_DELAY,
 
 	// Profiles Submenu
 	PROFILES_NAME
@@ -32,134 +37,6 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 // I need this so when we add/remove/change profiles
 // from the menu things don't get messed up.
 unsigned int profileMenuIndex = 0;
-
-// Local functions to create the menus and submenus
-void GameStateMainMenu::createMainMenu()
-{
-	SAFE_DELETE(this->menu);
-
-	// Creating the Menu and Items.
-	// Their default ids will be based on current Profile's
-	// settings.
-	this->menu = new Menu(1,
-	                      1,
-	                      this->layout->menu->getW() - 2,
-	                      this->layout->menu->getH() - 2);
-
-	MenuItem* item;
-
-	item = new MenuItem("Single Player", SINGLE_PLAYER);
-	menu->add(item);
-
-	item = new MenuItem("Options", OPTIONS);
-	menu->add(item);
-
-	item = new MenuItem("Profiles", PROFILES);
-	menu->add(item);
-
-	item = new MenuItem("Quit", QUIT_GAME);
-	menu->add(item);
-}
-void GameStateMainMenu::createSinglePlayerMenu()
-{
-	SAFE_DELETE(this->menuSinglePlayer);
-
-	this->menuSinglePlayer = new Menu(1,
-	                                  1,
-	                                  this->layout->menu->getW() - 2,
-	                                  this->layout->menu->getH() - 2);
-
-	MenuItem* item;
-
-	item = new MenuItem("Start Game", START_GAME);
-	menuSinglePlayer->add(item);
-
-	item = new MenuItem("Back", GO_BACK);
-	menuSinglePlayer->add(item);
-
-	menuSinglePlayer->addBlank();
-
-	MenuItemNumberbox* number;
-
-	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, Globals::Profiles::current->settings.game.starting_level);
-	menuSinglePlayer->add(number);
-
-	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->settings.game.initial_noise);
-	menuSinglePlayer->add(number);
-
-	MenuItemCheckbox* check;
-
-	check = new MenuItemCheckbox("Invisible",
-	                             INVISIBLE,
-	                             Globals::Profiles::current->settings.game.invisible);
-	menuSinglePlayer->add(check);
-
-	check = new MenuItemCheckbox("Slide Left",
-	                             SLIDE_LEFT,
-	                             Globals::Profiles::current->settings.game.slide_left);
-	menuSinglePlayer->add(check);
-
-	check = new MenuItemCheckbox("Slide Right",
-	                             SLIDE_RIGHT,
-	                             Globals::Profiles::current->settings.game.slide_right);
-	menuSinglePlayer->add(check);
-
-	check = new MenuItemCheckbox("Hold Piece",
-	                             HOLD_PIECE,
-	                             Globals::Profiles::current->settings.game.can_hold);
-	menuSinglePlayer->add(check);
-
-	check = new MenuItemCheckbox("Ghost Piece",
-	                             GHOST_PIECE,
-	                             Globals::Profiles::current->settings.game.has_ghost);
-	menuSinglePlayer->add(check);
-
-	check = new MenuItemCheckbox("Show Statistics",
-	                             SHOW_STATISTICS,
-	                             Globals::Profiles::current->settings.screen.show_statistics);
-	menuSinglePlayer->add(check);
-
-	this->menuOptions = new Menu(1,
-	                             1,
-	                             this->layout->menu->getW() - 2,
-	                             this->layout->menu->getH() - 2);
-
-	item = new MenuItem("Back", GO_BACK);
-	menuOptions->add(item);
-}
-void GameStateMainMenu::createProfilesMenu()
-{
-	SAFE_DELETE(this->menuProfiles);
-
-	this->menuProfiles = new Menu(1,
-	                              4,
-	                              this->layout->menu->getW() - 2,
-	                              this->layout->menu->getH() - 2 - 3);
-
-	menuProfiles->addBlank();
-
-	MenuItem* item;
-
-	item = new MenuItem("Back", GO_BACK);
-	menuProfiles->add(item);
-
-	menuProfiles->addBlank();
-
-	// This seems kinda complicated, but we're dealing with
-	// two indexes here.
-	//
-	// We're adding profiles to the menu based on the ones
-	// that exist WHILE keeping account of them,
-	// becase the user might want to create/delete profiles
-	// later.
-	unsigned int i = 0;
-
-	for (profileMenuIndex = 0; i < (Profile::profiles.size()); profileMenuIndex++, i++)
-	{
-		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + profileMenuIndex);
-		menuProfiles->add(item);
-	}
-}
 
 GameStateMainMenu::GameStateMainMenu():
 	layout(NULL),
@@ -181,74 +58,14 @@ void GameStateMainMenu::load(int stack)
 
 	createMainMenu();
 	createSinglePlayerMenu();
+	createOptionsMenu();
 	createProfilesMenu();
 }
 
 int GameStateMainMenu::unload()
 {
-	// Copying all options on the Menu to the global settings
-	for (unsigned int i = 0; i < (menuSinglePlayer->item.size()); i++)
-	{
-		if (! menuSinglePlayer->item[i])
-			continue;
-
-		// TODO: Learn a better way to cast from parent classes
-		//       to child classes.
-		// WARNING: Make sure the types are correct otherwise will
-		//          screw up with NULL things.
-
-		MenuItemNumberbox* num   = NULL;
-		MenuItemCheckbox*  check = NULL;
-
-		if (menuSinglePlayer->item[i]->type == MenuItem::NUMBERBOX)
-			num = (MenuItemNumberbox*)menuSinglePlayer->item[i];
-
-		else if (menuSinglePlayer->item[i]->type == MenuItem::CHECKBOX)
-			check = (MenuItemCheckbox*)menuSinglePlayer->item[i];
-
-		switch(menuSinglePlayer->item[i]->id)
-		{
-		case STARTING_LEVEL:
-			if (num)
-				Globals::Profiles::current->settings.game.starting_level = num->current;
-			break;
-
-		case INITIAL_NOISE:
-			if (num)
-				Globals::Profiles::current->settings.game.initial_noise = num->current;
-			break;
-
-		case INVISIBLE:
-			if (check)
-				Globals::Profiles::current->settings.game.invisible = check->isChecked();
-			break;
-
-		case SLIDE_LEFT:
-			if (check)
-				Globals::Profiles::current->settings.game.slide_left = check->isChecked();
-			break;
-
-		case SLIDE_RIGHT:
-			if (check)
-				Globals::Profiles::current->settings.game.slide_right = check->isChecked();
-			break;
-
-		case HOLD_PIECE:
-			if (check)
-				Globals::Profiles::current->settings.game.can_hold = check->isChecked();
-			break;
-
-		case GHOST_PIECE:
-			if (check)
-				Globals::Profiles::current->settings.game.has_ghost = check->isChecked();
-			break;
-
-		case SHOW_STATISTICS:
-			if (check)
-				Globals::Profiles::current->settings.screen.show_statistics = check->isChecked();
-			break;
-		}
-	}
+	saveSettingsMenuSinglePlayer();
+	saveSettingsMenuOptions();
 
 	SAFE_DELETE(this->layout);
 	SAFE_DELETE(this->menuSinglePlayer);
@@ -350,18 +167,7 @@ GameState::StateCode GameStateMainMenu::update()
 
 		if (this->menuSinglePlayer->willQuit())
 		{
-			// User selected an option
-			// Let's get ids from menu items
-			Globals::Profiles::current->settings.game.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
-			Globals::Profiles::current->settings.game.starting_level = (unsigned int)this->menuSinglePlayer->getInt(STARTING_LEVEL);
-
-			Globals::Profiles::current->settings.game.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
-			Globals::Profiles::current->settings.game.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
-			Globals::Profiles::current->settings.game.slide_right = this->menuSinglePlayer->getBool(SLIDE_RIGHT);
-			Globals::Profiles::current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
-			Globals::Profiles::current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
-			Globals::Profiles::current->settings.game.has_ghost   = this->menuSinglePlayer->getBool(GHOST_PIECE);
-			Globals::Profiles::current->settings.screen.show_statistics = this->menuSinglePlayer->getBool(SHOW_STATISTICS);
+			saveSettingsMenuSinglePlayer();
 
 			// And then exit based on the selected option.
 			switch (this->menuSinglePlayer->currentID())
@@ -412,6 +218,8 @@ GameState::StateCode GameStateMainMenu::update()
 
 			if (name != Globals::Profiles::current->name)
 			{
+				saveSettingsMenuSinglePlayer();
+				saveSettingsMenuOptions();
 				Globals::Profiles::current->saveSettings();
 
 				delete Globals::Profiles::current;
@@ -421,6 +229,7 @@ GameState::StateCode GameStateMainMenu::update()
 
 				// Re-create menus based on current settings
 				createSinglePlayerMenu();
+				createOptionsMenu();
 
 				// Resetting the title name with current
 				// profile name with an "'s" appended
@@ -502,6 +311,219 @@ void GameStateMainMenu::draw()
 
 	else
 		this->layout->draw(this->menu);
+}
+
+void GameStateMainMenu::createMainMenu()
+{
+	SAFE_DELETE(this->menu);
+
+	// Creating the Menu and Items.
+	// Their default ids will be based on current Profile's
+	// settings.
+	this->menu = new Menu(1,
+	                      1,
+	                      this->layout->menu->getW() - 2,
+	                      this->layout->menu->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Single Player", SINGLE_PLAYER);
+	menu->add(item);
+
+	item = new MenuItem("Options", OPTIONS);
+	menu->add(item);
+
+	item = new MenuItem("Profiles", PROFILES);
+	menu->add(item);
+
+	item = new MenuItem("Quit", QUIT_GAME);
+	menu->add(item);
+}
+void GameStateMainMenu::createSinglePlayerMenu()
+{
+	SAFE_DELETE(this->menuSinglePlayer);
+
+	this->menuSinglePlayer = new Menu(1,
+	                                  1,
+	                                  this->layout->menu->getW() - 2,
+	                                  this->layout->menu->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Start Game", START_GAME);
+	menuSinglePlayer->add(item);
+
+	item = new MenuItem("Back", GO_BACK);
+	menuSinglePlayer->add(item);
+
+	menuSinglePlayer->addBlank();
+
+	MenuItemNumberbox* number;
+
+	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, Globals::Profiles::current->settings.game.starting_level);
+	menuSinglePlayer->add(number);
+
+	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->settings.game.initial_noise);
+	menuSinglePlayer->add(number);
+
+	MenuItemCheckbox* check;
+
+	check = new MenuItemCheckbox("Invisible",
+	                             INVISIBLE,
+	                             Globals::Profiles::current->settings.game.invisible);
+	menuSinglePlayer->add(check);
+
+	check = new MenuItemCheckbox("Slide Left",
+	                             SLIDE_LEFT,
+	                             Globals::Profiles::current->settings.game.slide_left);
+	menuSinglePlayer->add(check);
+
+	check = new MenuItemCheckbox("Slide Right",
+	                             SLIDE_RIGHT,
+	                             Globals::Profiles::current->settings.game.slide_right);
+	menuSinglePlayer->add(check);
+
+	check = new MenuItemCheckbox("Hold Piece",
+	                             HOLD_PIECE,
+	                             Globals::Profiles::current->settings.game.can_hold);
+	menuSinglePlayer->add(check);
+
+	check = new MenuItemCheckbox("Ghost Piece",
+	                             GHOST_PIECE,
+	                             Globals::Profiles::current->settings.game.has_ghost);
+	menuSinglePlayer->add(check);
+
+	this->menuOptions = new Menu(1,
+	                             1,
+	                             this->layout->menu->getW() - 2,
+	                             this->layout->menu->getH() - 2);
+
+	item = new MenuItem("Back", GO_BACK);
+	menuOptions->add(item);
+}
+void GameStateMainMenu::createOptionsMenu()
+{
+	SAFE_DELETE(this->menuOptions);
+
+	this->menuOptions = new Menu(1,
+	                             1,
+	                             this->layout->menu->getW() - 2,
+	                             this->layout->menu->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Back", GO_BACK);
+	menuOptions->add(item);
+
+	menuOptions->addBlank();
+
+	MenuItemCheckbox* check;
+
+	check = new MenuItemCheckbox("Show Borders",
+	                             SHOW_BORDERS,
+	                             Globals::Profiles::current->settings.screen.show_borders);
+	menuOptions->add(check);
+
+	check = new MenuItemCheckbox("Fancy Borders",
+	                             FANCY_BORDERS,
+	                             Globals::Profiles::current->settings.screen.fancy_borders);
+	menuOptions->add(check);
+
+	check = new MenuItemCheckbox("Colors",
+	                             USE_COLORS,
+	                             Globals::Profiles::current->settings.screen.use_colors);
+	menuOptions->add(check);
+
+	check = new MenuItemCheckbox("Show Statistics",
+	                             SHOW_STATISTICS,
+	                             Globals::Profiles::current->settings.screen.show_statistics);
+	menuOptions->add(check);
+
+	MenuItemNumberbox* box;
+
+	box = new MenuItemNumberbox("Random Algorithm",
+	                            RANDOM_ALGORITHM,
+	                            0,
+	                            1,
+	                            Globals::Profiles::current->settings.game.random_algorithm);
+	menuOptions->add(box);
+
+	box = new MenuItemNumberbox("Line clear delay(ms)",
+	                            LINE_DELAY,
+	                            0,
+	                            300,
+	                            Globals::Profiles::current->settings.game.line_clear_delay);
+	menuOptions->add(box);
+}
+void GameStateMainMenu::createProfilesMenu()
+{
+	SAFE_DELETE(this->menuProfiles);
+
+	this->menuProfiles = new Menu(1,
+	                              4,
+	                              this->layout->menu->getW() - 2,
+	                              this->layout->menu->getH() - 2 - 3);
+
+	menuProfiles->addBlank();
+
+	MenuItem* item;
+
+	item = new MenuItem("Back", GO_BACK);
+	menuProfiles->add(item);
+
+	menuProfiles->addBlank();
+
+	// This seems kinda complicated, but we're dealing with
+	// two indexes here.
+	//
+	// We're adding profiles to the menu based on the ones
+	// that exist WHILE keeping account of them,
+	// becase the user might want to create/delete profiles
+	// later.
+	unsigned int i = 0;
+
+	for (profileMenuIndex = 0; i < (Profile::profiles.size()); profileMenuIndex++, i++)
+	{
+		item = new MenuItem(Profile::profiles[i], PROFILES_NAME + profileMenuIndex);
+		menuProfiles->add(item);
+	}
+}
+void GameStateMainMenu::saveSettingsMenuOptions()
+{
+	if (!this->menuOptions)
+		return;
+
+	// Alias
+	Profile* current = Globals::Profiles::current;
+
+	// User selected an option
+	// Let's get ids from menu items
+	current->settings.screen.show_borders  = this->menuOptions->getBool(SHOW_BORDERS);
+	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
+	current->settings.screen.use_colors    = this->menuOptions->getBool(USE_COLORS);
+	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
+
+	current->settings.game.random_algorithm = this->menuOptions->getInt(RANDOM_ALGORITHM);
+	current->settings.game.line_clear_delay = this->menuOptions->getInt(LINE_DELAY);
+}
+void GameStateMainMenu::saveSettingsMenuSinglePlayer()
+{
+	if (!this->menuSinglePlayer)
+		return;
+
+	// Alias
+	Profile* current = Globals::Profiles::current;
+
+	// User selected an option
+	// Let's get ids from menu items
+	current->settings.game.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
+	current->settings.game.starting_level = (unsigned int)this->menuSinglePlayer->getInt(STARTING_LEVEL);
+
+	current->settings.game.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
+	current->settings.game.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
+	current->settings.game.slide_right = this->menuSinglePlayer->getBool(SLIDE_RIGHT);
+	current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
+	current->settings.game.has_ghost   = this->menuSinglePlayer->getBool(GHOST_PIECE);
 }
 
 
