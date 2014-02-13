@@ -486,6 +486,11 @@ int Game::getLevel(int lines)
 	if (lines < 180) return 15;
 	if (lines < 210) return 16;
 	if (lines < 240) return 17;
+	if (lines < 280) return 18;
+	if (lines < 310) return 19;
+	if (lines < 350) return 20;
+	if (lines < 400) return 21;
+	if (lines < 450) return 22;
 
 	return 0;
 }
@@ -500,7 +505,7 @@ int Game::getDelay(int level)
 	if (level < 7)  return 700;
 	if (level < 8)  return 650;
 	if (level < 9)  return 600;
-	if (level < 10)  return 550;
+	if (level < 10) return 550;
 	if (level < 11) return 500;
 	if (level < 12) return 450;
 	if (level < 13) return 400;
@@ -510,6 +515,10 @@ int Game::getDelay(int level)
 	if (level < 17) return 200;
 	if (level < 18) return 150;
 	if (level < 19) return 100;
+	if (level < 20) return 80;
+	if (level < 21) return 50;
+	if (level < 22) return 25;
+	if (level < 23) return 0;
 
 	return 0;
 }

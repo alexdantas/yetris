@@ -372,7 +372,7 @@ void GameStateMainMenu::createSinglePlayerMenu()
 
 	MenuItemNumberbox* number;
 
-	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, Globals::Profiles::current->settings.game.starting_level);
+	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 22, Globals::Profiles::current->settings.game.starting_level);
 	menuSinglePlayer->add(number);
 
 	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->settings.game.initial_noise);
@@ -439,11 +439,6 @@ void GameStateMainMenu::createOptionsMenu()
 	check = new MenuItemCheckbox("Fancy Borders",
 	                             FANCY_BORDERS,
 	                             Globals::Profiles::current->settings.screen.fancy_borders);
-	menuOptions->add(check);
-
-	check = new MenuItemCheckbox("Colors",
-	                             USE_COLORS,
-	                             Globals::Profiles::current->settings.screen.use_colors);
 	menuOptions->add(check);
 
 	check = new MenuItemCheckbox("Center Horizontal",
@@ -529,7 +524,6 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	// Let's get ids from menu items
 	current->settings.screen.show_borders  = this->menuOptions->getBool(SHOW_BORDERS);
 	current->settings.screen.fancy_borders = this->menuOptions->getBool(FANCY_BORDERS);
-	current->settings.screen.use_colors    = this->menuOptions->getBool(USE_COLORS);
 	current->settings.screen.center_horizontally = this->menuOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically = this->menuOptions->getBool(CENTER_VERTICAL);
 	current->settings.screen.show_statistics = this->menuOptions->getBool(SHOW_STATISTICS);
