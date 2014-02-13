@@ -5,7 +5,14 @@
 
 enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
+	// Main Menu
+	SINGLE_PLAYER,
+	PROFILES,
+	QUIT_GAME,
+
+	// Single Player Submenu
 	START_GAME,
+	GO_BACK,
 	STARTING_LEVEL,
 	INITIAL_NOISE,
 	INVISIBLE,
@@ -18,7 +25,9 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 
 GameStateMainMenu::GameStateMainMenu():
 	layout(NULL),
-	menu(NULL)
+	menu(NULL),
+	menuSinglePlayer(NULL),
+	menuSinglePlayerActivated(false)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -38,58 +47,76 @@ void GameStateMainMenu::load(int stack)
 
 	MenuItem* item;
 
-	item = new MenuItem("Start Game", START_GAME);
+	item = new MenuItem("Single Player", SINGLE_PLAYER);
 	menu->add(item);
 
-	menu->addBlank();
+	item = new MenuItem("Profiles", PROFILES);
+	menu->add(item);
+
+	item = new MenuItem("Quit", QUIT_GAME);
+	menu->add(item);
+
+	this->menuSinglePlayer = new Menu(1,
+	                                  1,
+	                                  this->layout->menu->getW() - 2,
+	                                  this->layout->menu->getH() - 2);
+
+
+	item = new MenuItem("Start Game", START_GAME);
+	menuSinglePlayer->add(item);
+
+	item = new MenuItem("Back", GO_BACK);
+	menuSinglePlayer->add(item);
+
+	menuSinglePlayer->addBlank();
 
 	MenuItemNumberbox* number;
 
 	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 18, Globals::Profiles::current->settings.game.starting_level);
-	menu->add(number);
+	menuSinglePlayer->add(number);
 
 	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->settings.game.initial_noise);
-	menu->add(number);
+	menuSinglePlayer->add(number);
 
 	MenuItemCheckbox* check;
 
 	check = new MenuItemCheckbox("Invisible",
 	                             INVISIBLE,
 	                             Globals::Profiles::current->settings.game.invisible);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Slide Left",
 	                             SLIDE_LEFT,
 	                             Globals::Profiles::current->settings.game.slide_left);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Slide Right",
 	                             SLIDE_RIGHT,
 	                             Globals::Profiles::current->settings.game.slide_right);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Hold Piece",
 	                             HOLD_PIECE,
 	                             Globals::Profiles::current->settings.game.can_hold);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Ghost Piece",
 	                             GHOST_PIECE,
 	                             Globals::Profiles::current->settings.game.has_ghost);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Show Statistics",
 	                             SHOW_STATISTICS,
 	                             Globals::Profiles::current->settings.screen.show_statistics);
-	menu->add(check);
+	menuSinglePlayer->add(check);
 }
 
 int GameStateMainMenu::unload()
 {
 	// Copying all options on the Menu to the global settings
-	for (unsigned int i = 0; i < (menu->item.size()); i++)
+	for (unsigned int i = 0; i < (menuSinglePlayer->item.size()); i++)
 	{
-		if (! menu->item[i])
+		if (! menuSinglePlayer->item[i])
 			continue;
 
 		// TODO: Learn a better way to cast from parent classes
@@ -100,13 +127,13 @@ int GameStateMainMenu::unload()
 		MenuItemNumberbox* num   = NULL;
 		MenuItemCheckbox*  check = NULL;
 
-		if (menu->item[i]->type == MenuItem::NUMBERBOX)
-			num = (MenuItemNumberbox*)menu->item[i];
+		if (menuSinglePlayer->item[i]->type == MenuItem::NUMBERBOX)
+			num = (MenuItemNumberbox*)menuSinglePlayer->item[i];
 
-		else if (menu->item[i]->type == MenuItem::CHECKBOX)
-			check = (MenuItemCheckbox*)menu->item[i];
+		else if (menuSinglePlayer->item[i]->type == MenuItem::CHECKBOX)
+			check = (MenuItemCheckbox*)menuSinglePlayer->item[i];
 
-		switch(menu->item[i]->value)
+		switch(menuSinglePlayer->item[i]->value)
 		{
 		case STARTING_LEVEL:
 			if (num)
@@ -151,6 +178,7 @@ int GameStateMainMenu::unload()
 	}
 
 	SAFE_DELETE(this->layout);
+	SAFE_DELETE(this->menuSinglePlayer);
 	SAFE_DELETE(this->menu);
 
 	return 0;
@@ -163,34 +191,75 @@ GameState::StateCode GameStateMainMenu::update()
 	if (input == 'q')
 		return GameState::QUIT;
 
-	this->menu->handleInput(input);
-
-	if (this->menu->willQuit())
+	if (this->menuSinglePlayerActivated)
 	{
-		// User selected an option
-		// Let's get values from menu items
-		Globals::Profiles::current->settings.game.initial_noise  = this->menu->getInt(INITIAL_NOISE);
-		Globals::Profiles::current->settings.game.starting_level = (unsigned int)this->menu->getInt(STARTING_LEVEL);
+		this->menuSinglePlayer->handleInput(input);
 
-		Globals::Profiles::current->settings.game.invisible   = this->menu->getBool(INVISIBLE);
-		Globals::Profiles::current->settings.game.slide_left  = this->menu->getBool(SLIDE_LEFT);
-		Globals::Profiles::current->settings.game.slide_right = this->menu->getBool(SLIDE_RIGHT);
-		Globals::Profiles::current->settings.game.can_hold    = this->menu->getBool(HOLD_PIECE);
-		Globals::Profiles::current->settings.game.can_hold    = this->menu->getBool(HOLD_PIECE);
-		Globals::Profiles::current->settings.game.has_ghost   = this->menu->getBool(GHOST_PIECE);
-		Globals::Profiles::current->settings.screen.show_statistics = this->menu->getBool(SHOW_STATISTICS);
+		if (this->menuSinglePlayer->willQuit())
+		{
+			// User selected an option
+			// Let's get values from menu items
+			Globals::Profiles::current->settings.game.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
+			Globals::Profiles::current->settings.game.starting_level = (unsigned int)this->menuSinglePlayer->getInt(STARTING_LEVEL);
 
-		// And then exit based on the selected option.
-		if (this->menu->getSelectedValue() == START_GAME)
-			return GameState::GAME_START;
+			Globals::Profiles::current->settings.game.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
+			Globals::Profiles::current->settings.game.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
+			Globals::Profiles::current->settings.game.slide_right = this->menuSinglePlayer->getBool(SLIDE_RIGHT);
+			Globals::Profiles::current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
+			Globals::Profiles::current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
+			Globals::Profiles::current->settings.game.has_ghost   = this->menuSinglePlayer->getBool(GHOST_PIECE);
+			Globals::Profiles::current->settings.screen.show_statistics = this->menuSinglePlayer->getBool(SHOW_STATISTICS);
+
+			// And then exit based on the selected option.
+			switch (this->menuSinglePlayer->getSelectedValue())
+			{
+			case START_GAME:
+				return GameState::GAME_START;
+				break;
+
+			case GO_BACK:
+				this->menuSinglePlayerActivated = false;
+				break;
+			}
+			this->menuSinglePlayer->reset();
+		}
+	}
+	else
+	{
+		// We're still at the Main Menu
+		this->menu->handleInput(input);
+
+		if (this->menu->willQuit())
+		{
+			switch(this->menu->getSelectedValue())
+			{
+			case SINGLE_PLAYER:
+				this->menuSinglePlayerActivated = true;
+				break;
+
+			case PROFILES:
+				// yeah
+				break;
+
+			case QUIT_GAME:
+				return GameState::QUIT;
+				break;
+			}
+			this->menu->reset();
+		}
 	}
 
+	// Otherwise, continuing things...
 	return GameState::CONTINUE;
 }
 
 void GameStateMainMenu::draw()
 {
-	this->layout->draw(this->menu);
+	if (this->menuSinglePlayerActivated)
+		this->layout->draw(this->menuSinglePlayer);
+
+	else
+		this->layout->draw(this->menu);
 }
 
 

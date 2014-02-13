@@ -53,7 +53,7 @@ void LayoutMainMenu::windowsInit()
 	                        this->main->getW() / 3,
 	                        10,
 	                        this->main->getW() / 3,
-	                        12);
+	                        13);
 
 	if (Globals::Profiles::current->settings.screen.show_borders)
 	{
@@ -115,7 +115,7 @@ void LayoutMainMenu::draw(Menu* menu)
 	                            "|____/ |_____| |__|  |__|\\_||____|\\___|",
 	                            this->logo->getW() / 2 - 39/2 - 1,
 	                            1,
-	                            Colors::pair(COLOR_RED, COLOR_DEFAULT));
+	                            0);
 
 	this->logo->refresh();
 

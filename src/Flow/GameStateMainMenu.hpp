@@ -24,8 +24,14 @@ public:
 private:
 	LayoutMainMenu* layout;
 
-	/// The actual items on the menu.
+	/// The main menu.
 	Menu* menu;
+
+	/// Single Player submenu.
+	Menu* menuSinglePlayer;
+	bool menuSinglePlayerActivated;
+
+	// Other menus come here...
 };
 
 #endif //GAMESTATEMAINMENU_H_DEFINED
