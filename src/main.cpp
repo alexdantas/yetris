@@ -2,9 +2,8 @@
 #include <Interface/Ncurses.hpp>
 #include <Interface/Colors.hpp>
 #include <Config/Globals.hpp>
+#include <Config/Arguments.hpp>
 #include <Misc/Utils.hpp>
-
-#include <Config/INI.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +13,7 @@ int main(int argc, char *argv[])
 	try
 	{
 		Globals::init();
+		Arguments::parse(argc, argv);
 		Utils::Random::seed();
 		Ncurses::init();
 		Colors::init();

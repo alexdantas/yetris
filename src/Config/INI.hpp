@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cstdio>                // FILE* fopen() fclose()
-#include <iniparser/iniparser.h> // dictionary*
+#include <iniparser/iniparser.h> // local files
 
 /// Loads settings from a file with `.ini` configuration format.
 ///
