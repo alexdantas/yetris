@@ -96,19 +96,21 @@ public:
 
 private:
 
-	/// Index of the currently selected item.
+	/// Current item selected.
 	MenuItem* current;
-	unsigned int currentIndex;
 
-	MenuItem* first;
-	MenuItem* last;
+	/// Index of the currently selected item.
+	unsigned int currentIndex;
 
 	int x;
 	int y;
 	int width;
 	int height;
 
+	/// Tells if the user selected an item (pressed Enter).
 	bool selected;
+
+	/// Specifies which item the user pressed Enter on.
 	MenuItem* selectedItem;
 };
 

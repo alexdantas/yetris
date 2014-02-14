@@ -68,7 +68,7 @@ void StateManager::run()
 		case GameState::QUIT:
 			this->currentState->unload();
 			delete this->currentState;
-			this->currentState = NULL;
+			this->currentState = nullptr;
 
 			letsQuit = true;
 			break;

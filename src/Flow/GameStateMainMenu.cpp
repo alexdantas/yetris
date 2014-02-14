@@ -43,14 +43,14 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 unsigned int profileMenuIndex = 0;
 
 GameStateMainMenu::GameStateMainMenu():
-	layout(NULL),
-	menu(NULL),
-	menuSinglePlayer(NULL),
+	layout(nullptr),
+	menu(nullptr),
+	menuSinglePlayer(nullptr),
 	menuSinglePlayerActivated(false),
-	menuOptions(NULL),
-	menuOptionsActvated(NULL),
-	menuProfiles(NULL),
-	menuProfilesActivated(NULL)
+	menuOptions(nullptr),
+	menuOptionsActvated(false),
+	menuProfiles(nullptr),
+	menuProfilesActivated(false)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }

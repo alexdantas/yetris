@@ -13,7 +13,7 @@ int Globals::version[3] = { VERSION[0] - '0',
 // | |_) | |_) / / \ | |_  | | | |   | |_  ( (`
 // |_|   |_| \ \_\_/ |_|   |_| |_|__ |_|__ _)_)
 
-Profile* Globals::Profiles::current = NULL;
+Profile* Globals::Profiles::current = nullptr;
 std::string Globals::Profiles::default_name = "";
 
 //  __    ___   _      ____  _   __

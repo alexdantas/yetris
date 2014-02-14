@@ -5,8 +5,6 @@
 Menu::Menu(int x, int y, int width, int height):
 	current(nullptr),
 	currentIndex(0),
-	first(nullptr),
-	last(nullptr),
 	x(x),
 	y(y),
 	width(width),

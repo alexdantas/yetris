@@ -4,10 +4,9 @@
 PieceGhost::PieceGhost():
 	Piece(Piece::MAX, 0, 0)
 {
+	// must be here
 	this->block = Globals::Profiles::current->settings.theme.ghost;
 }
-PieceGhost::~PieceGhost()
-{ }
 void PieceGhost::update(Piece* master, Board* board)
 {
 	this->x = master->getX();

@@ -22,7 +22,7 @@ void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
 }
 
 Window::Window(int x, int y, int w, int h):
-	win(NULL),
+	win(nullptr),
 	error(false),
 	x(x),
 	y(y),
@@ -37,7 +37,7 @@ Window::Window(int x, int y, int w, int h):
 		this->error = true;
 }
 Window::Window(Window* parent, int x, int y, int width, int height):
-	win(NULL),
+	win(nullptr),
 	error(false),
 	borderType(BORDER_NONE),
 	title("")

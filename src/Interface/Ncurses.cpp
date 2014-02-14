@@ -43,7 +43,7 @@ int Ncurses::getInput(int delay_ms)
 
 	// This function is somewhat complex
 	// check 'man select' for info
-	retval = select(FD_SETSIZE, &input, NULL, NULL, &timeout);
+	retval = select(FD_SETSIZE, &input, nullptr, nullptr, &timeout);
 
 	// Ncurses' function that works without delay
 	// (because we nodelay()'ed)

@@ -19,7 +19,7 @@ Board::Board(int x, int y, int width, int height):
 
 	for (int i = 0; i < width; i++)
 		for (int j = 0; j < height; j++)
-			this->block[i][j] = NULL;
+			this->block[i][j] = nullptr;
 }
 void Board::draw(Window* win)
 {
@@ -127,7 +127,7 @@ void Board::pushUp()
 	{
 		if (i == blank)
 		{
-			this->block[i][this->height - 1] = NULL;
+			this->block[i][this->height - 1] = nullptr;
 			continue;
 		}
 
@@ -142,7 +142,7 @@ void Board::pushDown()
 			this->block[i][j] = this->block[i][j - 1];
 
 	for (int i = 0; i < this->width; i++)
-		this->block[i][0] = NULL;
+		this->block[i][0] = nullptr;
 }
 void Board::addNoise(int height)
 {
@@ -198,7 +198,7 @@ void Board::clearFullLines()
 
 		// Moves all upper lines one row down,
 		// starting from the second down
-		// (meaning the first line is always NULL)
+		// (meaning the first line is always nullptr)
 		for (int j = k; j > 0; j--)
 			for (int i = 0; i < (this->width); i++)
 				this->block[i][j] = this->block[i][j - 1];
