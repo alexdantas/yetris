@@ -26,17 +26,23 @@ It aims to be as flexible as possible, with lots of settings, game modes and lay
 
 Here's what happens when you run `yetris`:
 
-1. Everything starts at `main.cpp` of course. There we start the `Interface/Ncurses`,
-   plus a lot of minor things. Then we simply create and run `Flow/StateManager`.
-2. It is responsible to coordinate the main game flow by switching `Flow/GameState`s.
-   By default, we instantiate `Flow/GameStateMainMenu`.
-3. Inside the main menu we have a `Interface/Layout` with `Interface/Window`s describing
-   where to show things. According to user input we can either quit the game or
-   go straight to `Flow/GameStateGame`.
-4. On it, we create a `Game/GameMode`, with rules on how the different tetris things
+1. Everything starts at `main.cpp` of course.
+   There we initialize the `Interface/Ncurses`, plus a lot of minor things.
+   Then we simply create and run `Flow/StateManager`.
+2. It is responsible to coordinate the main game flow by
+   switching `Flow/GameState`s.
+   By default, we instantiate `Flow/GameStateFirstTime`. It is always launched
+   whenever we don't find a configuration directory.
+3. Then we ask the user for a Profile name and head up to `Flow/GameStateMainMenu`.
+   On the next times the game is executed, we go straight to this game state.
+4. Inside the main menu we have an `Interface/Layout` with `Interface/Window`s
+   describing where to show things. Also, we create several `Interface/Menus`,
+   that are ways to interact with the user.
+   According to those we can either quit the game or go straight to `Flow/GameStateGame`.
+4. On it, we create a `Game/Game`, that controls how the different tetris things
    will react to each other. We create most of the `Game/*` classes, leaving the
    control almost exclusively to it.
-5. At each frame, a `Interface/LayoutGame*` notices changes on the `Game/GameMode*` and
+5. At each frame, an `Interface/LayoutGame` notices changes on the `Game/Game` and
    draws it on the screen. This way, the game only worries about itself, while the
    layout must keep a watch on it.
 

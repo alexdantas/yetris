@@ -1,5 +1,26 @@
 All the changes are documented on the git history, so here's just the major ones
 
+13-02-14 v2.0.0:
+	* Interface: Menus and Menu Items added. Now you can customize
+	             settings in-game, along with the old way of editing
+	             .ini files. Also, Pause Menu!
+	* Interface: The Main Menu has two nice Animations, with way
+	             more to come. It's a nice display of animated
+	             ASCII-art with colors.
+	* Gameplay: Game Profiles added! Now the settings are saved
+	            to each user individually and one can change between
+	            profiles easily.
+	* Development: Completely reprogrammed the code to C++.
+	               The game's way more flexible now - some features
+	               would be unfeasable in plain old C.
+	* Bugs: Fixed thousands of bugs introduced by myself when
+	        converting to C++. So, in the end...
+	* Downgrade: No high score support for now. It'll take
+	             quite some time to make it and save according to
+	             game profiles.
+	* Downgrade: Scores are quite crippled, along with combos and
+	             back-to-backs. They should be reimplemented soon.
+
 26-01-14 v1.7.0:
 	* Gameplay: blocks on the board can be pushed on all 4 directions.
 	            options on the config file.

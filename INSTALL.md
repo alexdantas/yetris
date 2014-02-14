@@ -4,7 +4,6 @@ Installing information for the game yetris.
 This applies to GNU/Linux systems.
 Microsoft Windows users have a precompiled executable.
 
-
 # Installation
 
 Briefly, the following shell commands should configure,
@@ -20,9 +19,9 @@ directories:
 
 | Directory                    | What to store            |
 | ---------------------------- | -------------------------|
-| `/usr/local/bin/`            | Executable files         |
+| `/usr/games/`                | Executable files         |
 | `/usr/local/share/man/man6/` | Man page                 |
-| `~/yetris/`                  | User config and scores   |
+| `~/.local/share/yetris/`     | User config and scores   |
 
 # Advanced Installation
 
@@ -39,9 +38,9 @@ This way, the file hierarchy will be:
 
 | Directory                            | What to store            |
 | ------------------------------------ | -------------------------|
-| `test/dir/usr/local/bin/`            | Executable files         |
+| `test/dir/usr/games/`                | Executable files         |
 | `test/dir/usr/local/share/man/man6/` | Man page                 |
-| `~/yetris/`                          | User config and scores   |
+| `~/.local/share/yetris/`             | User config and scores   |
 
 You can also specify an installation prefix other than `/usr/local`
 by giving `make` the option `PREFIX=CUSTOM_PREFIX`, where
@@ -54,9 +53,9 @@ This way, the file hierarchy will be:
 
 | Directory                  | What to store            |
 | -------------------------- | -------------------------|
-| `test/dir/bin/`            | Executable files         |
+| `test/dir/`                | Executable files         |
 | `test/dir/share/man/man6/` | Man page                 |
-| `~/yetris/`                | User config and scores   |
+| `~/.local/share/yetris/`   | User config and scores   |
 
 # Uninstallation
 

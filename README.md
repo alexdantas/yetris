@@ -1,31 +1,50 @@
-# yetris README
+# yetris
 
-Customizable Tetris(tm) on the console.
+Customizable Tetris(tm) with textual interface.
 
-![screenshot](http://yetris.alexdantas.net/images/1gameplay.png)
+![screenshot](http://yetris.alexdantas.net/images/classic-tetris.png)
 
 ## Introduction
 
-yetris is a customizable Tetris(tm) clone for the console.
-It aims to follow modern implementations with lots of features
-and please both casual players and Tetris(tm) enthusiasts.
+yetris is a customizable Tetris(tm) clone for the terminal.
+It has some features found on modern adaptations and aims
+to please both casual players and Tetris(tm) enthusiasts.
 
-It has full textual interface, with colors and many features:
+It has full textual interface, check out these features:
 
-* Customizable by commandline arguments and config file.
-* High score.
-* Up to 6 next pieces.
-* Hold, Combo and back-to-back sequences.
-* Scoring system compliant to the (conjectured)
-  *Tetris(tm) Guideline*.
+* _Colors_ and animated interface;
+* _Customizable gameplay_, with several game mode
+  possibilities: ghost piece, hold piece, slide left/right,
+  _invisible_ and custom initial level and noise (like
+  the old B-mode).
+* _Customizable interface_: up to 7 next pieces, toggle
+  game borders, center screen, modify game _random algorithm_...
+* You can change settings on _in-game menus_ and options;
+* _Game profiles_: settings are automatically saved and
+  restored at startup. _Multple profiles_ supported.
+* _Game statistics_: cleared lines, individual and total pieces...
 
-yetris is developed on C and ncurses, running on (most) Linux
-terminals.
-It currently lacks some expected features but is on active
-development.
+yetris was originally developed in C, now reprogrammed in C++
+with ncurses. It runs on pretty much every terminal around here,
+but it's limited to POSIX systems.
 
-Also, the source code is clean and commented, allowing much better
-understanding and easing feature-implementation.
+## Screenshots
+
+![main-menu](http://yetris.alexdantas.net/images/main-menu-without-borders.png)
+
+![profile-menu](http://yetris.alexdantas.net/images/profile-menu.png)
+
+![single-player-menu](http://yetris.alexdantas.net/images/single-player-menu.png)
+
+![options-menu](http://yetris.alexdantas.net/images/options-menu.png)
+
+![b-mode](http://yetris.alexdantas.net/images/b-mode.png)
+
+![help](http://yetris.alexdantas.net/images/help.png)
+
+![pause-menu](http://yetris.alexdantas.net/images/pause-menu.png)
+
+![game-statistics](http://yetris.alexdantas.net/images/statistics.png)
 
 ## Controls
 
@@ -40,26 +59,26 @@ understanding and easing feature-implementation.
 | q           | Quits the game at any time                |
 | r           | Restart game                              |
 | h           | Show help window                          |
-| F2          | Switch statistics                         |
-| F3          | Show high scores                          |
-| F5          | Refresh game based on config file         |
 
-To see more info, run `yetris --help` and `yetris --usage`.
-
-## Installation
+## Usage
 
 Briefly, the following shell commands should configure,
-build and install this package on the default directories:
+build and install this package:
 
     $ make
     $ [sudo] make install
+	$ man yetris
+
+By default yetris is installed at `/usr/games`, with the
+settings and scores at `~/.local/share/yetris`. To
+see how to change those, go to the file `INSTALL.md`.
 
 If you want to test the game before installing, do:
 
     $ make run
 
-To see how things end up being installed on your system,
-see file `INSTALL.md`.
+The `Makefile` has lots of toggles and switches, check out
+it's first lines.
 
 ## Dependencies
 
@@ -74,27 +93,23 @@ An example on apt-based systems:
 
     $ apt-get install ncurses-dev
 
-## Main Directory Structure
-
-| File     | What it is                                                       |
-| -------- | ---------------------------------------------------------------- |
-| README   | General game information                                         |
-| INSTALL  | Installation instructions                                        |
-| COPYING  | Copyright and warranty info                                      |
-| Doxyfile | Doxygen file for generating the source documentation             |
-| Makefile | Instructions to the `make` program (build and install the game)  |
-| TODO     | Work that needs to be done or ideas for future versions          |
-| BUGS     | Known and solved bugs on the game                                |
-| bin/     | Location of the executable generated after compilation           |
-| doc/     | The documentation files (explaining the source code) and manpage |
-| obj/     | Location of resulting object files after compilation             |
-| src/     | All of the source code files                                     |
-| doc/index.html  |  Complete source code documentation                       |
-| doc/yetris.6.gz |  The manpage                                              |
-
 ## Hacking
 
-I'll add more info about development here soon, so stay tuned.
+There's another `README.md` on the `src/` directory.
+In there I try to explain the source and how could you play
+with it.
+
+If you want to contribute,
+[there's a lot we could do together](https://github.com/alexdantas/yetris/issues)!
+Don't hesitate to contact me, any addition is welcome.
+
+The `BUGS` and `TODO` files are nice points to check out
+what we could do.
+
+Also, if you're like me and *love* ncurses games, with textual
+interface and stuff, the `src/Inteface/*` files could be of
+great use. I tried to make them very flexible so you could
+just insert them into a project without too much change.
 
 ## Contact
 
@@ -130,10 +145,23 @@ Huge thanks for all the people that contributed to the project
   on the building process. Thanks to him *yetris can be installed
   on BSD*!
 
+Also, some miscellaneous credits:
+
+* Yetris' logo uses the *Crawford2* _Figlet Font_.
+* Thanks, *Nicolas Devillard*! Your
+  [_iniParser_](http://ndevilla.free.fr/iniparser/) helped me
+  a lot!
+* I'm also using
+  [clibs/commander](https://github.com/clibs/commander),
+  simples CLI argument parser I've ever seen.
+* _Emacs_, _Awesome_ and _Arch Linux_, the Ultimate Triforce.
+* [The OneUps](https://theoneups.bandcamp.com/) kept me awake
+  on several nights. Their music is great, specially _Volume 2_!
+
 ## License
 
  yetris - Customizable Tetris(tm) on the console.
- Copyright (C) 2013  Alexandre Dantas (kure)
+ Copyright (C) 2013-2014  Alexandre Dantas (kure)
 
  yetris is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
