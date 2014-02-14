@@ -36,7 +36,7 @@
 
 # General Info
 PACKAGE = yetris
-VERSION = 1.7.0
+VERSION = 2.0.0
 DATE    = $(shell date "+%b%Y")
 
 # Local source code information
@@ -59,9 +59,6 @@ MANDIR      = $(MANROOT)/man$(MANNUMBER)
 MANFILE     = $(PACKAGE).$(MANNUMBER)
 MANPAGE     = doc/man/$(MANFILE)
 
-SCORE_FILE  = yetris.scores
-CONFIG_FILE = config.ini
-
 # Build info
 EXE         = $(PACKAGE)
 CDEBUG      = -O2
@@ -77,17 +74,20 @@ CXXFILES = $(shell find src -type f -name '*.cpp')
 OBJECTS  = $(CFILES:.c=.o) \
            $(CXXFILES:.cpp=.o)
 
-DEFINES = -DVERSION=\""$(VERSION)"\"         \
-          -DPACKAGE=\""$(PACKAGE)"\"         \
-          -DDATE=\""$(DATE)"\"               \
-          -DSCORE_FILE=\""$(SCORE_FILE)"\"   \
-          -DCONFIG_FILE=\""$(CONFIG_FILE)"\"
+DEFINES = -DVERSION=\""$(VERSION)"\" \
+          -DPACKAGE=\""$(PACKAGE)"\" \
+          -DDATE=\""$(DATE)"\"
 
 # iniparser stuff
 INIDIR     = deps/iniparser
 INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra $(PLATFORM)
 INI_OBJS   = $(INIDIR)/dictionary.o \
              $(INIDIR)/iniparser.o
+
+# commander stuff
+COMMANDERDIR = deps/commander
+COMMANDER_CFLAGS = -O2 -Wall -Wextra $(PLATFORM)
+COMMANDER_OBJS = $(COMMANDERDIR)/commander.o
 
 # Distribution tarball
 TARNAME = $(PACKAGE)
@@ -136,9 +136,9 @@ purge: uninstall
 	# Purging configuration files...
 	$(MUTE)rm -f $(MANDIR)/$(MANFILE)
 
-$(EXE): $(OBJECTS) $(INI_OBJS)
+$(EXE): $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS)
 	# Linking...
-	$(MUTE)$(CXX) $(OBJECTS) $(INI_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
+	$(MUTE)$(CXX) $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
 src/%.o: src/%.cpp
 	# Compiling $<...
@@ -164,7 +164,7 @@ run: all
 
 clean:
 	# Cleaning files...
-	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(INI_OBJS)
+	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS)
 	$(MUTE)rm $(VTAG) -f bin/$(EXE)
 
 doc:
@@ -180,10 +180,17 @@ docclean:
 # iniparser stuff
 
 $(INIDIR)/dictionary.o: $(INIDIR)/dictionary.c
-	# Compiling $@...
+	# Compiling $<...
 	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
 
 $(INIDIR)/iniparser.o: $(INIDIR)/iniparser.c
-	# Compiling $@...
+	# Compiling $<...
 	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
+
+# commander stuf
+
+$(COMMANDERDIR)/commander.o: $(COMMANDERDIR)/commander.c
+	# Compiling $<...
+	$(MUTE)$(CC) $(COMMANDER_CFLAGS) $< -c -o $@
+
 

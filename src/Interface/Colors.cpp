@@ -127,9 +127,9 @@ ColorPair Colors::pair(Color foreground, Color background, bool is_bold)
 		}
 
 		if (is_bold)
-			return COLOR_PAIR(foreground*8 + background) | A_BOLD;
+			return COLOR_PAIR(foreground*8 + background + 1) | A_BOLD;
 		else
-			return COLOR_PAIR(foreground*8 + background);
+			return COLOR_PAIR(foreground*8 + background + 1);
 	}
 
 	if (COLORS < 256)

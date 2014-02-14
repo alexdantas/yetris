@@ -30,10 +30,10 @@ public:
 	suseconds_t delta_us();
 
 	/// Returns the milisseconds part of the timer's difference.
-	long delta_ms();
+	suseconds_t delta_ms();
 
 	/// Returns the seconds part of the timer's difference.
-	long delta_s();
+	suseconds_t delta_s();
 
 protected:
 	suseconds_t startMark;
