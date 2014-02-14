@@ -2,11 +2,11 @@
 #define MENU_H_DEFINED
 
 #include <Interface/Window.hpp>
-#include <Interface/MenuItem.hpp>
-#include <Interface/MenuItemCheckbox.hpp>
-#include <Interface/MenuItemNumberbox.hpp>
-#include <Interface/MenuItemTextbox.hpp>
-#include <Interface/MenuItemTextlist.hpp>
+#include <Interface/Menu/MenuItem.hpp>
+#include <Interface/Menu/MenuItemCheckbox.hpp>
+#include <Interface/Menu/MenuItemNumberbox.hpp>
+#include <Interface/Menu/MenuItemTextbox.hpp>
+#include <Interface/Menu/MenuItemTextlist.hpp>
 
 #include <vector>
 #include <string>

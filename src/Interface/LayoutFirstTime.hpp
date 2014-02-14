@@ -3,7 +3,7 @@
 
 #include <Interface/Layout.hpp>
 #include <Interface/Window.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 
 /// How we show the screen at GameStateFirstTime.
 /// See it's documentation there.

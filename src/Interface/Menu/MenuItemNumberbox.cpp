@@ -1,4 +1,4 @@
-#include <Interface/MenuItemNumberbox.hpp>
+#include <Interface/Menu/MenuItemNumberbox.hpp>
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
 

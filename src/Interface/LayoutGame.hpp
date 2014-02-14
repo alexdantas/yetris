@@ -2,7 +2,7 @@
 #define LAYOUTGAMEMODESURVIVAL_H_DEFINED
 
 #include <Interface/Layout.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 #include <Game/Game.hpp>
 
 #include <vector>

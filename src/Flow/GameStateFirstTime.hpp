@@ -3,7 +3,7 @@
 
 #include <Flow/GameState.hpp>
 #include <Interface/LayoutFirstTime.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 
 #include <string>
 

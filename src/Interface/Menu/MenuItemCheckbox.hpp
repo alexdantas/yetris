@@ -1,7 +1,7 @@
 #ifndef MENUITEMCHECKBOX_H_DEFINED
 #define MENUITEMCHECKBOX_H_DEFINED
 
-#include <Interface/MenuItem.hpp>
+#include <Interface/Menu/MenuItem.hpp>
 
 ///
 struct MenuItemCheckbox: public MenuItem

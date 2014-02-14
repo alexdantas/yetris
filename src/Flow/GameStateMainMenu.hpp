@@ -3,7 +3,7 @@
 
 #include <Flow/GameState.hpp>
 #include <Interface/LayoutMainMenu.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 
 /// The Main Menu.
 ///

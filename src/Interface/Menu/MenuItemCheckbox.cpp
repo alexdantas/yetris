@@ -1,4 +1,4 @@
-#include <Interface/MenuItemCheckbox.hpp>
+#include <Interface/Menu/MenuItemCheckbox.hpp>
 #include <Config/Globals.hpp>
 
 MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):

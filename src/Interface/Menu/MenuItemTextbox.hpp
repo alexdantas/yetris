@@ -1,7 +1,7 @@
 #ifndef MENUITEMTEXTBOX_H_DEFINED
 #define MENUITEMTEXTBOX_H_DEFINED
 
-#include <Interface/MenuItem.hpp>
+#include <Interface/Menu/MenuItem.hpp>
 
 ///
 struct MenuItemTextbox: public MenuItem

@@ -3,7 +3,7 @@
 
 #include <Interface/Layout.hpp>
 #include <Interface/Window.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 #include <Interface/Animation/Animation.hpp>
 
 // circular dependence on GameStateMainMenu

@@ -8,7 +8,7 @@
 #include <Game/PieceGhost.hpp>
 #include <Game/Score.hpp>
 #include <Misc/Timer.hpp>
-#include <Interface/Menu.hpp>
+#include <Interface/Menu/Menu.hpp>
 
 #include <vector>
 

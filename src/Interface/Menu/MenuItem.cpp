@@ -1,4 +1,4 @@
-#include <Interface/MenuItem.hpp>
+#include <Interface/Menu/MenuItem.hpp>
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 

@@ -1,4 +1,4 @@
-#include <Interface/MenuItemTextbox.hpp>
+#include <Interface/Menu/MenuItemTextbox.hpp>
 #include <Config/Globals.hpp>
 
 MenuItemTextbox::MenuItemTextbox(std::string label, int id, int width, std::string initial):
