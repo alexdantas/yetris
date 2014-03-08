@@ -36,7 +36,7 @@
 
 # General Info
 PACKAGE = yetris
-VERSION = 2.0.0
+VERSION = 2.0.1
 DATE    = $(shell date "+%b%Y")
 
 # Local source code information
@@ -114,7 +114,7 @@ CDEBUG =
 endif
 
 # Make targets
-all: $(EXE)
+all: dirs $(EXE)
 	# Build successful!
 
 install: all
@@ -167,6 +167,9 @@ clean:
 	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS)
 	$(MUTE)rm $(VTAG) -f bin/$(EXE)
 
+dirs:
+	$(MUTE)mkdir -p bin
+
 doc:
 	# Generating documentation...
 	$(MUTE)doxygen Doxyfile
@@ -175,7 +178,7 @@ docclean:
 	# Removing documentation...
 	-$(MUTE)rm $(VTAG) -rf doc/html
 
-.PHONY: clean doc docclean uninstall
+.PHONY: clean dirs doc docclean uninstall
 
 # iniparser stuff
 

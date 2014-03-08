@@ -1,5 +1,9 @@
 All the changes are documented on the git history, so here's just the major ones
 
+08-03-14 v2.0.1:
+	* Bugs: Fixed this huge bug that prevented anyone from building
+	        yetris if not cloned from a git repository.
+
 13-02-14 v2.0.0:
 	* Interface: Menus and Menu Items added. Now you can customize
 	             settings in-game, along with the old way of editing
