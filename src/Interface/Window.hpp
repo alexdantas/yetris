@@ -6,6 +6,10 @@
 
 #include <Interface/Colors.hpp>
 
+/// Handy alias to make child Windows stretch their sizes to
+/// the maximum allowed by the parent.
+#define WINDOW_FILL 0
+
 /// A segment of the terminal screen (2D char matrix).
 ///
 class Window

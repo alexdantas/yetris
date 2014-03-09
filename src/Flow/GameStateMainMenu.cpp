@@ -1,6 +1,7 @@
 #include <Flow/GameStateMainMenu.hpp>
 #include <Flow/InputManager.hpp>
 #include <Interface/Ncurses.hpp>
+#include <Interface/Dialog.hpp>
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
 
@@ -8,7 +9,9 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
 	// Main Menu
 	SINGLE_PLAYER,
+	HELP,
 	OPTIONS,
+	CONTROLS,
 	PROFILES,
 	QUIT_GAME,
 
@@ -35,6 +38,19 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	LINE_DELAY,
 	NEXT_PIECES,
 
+	// Controls Submenu
+	CONTROLS_KEY_LEFT,
+	CONTROLS_KEY_RIGHT,
+	CONTROLS_KEY_DOWN,
+	CONTROLS_KEY_DROP,
+	CONTROLS_KEY_ROTATE_CLOCKWISE,
+	CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE,
+	CONTROLS_KEY_PAUSE,
+	CONTROLS_KEY_HELP,
+	CONTROLS_KEY_HOLD,
+	CONTROLS_KEY_QUIT,
+	CONTROLS_DEFAULT,
+
 	// Profiles Submenu
 	PROFILES_NAME
 };
@@ -51,7 +67,10 @@ GameStateMainMenu::GameStateMainMenu():
 	menuOptions(nullptr),
 	menuOptionsActvated(false),
 	menuProfiles(nullptr),
-	menuProfilesActivated(false)
+	menuProfilesActivated(false),
+	menuControls(nullptr),
+	menuControlsActivated(false),
+	helpWindows(nullptr)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -65,6 +84,9 @@ void GameStateMainMenu::load(int stack)
 	createSinglePlayerMenu();
 	createOptionsMenu();
 	createProfilesMenu();
+	createControlsMenu();
+
+	this->helpWindows = new WindowGameHelp();
 }
 
 int GameStateMainMenu::unload()
@@ -73,6 +95,9 @@ int GameStateMainMenu::unload()
 	saveSettingsMenuOptions();
 
 	SAFE_DELETE(this->layout);
+	SAFE_DELETE(this->menuProfiles);
+	SAFE_DELETE(this->menuControls);
+	SAFE_DELETE(this->menuOptions);
 	SAFE_DELETE(this->menuSinglePlayer);
 	SAFE_DELETE(this->menu);
 
@@ -280,6 +305,63 @@ GameState::StateCode GameStateMainMenu::update()
 			this->menuProfiles->reset();
 		}
 	}
+	else if (this->menuControlsActivated)
+	{
+		this->menuControls->handleInput();
+
+		if (this->menuControls->willQuit())
+		{
+			std::string key(""); // for key binding
+
+			switch(this->menuControls->currentID())
+			{
+			case GO_BACK:
+				this->menuControlsActivated = false;
+				break;
+
+			case CONTROLS_KEY_LEFT:  key = "left";  break;
+			case CONTROLS_KEY_RIGHT: key = "right"; break;
+			case CONTROLS_KEY_DOWN:  key = "down";  break;
+			case CONTROLS_KEY_DROP:  key = "drop";  break;
+			case CONTROLS_KEY_ROTATE_CLOCKWISE:         key = "rotate_clockwise"; break;
+			case CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE:  key = "rotate_counterclockwise"; break;
+			case CONTROLS_KEY_PAUSE: key  = "pause";  break;
+			case CONTROLS_KEY_HOLD:  key  = "hold";  break;
+			case CONTROLS_KEY_HELP:  key  = "help";  break;
+			case CONTROLS_KEY_QUIT:  key  = "quit";  break;
+
+			case CONTROLS_DEFAULT:
+			{
+				Globals::Profiles::current->resetKeybindings();
+
+				// Resetting the menu to show the new labels
+				createControlsMenu();
+				menuControls->goLast();
+				break;
+			}
+			}
+
+			// If we'll change a key binding
+			if (! key.empty())
+			{
+				Dialog::show("Press any key, Enter to Cancel");
+				int tmp = Ncurses::getInput(-1);
+
+				if ((tmp != KEY_ENTER) &&
+				    (tmp != '\n') &&
+				    (tmp != ERR))
+				{
+					InputManager::bind(key, tmp);
+
+					MenuItemLabel* label;
+					label = (MenuItemLabel*)menuControls->current;
+
+					label->set(InputManager::keyToString(tmp));
+				}
+			}
+			this->menuControls->reset();
+		}
+	}
 	else
 	{
 		// We're still at the Main Menu
@@ -293,8 +375,16 @@ GameState::StateCode GameStateMainMenu::update()
 				this->menuSinglePlayerActivated = true;
 				break;
 
+			case HELP:
+				this->helpWindows->run();
+				break;
+
 			case OPTIONS:
 				this->menuOptionsActvated = true;
+				break;
+
+			case CONTROLS:
+				this->menuControlsActivated = true;
 				break;
 
 			case PROFILES:
@@ -321,6 +411,9 @@ void GameStateMainMenu::draw()
 	else if (this->menuOptionsActvated)
 		this->layout->draw(this->menuOptions);
 
+	else if (this->menuControlsActivated)
+		this->layout->draw(this->menuControls);
+
 	else if (this->menuProfilesActivated)
 		this->layout->draw(this->menuProfiles);
 
@@ -345,7 +438,13 @@ void GameStateMainMenu::createMainMenu()
 	item = new MenuItem("Single Player", SINGLE_PLAYER);
 	menu->add(item);
 
+	item = new MenuItem("Help", HELP);
+	menu->add(item);
+
 	item = new MenuItem("Options", OPTIONS);
+	menu->add(item);
+
+	item = new MenuItem("Controls", CONTROLS);
 	menu->add(item);
 
 	item = new MenuItem("Profiles", PROFILES);
@@ -491,6 +590,70 @@ void GameStateMainMenu::createOptionsMenu()
 	                            300,
 	                            Globals::Profiles::current->settings.game.line_clear_delay);
 	menuOptions->add(box);
+}
+void GameStateMainMenu::createControlsMenu()
+{
+	SAFE_DELETE(this->menuControls);
+
+	this->menuControls = new Menu(1,
+	                              1,
+	                              this->layout->menu->getW() - 2,
+	                              this->layout->menu->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Back", GO_BACK);
+	menuControls->add(item);
+
+	menuControls->addBlank();
+
+	MenuItemLabel* label;
+	std::string str;
+
+	str = InputManager::keyToString(InputManager::getBind("left"));
+	label = new MenuItemLabel("Move Left", CONTROLS_KEY_LEFT, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("right"));
+	label = new MenuItemLabel("Move Right", CONTROLS_KEY_RIGHT, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("down"));
+	label = new MenuItemLabel("Soft Drop", CONTROLS_KEY_DOWN, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("drop"));
+	label = new MenuItemLabel("Hard Drop", CONTROLS_KEY_DROP, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("rotate_clockwise"));
+	label = new MenuItemLabel("Clockwise", CONTROLS_KEY_ROTATE_CLOCKWISE, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("rotate_counterclockwise"));
+	label = new MenuItemLabel("Counter-Clockwise", CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("pause"));
+	label = new MenuItemLabel("Pause", CONTROLS_KEY_PAUSE, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("hold"));
+	label = new MenuItemLabel("Hold Piece", CONTROLS_KEY_HOLD, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("help"));
+	label = new MenuItemLabel("Show Help", CONTROLS_KEY_HELP, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("quit"));
+	label = new MenuItemLabel("Quit Game", CONTROLS_KEY_QUIT, str);
+	menuControls->add(label);
+
+	menuControls->addBlank();
+
+	item = new MenuItem("Reset to Defaults", CONTROLS_DEFAULT);
+	menuControls->add(item);
 }
 void GameStateMainMenu::createProfilesMenu()
 {

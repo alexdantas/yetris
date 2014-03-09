@@ -221,6 +221,28 @@ Profile::Profile(std::string name):
 
 	settings.theme.piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
 	                ' ', ' ');
+
+	this->resetKeybindings();
+}
+Profile::~Profile()
+{
+	SAFE_DELETE(settings.theme.clear_line);
+	SAFE_DELETE(settings.theme.piece_colorless);
+	SAFE_DELETE(settings.theme.piece);
+	SAFE_DELETE(settings.theme.ghost);
+	SAFE_DELETE(settings.theme.locked);
+	SAFE_DELETE(settings.theme.invisible);
+
+	SAFE_DELETE(settings.theme.piece_S);
+	SAFE_DELETE(settings.theme.piece_Z);
+	SAFE_DELETE(settings.theme.piece_O);
+	SAFE_DELETE(settings.theme.piece_I);
+	SAFE_DELETE(settings.theme.piece_L);
+	SAFE_DELETE(settings.theme.piece_J);
+	SAFE_DELETE(settings.theme.piece_T);
+}
+void Profile::resetKeybindings()
+{
 	// Input
 	// Loading default keys
 	settings.input.left                    = KEY_LEFT;
@@ -243,6 +265,7 @@ Profile::Profile(std::string name):
 	InputManager::bind("right",                   settings.input.right);
 	InputManager::bind("up",                      settings.input.up);
 	InputManager::bind("down",                    settings.input.down);
+	InputManager::bind("drop",                    settings.input.drop);
 	InputManager::bind("rotate_clockwise",        settings.input.rotate_clockwise);
 	InputManager::bind("rotate_counterclockwise", settings.input.rotate_counterclockwise);
 	InputManager::bind("pause",                   settings.input.pause);
@@ -251,23 +274,6 @@ Profile::Profile(std::string name):
 	InputManager::bind("help",                    settings.input.help);
 	InputManager::bind("high_scores",             settings.input.high_scores);
 	InputManager::bind("quit",                    settings.input.quit);
-}
-Profile::~Profile()
-{
-	SAFE_DELETE(settings.theme.clear_line);
-	SAFE_DELETE(settings.theme.piece_colorless);
-	SAFE_DELETE(settings.theme.piece);
-	SAFE_DELETE(settings.theme.ghost);
-	SAFE_DELETE(settings.theme.locked);
-	SAFE_DELETE(settings.theme.invisible);
-
-	SAFE_DELETE(settings.theme.piece_S);
-	SAFE_DELETE(settings.theme.piece_Z);
-	SAFE_DELETE(settings.theme.piece_O);
-	SAFE_DELETE(settings.theme.piece_I);
-	SAFE_DELETE(settings.theme.piece_L);
-	SAFE_DELETE(settings.theme.piece_J);
-	SAFE_DELETE(settings.theme.piece_T);
 }
 void Profile::loadSettings()
 {
@@ -317,22 +323,38 @@ void Profile::loadSettings()
 	INI_GET(settings.game.slide_right, "game:slide_right");
 	INI_GET(settings.game.invisible,   "game:invisible");
 
-	// Input
-	// TODO: Validate keys
+	// Getting input keys
+	std::string tmp;
 
-	// INT_GET(settings.input.left,  "input:left");
-	// INI_GET(settings.input.right, "input:right");
-	// INI_GET(settings.input.up,    "input:up");
-	// INI_GET(settings.input.down,  "input:down");
-	// INI_GET(settings.input.drop,  "input:drop");
-	// INI_GET(settings.input.rotate_clockwise,        "input:rotate_clockwise");
-	// INI_GET(settings.input.rotate_counterclockwise, "input:rotate_counterclockwise");
-	// INI_GET(settings.input.pause,             "input:pause");
-	// INI_GET(settings.input.hold,              "input:hold");
-	// INI_GET(settings.input.toggle_statistics, "input:toggle_statistics");
-	// INI_GET(settings.input.help,              "input:help");
-	// INI_GET(settings.input.high_scores,       "input:high_scores");
-	// INI_GET(settings.input.quit,              "input:quit");
+	INI_GET(tmp, "input:left");
+	InputManager::bind("left", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:right");
+	InputManager::bind("right", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:down");
+	InputManager::bind("down", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:drop");
+	InputManager::bind("drop", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:rotate_clockwise");
+	InputManager::bind("rotate_clockwise", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:rotate_counterclockwise");
+	InputManager::bind("rotate_counterclockwise", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:pause");
+	InputManager::bind("pause", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:help");
+	InputManager::bind("help", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:hold");
+	InputManager::bind("hold", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:quit");
+	InputManager::bind("quit", InputManager::stringToKey(tmp));
 
 	// Now, to the Theme file!
 
@@ -413,22 +435,38 @@ void Profile::saveSettings()
 	INI_SET("game:slide_right", settings.game.slide_right);
 	INI_SET("game:invisible",   settings.game.invisible);
 
-	// Input
-	// TODO: Validate keys
+	// Input Keys
+	std::string key;
 
-	// INT_GET(settings.input.left,  "input:left");
-	// INI_SET(settings.input.right, "input:right");
-	// INI_SET(settings.input.up,    "input:up");
-	// INI_SET(settings.input.down,  "input:down");
-	// INI_SET(settings.input.drop,  "input:drop");
-	// INI_SET(settings.input.rotate_clockwise,        "input:rotate_clockwise");
-	// INI_SET(settings.input.rotate_counterclockwise, "input:rotate_counterclockwise");
-	// INI_SET(settings.input.pause,             "input:pause");
-	// INI_SET(settings.input.hold,              "input:hold");
-	// INI_SET(settings.input.toggle_statistics, "input:toggle_statistics");
-	// INI_SET(settings.input.help,              "input:help");
-	// INI_SET(settings.input.high_scores,       "input:high_scores");
-	// INI_SET(settings.input.quit,              "input:quit");
+	key = InputManager::keyToString(InputManager::getBind("left"));
+	INI_SET("input:left", key);
+
+	key = InputManager::keyToString(InputManager::getBind("right"));
+	INI_SET("input:right", key);
+
+	key = InputManager::keyToString(InputManager::getBind("down"));
+	INI_SET("input:down", key);
+
+	key = InputManager::keyToString(InputManager::getBind("drop"));
+	INI_SET("input:drop", key);
+
+	key = InputManager::keyToString(InputManager::getBind("rotate_clockwise"));
+	INI_SET("input:rotate_clockwise", key);
+
+	key = InputManager::keyToString(InputManager::getBind("rotate_counterclockwise"));
+	INI_SET("input:rotate_counterclockwise", key);
+
+	key = InputManager::keyToString(InputManager::getBind("pause"));
+	INI_SET("input:pause", key);
+
+	key = InputManager::keyToString(InputManager::getBind("help"));
+	INI_SET("input:help", key);
+
+	key = InputManager::keyToString(InputManager::getBind("hold"));
+	INI_SET("input:hold", key);
+
+	key = InputManager::keyToString(InputManager::getBind("quit"));
+	INI_SET("input:quit", key);
 
 	ini.save(this->fileSettings);
 

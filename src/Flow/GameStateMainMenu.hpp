@@ -4,6 +4,7 @@
 #include <Flow/GameState.hpp>
 #include <Interface/LayoutMainMenu.hpp>
 #include <Interface/Menu/Menu.hpp>
+#include <Interface/WindowGameHelp.hpp>
 
 /// The Main Menu.
 ///
@@ -39,10 +40,16 @@ private:
 	Menu* menuProfiles;
 	bool menuProfilesActivated;
 
+	Menu* menuControls;
+	bool menuControlsActivated;
+
+	WindowGameHelp* helpWindows;
+
 	// easily create internal menus
 	void createMainMenu();
 	void createSinglePlayerMenu();
 	void createOptionsMenu();
+	void createControlsMenu();
 	void createProfilesMenu();
 	void saveSettingsMenuOptions();
 	void saveSettingsMenuSinglePlayer();

@@ -80,6 +80,8 @@ public:
 	/// Where we store statistics of this Profile.
 	std::string fileStatistics;
 
+	void resetKeybindings();
+
 	/// Loads settings based on the user configuration file.
 	void loadSettings();
 
