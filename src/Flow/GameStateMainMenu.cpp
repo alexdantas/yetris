@@ -265,6 +265,7 @@ GameState::StateCode GameStateMainMenu::update()
 				// Re-create menus based on current settings
 				createSinglePlayerMenu();
 				createOptionsMenu();
+				createControlsMenu();
 
 				// Resetting the title name with current
 				// profile name with an "'s" appended
