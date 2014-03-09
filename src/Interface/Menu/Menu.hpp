@@ -3,6 +3,7 @@
 
 #include <Interface/Window.hpp>
 #include <Interface/Menu/MenuItem.hpp>
+#include <Interface/Menu/MenuItemLabel.hpp>
 #include <Interface/Menu/MenuItemCheckbox.hpp>
 #include <Interface/Menu/MenuItemNumberbox.hpp>
 #include <Interface/Menu/MenuItemTextbox.hpp>
@@ -12,6 +13,11 @@
 #include <string>
 
 /// List of selectable items.
+///
+/// @warning When adding items, make sure they're allocated
+///          dynamically! I mean POINTERS, damn it.
+///          Otherwise SEGFAULTS when trying to delete
+///          static stuff.
 ///
 /// @warning If you create a menu full of null elements
 ///          (with #addBlank()), it'll probably get into
@@ -42,8 +48,9 @@ public:
 
 	void draw(Window* window);
 
-	/// Makes the menu react to #input, which is an Ncurses "char".
-	void handleInput(int input);
+	/// Makes the menu react to input,
+	/// as seen on the global InputManager.
+	void handleInput();
 
 	/// Makes the menu select the next item.
 	/// @note This is a recursive function to guarantee we'll
@@ -94,11 +101,13 @@ public:
 	/// Container of all the options inside the menu.
 	std::vector<MenuItem*> item;
 
-private:
-
 	/// Current item selected.
+	/// @note It's public because we might want to change
+	///       current item's attributes. Don't mess with
+	///       the pointer itself!
 	MenuItem* current;
 
+private:
 	/// Index of the currently selected item.
 	unsigned int currentIndex;
 

@@ -4,6 +4,7 @@
 #include <Config/Globals.hpp>
 #include <Misc/Utils.hpp>
 #include <Interface/LayoutGame.hpp>
+#include <Flow/InputManager.hpp>
 
 #include <stdlib.h>
 
@@ -101,19 +102,19 @@ void Game::start()
 	this->timerInvisible.start();
 	this->timer.start();
 }
-void Game::handleInput(int c)
+void Game::handleInput()
 {
-	if (c == ERR)
+	if (InputManager::noKeyPressed())
 		return;
 
 	// The only two absolute inputs are to quit and pause.
 	// Others depend if the game is paused or not.
 
-	if (c == Globals::Profiles::current->settings.input.quit)
+	if (InputManager::isPressed("quit"))
 	{
 		this->userAskedToQuit = true;
 	}
-	else if (c == Globals::Profiles::current->settings.input.pause)
+	else if (InputManager::isPressed("pause"))
 	{
 		(this->isPaused) ?
 			this->pause(false) :
@@ -121,7 +122,8 @@ void Game::handleInput(int c)
 
 		return;
 	}
-	else if ((c == '\n') || (c == KEY_ENTER))
+	else if (InputManager::isPressed((int)'\n') ||
+	         InputManager::isPressed(KEY_ENTER))
 	{
 		if (! this->isPaused)
 		{
@@ -132,7 +134,7 @@ void Game::handleInput(int c)
 			// unpauses the game.
 		}
 	}
-	else if (c == 'h' || c == 'H')
+	else if (InputManager::isPressed("help"))
 	{
 		// Toggling Pause and Help window
 		if (this->isPaused)
@@ -154,45 +156,45 @@ void Game::handleInput(int c)
 	// Other keys are not used when paused.
 	if (this->isPaused)
 	{
-		this->pauseMenu->handleInput(c);
+		this->pauseMenu->handleInput();
 		return;
 	}
 
-	if (c == Globals::Profiles::current->settings.input.left)
+	if (InputManager::isPressed("left"))
 	{
 		movePieceIfPossible(Piece::DIR_LEFT);
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Profiles::current->settings.input.down)
+	else if (InputManager::isPressed("down"))
 	{
 		if (! movePieceIfPossible(Piece::DIR_DOWN))
 			this->lockCurrentPiece();
 
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Profiles::current->settings.input.right)
+	else if (InputManager::isPressed("right"))
 	{
 		movePieceIfPossible(Piece::DIR_RIGHT);
 		this->movedPieceDown = true;
 	}
-	else if (c == Globals::Profiles::current->settings.input.rotate_clockwise)
+	else if (InputManager::isPressed("rotate_clockwise"))
 	{
 		this->rotationSystem->rotate(this->pieceCurrent,
 		                             this->board,
 		                             1);
 	}
-	else if (c == Globals::Profiles::current->settings.input.rotate_counterclockwise)
+	else if (InputManager::isPressed("rotate_counterclockwise"))
 	{
 		this->rotationSystem->rotate(this->pieceCurrent,
 		                             this->board,
 		                             -1);
 	}
-	else if (c == Globals::Profiles::current->settings.input.drop)
+	else if (InputManager::isPressed("drop"))
 	{
 		this->board->hardDrop(this->pieceCurrent);
 		this->lockCurrentPiece();
 	}
-	else if (c == Globals::Profiles::current->settings.input.hold)
+	else if (InputManager::isPressed("hold"))
 	{
 		this->holdCurrentPiece();
 	}

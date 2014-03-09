@@ -3,6 +3,7 @@
 #include <Config/Globals.hpp>
 #include <Config/INI.hpp>
 #include <Interface/Colors.hpp>
+#include <Flow/InputManager.hpp>
 
 #include <vector>
 #include <algorithm>
@@ -220,9 +221,8 @@ Profile::Profile(std::string name):
 
 	settings.theme.piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
 	                ' ', ' ');
-
 	// Input
-
+	// Loading default keys
 	settings.input.left                    = KEY_LEFT;
 	settings.input.right                   = KEY_RIGHT;
 	settings.input.up                      = KEY_UP;
@@ -236,6 +236,21 @@ Profile::Profile(std::string name):
 	settings.input.help                    = 'h';
 	settings.input.high_scores             = '1';
 	settings.input.quit                    = 'q';
+
+	// Now, binding them
+	// Default Input configurations
+	InputManager::bind("left",                    settings.input.left);
+	InputManager::bind("right",                   settings.input.right);
+	InputManager::bind("up",                      settings.input.up);
+	InputManager::bind("down",                    settings.input.down);
+	InputManager::bind("rotate_clockwise",        settings.input.rotate_clockwise);
+	InputManager::bind("rotate_counterclockwise", settings.input.rotate_counterclockwise);
+	InputManager::bind("pause",                   settings.input.pause);
+	InputManager::bind("hold",                    settings.input.hold);
+	InputManager::bind("toggle_statistics",       settings.input.toggle_statistics);
+	InputManager::bind("help",                    settings.input.help);
+	InputManager::bind("high_scores",             settings.input.high_scores);
+	InputManager::bind("quit",                    settings.input.quit);
 }
 Profile::~Profile()
 {

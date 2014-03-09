@@ -1,5 +1,6 @@
 #include <Interface/Menu/MenuItemCheckbox.hpp>
 #include <Config/Globals.hpp>
+#include <Flow/InputManager.hpp>
 
 MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):
 	MenuItem(label, id),
@@ -28,27 +29,23 @@ void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite
 
 	window->print("]", posx - 1, y, Globals::Profiles::current->settings.theme.text);
 }
-void MenuItemCheckbox::handleInput(int input)
+void MenuItemCheckbox::handleInput()
 {
-	if (input == ERR)
+	if (InputManager::noKeyPressed())
 		return;
 
-	switch(input)
-	{
-	case KEY_LEFT:
+	if (InputManager::isPressed("left") || // user-defined
+		InputManager::isPressed(KEY_LEFT))
 		this->check(true);
-		break;
 
-	case KEY_RIGHT:
+	else if (InputManager::isPressed("right") || // user-defined
+	         InputManager::isPressed(KEY_RIGHT))
 		this->check(false);
-		break;
 
-	case ' ':
-	case '\n':
-	case KEY_ENTER:
+	else if (InputManager::isPressed(' ')  ||
+	         InputManager::isPressed('\n') ||
+	         InputManager::isPressed(KEY_ENTER))
 		this->toggle();
-		break;
-	}
 }
 void MenuItemCheckbox::check(bool option)
 {

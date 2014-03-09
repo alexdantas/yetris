@@ -1,4 +1,5 @@
 #include <Flow/GameStateMainMenu.hpp>
+#include <Flow/InputManager.hpp>
 #include <Interface/Ncurses.hpp>
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
@@ -160,14 +161,12 @@ std::string getProfileName(Window* main)
 
 GameState::StateCode GameStateMainMenu::update()
 {
-	int input = Ncurses::getInput(100);
-
-	if (input == 'q')
+	if (InputManager::isPressed("quit"))
 		return GameState::QUIT;
 
 	if (this->menuSinglePlayerActivated)
 	{
-		this->menuSinglePlayer->handleInput(input);
+		this->menuSinglePlayer->handleInput();
 
 		if (this->menuSinglePlayer->willQuit())
 		{
@@ -189,7 +188,7 @@ GameState::StateCode GameStateMainMenu::update()
 	}
 	else if (this->menuOptionsActvated)
 	{
-		this->menuOptions->handleInput(input);
+		this->menuOptions->handleInput();
 
 		if (this->menuOptions->willQuit())
 		{
@@ -209,7 +208,8 @@ GameState::StateCode GameStateMainMenu::update()
 	}
 	else if (this->menuProfilesActivated)
 	{
-		if (input == 'd' || input == 'D')
+		if (InputManager::isPressed((int)'d') ||
+		    InputManager::isPressed((int)'D'))
 		{
 			std::string name = this->menuProfiles->currentLabel();
 
@@ -220,7 +220,8 @@ GameState::StateCode GameStateMainMenu::update()
 				this->menuProfiles->removeByLabel(name);
 			}
 		}
-		else if (input == 's' || input == 'S')
+		else if (InputManager::isPressed((int)'s') ||
+		         InputManager::isPressed((int)'S'))
 		{
 			// Switch to profile
 			std::string name = this->menuProfiles->currentLabel();
@@ -254,7 +255,8 @@ GameState::StateCode GameStateMainMenu::update()
 				this->layout->windowsInit();
 			}
 		}
-		else if (input == 'c' || input == 'C')
+		else if (InputManager::isPressed((int)'c') ||
+		         InputManager::isPressed((int)'C'))
 		{
 			std::string name = getProfileName(this->layout->main);
 
@@ -267,7 +269,7 @@ GameState::StateCode GameStateMainMenu::update()
 			++profileMenuIndex;
 		}
 		else
-			this->menuProfiles->handleInput(input);
+			this->menuProfiles->handleInput();
 
 		if (this->menuProfiles->willQuit())
 		{
@@ -281,7 +283,7 @@ GameState::StateCode GameStateMainMenu::update()
 	else
 	{
 		// We're still at the Main Menu
-		this->menu->handleInput(input);
+		this->menu->handleInput();
 
 		if (this->menu->willQuit())
 		{

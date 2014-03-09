@@ -1,6 +1,7 @@
 #include <Interface/Menu/MenuItemTextlist.hpp>
 #include <Misc/Utils.hpp>
 #include <Config/Globals.hpp>
+#include <Flow/InputManager.hpp>
 
 #include <stdexcept>
 
@@ -62,29 +63,23 @@ void MenuItemTextlist::draw(Window* window, int x, int y, int width, bool hilite
 	              y,
 	              Globals::Profiles::current->settings.theme.hilite_text);
 }
-void MenuItemTextlist::handleInput(int input)
+void MenuItemTextlist::handleInput()
 {
-	if (input == ERR)
+	if (InputManager::noKeyPressed())
 		return;
 
-	switch(input)
-	{
-	case KEY_LEFT:
+	if (InputManager::isPressed("left") || // user-defined
+		InputManager::isPressed(KEY_LEFT))
 		this->decrease();
-		break;
 
-	case KEY_RIGHT:
+	else if (InputManager::isPressed("right") ||
+	         InputManager::isPressed(KEY_RIGHT))
 		this->increase();
-		break;
 
-	case 'r':
-	case 'R':
-	case ' ':
-	case '\n':
-	case KEY_ENTER:
+	else if (InputManager::isPressed('r') ||
+	         InputManager::isPressed('R') ||
+	         InputManager::isPressed(' '))
 		this->reset();
-		break;
-	}
 }
 void MenuItemTextlist::increase()
 {

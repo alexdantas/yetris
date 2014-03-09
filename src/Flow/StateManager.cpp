@@ -2,6 +2,7 @@
 #include <Flow/GameStateGame.hpp>
 #include <Flow/GameStateMainMenu.hpp>
 #include <Flow/GameStateFirstTime.hpp>
+#include <Flow/InputManager.hpp>
 #include <Misc/Utils.hpp>
 #include <Game/Profile.hpp>
 #include <Config/Globals.hpp>
@@ -52,6 +53,8 @@ void StateManager::run()
 
 	while (!letsQuit)
 	{
+		InputManager::update();
+
 		// Updating the whole state.
 		// This value is returned from it tell us if
 		// we need to switch from the current state.
