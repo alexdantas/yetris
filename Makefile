@@ -153,10 +153,11 @@ $(DISTDIR).tar.gz: $(DISTDIR)
 	$(MUTE)rm -f $(DISTDIR).tar.gz
 
 $(DISTDIR):
-	$(MUTE)mkdir -p $(DISTDIR)/src $(DISTDIR)/doc $(DISTDIR)/bin
+	$(MUTE)mkdir -p $(DISTDIR)/src $(DISTDIR)/doc $(DISTDIR)/bin $(DISTDIR)/deps
 	-$(MUTE)cp $(FILES) -t $(DISTDIR)
-	-$(MUTE)cp -r src/* $(DISTDIR)/src
-	-$(MUTE)cp -r doc/* $(DISTDIR)/doc
+	-$(MUTE)cp -r src/*  $(DISTDIR)/src
+	-$(MUTE)cp -r doc/*  $(DISTDIR)/doc
+	-$(MUTE)cp -r deps/* $(DISTDIR)/deps
 
 run: all
 	# Running...
