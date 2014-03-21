@@ -161,22 +161,22 @@ void Window::borders(BorderType type)
 {
 	this->borderType = type;
 
-	if (type == BorderType::BORDER_NONE)
+	if (type == BORDER_NONE)
 		return;
 
-	if (type == BorderType::BORDER_FANCY)
+	if (type == BORDER_FANCY)
 	{
 		wborder(this->win,
-		        ACS_VLINE    | Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_VLINE    | Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
-		        ACS_HLINE    | Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_HLINE    | Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
-		        ACS_ULCORNER | Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true),
-		        ACS_URCORNER | Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_LLCORNER | Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_LRCORNER | Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
+		        ACS_VLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_VLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
+		        ACS_HLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_HLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
+		        ACS_ULCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true),
+		        ACS_URCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_LLCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+		        ACS_LRCORNER|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 	}
-	else if (type == BorderType::BORDER_REGULAR)
+	else if (type == BORDER_REGULAR)
 	{
 		wattrset(this->win, Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
 		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
@@ -190,5 +190,9 @@ void Window::horizontalLine(int x, int y, int c, int width, ColorPair pair)
 void Window::setTitle(std::string title)
 {
 	this->title = title;
+}
+bool Window::hasBorders()
+{
+	return (this->borderType != BorderType::BORDER_NONE);
 }
 

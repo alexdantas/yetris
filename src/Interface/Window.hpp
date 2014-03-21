@@ -64,6 +64,7 @@ public:
 
 	void setTitle(std::string title);
 
+	bool hasBorders();
 
 	/// Ncurses' internal data structure.
 	/// IT'S PUBLIC BECAUSE SOMETIMES I NEED TO CALL DIRECT
