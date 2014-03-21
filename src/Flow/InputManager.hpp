@@ -13,6 +13,12 @@ namespace InputManager
 	/// Removes all keybindings for #name.
 	void unbind(std::string name);
 
+	/// Tells if there's a #name bound to a key.
+	bool exists(std::string name);
+
+	/// Tells if #key is bound to a name.
+	bool isBound(int key);
+
 	/// Returns the key that's bound to #name.
 	int getBind(std::string name);
 

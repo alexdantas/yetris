@@ -263,16 +263,16 @@ void Profile::resetKeybindings()
 	// Default Input configurations
 	InputManager::bind("left",                    settings.input.left);
 	InputManager::bind("right",                   settings.input.right);
-	InputManager::bind("up",                      settings.input.up);
+//	InputManager::bind("up",                      settings.input.up);
 	InputManager::bind("down",                    settings.input.down);
 	InputManager::bind("drop",                    settings.input.drop);
 	InputManager::bind("rotate_clockwise",        settings.input.rotate_clockwise);
 	InputManager::bind("rotate_counterclockwise", settings.input.rotate_counterclockwise);
 	InputManager::bind("pause",                   settings.input.pause);
 	InputManager::bind("hold",                    settings.input.hold);
-	InputManager::bind("toggle_statistics",       settings.input.toggle_statistics);
+//	InputManager::bind("toggle_statistics",       settings.input.toggle_statistics);
 	InputManager::bind("help",                    settings.input.help);
-	InputManager::bind("high_scores",             settings.input.high_scores);
+//	InputManager::bind("high_scores",             settings.input.high_scores);
 	InputManager::bind("quit",                    settings.input.quit);
 }
 void Profile::loadSettings()

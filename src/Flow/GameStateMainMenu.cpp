@@ -350,7 +350,8 @@ GameState::StateCode GameStateMainMenu::update()
 
 				if ((tmp != KEY_ENTER) &&
 				    (tmp != '\n') &&
-				    (tmp != ERR))
+				    (tmp != ERR) &&
+				    (! InputManager::isBound(tmp)))
 				{
 					InputManager::bind(key, tmp);
 

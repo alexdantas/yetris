@@ -19,6 +19,26 @@ void InputManager::unbind(std::string name)
 	InputManager::binds.erase(name);
 }
 
+bool InputManager::exists(std::string key)
+{
+	return (InputManager::binds.find(key) != InputManager::binds.end());
+}
+
+bool InputManager::isBound(int key)
+{
+	if (InputManager::binds.empty())
+		return false;
+
+	for (auto it  = InputManager::binds.begin();
+	     it      != InputManager::binds.end();
+	     ++it)
+	{
+		if (it->second == key)
+			return true;
+	}
+	return false;
+}
+
 int InputManager::getBind(std::string name)
 {
 	// If #key is not binded to anything...
