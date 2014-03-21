@@ -3,6 +3,7 @@
 
 #include <Interface/Layout.hpp>
 #include <Interface/Menu/Menu.hpp>
+#include <Interface/WindowGameHelp.hpp>
 #include <Game/Game.hpp>
 
 #include <vector>
@@ -58,8 +59,8 @@ public:
 	/// Contains the pause menu.
 	Window* pause;
 
-	/// Contains the help screen.
-	Window* help;
+private:
+	WindowGameHelp* helpWindows;
 };
 
 #endif //LAYOUTGAMEMODESURVIVAL_H_DEFINED

@@ -139,14 +139,12 @@ void Game::handleInput()
 		// Toggling Pause and Help window
 		if (this->isPaused)
 		{
-			this->isPaused = false;
 			this->showHelp = false;
 			this->timer.unpause();
 			this->timerPiece.unpause();
 		}
 		else
 		{
-			this->isPaused = true;
 			this->showHelp = true;
 			this->timer.pause();
 			this->timerPiece.pause();
@@ -154,7 +152,7 @@ void Game::handleInput()
 	}
 
 	// Other keys are not used when paused.
-	if (this->isPaused)
+	if (this->isPaused || this->showHelp)
 	{
 		this->pauseMenu->handleInput();
 		return;
