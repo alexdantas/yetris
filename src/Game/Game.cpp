@@ -187,6 +187,12 @@ void Game::handleInput()
 		                             this->board,
 		                             -1);
 	}
+	else if (InputManager::isPressed("rotate_180"))
+	{
+		this->rotationSystem->rotate(this->pieceCurrent,
+		                             this->board,
+		                             2);
+	}
 	else if (InputManager::isPressed("drop"))
 	{
 		this->board->hardDrop(this->pieceCurrent);

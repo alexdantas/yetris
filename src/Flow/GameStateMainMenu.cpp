@@ -45,6 +45,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	CONTROLS_KEY_DROP,
 	CONTROLS_KEY_ROTATE_CLOCKWISE,
 	CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE,
+	CONTROLS_KEY_ROTATE_180,
 	CONTROLS_KEY_PAUSE,
 	CONTROLS_KEY_HELP,
 	CONTROLS_KEY_HOLD,
@@ -324,8 +325,9 @@ GameState::StateCode GameStateMainMenu::update()
 			case CONTROLS_KEY_RIGHT: key = "right"; break;
 			case CONTROLS_KEY_DOWN:  key = "down";  break;
 			case CONTROLS_KEY_DROP:  key = "drop";  break;
-			case CONTROLS_KEY_ROTATE_CLOCKWISE:         key = "rotate_clockwise"; break;
-			case CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE:  key = "rotate_counterclockwise"; break;
+			case CONTROLS_KEY_ROTATE_CLOCKWISE:        key = "rotate_clockwise"; break;
+			case CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE: key = "rotate_counterclockwise"; break;
+			case CONTROLS_KEY_ROTATE_180:              key = "rotate_180"; break;
 			case CONTROLS_KEY_PAUSE: key  = "pause";  break;
 			case CONTROLS_KEY_HOLD:  key  = "hold";  break;
 			case CONTROLS_KEY_HELP:  key  = "help";  break;
@@ -634,6 +636,10 @@ void GameStateMainMenu::createControlsMenu()
 
 	str = InputManager::keyToString(InputManager::getBind("rotate_counterclockwise"));
 	label = new MenuItemLabel("Counter-Clockwise", CONTROLS_KEY_ROTATE_COUNTERCLOCKWISE, str);
+	menuControls->add(label);
+
+	str = InputManager::keyToString(InputManager::getBind("rotate_180"));
+	label = new MenuItemLabel("Rotate by 180", CONTROLS_KEY_ROTATE_180, str);
 	menuControls->add(label);
 
 	str = InputManager::keyToString(InputManager::getBind("pause"));

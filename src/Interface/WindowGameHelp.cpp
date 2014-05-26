@@ -96,6 +96,7 @@ void WindowGameHelp::run()
 			                                  InputManager::keyToString(InputManager::getBind("hold")) + "\n" +
 			                                  InputManager::keyToString(InputManager::getBind("rotate_clockwise")) + "\n" +
 			                                  InputManager::keyToString(InputManager::getBind("rotate_counterclockwise")) + "\n" +
+			                                  InputManager::keyToString(InputManager::getBind("rotate_180")) + "\n" +
 			                                  InputManager::keyToString(InputManager::getBind("help")) + "\n" +
 			                                  InputManager::keyToString(InputManager::getBind("pause")) + "\n" +
 			                                  InputManager::keyToString(InputManager::getBind("quit")) + "\n",

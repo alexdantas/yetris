@@ -175,6 +175,7 @@ public:
 			int drop;
 			int rotate_clockwise;
 			int rotate_counterclockwise;
+			int rotate_180;
 			int pause;
 			int hold;
 			int toggle_statistics;

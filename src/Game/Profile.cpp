@@ -252,6 +252,7 @@ void Profile::resetKeybindings()
 	settings.input.drop                    = ' ';
 	settings.input.rotate_clockwise        = 'x';
 	settings.input.rotate_counterclockwise = 'z';
+	settings.input.rotate_180              = 'Z';
 	settings.input.pause                   = 'p';
 	settings.input.hold                    = 'c';
 	settings.input.toggle_statistics       = '2';
@@ -268,6 +269,7 @@ void Profile::resetKeybindings()
 	InputManager::bind("drop",                    settings.input.drop);
 	InputManager::bind("rotate_clockwise",        settings.input.rotate_clockwise);
 	InputManager::bind("rotate_counterclockwise", settings.input.rotate_counterclockwise);
+	InputManager::bind("rotate_180",              settings.input.rotate_180);
 	InputManager::bind("pause",                   settings.input.pause);
 	InputManager::bind("hold",                    settings.input.hold);
 //	InputManager::bind("toggle_statistics",       settings.input.toggle_statistics);
@@ -343,6 +345,9 @@ void Profile::loadSettings()
 
 	INI_GET(tmp, "input:rotate_counterclockwise");
 	InputManager::bind("rotate_counterclockwise", InputManager::stringToKey(tmp));
+
+	INI_GET(tmp, "input:rotate_180");
+	InputManager::bind("rotate_180", InputManager::stringToKey(tmp));
 
 	INI_GET(tmp, "input:pause");
 	InputManager::bind("pause", InputManager::stringToKey(tmp));
@@ -455,6 +460,9 @@ void Profile::saveSettings()
 
 	key = InputManager::keyToString(InputManager::getBind("rotate_counterclockwise"));
 	INI_SET("input:rotate_counterclockwise", key);
+
+	key = InputManager::keyToString(InputManager::getBind("rotate_180"));
+	INI_SET("input:rotate_180", key);
 
 	key = InputManager::keyToString(InputManager::getBind("pause"));
 	INI_SET("input:pause", key);
