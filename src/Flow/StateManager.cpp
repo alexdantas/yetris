@@ -9,7 +9,7 @@
 #include <Config/INI.hpp>
 
 StateManager::StateManager():
-	currentState(nullptr),
+	currentState(NULL),
 	sharedInfo(0)
 {
 	// First we'll load the default profile.
@@ -71,7 +71,7 @@ void StateManager::run()
 		case GameState::QUIT:
 			this->currentState->unload();
 			delete this->currentState;
-			this->currentState = nullptr;
+			this->currentState = NULL;
 
 			letsQuit = true;
 			break;

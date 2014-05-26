@@ -22,7 +22,7 @@ void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
 }
 
 Window::Window(int x, int y, int w, int h):
-	win(nullptr),
+	win(NULL),
 	error(false),
 	x(x),
 	y(y),
@@ -37,7 +37,7 @@ Window::Window(int x, int y, int w, int h):
 		this->error = true;
 }
 Window::Window(Window* parent, int x, int y, int width, int height):
-	win(nullptr),
+	win(NULL),
 	error(false),
 	borderType(BORDER_NONE),
 	title("")
@@ -193,6 +193,16 @@ void Window::setTitle(std::string title)
 }
 bool Window::hasBorders()
 {
-	return (this->borderType != BorderType::BORDER_NONE);
+	return (this->borderType != Window::BORDER_NONE);
 }
+
+
+
+
+
+
+
+
+
+
 

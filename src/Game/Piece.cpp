@@ -103,7 +103,7 @@ void Piece::draw(Window* win)
 	if (!this->block)
 		return;
 
-	if (this->type >= PieceType::MAX)
+	if (this->type >= Piece::MAX)
 		return;
 
 	// Looking up the global table of

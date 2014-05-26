@@ -9,9 +9,9 @@ PieceGhost::PieceGhost():
 }
 void PieceGhost::update(Piece* master, Board* board)
 {
-	this->x = master->getX();
-	this->y = master->getY();
-	this->type = master->getType();
+	this->x        = master->getX();
+	this->y        = master->getY();
+	this->type     = master->getType();
 	this->rotation = master->getRotation();
 
 	board->hardDrop(this);

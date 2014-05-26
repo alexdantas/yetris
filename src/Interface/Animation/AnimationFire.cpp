@@ -18,7 +18,7 @@ static char gray_scale[13] = " .':-=+*#%@#";
 
 AnimationFire::AnimationFire(Window* window):
 	Animation(window),
-	particle(nullptr)
+	particle(NULL)
 { }
 AnimationFire::~AnimationFire()
 {

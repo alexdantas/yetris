@@ -13,8 +13,8 @@ static char gray_scale[12] = "#@%#*+=-:'.";
 
 AnimationWater::AnimationWater(Window* window):
 	Animation(window),
-	buffer1(nullptr),
-	buffer2(nullptr)
+	buffer1(NULL),
+	buffer2(NULL)
 { }
 AnimationWater::~AnimationWater()
 {

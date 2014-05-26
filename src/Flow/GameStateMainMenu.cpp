@@ -61,17 +61,17 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 unsigned int profileMenuIndex = 0;
 
 GameStateMainMenu::GameStateMainMenu():
-	layout(nullptr),
-	menu(nullptr),
-	menuSinglePlayer(nullptr),
+	layout(NULL),
+	menu(NULL),
+	menuSinglePlayer(NULL),
 	menuSinglePlayerActivated(false),
-	menuOptions(nullptr),
+	menuOptions(NULL),
 	menuOptionsActvated(false),
-	menuProfiles(nullptr),
+	menuProfiles(NULL),
 	menuProfilesActivated(false),
-	menuControls(nullptr),
+	menuControls(NULL),
 	menuControlsActivated(false),
-	helpWindows(nullptr)
+	helpWindows(NULL)
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
@@ -271,7 +271,7 @@ GameState::StateCode GameStateMainMenu::update()
 				// Resetting the title name with current
 				// profile name with an "'s" appended
 				// (like "Rachel's" or "Chris'")
-				if (name.back() == 's')
+				if (Utils::String::back(name) == 's')
 					name += '\'';
 				else
 					name += "'s";

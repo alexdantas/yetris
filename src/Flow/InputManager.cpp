@@ -29,7 +29,9 @@ bool InputManager::isBound(int key)
 	if (InputManager::binds.empty())
 		return false;
 
-	for (auto it  = InputManager::binds.begin();
+	// C++11 compatibility!
+	// I wish I could use `auto` :(
+	for (std::map<std::string, int>::iterator it = InputManager::binds.begin();
 	     it      != InputManager::binds.end();
 	     ++it)
 	{

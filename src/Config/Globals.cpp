@@ -13,7 +13,7 @@ int Globals::version[3] = { VERSION[0] - '0',
 // | |_) | |_) / / \ | |_  | | | |   | |_  ( (`
 // |_|   |_| \ \_\_/ |_|   |_| |_|__ |_|__ _)_)
 
-Profile* Globals::Profiles::current = nullptr;
+Profile* Globals::Profiles::current = NULL;
 std::string Globals::Profiles::default_name = "";
 
 //  __    ___   _      ____  _   __
@@ -37,7 +37,7 @@ void Globals::init()
 	                              ".local/share/" +
 	                              PACKAGE + "/");
 
-	if (Globals::Config::directory.front() != '/')
+	if (Utils::String::front(Globals::Config::directory) != '/')
 	{
 		// We couldn't get user's home directory,
 		// so let's fallback to `/tmp/.local/share...`

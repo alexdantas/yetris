@@ -12,10 +12,10 @@
 LayoutMainMenu::LayoutMainMenu(int width, int height, GameStateMainMenu* state):
 	Layout(width, height),
 	state(state),
-	logo(nullptr),
-	menu(nullptr),
-	animationContainer(nullptr),
-	animation(nullptr)
+	logo(NULL),
+	menu(NULL),
+	animationContainer(NULL),
+	animation(NULL)
 {
 	this->windowsInit();
 }
@@ -43,7 +43,7 @@ void LayoutMainMenu::windowsInit()
 	// Profile name with an "'s" appended
 	// (like "Rachel's" or "Chris'")
 	std::string name = Globals::Profiles::current->name;
-	if (name.back() == 's')
+	if (Utils::String::back(name) == 's')
 		name += '\'';
 	else
 		name += "'s";

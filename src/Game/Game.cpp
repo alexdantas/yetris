@@ -14,22 +14,22 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 };
 
 Game::Game():
-	layout(nullptr),
+	layout(NULL),
 	gameOver(false),
-	pieceCurrent(nullptr),
-	pieceGhost(nullptr),
-	pieceHold(nullptr),
-	board(nullptr),
-	rotationSystem(nullptr),
-	movedPieceDown(nullptr),
+	pieceCurrent(NULL),
+	pieceGhost(NULL),
+	pieceHold(NULL),
+	board(NULL),
+	rotationSystem(NULL),
+	movedPieceDown(NULL),
 	canHold(true),
 	willClearLines(true),
 	isInvisible(false),
-	score(nullptr),
+	score(NULL),
 	isPaused(false),
 	showPauseMenu(false),
 	showHelp(false),
-	pauseMenu(nullptr)
+	pauseMenu(NULL)
 { }
 
 void Game::start()
@@ -69,7 +69,7 @@ void Game::start()
 	if (Globals::Profiles::current->settings.game.has_ghost)
 		this->pieceGhost = new PieceGhost();
 
-	this->pieceHold = nullptr;
+	this->pieceHold = NULL;
 
 	this->rotationSystem = new RotationSystemSRS();
 

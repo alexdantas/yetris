@@ -5,14 +5,14 @@
 LayoutGame::LayoutGame(Game* game, int width, int height):
 	Layout(width, height),
 	game(game),
-	leftmost(nullptr),
-	hold(nullptr),
-	score(nullptr),
-	middle_left(nullptr),
-	board(nullptr),
-	middle_right(nullptr),
-	rightmost(nullptr),
-	helpWindows(nullptr)
+	leftmost(NULL),
+	hold(NULL),
+	score(NULL),
+	middle_left(NULL),
+	board(NULL),
+	middle_right(NULL),
+	rightmost(NULL),
+	helpWindows(NULL)
 {
 	this->windowsInit();
 }

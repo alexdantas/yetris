@@ -6,7 +6,7 @@
 #include <cstring>
 
 GameStateFirstTime::GameStateFirstTime():
-	layout(nullptr),
+	layout(NULL),
 	name("")
 { }
 GameStateFirstTime::~GameStateFirstTime()

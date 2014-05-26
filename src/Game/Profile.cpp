@@ -25,8 +25,8 @@ bool Profile::load()
 		if (Utils::File::isDirectory(files[i]))
 		{
 			// Sending the user name (last part of dir name)
-			if (files[i].back() == '/')
-				files[i].pop_back();
+			if (Utils::String::back(files[i]) == '/')
+				Utils::String::pop_back(&(files[i]));
 			size_t pos = files[i].rfind('/');
 
 			dirs.push_back(files[i].substr(pos + 1));
@@ -61,7 +61,9 @@ bool Profile::isNameValid(std::string name)
 }
 void Profile::remove(std::string name)
 {
-	auto where = std::find(Profile::profiles.begin(), Profile::profiles.end(), name);
+	// C++11 compatibility
+	// (I wish I could use `auto`)
+	std::vector<std::string>::iterator where = std::find(Profile::profiles.begin(), Profile::profiles.end(), name);
 
 	if (where == Profile::profiles.end())
 		return;
