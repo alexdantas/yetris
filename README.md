@@ -60,6 +60,37 @@ but it's limited to POSIX systems.
 | r           | Restart game                              |
 | h           | Show help window                          |
 
+## Dependencies
+
+yetris depends on two following libraries, `ncurses` and `iniparser`.
+
+### ncurses
+
+This library shows cute things on the terminal.
+
+For yetris you need the package *ncurses dev*. Note that it's _not_ the default
+that comes with your distro.
+
+| Distro         | Installation command              |
+| -------------- | --------------------------------- |
+| Ubuntu/Debian  | `apt-get install libncurses5-dev` |
+| Fedora         | `yum install ncurses-devel`       |
+| Arch Linux     | _comes by default_                |
+
+If you know the means to install on other distros, [please tell me][issues].
+
+### iniparser
+
+This library is used to parse **.ini** configuration files.
+
+| Distro         | Installation command               |
+| -------------- | ---------------------------------- |
+| Ubuntu/Debian  | `apt-get install libiniparser-dev` |
+| Fedora         | `yum install libiniparser-devel`   |
+| Arch Linux     | `pacman -S  iniparser`             |
+
+If you know the means to install on other distros, [please tell me][issues].
+
 ## Usage
 
 Briefly, the following shell commands should configure,
@@ -79,19 +110,6 @@ If you want to test the game before installing, do:
 
 The `Makefile` has lots of toggles and switches, check out
 it's first lines.
-
-## Dependencies
-
-To build yetris from source, you need the
-*ncurses developer library* `libncurses5-dev (>= 5.7)`.
-
-Note that this is **not** the one that comes by default
-with your distribution.
-
-To get it, use your favorite package manager.
-An example on apt-based systems:
-
-    $ apt-get install ncurses-dev
 
 ## Hacking
 
@@ -177,4 +195,6 @@ Also, some miscellaneous credits:
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/fde5a2c1dd787040f5121109b5451879 "githalytics.com")](http://githalytics.com/alexdantas/yetris)
+
+[issues]: https://github.com/alexdantas/yetris/issues
 
