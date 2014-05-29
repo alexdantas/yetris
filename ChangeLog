@@ -1,5 +1,14 @@
 All the changes are documented on the git history, so here's just the major ones
 
+29-05-14 v2.2.2:
+	* Gameplay: Added a button that allows rotating pieces by
+	            180 degrees.
+	* Bugs: Fixed a nasty bug that crashed the game randomly
+	        during the Water animation.
+	* Development: Removed entirely any C++11 features from the
+	               codebase, thus making this game portable across
+	               ancient compilers.
+
 08-03-14 v2.0.1:
 	* Bugs: Fixed this huge bug that prevented anyone from building
 	        yetris if not cloned from a git repository.
