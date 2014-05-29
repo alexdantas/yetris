@@ -55,8 +55,8 @@ void AnimationWater::update()
 
 	// Randomly adding a light point
 	if (Utils::Random::booleanWithChance(0.31))
-		buffer2->at(Utils::Random::between(0, buffer2->width()),
-		            Utils::Random::between(0, buffer2->height())) =HEIGHT_PERCENT(90);
+		buffer2->at(Utils::Random::between(0, buffer2->width()-1),
+		            Utils::Random::between(0, buffer2->height()-1)) = HEIGHT_PERCENT(90);
 
 	// Dont update the edges
 	for (unsigned int i = 1; i < (buffer1->width() - 1); i++)
