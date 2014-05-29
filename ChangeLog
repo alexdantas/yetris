@@ -1,5 +1,10 @@
 All the changes are documented on the git history, so here's just the major ones
 
+29-05-14 v2.2.3:
+	* Development: Stopped distributing libiniparser's source
+	               code along - now we expect the user to
+	               install it as a dependency.
+
 29-05-14 v2.2.2:
 	* Gameplay: Added a button that allows rotating pieces by
 	            180 degrees.
