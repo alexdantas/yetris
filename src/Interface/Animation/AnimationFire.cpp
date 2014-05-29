@@ -61,8 +61,8 @@ void AnimationFire::update()
 	                                           INTENSITY_PERCENT(12));
 
 	// Slim chance of a sudden burst or dim of the fire
-	bool burst = Utils::Random::booleanWithChance(1.66);
-	bool dim   = Utils::Random::booleanWithChance(1.24);
+	bool burst = Utils::Random::booleanWithChance(0.10);
+	bool dim   = Utils::Random::booleanWithChance(0.12);
 	if (burst) cooling_ratio = INTENSITY_PERCENT(1);
 	if (dim)   cooling_ratio = INTENSITY_PERCENT(30);
 
