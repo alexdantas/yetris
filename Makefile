@@ -64,7 +64,7 @@ EXE         = $(PACKAGE)
 CDEBUG      = -O2
 PLATFORM    =
 CXXFLAGS    = $(CDEBUG) -Wall -Wextra $(PLATFORM)
-LDFLAGS     = -lncurses $(PLATFORM)
+LDFLAGS     = -lncurses -liniparser $(PLATFORM)
 INCLUDESDIR = -I"src/" -I"deps/"
 LIBSDIR     =
 
@@ -77,12 +77,6 @@ OBJECTS  = $(CFILES:.c=.o) \
 DEFINES = -DVERSION=\""$(VERSION)"\" \
           -DPACKAGE=\""$(PACKAGE)"\" \
           -DDATE=\""$(DATE)"\"
-
-# iniparser stuff
-INIDIR     = deps/iniparser
-INI_CFLAGS = -O2 -fPIC -Wall -ansi -pedantic -Wextra $(PLATFORM)
-INI_OBJS   = $(INIDIR)/dictionary.o \
-             $(INIDIR)/iniparser.o
 
 # commander stuff
 COMMANDERDIR = deps/commander
@@ -136,9 +130,9 @@ purge: uninstall
 	# Purging configuration files...
 	$(MUTE)rm -f $(MANDIR)/$(MANFILE)
 
-$(EXE): $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS)
+$(EXE): $(OBJECTS) $(COMMANDER_OBJS)
 	# Linking...
-	$(MUTE)$(CXX) $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
+	$(MUTE)$(CXX) $(OBJECTS) $(COMMANDER_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
 src/%.o: src/%.cpp
 	# Compiling $<...
@@ -165,7 +159,7 @@ run: all
 
 clean:
 	# Cleaning files...
-	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(INI_OBJS) $(COMMANDER_OBJS)
+	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(COMMANDER_OBJS)
 	$(MUTE)rm $(VTAG) -f bin/$(EXE)
 
 dirs:
@@ -180,16 +174,6 @@ docclean:
 	-$(MUTE)rm $(VTAG) -rf doc/html
 
 .PHONY: clean dirs doc docclean uninstall
-
-# iniparser stuff
-
-$(INIDIR)/dictionary.o: $(INIDIR)/dictionary.c
-	# Compiling $<...
-	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
-
-$(INIDIR)/iniparser.o: $(INIDIR)/iniparser.c
-	# Compiling $<...
-	$(MUTE)$(CC) $(INI_CFLAGS) $< -c -o $@
 
 # commander stuf
 
