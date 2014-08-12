@@ -33,10 +33,10 @@ void AnimationWater::load()
 	{
 		for (unsigned int j = 0; j < height; j++)
 		{
-			buffer1->at(i, j) = Utils::Random::between(HEIGHT_MIN,
-			                                           HEIGHT_PERCENT(13));
-			buffer2->at(i, j) = Utils::Random::between(HEIGHT_MIN,
-			                                           HEIGHT_PERCENT(25));
+			buffer1->set(i, j, Utils::Random::between(HEIGHT_MIN,
+			                                          HEIGHT_PERCENT(13)));
+			buffer2->set(i, j, Utils::Random::between(HEIGHT_MIN,
+			                                          HEIGHT_PERCENT(25)));
 		}
 	}
 
@@ -55,8 +55,8 @@ void AnimationWater::update()
 
 	// Randomly adding a light point
 	if (Utils::Random::booleanWithChance(0.31))
-		buffer2->at(Utils::Random::between(0, buffer2->width()-1),
-		            Utils::Random::between(0, buffer2->height()-1)) = HEIGHT_PERCENT(90);
+		buffer2->set(Utils::Random::between(0, buffer2->width()-1),
+		             Utils::Random::between(0, buffer2->height()-1), HEIGHT_PERCENT(90));
 
 	// Dont update the edges
 	for (unsigned int i = 1; i < (buffer1->width() - 1); i++)
@@ -65,10 +65,10 @@ void AnimationWater::update()
 		{
 			// Instead of dividing by two,
 			// we're shifting by one
-			buffer2->at(i, j) = ((buffer1->at(i-1, j) +
-			                      buffer1->at(i+1, j) +
-			                      buffer1->at(i, j+1) +
-			                      buffer1->at(i, j-1)) >> 1) - buffer2->at(i, j);
+			buffer2->set(i, j, ((buffer1->at(i-1, j) +
+			                     buffer1->at(i+1, j) +
+			                     buffer1->at(i, j+1) +
+			                     buffer1->at(i, j-1)) >> 1) - buffer2->at(i, j));
 
 //			buffer2->at(i, j) -= (buffer2->at(i, j) >> 5);
 		}

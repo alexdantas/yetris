@@ -17,13 +17,12 @@
 	(x * (100/(INTENSITY_MAX - INTENSITY_MIN)))
 
 /// A single particle inside the whole fire.
-class ParticleFire
+struct ParticleFire
 {
-public:
 	int intensity;
 
-	ParticleFire():
-		intensity(0)
+	ParticleFire(int intensity=0):
+		intensity(intensity)
 	{ };
 };
 

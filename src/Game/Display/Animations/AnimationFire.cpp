@@ -36,17 +36,17 @@ void AnimationFire::load()
 
 	for (unsigned int i = 0; i < width; i++)
 		for (unsigned int j = 0; j < height; j++)
-			coolingMap->at(i, j) = Utils::Random::between(INTENSITY_MIN,
-			                                              INTENSITY_PERCENT(13));
+			coolingMap->set(i, j, Utils::Random::between(INTENSITY_MIN,
+			                                             INTENSITY_PERCENT(13)));
 
 	// Will smooth the cooling map a number of times
 	for (int n = 0; n < 10; n++)
 		for (unsigned int i = 1; i < width-1; i++)
 			for (unsigned int j = 1; j < height-1; j++)
-				coolingMap->at(i, j) = (coolingMap->at(i-1, j) +
-				                        coolingMap->at(i+1, j) +
-				                        coolingMap->at(i, j+1) +
-				                        coolingMap->at(i, j-1)) / 4;
+				coolingMap->set(i, j, (coolingMap->at(i-1, j) +
+				                       coolingMap->at(i+1, j) +
+				                       coolingMap->at(i, j+1) +
+				                       coolingMap->at(i, j-1)) / 4);
 
 	timer.start();
 }
@@ -68,7 +68,7 @@ void AnimationFire::update()
 
 	// Spawning high-intensity flames on the bottom particles
 	for (unsigned int i = 0; i < (particle->width()); i++)
-		particle->at(i, particle->height() - 1).intensity = Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX);
+		particle->set(i, particle->height() - 1, ParticleFire(Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX)));
 
 	// Randomly adding Sparks - high-intensity flames little higher
 	for (unsigned int i = 0; i < (particle->width()); i++)
@@ -77,7 +77,7 @@ void AnimationFire::update()
 		{
 			int height = particle->height() - Utils::Random::between(3, 6);
 
-			particle->at(i, height).intensity = Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX);
+			particle->set(i, height, ParticleFire(Utils::Random::between(INTENSITY_PERCENT(90), INTENSITY_MAX)));
 		}
 	}
 
@@ -87,10 +87,10 @@ void AnimationFire::update()
 		for (unsigned int j = 0; j < (particle->height()-1); j++)
 		{
 			// Cooling all particles based on the ones below
-			particle->at(i, j).intensity = particle->at(i, j + 1).intensity - cooling_ratio;
+			particle->set(i, j, ParticleFire(particle->at(i, j + 1).intensity - cooling_ratio));
 
 			// Cooling based on the cooling map
-			particle->at(i, j).intensity -= coolingMap->at(i, j);
+			particle->set(i, j, ParticleFire(particle->at(i, j).intensity - coolingMap->at(i, j)));
 		}
 	}
 
