@@ -4,6 +4,7 @@
 #include <Game/Display/Animations/AnimationFire.hpp>
 #include <Game/Display/Animations/AnimationWater.hpp>
 #include <Game/Display/Animations/AnimationSnakes.hpp>
+#include <Game/Display/Animations/AnimationGameOfLife.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/States/GameStateMainMenu.hpp>
@@ -79,7 +80,7 @@ void LayoutMainMenu::windowsInit()
 	                                      height);
 
 	// Deciding randomly the type of the Animation
-	switch(Utils::Random::between(0, 2))
+	switch(Utils::Random::between(0, 3))
 	{
 	case 0:
 		this->animation = new AnimationWater(this->animationContainer);
@@ -87,6 +88,10 @@ void LayoutMainMenu::windowsInit()
 
 	case 1:
 		this->animation = new AnimationSnakes(this->animationContainer);
+		break;
+
+	case 2:
+		this->animation = new AnimationGameOfLife(this->animationContainer);
 		break;
 
 	default:
