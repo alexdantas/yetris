@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include <Game/Block.hpp>
-#include <Game/Piece.hpp>
-#include <Interface/Window.hpp>
+#include <Game/Entities/Block.hpp>
+#include <Game/Entities/Piece.hpp>
+#include <Engine/Graphics/Window.hpp>
 
 #define DEFAULT_BOARD_WIDTH  10
 #define DEFAULT_BOARD_HEIGHT 20

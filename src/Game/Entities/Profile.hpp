@@ -1,8 +1,8 @@
 #ifndef PROFILE_H_DEFINED
 #define PROFILE_H_DEFINED
 
-#include <Game/Block.hpp>
-#include <Interface/Colors.hpp>
+#include <Game/Entities/Block.hpp>
+#include <Engine/Graphics/Colors.hpp>
 
 #include <vector>
 #include <string>

@@ -1,6 +1,6 @@
-#include <Interface/Animation/AnimationWater.hpp>
-#include <Interface/Colors.hpp>
-#include <Misc/Utils.hpp>
+#include <Game/Display/Animations/AnimationWater.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
 static ColorPair white      = 0;
 static ColorPair blue       = Colors::pair(COLOR_BLUE, COLOR_DEFAULT);

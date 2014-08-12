@@ -1,4 +1,4 @@
-#include <Game/RotationSystemSRS.hpp>
+#include <Game/Entities/RotationSystemSRS.hpp>
 
 char srs_possible_positions[2][2][4][5][2] =
 {

@@ -1,6 +1,6 @@
-#include <Config/Globals.hpp>
-#include <Config/INI.hpp>
-#include <Misc/Utils.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/INI.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
 #include <ncurses.h>
 

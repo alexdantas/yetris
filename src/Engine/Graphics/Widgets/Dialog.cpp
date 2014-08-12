@@ -1,8 +1,8 @@
-#include <Interface/Dialog.hpp>
-#include <Interface/Layout.hpp>
-#include <Interface/Menu/Menu.hpp>
-#include <Config/Globals.hpp>
-#include <Flow/InputManager.hpp>
+#include <Engine/Graphics/Widgets/Dialog.hpp>
+#include <Engine/Graphics/Layout.hpp>
+#include <Engine/Graphics/Widgets/Menu.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/InputManager.hpp>
 
 #include <vector>
 

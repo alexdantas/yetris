@@ -1,4 +1,4 @@
-#include <Game/Block.hpp>
+#include <Game/Entities/Block.hpp>
 
 Block::Block(ColorPair color, char first, char second):
 	color(color)

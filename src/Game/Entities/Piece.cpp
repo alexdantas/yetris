@@ -1,8 +1,8 @@
-#include <Game/Piece.hpp>
-#include <Game/PieceDefinitions.hpp>
-#include <Config/Globals.hpp>
-#include <Misc/Utils.hpp>
-#include <Interface/Window.hpp>
+#include <Game/Entities/Piece.hpp>
+#include <Game/Entities/PieceDefinitions.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Engine/Graphics/Window.hpp>
 
 // Local function that converts between an `int` and my `enum`.
 Piece::PieceType intToPieceType(int num)

@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H_DEFINED
 #define GLOBALS_H_DEFINED
 
-#include <Game/Profile.hpp>
+#include <Game/Entities/Profile.hpp>
 
 /// All global settings to the game.
 ///

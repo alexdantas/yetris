@@ -1,8 +1,8 @@
 #ifndef PIECEGHOST_H_DEFINED
 #define PIECEGHOST_H_DEFINED
 
-#include <Game/Piece.hpp>
-#include <Game/Board.hpp>
+#include <Game/Entities/Piece.hpp>
+#include <Game/Entities/Board.hpp>
 
 /// Special type of Piece, that shows
 /// where other Piece will land, by always being at the

@@ -1,4 +1,4 @@
-#include <Game/PieceDefinitions.hpp>
+#include <Game/Entities/PieceDefinitions.hpp>
 
 char global_pieces[7][4][5][5] =
 {

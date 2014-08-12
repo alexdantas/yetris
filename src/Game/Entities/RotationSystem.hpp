@@ -1,8 +1,8 @@
 #ifndef ROTATIONSYSTEM_H_DEFINED
 #define ROTATIONSYSTEM_H_DEFINED
 
-#include <Game/Piece.hpp>
-#include <Game/Board.hpp>
+#include <Game/Entities/Piece.hpp>
+#include <Game/Entities/Board.hpp>
 
 /// Abstract interface to rules on how to rotate pieces.
 class RotationSystem

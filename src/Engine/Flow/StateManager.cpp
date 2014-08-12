@@ -1,12 +1,12 @@
-#include <Flow/StateManager.hpp>
-#include <Flow/GameStateGame.hpp>
-#include <Flow/GameStateMainMenu.hpp>
-#include <Flow/GameStateFirstTime.hpp>
-#include <Flow/InputManager.hpp>
-#include <Misc/Utils.hpp>
-#include <Game/Profile.hpp>
-#include <Config/Globals.hpp>
-#include <Config/INI.hpp>
+#include <Engine/Flow/StateManager.hpp>
+#include <Game/States/GameStateGame.hpp>
+#include <Game/States/GameStateMainMenu.hpp>
+#include <Game/States/GameStateFirstTime.hpp>
+#include <Engine/InputManager.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Game/Entities/Profile.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/INI.hpp>
 
 StateManager::StateManager():
 	currentState(NULL),

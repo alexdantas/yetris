@@ -1,14 +1,14 @@
 #ifndef GAME_H_DEFINED
 #define GAME_H_DEFINED
 
-#include <Game/Piece.hpp>
-#include <Game/Board.hpp>
-#include <Game/RotationSystem.hpp>
-#include <Game/Statistics.hpp>
-#include <Game/PieceGhost.hpp>
-#include <Game/Score.hpp>
-#include <Misc/Timer.hpp>
-#include <Interface/Menu/Menu.hpp>
+#include <Game/Entities/Piece.hpp>
+#include <Game/Entities/Board.hpp>
+#include <Game/Entities/RotationSystem.hpp>
+#include <Game/Entities/Statistics.hpp>
+#include <Game/Entities/PieceGhost.hpp>
+#include <Game/Entities/Score.hpp>
+#include <Engine/Helpers/Timer.hpp>
+#include <Engine/Graphics/Widgets/Menu.hpp>
 
 #include <vector>
 

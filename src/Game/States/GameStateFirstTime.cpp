@@ -1,7 +1,7 @@
-#include <Flow/GameStateFirstTime.hpp>
-#include <Misc/Utils.hpp>
-#include <Interface/Ncurses.hpp>
-#include <Config/Globals.hpp>
+#include <Game/States/GameStateFirstTime.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Engine/Graphics/Ncurses.hpp>
+#include <Game/Config/Globals.hpp>
 
 #include <cstring>
 

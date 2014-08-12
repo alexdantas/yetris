@@ -1,11 +1,11 @@
-#include <Interface/LayoutMainMenu.hpp>
-#include <Interface/Colors.hpp>
-#include <Interface/Ncurses.hpp>
-#include <Interface/Animation/AnimationFire.hpp>
-#include <Interface/Animation/AnimationWater.hpp>
-#include <Config/Globals.hpp>
-#include <Misc/Utils.hpp>
-#include <Flow/GameStateMainMenu.hpp>
+#include <Game/Display/Layouts/LayoutMainMenu.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Engine/Graphics/Ncurses.hpp>
+#include <Game/Display/Animations/AnimationFire.hpp>
+#include <Game/Display/Animations/AnimationWater.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Game/States/GameStateMainMenu.hpp>
 
 #include <iostream>
 

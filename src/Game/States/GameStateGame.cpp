@@ -1,8 +1,8 @@
-#include <Flow/GameStateGame.hpp>
-#include <Flow/StateManager.hpp>
-#include <Misc/Utils.hpp>
-#include <Interface/Ncurses.hpp>
-#include <Config/Globals.hpp>
+#include <Game/States/GameStateGame.hpp>
+#include <Engine/Flow/StateManager.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Engine/Graphics/Ncurses.hpp>
+#include <Game/Config/Globals.hpp>
 
 GameStateGame::GameStateGame():
 	game(NULL),

@@ -1,6 +1,6 @@
-#include <Interface/Animation/AnimationFire.hpp>
-#include <Interface/Colors.hpp>
-#include <Misc/Utils.hpp>
+#include <Game/Display/Animations/AnimationFire.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
 static ColorPair red        = Colors::pair(COLOR_RED, COLOR_DEFAULT);
 static ColorPair redBold    = Colors::pair(COLOR_RED, COLOR_DEFAULT, true);

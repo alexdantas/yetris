@@ -1,10 +1,10 @@
-#include <Game/Game.hpp>
-#include <Game/RotationSystemSRS.hpp>
-#include <Game/PieceDefinitions.hpp>
-#include <Config/Globals.hpp>
-#include <Misc/Utils.hpp>
-#include <Interface/LayoutGame.hpp>
-#include <Flow/InputManager.hpp>
+#include <Game/Entities/Game.hpp>
+#include <Game/Entities/RotationSystemSRS.hpp>
+#include <Game/Entities/PieceDefinitions.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Game/Display/Layouts/LayoutGame.hpp>
+#include <Engine/InputManager.hpp>
 
 #include <stdlib.h>
 

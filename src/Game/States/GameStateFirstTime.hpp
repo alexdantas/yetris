@@ -1,9 +1,9 @@
 #ifndef GAMESTATEFIRSTTIME_H_DEFINED
 #define GAMESTATEFIRSTTIME_H_DEFINED
 
-#include <Flow/GameState.hpp>
-#include <Interface/LayoutFirstTime.hpp>
-#include <Interface/Menu/Menu.hpp>
+#include <Engine/Flow/GameState.hpp>
+#include <Game/Display/Layouts/LayoutFirstTime.hpp>
+#include <Engine/Graphics/Widgets/Menu.hpp>
 
 #include <string>
 

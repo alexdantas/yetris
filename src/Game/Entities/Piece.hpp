@@ -1,7 +1,7 @@
 #ifndef PIECE_H_DEFINED
 #define PIECE_H_DEFINED
 
-#include <Game/Block.hpp>
+#include <Game/Entities/Block.hpp>
 
 /// Represents a Tetromino - piece with usually 4 blocks.
 ///

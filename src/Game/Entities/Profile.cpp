@@ -1,9 +1,9 @@
-#include <Game/Profile.hpp>
-#include <Misc/Utils.hpp>
-#include <Config/Globals.hpp>
-#include <Config/INI.hpp>
-#include <Interface/Colors.hpp>
-#include <Flow/InputManager.hpp>
+#include <Game/Entities/Profile.hpp>
+#include <Engine/Helpers/Utils.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/INI.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Engine/InputManager.hpp>
 
 #include <vector>
 #include <algorithm>

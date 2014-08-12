@@ -1,8 +1,8 @@
-#include <Interface/WindowGameHelp.hpp>
-#include <Interface/Layout.hpp>
-#include <Interface/Colors.hpp>
-#include <Config/Globals.hpp>
-#include <Flow/InputManager.hpp>
+#include <Game/Display/WindowGameHelp.hpp>
+#include <Engine/Graphics/Layout.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/InputManager.hpp>
 
 WindowGameHelp::WindowGameHelp()
 {

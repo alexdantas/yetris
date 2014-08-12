@@ -1,7 +1,7 @@
-#include <Game/Board.hpp>
-#include <Game/PieceDefinitions.hpp>
-#include <Config/Globals.hpp>
-#include <Misc/Utils.hpp>
+#include <Game/Entities/Board.hpp>
+#include <Game/Entities/PieceDefinitions.hpp>
+#include <Game/Config/Globals.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
 #include <unistd.h>
 

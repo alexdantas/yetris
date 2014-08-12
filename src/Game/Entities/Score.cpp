@@ -1,4 +1,4 @@
-#include <Game/Score.hpp>
+#include <Game/Entities/Score.hpp>
 
 #include <stdlib.h>	  // getenv()
 

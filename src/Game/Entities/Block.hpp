@@ -1,8 +1,8 @@
 #ifndef BLOCK_H_DEFINED
 #define BLOCK_H_DEFINED
 
-#include <Interface/Colors.hpp>
-#include <Interface/Window.hpp>
+#include <Engine/Graphics/Colors.hpp>
+#include <Engine/Graphics/Window.hpp>
 
 /// How a block is shown on the screen.
 ///

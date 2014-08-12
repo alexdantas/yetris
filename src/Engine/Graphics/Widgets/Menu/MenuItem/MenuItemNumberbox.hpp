@@ -1,7 +1,7 @@
 #ifndef MENUITEMNUMBERBOX_H_DEFINED
 #define MENUITEMNUMBERBOX_H_DEFINED
 
-#include <Interface/Menu/MenuItem.hpp>
+#include <Engine/Graphics/Widgets/Menu/MenuItem.hpp>
 
 ///
 struct MenuItemNumberbox: public MenuItem
