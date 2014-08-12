@@ -3,6 +3,7 @@
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Game/Display/Animations/AnimationFire.hpp>
 #include <Game/Display/Animations/AnimationWater.hpp>
+#include <Game/Display/Animations/AnimationSnakes.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/States/GameStateMainMenu.hpp>
@@ -78,10 +79,14 @@ void LayoutMainMenu::windowsInit()
 	                                      height);
 
 	// Deciding randomly the type of the Animation
-	switch(Utils::Random::between(0, 1))
+	switch(Utils::Random::between(0, 2))
 	{
 	case 0:
 		this->animation = new AnimationWater(this->animationContainer);
+		break;
+
+	case 1:
+		this->animation = new AnimationSnakes(this->animationContainer);
 		break;
 
 	default:
