@@ -9,15 +9,17 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
 	// Main Menu
 	SINGLE_PLAYER,
-	HELP,
-	OPTIONS,
+	GAME_SETTINGS,
+	GUI_OPTIONS,
 	CONTROLS,
 	PROFILES,
+	HELP,
 	QUIT_GAME,
+
+	GO_BACK,
 
 	// Single Player Submenu
 	START_GAME,
-	GO_BACK,
 	STARTING_LEVEL,
 	INITIAL_NOISE,
 	INVISIBLE,
@@ -26,17 +28,19 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	HOLD_PIECE,
 	GHOST_PIECE,
 
-	// Options Submenu
+	// Game Settings
+	SHOW_STATISTICS,
+	RANDOM_ALGORITHM,
+	LINE_DELAY,
+	NEXT_PIECES,
+
+	// GUI Options
 	SHOW_BORDERS,
 	FANCY_BORDERS,
 	OUTER_BORDER,
 	USE_COLORS,
 	CENTER_HORIZONTAL,
 	CENTER_VERTICAL,
-	SHOW_STATISTICS,
-	RANDOM_ALGORITHM,
-	LINE_DELAY,
-	NEXT_PIECES,
 
 	// Controls Submenu
 	CONTROLS_KEY_LEFT,
@@ -65,8 +69,10 @@ GameStateMainMenu::GameStateMainMenu():
 	menu(NULL),
 	menuSinglePlayer(NULL),
 	menuSinglePlayerActivated(false),
-	menuOptions(NULL),
-	menuOptionsActvated(false),
+	menuGameSettings(NULL),
+	menuGameSettingsActivated(false),
+	menuGUIOptions(NULL),
+	menuGUIOptionsActivated(false),
 	menuProfiles(NULL),
 	menuProfilesActivated(false),
 	menuControls(NULL),
@@ -83,7 +89,8 @@ void GameStateMainMenu::load(int stack)
 
 	createMainMenu();
 	createSinglePlayerMenu();
-	createOptionsMenu();
+	createGameSettingsMenu();
+	createGUIOptionsMenu();
 	createProfilesMenu();
 	createControlsMenu();
 
@@ -98,7 +105,8 @@ int GameStateMainMenu::unload()
 	SAFE_DELETE(this->layout);
 	SAFE_DELETE(this->menuProfiles);
 	SAFE_DELETE(this->menuControls);
-	SAFE_DELETE(this->menuOptions);
+	SAFE_DELETE(this->menuGameSettings);
+	SAFE_DELETE(this->menuGUIOptions);
 	SAFE_DELETE(this->menuSinglePlayer);
 	SAFE_DELETE(this->menu);
 
@@ -212,16 +220,30 @@ GameState::StateCode GameStateMainMenu::update()
 			this->menuSinglePlayer->reset();
 		}
 	}
-	else if (this->menuOptionsActvated)
+	else if (this->menuGameSettingsActivated)
 	{
-		this->menuOptions->handleInput();
+		this->menuGameSettings->handleInput();
 
-		if (this->menuOptions->willQuit())
+		if (this->menuGameSettings->willQuit())
 		{
-			switch(this->menuOptions->currentID())
+			switch(this->menuGameSettings->currentID())
 			{
 			case GO_BACK:
-				this->menuOptionsActvated = false;
+				this->menuGameSettingsActivated = false;
+			}
+			this->menuGameSettings->reset();
+		}
+	}
+	else if (this->menuGUIOptionsActivated)
+	{
+		this->menuGUIOptions->handleInput();
+
+		if (this->menuGUIOptions->willQuit())
+		{
+			switch(this->menuGUIOptions->currentID())
+			{
+			case GO_BACK:
+				this->menuGUIOptionsActivated = false;
 
 				// Redrawing the screen to refresh settings
 				saveSettingsMenuOptions();
@@ -229,7 +251,7 @@ GameState::StateCode GameStateMainMenu::update()
 				this->layout->windowsInit();
 				break;
 			}
-			this->menuOptions->reset();
+			this->menuGUIOptions->reset();
 		}
 	}
 	else if (this->menuProfilesActivated)
@@ -265,7 +287,8 @@ GameState::StateCode GameStateMainMenu::update()
 
 				// Re-create menus based on current settings
 				createSinglePlayerMenu();
-				createOptionsMenu();
+				createGameSettingsMenu();
+				createGUIOptionsMenu();
 				createControlsMenu();
 
 				// Resetting the title name with current
@@ -383,8 +406,12 @@ GameState::StateCode GameStateMainMenu::update()
 				this->helpWindows->run();
 				break;
 
-			case OPTIONS:
-				this->menuOptionsActvated = true;
+			case GAME_SETTINGS:
+				this->menuGameSettingsActivated = true;
+				break;
+
+			case GUI_OPTIONS:
+				this->menuGUIOptionsActivated = true;
 				break;
 
 			case CONTROLS:
@@ -412,8 +439,11 @@ void GameStateMainMenu::draw()
 	if (this->menuSinglePlayerActivated)
 		this->layout->draw(this->menuSinglePlayer);
 
-	else if (this->menuOptionsActvated)
-		this->layout->draw(this->menuOptions);
+	else if (this->menuGameSettingsActivated)
+		this->layout->draw(this->menuGameSettings);
+
+	else if (this->menuGUIOptionsActivated)
+		this->layout->draw(this->menuGUIOptions);
 
 	else if (this->menuControlsActivated)
 		this->layout->draw(this->menuControls);
@@ -442,16 +472,19 @@ void GameStateMainMenu::createMainMenu()
 	item = new MenuItem("Single Player", SINGLE_PLAYER);
 	menu->add(item);
 
-	item = new MenuItem("Help", HELP);
+	item = new MenuItem("Game Settings", GAME_SETTINGS);
 	menu->add(item);
 
-	item = new MenuItem("Options", OPTIONS);
+	item = new MenuItem("GUI Options", GUI_OPTIONS);
 	menu->add(item);
 
 	item = new MenuItem("Controls", CONTROLS);
 	menu->add(item);
 
 	item = new MenuItem("Profiles", PROFILES);
+	menu->add(item);
+
+	item = new MenuItem("Help", HELP);
 	menu->add(item);
 
 	item = new MenuItem("Quit", QUIT_GAME);
@@ -510,62 +543,29 @@ void GameStateMainMenu::createSinglePlayerMenu()
 	                             GHOST_PIECE,
 	                             Globals::Profiles::current->settings.game.has_ghost);
 	menuSinglePlayer->add(check);
-
-	this->menuOptions = new Menu(1,
-	                             1,
-	                             this->layout->menu->getW() - 2,
-	                             this->layout->menu->getH() - 2);
-
-	item = new MenuItem("Back", GO_BACK);
-	menuOptions->add(item);
 }
-void GameStateMainMenu::createOptionsMenu()
+void GameStateMainMenu::createGameSettingsMenu()
 {
-	SAFE_DELETE(this->menuOptions);
+	SAFE_DELETE(this->menuGameSettings);
 
-	this->menuOptions = new Menu(1,
-	                             1,
-	                             this->layout->menu->getW() - 2,
-	                             this->layout->menu->getH() - 2);
+	this->menuGameSettings = new Menu(1,
+	                                1,
+	                                this->layout->menu->getW() - 2,
+	                                this->layout->menu->getH() - 2);
 
 	MenuItem* item;
 
 	item = new MenuItem("Back", GO_BACK);
-	menuOptions->add(item);
+	menuGameSettings->add(item);
 
-	menuOptions->addBlank();
+	menuGameSettings->addBlank();
 
 	MenuItemCheckbox* check;
-
-	check = new MenuItemCheckbox("Show Borders",
-	                             SHOW_BORDERS,
-	                             Globals::Profiles::current->settings.screen.show_borders);
-	menuOptions->add(check);
-
-	check = new MenuItemCheckbox("Fancy Borders",
-	                             FANCY_BORDERS,
-	                             Globals::Profiles::current->settings.screen.fancy_borders);
-	menuOptions->add(check);
-
-	check = new MenuItemCheckbox("Outer Border",
-	                             OUTER_BORDER,
-	                             Globals::Profiles::current->settings.screen.outer_border);
-	menuOptions->add(check);
-
-	check = new MenuItemCheckbox("Center Horizontal",
-	                             CENTER_HORIZONTAL,
-	                             Globals::Profiles::current->settings.screen.center_horizontally);
-	menuOptions->add(check);
-
-	check = new MenuItemCheckbox("Center Vertical",
-	                             CENTER_VERTICAL,
-	                             Globals::Profiles::current->settings.screen.center_vertically);
-	menuOptions->add(check);
 
 	check = new MenuItemCheckbox("Show Statistics",
 	                             SHOW_STATISTICS,
 	                             Globals::Profiles::current->settings.screen.show_statistics);
-	menuOptions->add(check);
+	menuGameSettings->add(check);
 
 	MenuItemNumberbox* box;
 
@@ -574,7 +574,7 @@ void GameStateMainMenu::createOptionsMenu()
 	                            1,
 	                            7,
 	                            Globals::Profiles::current->settings.game.next_pieces);
-	menuOptions->add(box);
+	menuGameSettings->add(box);
 
 	std::vector<std::string> options;
 	options.push_back("regular");
@@ -586,14 +586,57 @@ void GameStateMainMenu::createOptionsMenu()
 	                            RANDOM_ALGORITHM,
 	                            options,
 	                            Globals::Profiles::current->settings.game.random_algorithm);
-	menuOptions->add(list);
+	menuGameSettings->add(list);
 
 	box = new MenuItemNumberbox("Line clear delay(ms)",
 	                            LINE_DELAY,
 	                            0,
 	                            300,
 	                            Globals::Profiles::current->settings.game.line_clear_delay);
-	menuOptions->add(box);
+	menuGameSettings->add(box);
+}
+void GameStateMainMenu::createGUIOptionsMenu()
+{
+	SAFE_DELETE(this->menuGUIOptions);
+
+	this->menuGUIOptions = new Menu(1,
+	                                1,
+	                                this->layout->menu->getW() - 2,
+	                                this->layout->menu->getH() - 2);
+
+	MenuItem* item;
+
+	item = new MenuItem("Back", GO_BACK);
+	menuGUIOptions->add(item);
+
+	menuGUIOptions->addBlank();
+
+	MenuItemCheckbox* check;
+
+	check = new MenuItemCheckbox("Show Borders",
+	                             SHOW_BORDERS,
+	                             Globals::Profiles::current->settings.screen.show_borders);
+	menuGUIOptions->add(check);
+
+	check = new MenuItemCheckbox("Fancy Borders",
+	                             FANCY_BORDERS,
+	                             Globals::Profiles::current->settings.screen.fancy_borders);
+	menuGUIOptions->add(check);
+
+	check = new MenuItemCheckbox("Outer Border",
+	                             OUTER_BORDER,
+	                             Globals::Profiles::current->settings.screen.outer_border);
+	menuGUIOptions->add(check);
+
+	check = new MenuItemCheckbox("Center Horizontal",
+	                             CENTER_HORIZONTAL,
+	                             Globals::Profiles::current->settings.screen.center_horizontally);
+	menuGUIOptions->add(check);
+
+	check = new MenuItemCheckbox("Center Vertical",
+	                             CENTER_VERTICAL,
+	                             Globals::Profiles::current->settings.screen.center_vertically);
+	menuGUIOptions->add(check);
 }
 void GameStateMainMenu::createControlsMenu()
 {
@@ -698,7 +741,7 @@ void GameStateMainMenu::createProfilesMenu()
 }
 void GameStateMainMenu::saveSettingsMenuOptions()
 {
-	if (!this->menuOptions)
+	if (!this->menuGUIOptions)
 		return;
 
 	// Alias
@@ -706,15 +749,15 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 
 	// User selected an option
 	// Let's get ids from menu items
-	current->settings.screen.show_borders        = this->menuOptions->getBool(SHOW_BORDERS);
-	current->settings.screen.fancy_borders       = this->menuOptions->getBool(FANCY_BORDERS);
-	current->settings.screen.outer_border        = this->menuOptions->getBool(OUTER_BORDER);
-	current->settings.screen.center_horizontally = this->menuOptions->getBool(CENTER_HORIZONTAL);
-	current->settings.screen.center_vertically   = this->menuOptions->getBool(CENTER_VERTICAL);
-	current->settings.screen.show_statistics     = this->menuOptions->getBool(SHOW_STATISTICS);
-	current->settings.game.next_pieces           = this->menuOptions->getInt(NEXT_PIECES);
-	current->settings.game.random_algorithm      = this->menuOptions->getString(RANDOM_ALGORITHM);
-	current->settings.game.line_clear_delay      = this->menuOptions->getInt(LINE_DELAY);
+	current->settings.screen.show_borders        = this->menuGUIOptions->getBool(SHOW_BORDERS);
+	current->settings.screen.fancy_borders       = this->menuGUIOptions->getBool(FANCY_BORDERS);
+	current->settings.screen.outer_border        = this->menuGUIOptions->getBool(OUTER_BORDER);
+	current->settings.screen.center_horizontally = this->menuGUIOptions->getBool(CENTER_HORIZONTAL);
+	current->settings.screen.center_vertically   = this->menuGUIOptions->getBool(CENTER_VERTICAL);
+	current->settings.screen.show_statistics     = this->menuGUIOptions->getBool(SHOW_STATISTICS);
+	current->settings.game.next_pieces           = this->menuGUIOptions->getInt(NEXT_PIECES);
+	current->settings.game.random_algorithm      = this->menuGUIOptions->getString(RANDOM_ALGORITHM);
+	current->settings.game.line_clear_delay      = this->menuGUIOptions->getInt(LINE_DELAY);
 }
 void GameStateMainMenu::saveSettingsMenuSinglePlayer()
 {

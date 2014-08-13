@@ -30,12 +30,14 @@ private:
 	/// The main menu.
 	Menu* menu;
 
-	/// Single Player submenu.
 	Menu* menuSinglePlayer;
 	bool menuSinglePlayerActivated;
 
-	Menu* menuOptions;
-	bool menuOptionsActvated;
+	Menu* menuGameSettings;
+	bool menuGameSettingsActivated;
+
+	Menu* menuGUIOptions;
+	bool menuGUIOptionsActivated;
 
 	Menu* menuProfiles;
 	bool menuProfilesActivated;
@@ -48,7 +50,8 @@ private:
 	// easily create internal menus
 	void createMainMenu();
 	void createSinglePlayerMenu();
-	void createOptionsMenu();
+	void createGameSettingsMenu();
+	void createGUIOptionsMenu();
 	void createControlsMenu();
 	void createProfilesMenu();
 	void saveSettingsMenuOptions();
