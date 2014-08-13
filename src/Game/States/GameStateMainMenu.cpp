@@ -754,10 +754,11 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.outer_border        = this->menuGUIOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuGUIOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically   = this->menuGUIOptions->getBool(CENTER_VERTICAL);
-	current->settings.screen.show_statistics     = this->menuGUIOptions->getBool(SHOW_STATISTICS);
-	current->settings.game.next_pieces           = this->menuGUIOptions->getInt(NEXT_PIECES);
-	current->settings.game.random_algorithm      = this->menuGUIOptions->getString(RANDOM_ALGORITHM);
-	current->settings.game.line_clear_delay      = this->menuGUIOptions->getInt(LINE_DELAY);
+
+	current->settings.screen.show_statistics = this->menuGameSettings->getBool(SHOW_STATISTICS);
+	current->settings.game.next_pieces       = this->menuGameSettings->getInt(NEXT_PIECES);
+	current->settings.game.random_algorithm  = this->menuGameSettings->getString(RANDOM_ALGORITHM);
+	current->settings.game.line_clear_delay  = this->menuGameSettings->getInt(LINE_DELAY);
 }
 void GameStateMainMenu::saveSettingsMenuSinglePlayer()
 {
