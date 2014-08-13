@@ -101,21 +101,41 @@ Profile::Profile(std::string name):
 
 	if (! Utils::File::exists(Globals::Config::file))
 	{
-		INI ini;
+		INI::Parser ini;
 		ini.create();
-		ini.set("profiles:default", name);
-		ini.save(Globals::Config::file);
+
+		ini.top().addGroup("profiles");
+		ini("profiles").addKey("default", name);
+
+		try
+		{
+			ini.saveAs(Globals::Config::file);
+		}
+		catch(std::runtime_error& e)
+		{
+			// Couldn't save the file...
+			// ... do nothing
+		}
 	}
 	else
 	{
-		INI ini;
-		ini.load(Globals::Config::file);
-		std::string default_name = ini.get("profiles:default", "");
+		INI::Parser ini(Globals::Config::file);
 
-		if (default_name.empty())
+		std::string buffer = ini("profiles")["default"];
+		if (buffer.empty())
 		{
-			ini.set("profiles:default", name);
-			ini.save(Globals::Config::file);
+			ini.top().addGroup("profiles");
+			ini("profiles").addKey("default", name);
+
+			try
+			{
+				ini.saveAs(Globals::Config::file);
+			}
+			catch(std::runtime_error& e)
+			{
+				// Couldn't save the file...
+				// ... do nothing
+			}
 		}
 	}
 
@@ -281,9 +301,20 @@ void Profile::resetKeybindings()
 }
 void Profile::loadSettings()
 {
-	INI ini;
-	if (! ini.load(this->fileSettings))
+	INI::Parser* ini = NULL;
+
+	try {
+		ini = new INI::Parser(this->fileSettings);
+	}
+	catch(std::runtime_error& e)
+	{
+		// File doesn't exist (or we couldn't access it)
+		// Either way, ignore it silently
+		SAFE_DELETE(ini);
 		return;
+	}
+
+	std::string buffer;
 
 // Small macro to avoid unnecessary typing.
 //
@@ -293,89 +324,101 @@ void Profile::loadSettings()
 //
 // For the last one I send the variable itself,
 // so we fallback to the default values.
-#define INI_GET(var, text) \
-	{ \
-		var = ini.get(text, var); \
+#define INI_GET(var, out, in)                    \
+	{                                            \
+		buffer = (* ini)(out)[in];               \
+		if (! buffer.empty())                    \
+		{                                        \
+			Utils::String::convert(buffer, var); \
+		}                                        \
 	}
 
-	INI_GET(settings.screen.center_horizontally, "screen:center_horizontal");
-	INI_GET(settings.screen.center_vertically,   "screen:center_vertical");
+	INI_GET(settings.screen.center_horizontally, "screen", "center_horizontal");
+	INI_GET(settings.screen.center_vertically,   "screen", "center_vertical");
 
-	INI_GET(settings.screen.show_borders,  "screen:borders");
-	INI_GET(settings.screen.fancy_borders, "screen:fancy_borders");
-	INI_GET(settings.screen.outer_border,  "screen:outer_border");
+	INI_GET(settings.screen.show_borders,  "screen", "borders");
+	INI_GET(settings.screen.fancy_borders, "screen", "fancy_borders");
+	INI_GET(settings.screen.outer_border,  "screen", "outer_border");
 
-	INI_GET(settings.screen.use_colors, "screen:colors");
+	INI_GET(settings.screen.use_colors, "screen", "colors");
 
-	INI_GET(settings.screen.show_statistics, "screen:statistics");
+	INI_GET(settings.screen.show_statistics, "screen", "statistics");
 
 	// Game
 
-	INI_GET(settings.game.next_pieces,    "game:next_pieces");
-	INI_GET(settings.game.initial_noise,  "game:initial_noise");
-	INI_GET(settings.game.starting_level, "game:starting_level");
+	INI_GET(settings.game.next_pieces,    "game", "next_pieces");
+	INI_GET(settings.game.initial_noise,  "game", "initial_noise");
+	INI_GET(settings.game.starting_level, "game", "starting_level");
 
-	INI_GET(settings.game.has_ghost, "game:ghost");
-	INI_GET(settings.game.can_hold,  "game:hold");
+	INI_GET(settings.game.has_ghost, "game", "ghost");
+	INI_GET(settings.game.can_hold,  "game", "hold");
 
-	INI_GET(settings.game.random_algorithm, "game:random_algorithm");
+	INI_GET(settings.game.random_algorithm, "game", "random_algorithm");
 
-	INI_GET(settings.game.has_game_over_animation, "game:game_over_animation");
-	INI_GET(settings.game.line_clear_delay,        "game:line_clear_delay");
+	INI_GET(settings.game.has_game_over_animation, "game", "game_over_animation");
+	INI_GET(settings.game.line_clear_delay,        "game", "line_clear_delay");
 
-	INI_GET(settings.game.slide_left,  "game:slide_left");
-	INI_GET(settings.game.slide_right, "game:slide_right");
-	INI_GET(settings.game.invisible,   "game:invisible");
+	INI_GET(settings.game.slide_left,  "game", "slide_left");
+	INI_GET(settings.game.slide_right, "game", "slide_right");
+	INI_GET(settings.game.invisible,   "game", "invisible");
 
 	// Getting input keys
 	std::string tmp;
 
-	INI_GET(tmp, "input:left");
+	INI_GET(tmp, "input", "left");
 	InputManager::bind("left", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:right");
+	INI_GET(tmp, "input", "right");
 	InputManager::bind("right", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:down");
+	INI_GET(tmp, "input", "down");
 	InputManager::bind("down", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:drop");
+	INI_GET(tmp, "input", "drop");
 	InputManager::bind("drop", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:rotate_clockwise");
+	INI_GET(tmp, "input", "rotate_clockwise");
 	InputManager::bind("rotate_clockwise", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:rotate_counterclockwise");
+	INI_GET(tmp, "input", "rotate_counterclockwise");
 	InputManager::bind("rotate_counterclockwise", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:rotate_180");
+	INI_GET(tmp, "input", "rotate_180");
 	InputManager::bind("rotate_180", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:pause");
+	INI_GET(tmp, "input", "pause");
 	InputManager::bind("pause", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:help");
+	INI_GET(tmp, "input", "help");
 	InputManager::bind("help", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:hold");
+	INI_GET(tmp, "input", "hold");
 	InputManager::bind("hold", InputManager::stringToKey(tmp));
 
-	INI_GET(tmp, "input:quit");
+	INI_GET(tmp, "input", "quit");
 	InputManager::bind("quit", InputManager::stringToKey(tmp));
 
 	// Now, to the Theme file!
+	SAFE_DELETE(ini);
 
-	ini.free();
-	if (! ini.load(this->fileTheme))
+	try {
+		ini = new INI::Parser(this->fileTheme);
+	}
+	catch(std::runtime_error& e)
+	{
+		// File doesn't exist (or we couldn't access it)
+		// Either way, ignore it silently
+		SAFE_DELETE(ini);
 		return;
+	}
 
 	// FIXME: For now we're not dealing with colors,
 	//        only with block appearances!
 
-	INI_GET(settings.theme.piece_has_colors, "theme:piece_colors");
-	INI_GET(settings.theme.ghost_has_colors, "theme:ghost_colors");
-	INI_GET(settings.theme.show_pivot_block, "theme:show_pivot_block");
-	INI_GET(settings.theme.lock_piece_color, "theme:lock_piece_colors");
+	INI_GET(settings.theme.piece_has_colors, "theme", "piece_colors");
+	INI_GET(settings.theme.ghost_has_colors, "theme", "ghost_colors");
+	INI_GET(settings.theme.show_pivot_block, "theme", "show_pivot_block");
+	INI_GET(settings.theme.lock_piece_color, "theme", "lock_piece_colors");
 
 // 	std::string tmp;
 
@@ -401,100 +444,139 @@ void Profile::loadSettings()
 // 	INI_GET_THEME(settings.theme.piece_L,   "piece_L:block");
 // 	INI_GET_THEME(settings.theme.piece_J,   "piece_J:block");
 // 	INI_GET_THEME(settings.theme.piece_T,   "piece_T:block");
+
+	SAFE_DELETE(ini);
 }
 void Profile::saveSettings()
 {
-	INI ini;
-	if (! ini.load(this->fileSettings))
-		return;
+	// Even if the file doesn't exist, we'll create it.
+	INI::Parser* ini;
 
-#define INI_SET(text, var) \
-	{ \
-		ini.set(text, Utils::String::toString(var)); \
+	try
+	{
+		ini = new INI::Parser(this->fileSettings);
+	}
+	catch(std::runtime_error& e)
+	{
+		ini = new INI::Parser();
+		ini->create();
 	}
 
-	INI_SET("screen:center_horizontal", settings.screen.center_horizontally);
-	INI_SET("screen:center_vertical",   settings.screen.center_vertically);
+	std::string buffer;
 
-	INI_SET("screen:borders",       settings.screen.show_borders);
-	INI_SET("screen:fancy_borders", settings.screen.fancy_borders);
-	INI_SET("screen:outer_border",  settings.screen.outer_border);
+// Other macro to avoid typing, similar to the one
+// at loadFile()
+#define INI_SET(out, in, var)	               \
+	{                                          \
+		buffer = Utils::String::toString(var); \
+		ini->top().addGroup(out);              \
+		(* ini)(out).addKey(in, buffer);       \
+	}
 
-	INI_SET("screen:colors", settings.screen.use_colors);
+	INI_SET("screen", "center_horizontal", settings.screen.center_horizontally);
+	INI_SET("screen", "center_vertical",   settings.screen.center_vertically);
 
-	INI_SET("screen:statistics", settings.screen.show_statistics);
+	INI_SET("screen", "borders",       settings.screen.show_borders);
+	INI_SET("screen", "fancy_borders", settings.screen.fancy_borders);
+	INI_SET("screen", "outer_border",  settings.screen.outer_border);
+
+	INI_SET("screen", "colors", settings.screen.use_colors);
+
+	INI_SET("screen", "statistics", settings.screen.show_statistics);
 
 	// Game
 
-	INI_SET("game:next_pieces",    settings.game.next_pieces);
-	INI_SET("game:initial_noise",  settings.game.initial_noise);
-	INI_SET("game:starting_level", settings.game.starting_level);
+	INI_SET("game", "next_pieces",    settings.game.next_pieces);
+	INI_SET("game", "initial_noise",  settings.game.initial_noise);
+	INI_SET("game", "starting_level", settings.game.starting_level);
 
-	INI_SET("game:ghost", settings.game.has_ghost);
-	INI_SET("game:hold",  settings.game.can_hold);
+	INI_SET("game", "ghost", settings.game.has_ghost);
+	INI_SET("game", "hold",  settings.game.can_hold);
 
-	ini.set("game:random_algorithm", settings.game.random_algorithm);
+	INI_SET("game", "random_algorithm", settings.game.random_algorithm);
 
-	INI_SET("game:game_over_animation", settings.game.has_game_over_animation);
-	INI_SET("game:line_clear_delay",    settings.game.line_clear_delay);
+	INI_SET("game", "game_over_animation", settings.game.has_game_over_animation);
+	INI_SET("game", "line_clear_delay",    settings.game.line_clear_delay);
 
-	INI_SET("game:slide_left",  settings.game.slide_left);
-	INI_SET("game:slide_right", settings.game.slide_right);
-	INI_SET("game:invisible",   settings.game.invisible);
+	INI_SET("game", "slide_left",  settings.game.slide_left);
+	INI_SET("game", "slide_right", settings.game.slide_right);
+	INI_SET("game", "invisible",   settings.game.invisible);
 
 	// Input Keys
 	std::string key;
 
 	key = InputManager::keyToString(InputManager::getBind("left"));
-	INI_SET("input:left", key);
+	INI_SET("input", "left", key);
 
 	key = InputManager::keyToString(InputManager::getBind("right"));
-	INI_SET("input:right", key);
+	INI_SET("input", "right", key);
 
 	key = InputManager::keyToString(InputManager::getBind("down"));
-	INI_SET("input:down", key);
+	INI_SET("input", "down", key);
 
 	key = InputManager::keyToString(InputManager::getBind("drop"));
-	INI_SET("input:drop", key);
+	INI_SET("input", "drop", key);
 
 	key = InputManager::keyToString(InputManager::getBind("rotate_clockwise"));
-	INI_SET("input:rotate_clockwise", key);
+	INI_SET("input", "rotate_clockwise", key);
 
 	key = InputManager::keyToString(InputManager::getBind("rotate_counterclockwise"));
-	INI_SET("input:rotate_counterclockwise", key);
+	INI_SET("input", "rotate_counterclockwise", key);
 
 	key = InputManager::keyToString(InputManager::getBind("rotate_180"));
-	INI_SET("input:rotate_180", key);
+	INI_SET("input", "rotate_180", key);
 
 	key = InputManager::keyToString(InputManager::getBind("pause"));
-	INI_SET("input:pause", key);
+	INI_SET("input", "pause", key);
 
 	key = InputManager::keyToString(InputManager::getBind("help"));
-	INI_SET("input:help", key);
+	INI_SET("input", "help", key);
 
 	key = InputManager::keyToString(InputManager::getBind("hold"));
-	INI_SET("input:hold", key);
+	INI_SET("input", "hold", key);
 
 	key = InputManager::keyToString(InputManager::getBind("quit"));
-	INI_SET("input:quit", key);
+	INI_SET("input", "quit", key);
 
-	ini.save(this->fileSettings);
+	try
+	{
+		ini->saveAs(this->fileSettings);
+	}
+	catch(std::runtime_error& e)
+	{
+		// Couldn't save the file...
+		// ... do nothing
+	}
 
 	// Now, to the Theme file!
+	SAFE_DELETE(ini);
 
-	ini.free();
-	if (! ini.load(this->fileTheme))
-		return;
+	try {
+		ini = new INI::Parser(this->fileTheme);
+	}
+	catch(std::runtime_error& e)
+	{
+		ini = new INI::Parser();
+		ini->create();
+	}
 
 	// FIXME: For now we're not dealing with colors,
 	//        only with block appearances!
 
-	INI_SET("theme:piece_colors", settings.theme.piece_has_colors);
-	INI_SET("theme:ghost_colors", settings.theme.ghost_has_colors);
-	INI_SET("theme:show_pivot_block", settings.theme.show_pivot_block);
-	INI_SET("theme:lock_piece_colors", settings.theme.lock_piece_color);
+	INI_SET("theme", "piece_colors", settings.theme.piece_has_colors);
+	INI_SET("theme", "ghost_colors", settings.theme.ghost_has_colors);
+	INI_SET("theme", "show_pivot_block", settings.theme.show_pivot_block);
+	INI_SET("theme", "lock_piece_colors", settings.theme.lock_piece_color);
 
-	ini.save(this->fileTheme);
+	try
+	{
+		ini->saveAs(this->fileTheme);
+	}
+	catch(std::runtime_error& e)
+	{
+		// Couldn't save the file...
+		// ... do nothing
+	}
 
 // 	std::string tmp;
 
@@ -520,5 +602,6 @@ void Profile::saveSettings()
 // 	INI_SET_THEME(settings.theme.piece_L,   "piece_L:block");
 // 	INI_SET_THEME(settings.theme.piece_J,   "piece_J:block");
 // 	INI_SET_THEME(settings.theme.piece_T,   "piece_T:block");
+	SAFE_DELETE(ini);
 }
 

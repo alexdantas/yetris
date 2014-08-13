@@ -1,124 +1,219 @@
 #include <Engine/Helpers/INI.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
-#include <cstring>				// strncpy()
-
-INI::INI():
-	ini(NULL)
-{ }
-INI::~INI()
+void INI::Level::addGroup(std::string name)
 {
-	this->free();
-}
+	name = Utils::String::trim(name);
 
-bool INI::load(std::string file)
-{
-	if (this->ini)
-		this->free();
-
-	this->ini = iniparser_load(file.c_str());
-
-	return (this->ini ?
-	        true :
-	        false);
-}
-void INI::create()
-{
-	if (this->ini)
-		this->free();
-
-	this->ini = dictionary_new(0);
-}
-void INI::free()
-{
-	if (this->ini)
-	{
-		iniparser_freedict(this->ini);
-		this->ini = NULL;
-	}
-}
-bool INI::get(std::string where, bool default_value)
-{
-	int test = -666;
-
-	test = iniparser_getboolean(this->ini, where.c_str(), test);
-
-	if (test == -666)
-		return default_value;
-
-	return ((test == 1) ?
-	        true:
-	        false);
-}
-int INI::get(std::string where, int default_value)
-{
-	return iniparser_getint(this->ini, where.c_str(), default_value);
-}
-unsigned int INI::get(std::string where, unsigned int default_value)
-{
-	return (unsigned int)iniparser_getint(this->ini, where.c_str(), default_value);
-}
-double INI::get(std::string where, double default_value)
-{
-	return iniparser_getdouble(this->ini, where.c_str(), default_value);
-}
-std::string INI::get(std::string where, const char* default_value)
-{
-	// All this because I can't convert `const char*` to `char*`
-	size_t len = strlen(default_value);
-
-	char s[len+1];
-	strncpy(s, default_value, len);
-
-	// Finally!
-	return iniparser_getstring(this->ini, where.c_str(), s);
-}
-std::string INI::get(std::string where, std::string default_value)
-{
-	// All this because I can't convert `const char*` to `char*`
-	size_t len = default_value.size();
-
-	char s[len+1];
-	strncpy(s, default_value.c_str(), len);
-
-	// Finally!
-	return iniparser_getstring(this->ini, where.c_str(), s);
-}
-void INI::set(std::string what, std::string value)
-{
-	size_t pos = what.find(':');
-	if (pos != std::string::npos)
-	{
-		// User's adding a section - like "section:key".
-		// Let's make sure it exists
-		std::string section = what.substr(0, pos);
-
-		if (iniparser_find_entry(this->ini, section.c_str()) == 0)
-		{
-			// Doesn't exist - creating...
-			this->set(section, "");
-		}
-	}
-
-	iniparser_set(this->ini, what.c_str(), value.c_str());
-}
-void INI::unset(std::string what)
-{
-	iniparser_unset(this->ini, what.c_str());
-}
-void INI::save(std::string file)
-{
-	FILE* fp = fopen(file.c_str(), "w");
-	if (fp)
-	{
-		this->save(fp);
-		fclose(fp);
-	}
-}
-void INI::save(FILE* file)
-{
-	if (! file)
+	// When we call `this->sections[name]` we already create
+	// a new one if it doesn't exist.
+	//
+	// The only way we'll know we just made a new one is if
+	// it's parent is NULL.
+	//
+	// Since the only one allowed to be like this is the top
+	// (and the top always exist), this is the way we check
+	// for newly-created group.
+	if (this->sections[name].parent != NULL)
 		return;
 
-	iniparser_dump_ini(this->ini, file);
+	// Setting it's parent as ourselves
+	this->sections[name].parent = this;
+	this->sections[name].depth  = this->depth + 1;
+
+	// Registering it on ourselves
+	this->ordered_sections.push_back(this->sections.find(name));
+}
+void INI::Level::addKey(std::string name, std::string value)
+{
+	name  = Utils::String::trim(name);
+	value = Utils::String::trim(value);
+
+	std::pair<Level::ValueMap::const_iterator, bool> res =
+		this->values.insert(std::make_pair(name, value));
+
+	if (!res.second)
+	{
+		// Found other key with this name,
+		// let's overwrite its value
+		this->values[name] = value;
+		return;
+	}
+	this->ordered_values.push_back(res.first);
+}
+
+void INI::Parser::raise_error(std::string msg)
+{
+	std::string buffer = ("Error '" +
+	                      msg +
+	                      "' on line #" +
+	                      Utils::String::toString(this->lines));
+
+	throw std::runtime_error(buffer);
+}
+
+INI::Parser::Parser() :
+	lines(0)
+{
+	this->create();
+}
+
+INI::Parser::Parser(std::string filename) :
+	input_file(filename.c_str()),
+	input(&input_file),
+	lines(0)
+{
+	if (! input)
+		throw std::runtime_error("Failed to open file: " + filename);
+
+	parse(this->top_level);
+}
+
+INI::Parser::Parser(std::istream& stream) :
+	input(&stream),
+	lines(0)
+{
+	parse(this->top_level);
+}
+
+INI::Level& INI::Parser::top()
+{
+	return this->top_level;
+}
+
+void INI::Parser::dump(std::ostream& stream)
+{
+	dump(stream, top(), "");
+}
+
+void INI::Parser::parseLevelLine(std::string& sname, size_t& depth)
+{
+	depth = 0;
+
+	for (; depth < line_.length(); ++depth)
+		if (line_[depth] != '[') break;
+
+	sname = line_.substr(depth, line_.length() - 2*depth);
+}
+
+void INI::Parser::parse(INI::Level& level)
+{
+	while (std::getline(*input, line_))
+	{
+		++lines;
+
+		if (line_[0] == '#' || line_[0] == ';') continue;
+
+		line_ = Utils::String::trim(line_);
+
+		if (line_.empty()) continue;
+
+		if (line_[0] == '[')
+		{
+			size_t depth;
+
+			std::string sname;
+
+			parseLevelLine(sname, depth);
+
+			INI::Level* level_current = NULL;
+			INI::Level* parent        = &level;
+
+			if (depth > level.depth + 1)
+				raise_error("section with wrong depth");
+
+			if (level.depth == depth - 1)
+				level_current = &level.sections[sname];
+
+			else
+			{
+				level_current = level.parent;
+
+				size_t n = (level.depth - depth);
+
+				for (size_t i = 0; i < n; ++i)
+					level_current = level_current->parent;
+
+				parent = level_current;
+
+				level_current = &level_current->sections[sname];
+
+			}
+
+			if (level_current->depth != 0)
+				raise_error("duplicate section name on the same level");
+
+			if (!level_current->parent)
+			{
+				level_current->depth  = depth;
+				level_current->parent = parent;
+			}
+
+			parent->ordered_sections.push_back(parent->sections.find(sname));
+
+			parse(*level_current);
+		}
+		else
+		{
+			// Not a group - found a key-value pair, like:
+			// `something = other_something`
+
+			size_t pos = line_.find('=');
+
+			if (pos == std::string::npos)
+				raise_error("no '=' found");
+
+			std::string key   = line_.substr(0, pos);
+			std::string value = line_.substr((pos + 1), (line_.length()-pos-1));
+
+			level.addKey(key, value);
+		}
+	}
+}
+
+void INI::Parser::dump(std::ostream& s, const INI::Level& l, const std::string& sname)
+{
+	if (!sname.empty())
+		s << '\n';
+
+	for (size_t i = 0; i < l.depth; ++i)
+		s << '[';
+
+	if (!sname.empty())
+		s << sname;
+
+	for (size_t i = 0; i < l.depth; ++i)
+		s << ']';
+
+	if (!sname.empty())
+		s << std::endl;
+
+	for (INI::Level::Values::const_iterator it = l.ordered_values.begin();
+	     it != l.ordered_values.end();
+	     ++it)
+		s << (*it)->first << '=' << (*it)->second << std::endl;
+
+	for (INI::Level::Sections::const_iterator it = l.ordered_sections.begin();
+	     it != l.ordered_sections.end();
+	     ++it)
+	{
+		assert((*it)->second.depth == l.depth+1);
+
+		dump(s, (*it)->second, (*it)->first);
+	}
+}
+
+void INI::Parser::saveAs(std::string filename)
+{
+	std::ofstream file_out(filename.c_str());
+	if (!file_out)
+		throw std::runtime_error(std::string("Couldn't open '" + filename + "'"));
+
+	this->dump(file_out);
+}
+
+void INI::Parser::create()
+{
+	this->top_level = Level();
 }
 

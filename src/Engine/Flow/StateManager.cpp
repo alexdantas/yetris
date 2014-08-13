@@ -110,11 +110,32 @@ void StateManager::run()
 
 	// And set the current profile as the default
 	// to load next time.
-	INI ini;
-	if (! ini.load(Globals::Config::file))
-		ini.create();
+	INI::Parser* ini;
 
-	ini.set("profiles:default", Globals::Profiles::current->name);
-	ini.save(Globals::Config::file);
+	try
+	{
+		ini = new INI::Parser(Globals::Config::file);
+	}
+	catch(std::runtime_error& e)
+	{
+		// File doesn't exist!
+		// Silently create
+		ini = new INI::Parser();
+		ini->create();
+	}
+
+	ini->top().addGroup("profiles");
+	(*ini)("profiles").addKey("default", Globals::Profiles::current->name);
+
+	try
+	{
+		ini->saveAs(Globals::Config::file);
+	}
+	catch(std::runtime_error& e)
+	{
+		// Couldn't save the file...
+		// ...do nothing
+	}
+	SAFE_DELETE(ini);
 }
 

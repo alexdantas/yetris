@@ -64,11 +64,23 @@ void Globals::init()
 	// global settings file.
 	if (Utils::File::exists(Globals::Config::file))
 	{
-		INI ini;
-		if (ini.load(Globals::Config::file))
-		{
-			Globals::Profiles::default_name = ini.get("profiles:default", Globals::Profiles::default_name);
+		INI::Parser* ini = NULL;
+
+		try {
+			ini = new INI::Parser(Globals::Config::file);
 		}
+		catch(std::runtime_error& e)
+		{
+			// File doesn't exist (or we couldn't access it)
+			// Either way, ignore it silently
+			SAFE_DELETE(ini);
+			return;
+		}
+
+		std::string buffer = (*ini)("profiles")["default"];
+
+		if (! buffer.empty())
+			Globals::Profiles::default_name	= buffer;
 	}
 }
 

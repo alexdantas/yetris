@@ -1,155 +1,247 @@
 #ifndef INI_H_DEFINED
 #define INI_H_DEFINED
 
+#include <cassert>
+#include <map>
+#include <list>
+#include <stdexcept>
 #include <string>
-#include <cstdio>                // FILE* fopen() fclose()
-extern "C" {
-#include <iniparser.h> // local files
-}
+#include <cstring>
+#include <iostream>
+#include <fstream>
 
-/// Loads settings from a file with `.ini` configuration format.
+/// Simple module that contains everything needed to load
+/// and parse a file with the INI configuration format.
 ///
-/// ## INI file
-///
-/// An `.ini` file has sections, keys and values.
-/// Like:
-///
-///     ; comment style 1
-///     # comment style 2
-///     [section]
-///     key = value
-///     [section2]
-///     key2 = value2
-///
-/// It is mandatory that all keys are stored within sections.
-/// Blank lines are allowed.
-///
-/// Sections and keys are case-insensitive.
-/// Values can be:
-///
-/// * Boolean: yes/no, YES/NO, true/false, TRUE/FALSE, 1/0
-/// * Integer: 42 (decimal), 042 (octal), 0x42 (hex)
-/// * Double: 1.12321, 543.92502
-/// * String: any sequence of characters to the end of line
+/// It basically is an INI::Parser, which uses several INI::Level
+/// according to the contents of the file.
 ///
 /// ## Usage
 ///
-///     INI ini;
-///     if (! ini.load("filename.ini"))
-///         // Woops, something bad happened.
-///         // File doensn't exist, whatever
-///     bool var = ini.get("section1:booleanValue", true);
-///     int otherVar = ini.get("section2:intValue", 2);
-///     std::string another = ini.get("section3:string", "4");
+/// For an INI file like this:
 ///
-/// ## get() path format
+///     key       = value
+///     [group]
+///     other_key = other_value
+///     [[nested_group]]
+///     final_key = final_value
 ///
-/// Suppose you have an ini file like this:
+/// You'd run this module like this:
 ///
-///     [section1]
-///     key = value
-///     [section2]
-///     otherKey = 2
+///     // Loads and parses immediately the file
+///     INI::Parser parser("path/to/file.ini");
+///     // Returns "value"
+///     parser["key"];
+///     // Returns "other_value"
+///     parser("group")["other_key"];
+///     // Returns "final_value"
+///     parser("group")("nested_group")["final_key"];
 ///
-/// Then to get() the first value you should ask with the
-/// string "section1:key".
-/// For the second, it should be "section2:otherKey".
+/// ## Credits
 ///
-class INI
-{
-public:
-	INI();
-	virtual ~INI();
+/// This module is a modified version of `ini-parser`,
+/// originally made by Poordeveloper.
+///
+/// - Homepage:    https://github.com/Poordeveloper/ini-parser
+/// - DevHomepage: https://github.com/Poordeveloper
+///
+namespace INI {
 
-	/// Loads and parses #file.
+	/// Contains a "scope" of the INI file.
 	///
-	/// @return If we've successfuly loaded the file.
-	bool load(std::string file);
-
-	/// Creates a blank ini file in memory.
+	/// Suppose an INI file like this:
 	///
-	/// @see save()
-	void create();
-
-	/// Cleans up internal allocated memory.
+	///     key=value
+	///     [group]
+	///     key=value
+	///     [[group2]]
+	///     key=value
+	///     [[[group3]]
+	///     key=value
 	///
-	/// @note It is safe to call this function many times,
-	///       and it's automatically called at the destructor
-	///       so call it only if you want to release the
-	///       memory early.
+	/// We have four Levels, `group`, `group2` and `group3`
+	/// and the top level, which contains all other levels.
 	///
-	void free();
-
-	/// Gets a boolean value located at #where inside the file.
-	/// Check the class documentation for it's format.
+	/// You access keys with the `[]` operator and child groups
+	/// with the `()` operator.
+	/// So, for the example above:
 	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	bool get(std::string where, bool default_value);
-
-	/// Gets an integer value located at #where inside the file.
-	/// Check the class documentation for it's format.
+	///     parser.top()("group")("group2")("group3")["key"] == "value"
 	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	int get(std::string where, int default_value);
+	struct Level
+	{
+		/// Create the topmost Level.
+		Level() :
+			parent(NULL),
+			depth(0)
+		{ }
 
-	/// Gets an unsigned integer value located at #where inside
-	/// the file.
-	/// Check the class documentation for it's format.
+		/// Create a level with parent #p.
+		Level(Level* p) :
+			parent(p),
+			depth(0)
+		{ }
+
+		/// The parent Level of this one.
+		/// NULL for the topmost.
+		Level* parent;
+
+		/// Counter of how many nested levels this one is.
+		size_t depth;
+
+		typedef std::map<std::string, std::string>    ValueMap;
+		typedef std::map<std::string, Level>          SectionMap;
+		typedef std::list<ValueMap::const_iterator>   Values;
+		typedef std::list<SectionMap::const_iterator> Sections;
+
+		/// All the key values inside this Level.
+		/// So for an INI like this:
+		///
+		///     [group]
+		///     key=value
+		///
+		/// This would return "value":
+		///
+		///     level.values["key"]
+		///
+		ValueMap values;
+
+		/// All the Levels inside this Level.
+		/// So for an INI like this:
+		///
+		///     [group]
+		///     [group2]
+		///     key=value
+		///
+		/// This would return "value":
+		///
+		///     level.sections["group2"].values["key"]
+		///
+		SectionMap sections;
+
+		/// All values in the original order of the INI file.
+		Values ordered_values;
+
+		/// All Sections in the original order of the INI file.
+		Sections ordered_sections;
+
+		/// Access a key within this Level.
+		const std::string& operator[](const std::string& name)
+		{
+			return this->values[name];
+		}
+
+		/// Access another Level within this Level.
+		Level& operator()(const std::string& name)
+		{
+			return this->sections[name];
+		}
+
+		/// Creates a new child group with #name.
+		/// @note If it already exists, do nothing.
+		/// @note Inside this method we trim `name`
+		///       of spaces and tabs.
+		void addGroup(std::string name);
+
+		/// Creates a new key #name with #value.
+		///
+		/// @note If the key already exists will overwrite it's value.
+		/// @note Inside this method we trim `name` and `value`
+		///       of spaces and tabs.
+		void addKey(std::string name, std::string value);
+	};
+
+	/// Loads, reads and parses the contents of an INI file (or string).
 	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	unsigned int get(std::string where, unsigned int default_value);
+	class Parser
+	{
 
-	/// Gets a double value located at #where inside the file.
-	/// Check the class documentation for it's format.
-	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	double get(std::string where, double default_value);
+	public:
+		/// Creates a blank new INI file.
+		///
+		/// @see Parser::create()
+		Parser();
 
-	/// Gets a string value located at #where inside the file.
-	/// Check the class documentation for it's format.
-	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	std::string get(std::string where, const char* default_value);
+		/// Load and parse #filename.
+		Parser(std::string filename);
 
-	/// Gets a string value located at #where inside the file.
-	/// Check the class documentation for it's format.
-	///
-	/// @return The value or #default_value if it doesn't exist,
-	///         the file itself isn't there or something happened.
-	std::string get(std::string where, std::string default_value);
+		/// Parse a stream.
+		/// It can be used to parse strings from memory.
+		Parser(std::istream& stream);
 
-	/// Sets #what to #value.
-	/// If it exists, will get overriden. If not, creates it.
-	/// @see save()
-	void set(std::string what, std::string value);
+		/// Outputs the contents of the INI file to #stream.
+		///
+		/// It dumps a valid INI file, according to this
+		/// parsers modifications.
+		///
+		void dump(std::ostream& stream);
 
-	/// Removes #what entry from internal ini contents.
-	/// @see save()
-	void unset(std::string what);
+		/// Returns the top level of this INI file.
+		/// You can then access all it's keys and nested groups
+		/// with the Level methods.
+		///
+		/// @see Level
+		Level& top();
 
-	/// Saves all internal ini key-values to #file.
-	///
-	/// @note No comments are preserved when saving!
-	void save(std::string file);
+		/// Shortcut to access a key within the top level.
+		const std::string& operator[](const std::string& name)
+		{
+			return this->top()[name];
+		}
 
-	/// C-style saving of the internal ini key-values.
-	///
-	/// @note The advantage of it is that you can specify
-	///       stdout or stderr.
-	/// @note It checks for NULL pointers, don't worry.
-	/// @note Again, no comments are preserved when saving!
-	void save(FILE* file);
+		/// Shortcut to access a Level within the top level.
+		Level& operator()(const std::string& name)
+		{
+			return this->top()(name);
+		}
 
-private:
+		/// Creates a blank INI registry.
+		///
+		/// It resets itself, allowing you to create brand new
+		/// INI files from scratch.
+		///
+		/// @see Level::addKey()
+		/// @see level::addGroup()
+		///
+		/// @note It drops everything that may already have
+		///       been loaded.
+		void create();
 
-	/// Iniparser's internal data structure.
-	dictionary* ini;
-};
+		/// Save all the internal INI contents on a file with #filename.
+		void saveAs(std::string filename);
 
-#endif //INI_H_DEFINED
+	private:
+		void dump(std::ostream& s, const Level& l, const std::string& sname);
+
+		void parse(Level& l);
+
+		/// Parses a line that defines a Level.
+		///
+		/// Lines like this:
+		///
+		///     [group]
+		///     [[group]]
+		///
+		/// And so on...
+		///
+		void parseLevelLine(std::string& sname, size_t& depth);
+
+		/// Throws an exception with error message #msg.
+		/// It also contains the current line number.
+		void raise_error(std::string msg);
+
+		Level top_level;
+
+		std::ifstream input_file;
+
+		std::istream* input;
+
+		std::string line_;
+
+		/// Counter of how many lines we've parsed.
+		size_t lines;
+	};
+}
+
+#endif // INI_H_DEFINED
 
