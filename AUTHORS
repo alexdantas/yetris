@@ -1,4 +1,9 @@
-
-Alexandre Dantas <alex.dantas92@gmail.com>
+Alexandre Dantas <eu@alexdantas.net>
+* Main upstream and current maintainer.
 
 karfield <karfield@126.com>
+* Fixed forward declaration of some headers.
+
+Rodrigo Rebello
+* Fixed resource leak issues and optimized disk reading.
+

@@ -1,19 +1,28 @@
-Things I must do later
-----------------------
+# TODO
 
-* Save and restore game state
-  (binary file with info on all major game data structures)
-  (save with, idk, F10, and restore with --restore commandline)
-  ** I'm actually doing this! Hopefully, will be done on the next version **
+This is a long-term list of things that might be nice
+to have on the game. They're grouped by how much
+difficult would be to actually implement.
 
-* Improve coding style
-  (document even more and clean stupid hacks on the code)
+If you want to add a suggestion, by all means create an
+issue here:
 
-* Give tons of flags to the 'global' data structure
-  (must know exactly what's happening through bool flags)
+https://github.com/alexdantas/yetris/issues?state=open
 
-* Fix the falling piece thingy
-   (when you press and hold down, the piece falls and the
-    next one keeps falling with the same speed as the one
-    before)
+---
+
+- [ ] Save and restore game state (binary file with info on all major
+      game data structures) (save with, idk, F10, and restore with
+      --restore commandline) ** I'm actually doing this! Hopefully,
+      will be done on the next version **
+
+- [ ] Improve coding style (document even more and clean stupid hacks
+      on the code)
+
+- [ ] Give tons of flags to the 'global' data structure (must know
+      exactly what's happening through bool flags)
+
+- [ ] Fix the falling piece thingy (when you press and hold down, the
+      piece falls and the next one keeps falling with the same speed
+      as the one before)
 

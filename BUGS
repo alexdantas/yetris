@@ -1,22 +1,7 @@
-Known bugs and issues
----------------------
+# BUGS
 
-They're given a 5-star rating based on their importance.
-If you ever find any bug on yetris, please message me!
-Contact info at README.
+There are no long-term bugs.
+For a list of currently unsolved issues, go to:
 
-Current Bugs
-------------
-
-***** No actual High scores implemented! How can I do this?
-***   If force the piece down, the falling time doubles.
-**    When the game ends, the animation leaves some blocks colored.
-****  Cannot rotate pieces if it's way's blocked or on the corner.
-
-Fixed Bugs
-----------
-
-***** While the game is paused, the game timer keeps counting!
-***   Piece hanging on the sides when above ceiling.
-****  Bad timer.
+https://github.com/alexdantas/yetris/issues?state=open
 

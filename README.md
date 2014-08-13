@@ -62,13 +62,9 @@ but it's limited to POSIX systems.
 
 ## Dependencies
 
-yetris depends on two following libraries, `ncurses` and `iniparser`.
+yetris only depends on `ncurses`; it's used to show cute things on the terminal.
 
-### ncurses
-
-This library shows cute things on the terminal.
-
-For yetris you need the package *ncurses dev*. Note that it's _not_ the default
+Make sure you have the package *ncurses dev*. Note that it's _not_ the default
 that comes with your distro.
 
 | Distro         | Installation command              |
@@ -79,37 +75,25 @@ that comes with your distro.
 
 If you know the means to install on other distros, [please tell me][issues].
 
-### iniparser
-
-This library is used to parse **.ini** configuration files.
-
-| Distro         | Installation command               |
-| -------------- | ---------------------------------- |
-| Ubuntu/Debian  | `apt-get install libiniparser-dev` |
-| Fedora         | `yum install libiniparser-devel`   |
-| Arch Linux     | `pacman -S  iniparser`             |
-
-If you know the means to install on other distros, [please tell me][issues].
-
 ## Usage
 
 Briefly, the following shell commands should configure,
-build and install this package:
+build and install this package on the default directories:
 
     $ make
     $ [sudo] make install
-	$ man yetris
 
-By default yetris is installed at `/usr/games`, with the
-settings and scores at `~/.local/share/yetris`. To
-see how to change those, go to the file `INSTALL.md`.
-
-If you want to test the game before installing, do:
+If you want to test it before installing, do:
 
     $ make run
 
-The `Makefile` has lots of toggles and switches, check out
-it's first lines.
+Then, it's simple:
+
+	$ man yetris
+	$ yetris --help
+	$ yetris
+
+Check file `INSTALL.md` for more info.
 
 ## Hacking
 
