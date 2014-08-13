@@ -58,7 +58,7 @@ namespace InputManager
 
 	/// Contains all binds from names to internal Ncurses values.
 	extern std::map<std::string, int> binds;
-};
+}
 
 #endif //INPUTMANAGER_H_DEFINED
 

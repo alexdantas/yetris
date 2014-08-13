@@ -29,13 +29,13 @@ namespace Utils
 		///
 		/// @note Precision up to 2 decimal digits.
 		bool booleanWithChance(float percent);
-	};
+	}
 
 	namespace Time
 	{
 		/// Stops execution for #delay microseconds.
 		void delay_ms(int delay);
-	};
+	}
 
 	/// File I/O and Operational System's utilities.
 	///
@@ -105,7 +105,7 @@ namespace Utils
 
 		/// Gets the user name of the person running this program.
 		std::string getUser();
-	};
+	}
 
 	namespace String
 	{
@@ -187,8 +187,8 @@ namespace Utils
 		///         before and string after `delimit`.
 		///
 		std::vector<std::string> split(const std::string& str, char delim);
-	};
-};
+	}
+}
 
 // Useful #defines collected over the years.
 

@@ -11,7 +11,7 @@
 namespace Arguments
 {
 	void parse(int argc, char* argv[]);
-};
+}
 
 #endif //ARGUMENTS_H_DEFINED
 

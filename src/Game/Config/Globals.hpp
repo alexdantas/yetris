@@ -29,7 +29,7 @@ namespace Globals
 	{
 		extern Profile* current;
 		extern std::string default_name;
-	};
+	}
 	namespace Config
 	{
 		/// Root directory where we place configurations.
@@ -46,8 +46,8 @@ namespace Globals
 		/// @note Most settings are user-wide, according to
 		///       it's Profile.
 		extern std::string file;
-	};
-};
+	}
+}
 
 #endif //GLOBALS_H_DEFINED
 
