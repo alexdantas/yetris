@@ -29,13 +29,13 @@ namespace Utils
 		///
 		/// @note Precision up to 2 decimal digits.
 		bool booleanWithChance(float percent);
-	}
+	};
 
 	namespace Time
 	{
 		/// Stops execution for #delay microseconds.
 		void delay_ms(int delay);
-	}
+	};
 
 	/// File I/O and Operational System's utilities.
 	///
@@ -64,6 +64,10 @@ namespace Utils
 		/// Removes recursively all files within directory
 		/// at #path, just like UNIX command `rm -rf`.
 		void rm_rf(std::string path);
+
+		/// Forcibly removes file within #path.
+		/// @note It doesn't work with directories.
+		void rm_f(std::string path);
 
 		/// Creates empty file #path.
 		///
@@ -105,7 +109,43 @@ namespace Utils
 
 		/// Gets the user name of the person running this program.
 		std::string getUser();
-	}
+
+		/// Returns the component of a pathname (file name and extension).
+		///
+		/// - If we have "/path/to/something.txt" it returns "something.txt"
+		/// - If we have "something.txt" it returns "something.txt"
+		///
+		/// @note It auto-detects the separator for Windows ('\')
+		///       and UNIX-based systems ('/')
+		///
+		/// Thanks to this huge list of OS-specific defines:
+		/// http://sourceforge.net/p/predef/wiki/OperatingSystems/
+		std::string basename(std::string path);
+
+		/// Returns the full pathname up to the last component.
+		///
+		/// - If we have "/path/to/something.txt" it returns "/path/to"
+		/// - If we have "something.txt" it returns ""
+		///
+		std::string dropBasename(std::string path);
+
+		/// Returns the extension of a file.
+		///
+		/// @note It doesn't return the dot.
+		///
+		/// - If we have "/path/to/file.txt" it returns "txt"
+		/// - If we have "filename.DLL" it returns "DLL"
+		/// - If we have ".hidden" it returns ""
+		/// - If we have "none" it returns ""
+		///
+		/// @note Works with full paths or single filenames.
+		std::string extension(std::string path);
+
+		/// Returns the filename without it's extension.
+		///
+		/// @note Works with full paths or single filenames.
+		std::string dropExtension(std::string path);
+	};
 
 	namespace String
 	{
@@ -173,22 +213,50 @@ namespace Utils
 		std::string pop_back(std::string& str);
 
 		/// Removes all space on the left of `str`.
-		std::string& ltrim(std::string &str);
+		std::string ltrim(const std::string &str);
 
 		/// Removes all space on the right of `str`.
-		std::string& rtrim(std::string& str);
+		std::string rtrim(const std::string& str);
 
 		/// Removes all space on both sides of `str`.
-		std::string& trim(std::string& str);
+		std::string trim(const std::string& str);
 
 		/// Splits `str` according to `delimt`.
 		///
-		/// @return A vector with two elements - string
-		///         before and string after `delimit`.
+		/// @return A vector of strings, without the delimiter.
 		///
 		std::vector<std::string> split(const std::string& str, char delim);
-	}
-}
+
+		/// Tells if some character is smaller than other
+		/// independently of it's case (upcase or smallcase).
+		///
+		bool caseInsensitiveSmallerChar(const char x, const char y);
+
+		/// Tells if a whole string is smaller than other
+		/// independently of it's case (upcase or smallcase).
+		///
+		/// This allows sorting a vector of strings case insensitively.
+		/// in a very easy way. Look at it:
+		///
+		///     std::sort(vector.begin(),
+		///               vector.end(),
+		///               Utils::String::caseInsensitiveSmallerString);
+		///
+		/// Thanks to: Philip Nicoletti
+		///
+		bool caseInsensitiveSmallerString(const std::string &a, const std::string &b);
+	};
+
+	/// Utilities to encode and decode from the Base64 format.
+	namespace Base64
+	{
+		/// Transforms #str into a Base64 equivalent.
+		std::string encode(std::string str);
+
+		/// Transforms a Base64-encoded #str into it's regular string equivalent.
+		std::string decode(std::string const& s);
+	};
+};
 
 // Useful #defines collected over the years.
 

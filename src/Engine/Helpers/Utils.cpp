@@ -26,6 +26,8 @@
 #include <iostream>	   // ofstream
 #include <fstream>	   // ofstream
 #include <stdlib.h>	   // system()
+#include <algorithm>
+#include <cstring>     // strchr()
 
 // C++11 compatibility
 // I wish I could use those:
@@ -147,6 +149,18 @@ void Utils::File::rm_rf(std::string path)
 
 	system(command.c_str());
 }
+void Utils::File::rm_f(std::string path)
+{
+	if (Utils::File::isDirectory(path))
+		return;
+
+	// This is ALSO another big hack.
+	// God-dang it
+	std::string command("rm -f " + path);
+
+	system(command.c_str());
+}
+
 bool Utils::File::create(std::string path)
 {
 	FILE* fp = fopen(path.c_str(), "w");
@@ -246,6 +260,62 @@ std::string Utils::File::getUser()
 
 	return s.substr(pos + 1);
 }
+std::string Utils::File::basename(std::string path)
+{
+#if defined(_WIN32)  && !defined(__CYGWIN__)
+	char separator = '\\';
+#else
+	char separator = '/';
+#endif
+
+	size_t position = path.rfind(separator);
+
+	// Didn't find
+	if (position == std::string::npos)
+		return path;
+
+	// Return from after the separator to the end
+	return path.substr(position + 1);
+}
+std::string Utils::File::dropBasename(std::string path)
+{
+	std::string basename = Utils::File::basename(path);
+	if (basename.empty())
+		return path;
+
+	size_t position = path.find(basename);
+
+	if (position == std::string::npos)
+		return "";
+
+	// Return from start to before the separator
+	return path.substr(0, position - 1);
+}
+std::string Utils::File::extension(std::string path)
+{
+	size_t position = path.rfind('.');
+
+	if ((position == std::string::npos) || // Didn't find
+	    (position == 0))                   // File name starts with a dot
+		return "";
+
+	// Return from after the dot to the end
+	return path.substr(position + 1);
+}
+std::string Utils::File::dropExtension(std::string path)
+{
+	std::string extension = Utils::File::extension(path);
+	if (extension.empty())
+		return path;
+
+	size_t position = path.find(extension);
+
+	if (position == std::string::npos)
+		return "";
+
+	// Return from start to (and including) the dot
+	return path.substr(0, position - 1);
+}
 
 //  __  _____  ___   _   _      __
 // ( (`  | |  | |_) | | | |\ | / /`_
@@ -273,50 +343,33 @@ std::string Utils::String::pop_back(std::string& str)
 	return (str.substr(0, str.size() - 1));
 }
 
-std::string& Utils::String::ltrim(std::string &str)
+const char trim_blanks[] = " \t\r\n"; // Characters to be removed
+
+std::string Utils::String::ltrim(const std::string& str)
 {
-	// Using some std black magic. Taken from here:
-	// http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+	size_t startpos = str.find_first_not_of(trim_blanks);
 
-	// Here we create a predicate to be compared.
-	// (In other words, "an element that `isspace`")
-	std::pointer_to_unary_function<int, int> function = std::ptr_fun<int, int>(std::isspace);
+	// Found no blanks
+	if (startpos == std::string::npos)
+		return "";
 
-	// This returns the first element that's not a space.
-	//
-	// It will go inside `str` looking for the first
-	// element that matches a predicate.
-
-	std::string::iterator it = std::find_if(str.begin(),
-	                                        str.end(),
-
-	                                        // And here we negate the predicate
-	                                        // ("an element that's NOT `isspace`")
-	                                        std::not1(function));
-
-	// And here we erase everything up to it.
-	str.erase(str.begin(),
-	          it);
-
-	return str;
+	return str.substr(startpos);
 }
-
-std::string& Utils::String::rtrim(std::string& str)
+std::string Utils::String::rtrim(const std::string& str)
 {
-	// More std magic. Sorry for the mess.
-	// Please check method above (`ltrim`).
+	size_t endpos = str.find_last_not_of(trim_blanks);
 
-	str.erase(std::find_if(str.rbegin(),
-	                       str.rend(),
-	                       std::not1(std::ptr_fun<int, int>(std::isspace))).base(),
-	          str.end());
+	// Found no blanks
+	if (endpos == std::string::npos)
+		return "";
 
-	return str;
+	return str.substr(0, endpos + 1);
 }
-
-std::string& Utils::String::trim(std::string& str)
+std::string Utils::String::trim(const std::string& str)
 {
-	return Utils::String::ltrim(Utils::String::rtrim(str));
+	return (Utils::String::ltrim(
+		        Utils::String::rtrim(
+			        str)));
 }
 
 std::vector<std::string> Utils::String::split(const std::string& str, char delim)
@@ -330,4 +383,151 @@ std::vector<std::string> Utils::String::split(const std::string& str, char delim
 
 	return elems;
 }
+
+bool Utils::String::caseInsensitiveSmallerChar(const char x, const char y)
+{
+	return (std::tolower(x) < std::tolower(y));
+}
+
+bool Utils::String::caseInsensitiveSmallerString(const std::string &a, const std::string &b)
+{
+	return std::lexicographical_compare(a.begin(), a.end(),
+	                                    b.begin(), b.end(),
+	                                    Utils::String::caseInsensitiveSmallerChar);
+}
+
+/**
+ * These Base64 functions are modified versions of
+ * René Nyffenegger's `base64.cpp` and `base64.h`.
+ *
+ * Copyright (C) 2004-2008 René Nyffenegger
+ *
+ * This source code is provided 'as-is', without any express or implied
+ * warranty. In no event will the author be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this source code must not be misrepresented; you must not
+ *    claim that you wrote the original source code. If you use this source code
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original source code.
+ *
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ * René Nyffenegger rene.nyffenegger@adp-gmbh.ch
+ */
+
+// All allowed characters inside the Base64 domain.
+static const std::string base64_chars =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	"abcdefghijklmnopqrstuvwxyz"
+	"0123456789+/";
+
+// Tells if some character #c belongs to the Base64 charset.
+static inline bool isBase64(unsigned char c)
+{
+	return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+
+std::string Utils::Base64::encode(std::string str)
+{
+	// Getting the raw bytes we'll encode
+	// Dark C++ casting magic here.
+	unsigned char const* bytes_to_encode = reinterpret_cast<const unsigned char*>(str.c_str());
+	unsigned int string_size = str.size();
+
+	std::string ret;
+	int i = 0;
+	int j = 0;
+	unsigned char char_array_3[3];
+	unsigned char char_array_4[4];
+
+	while (string_size--)
+	{
+		char_array_3[i++] = *(bytes_to_encode++);
+
+		if (i == 3)
+		{
+			char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+			char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+			char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+			char_array_4[3] = char_array_3[2] & 0x3f;
+
+			for(i = 0; (i <4) ; i++)
+				ret += base64_chars[char_array_4[i]];
+			i = 0;
+		}
+	}
+
+	if (i)
+	{
+		for(j = i; j < 3; j++)
+			char_array_3[j] = '\0';
+
+		char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+		char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+		char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+		char_array_4[3] = char_array_3[2] & 0x3f;
+
+		for (j = 0; (j < i + 1); j++)
+			ret += base64_chars[char_array_4[j]];
+
+		while((i++ < 3))
+			ret += '=';
+	}
+	return ret;
+}
+
+std::string Utils::Base64::decode(std::string const& encoded_string)
+{
+	int string_size = encoded_string.size();
+	int i = 0;
+	int j = 0;
+	int in_ = 0;
+	unsigned char char_array_4[4], char_array_3[3];
+	std::string ret;
+
+	while (string_size-- && ( encoded_string[in_] != '=') && isBase64(encoded_string[in_]))
+	{
+		char_array_4[i++] = encoded_string[in_]; in_++;
+
+		if (i ==4)
+		{
+			for (i = 0; i <4; i++)
+				char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+			char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+			char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+			char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+			for (i = 0; (i < 3); i++)
+				ret += char_array_3[i];
+			i = 0;
+		}
+	}
+
+	if (i)
+	{
+		for (j = i; j <4; j++)
+			char_array_4[j] = 0;
+
+		for (j = 0; j <4; j++)
+			char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+		for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+	}
+	return ret;
+}
+
 
