@@ -38,7 +38,7 @@
 
 # General Info
 PACKAGE = yetris
-VERSION = 2.2.3
+VERSION = 2.3.0
 DATE    = $(shell date "+%b%Y")
 
 # Install dirs

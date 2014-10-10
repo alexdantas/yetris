@@ -1,5 +1,10 @@
 All the changes are documented on the git history, so here's just the major ones
 
+10-10-14 v2.3.0:
+	* Gameplay: Now the game supports high score!
+	* Development: Completely changed the source code
+	               hierarchy. Its easier to add features now!
+
 29-05-14 v2.2.3:
 	* Development: Stopped distributing libiniparser's source
 	               code along - now we expect the user to
