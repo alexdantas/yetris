@@ -48,8 +48,8 @@ ScoreFile::ScoreFile():
 
 void ScoreFile::load()
 {
-	// Zero the current score
-	this->score = ScoreEntry();
+	// Don't want to preserve these across gameplays!
+	this->score.points = 0;
 
 	// Make it point nowhere, since we're refreshing
 	// the score entries.
@@ -136,14 +136,14 @@ void ScoreFile::load()
 	// Finally, we have to pick the highest score
 	// according to these game settings.
 	ScoreEntry tmp_score;
-	tmp_score.lines            = Globals::Profiles::current->scores->score.lines;
-	tmp_score.level            = Globals::Profiles::current->scores->score.level;
-	tmp_score.starting_level   = Globals::Profiles::current->scores->score.starting_level;
-	tmp_score.initial_noise    = Globals::Profiles::current->scores->score.initial_noise;
-	tmp_score.invisible        = Globals::Profiles::current->scores->score.invisible;
-	tmp_score.slide_left       = Globals::Profiles::current->scores->score.slide_left;
-	tmp_score.slide_right      = Globals::Profiles::current->scores->score.slide_right;
-	tmp_score.random_algorithm = Globals::Profiles::current->scores->score.random_algorithm;
+	tmp_score.lines            = this->score.lines;
+	tmp_score.level            = this->score.level;
+	tmp_score.starting_level   = this->score.starting_level;
+	tmp_score.initial_noise    = this->score.initial_noise;
+	tmp_score.invisible        = this->score.invisible;
+	tmp_score.slide_left       = this->score.slide_left;
+	tmp_score.slide_right      = this->score.slide_right;
+	tmp_score.random_algorithm = this->score.random_algorithm;
 
 	for (size_t i = 0; i < (this->entries.size()); i++)
 	{

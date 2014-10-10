@@ -773,6 +773,7 @@ void GameStateMainMenu::saveSettingsMenuSinglePlayer()
 	// Let's get ids from menu items
 	current->scores->score.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
 	current->scores->score.starting_level = this->menuSinglePlayer->getInt(STARTING_LEVEL);
+	current->scores->score.level = current->scores->score.starting_level;
 
 	current->scores->score.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
 	current->scores->score.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
