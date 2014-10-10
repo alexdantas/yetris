@@ -54,8 +54,8 @@ void Game::start()
 	// Creating the board and adding noise.
 	this->board = new Board(0, 0, DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 
-	if (Globals::Profiles::current->settings.game.initial_noise != 0)
-		this->board->addNoise(Globals::Profiles::current->settings.game.initial_noise);
+	if (Globals::Profiles::current->scores->score.initial_noise != 0)
+		this->board->addNoise(Globals::Profiles::current->scores->score.initial_noise);
 
 	// Populating all the next pieces
 	this->nextPieces.resize(Globals::Profiles::current->settings.game.next_pieces);
@@ -323,7 +323,7 @@ void Game::update()
 
 	// If on invisible mode, will flash the pieces
 	// once in a while
-	if (Globals::Profiles::current->settings.game.invisible)
+	if (Globals::Profiles::current->scores->score.invisible)
 	{
 		this->timerInvisible.pause();
 		if (this->isInvisible)
@@ -389,7 +389,7 @@ void Game::lockCurrentPiece()
 	}
 
 	// Invisible game mode! Yay!
-	if (Globals::Profiles::current->settings.game.invisible)
+	if (Globals::Profiles::current->scores->score.invisible)
 		this->pieceCurrent->block = Globals::Profiles::current->settings.theme.invisible;
 
 	// Actually locking the current piece
@@ -399,10 +399,10 @@ void Game::lockCurrentPiece()
 	Globals::Profiles::current->scores->score.points += 10;
 
 	// Sliding left/right based on options
-	if (Globals::Profiles::current->settings.game.slide_right)
+	if (Globals::Profiles::current->scores->score.slide_right)
 		this->board->pushRight();
 
-	if (Globals::Profiles::current->settings.game.slide_left)
+	if (Globals::Profiles::current->scores->score.slide_left)
 		this->board->pushLeft();
 
 	// Getting next piece

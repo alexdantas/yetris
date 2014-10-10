@@ -512,27 +512,27 @@ void GameStateMainMenu::createSinglePlayerMenu()
 
 	MenuItemNumberbox* number;
 
-	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 22, Globals::Profiles::current->settings.game.starting_level);
+	number = new MenuItemNumberbox("Starting Level", STARTING_LEVEL, 1, 22, Globals::Profiles::current->scores->score.starting_level);
 	menuSinglePlayer->add(number);
 
-	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->settings.game.initial_noise);
+	number = new MenuItemNumberbox("Initial Noise", INITIAL_NOISE, 0, 20, Globals::Profiles::current->scores->score.initial_noise);
 	menuSinglePlayer->add(number);
 
 	MenuItemCheckbox* check;
 
 	check = new MenuItemCheckbox("Invisible",
 	                             INVISIBLE,
-	                             Globals::Profiles::current->settings.game.invisible);
+	                             Globals::Profiles::current->scores->score.invisible);
 	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Slide Left",
 	                             SLIDE_LEFT,
-	                             Globals::Profiles::current->settings.game.slide_left);
+	                             Globals::Profiles::current->scores->score.slide_left);
 	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Slide Right",
 	                             SLIDE_RIGHT,
-	                             Globals::Profiles::current->settings.game.slide_right);
+	                             Globals::Profiles::current->scores->score.slide_right);
 	menuSinglePlayer->add(check);
 
 	check = new MenuItemCheckbox("Hold Piece",
@@ -586,7 +586,7 @@ void GameStateMainMenu::createGameSettingsMenu()
 	list = new MenuItemTextlist("Random Piece",
 	                            RANDOM_ALGORITHM,
 	                            options,
-	                            Globals::Profiles::current->settings.game.random_algorithm);
+	                            Globals::Profiles::current->scores->score.random_algorithm);
 	menuGameSettings->add(list);
 
 	box = new MenuItemNumberbox("Line clear delay(ms)",
@@ -758,7 +758,7 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 
 	current->settings.screen.show_statistics = this->menuGameSettings->getBool(SHOW_STATISTICS);
 	current->settings.game.next_pieces       = this->menuGameSettings->getInt(NEXT_PIECES);
-	current->settings.game.random_algorithm  = this->menuGameSettings->getString(RANDOM_ALGORITHM);
+	current->scores->score.random_algorithm  = this->menuGameSettings->getString(RANDOM_ALGORITHM);
 	current->settings.game.line_clear_delay  = this->menuGameSettings->getInt(LINE_DELAY);
 }
 void GameStateMainMenu::saveSettingsMenuSinglePlayer()
@@ -771,12 +771,12 @@ void GameStateMainMenu::saveSettingsMenuSinglePlayer()
 
 	// User selected an option
 	// Let's get ids from menu items
-	current->settings.game.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
-	current->settings.game.starting_level = (unsigned int)this->menuSinglePlayer->getInt(STARTING_LEVEL);
+	current->scores->score.initial_noise  = this->menuSinglePlayer->getInt(INITIAL_NOISE);
+	current->scores->score.starting_level = this->menuSinglePlayer->getInt(STARTING_LEVEL);
 
-	current->settings.game.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
-	current->settings.game.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
-	current->settings.game.slide_right = this->menuSinglePlayer->getBool(SLIDE_RIGHT);
+	current->scores->score.invisible   = this->menuSinglePlayer->getBool(INVISIBLE);
+	current->scores->score.slide_left  = this->menuSinglePlayer->getBool(SLIDE_LEFT);
+	current->scores->score.slide_right = this->menuSinglePlayer->getBool(SLIDE_RIGHT);
 	current->settings.game.can_hold    = this->menuSinglePlayer->getBool(HOLD_PIECE);
 	current->settings.game.has_ghost   = this->menuSinglePlayer->getBool(GHOST_PIECE);
 }

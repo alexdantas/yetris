@@ -177,24 +177,9 @@ Profile::Profile(std::string name):
 	settings.screen.show_statistics = true;
 
 	// Game
-	settings.game.lines = 0;
-	settings.game.level = 1;
-	settings.game.starting_level = 1;
-
-	settings.game.initial_noise = 0;
-
-	settings.game.has_ghost = true;
-	settings.game.can_hold  = true;
-
-	settings.game.random_algorithm = "regular";
-
 	settings.game.next_pieces = 7;
 	settings.game.has_game_over_animation = true;
-	settings.game.line_clear_delay = 200; 		// ms
-
-	settings.game.slide_left  = false;
-	settings.game.slide_right = false;
-	settings.game.invisible = false;
+	settings.game.line_clear_delay        = 200; // ms
 
 	// Theme
 
@@ -349,22 +334,12 @@ void Profile::loadSettings()
 	INI_GET(settings.screen.show_statistics, "screen", "statistics");
 
 	// Game
-
-	INI_GET(settings.game.next_pieces,    "game", "next_pieces");
-	INI_GET(settings.game.initial_noise,  "game", "initial_noise");
-	INI_GET(settings.game.starting_level, "game", "starting_level");
-
-	INI_GET(settings.game.has_ghost, "game", "ghost");
-	INI_GET(settings.game.can_hold,  "game", "hold");
-
-	INI_GET(settings.game.random_algorithm, "game", "random_algorithm");
+	INI_GET(settings.game.next_pieces, "game", "next_pieces");
+	INI_GET(settings.game.has_ghost,   "game", "ghost");
+	INI_GET(settings.game.can_hold,    "game", "hold");
 
 	INI_GET(settings.game.has_game_over_animation, "game", "game_over_animation");
 	INI_GET(settings.game.line_clear_delay,        "game", "line_clear_delay");
-
-	INI_GET(settings.game.slide_left,  "game", "slide_left");
-	INI_GET(settings.game.slide_right, "game", "slide_right");
-	INI_GET(settings.game.invisible,   "game", "invisible");
 
 	// Getting input keys
 	std::string tmp;
@@ -490,21 +465,12 @@ void Profile::saveSettings()
 
 	// Game
 
-	INI_SET("game", "next_pieces",    settings.game.next_pieces);
-	INI_SET("game", "initial_noise",  settings.game.initial_noise);
-	INI_SET("game", "starting_level", settings.game.starting_level);
-
-	INI_SET("game", "ghost", settings.game.has_ghost);
-	INI_SET("game", "hold",  settings.game.can_hold);
-
-	INI_SET("game", "random_algorithm", settings.game.random_algorithm);
+	INI_SET("game", "next_pieces", settings.game.next_pieces);
+	INI_SET("game", "ghost",       settings.game.has_ghost);
+	INI_SET("game", "hold",        settings.game.can_hold);
 
 	INI_SET("game", "game_over_animation", settings.game.has_game_over_animation);
 	INI_SET("game", "line_clear_delay",    settings.game.line_clear_delay);
-
-	INI_SET("game", "slide_left",  settings.game.slide_left);
-	INI_SET("game", "slide_right", settings.game.slide_right);
-	INI_SET("game", "invisible",   settings.game.invisible);
 
 	// Input Keys
 	std::string key;

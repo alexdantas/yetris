@@ -122,19 +122,6 @@ public:
 
 		struct Game
 		{
-			int lines;
-
-			int level;
-			int starting_level;
-
-			int initial_noise;
-
-			bool invisible;
-			bool slide_left;
-			bool slide_right;
-
-			std::string random_algorithm;
-
 			// Information for appearance and stuff
 			int next_pieces;
 			bool has_ghost;

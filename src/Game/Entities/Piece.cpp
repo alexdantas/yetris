@@ -37,7 +37,7 @@ Piece::PieceType Piece::random()
 	// of the same piece and guarantee a certain
 	// degree of piece rotativity ("I WANT TEH LINES!11!!").
 	//
-	if (Globals::Profiles::current->settings.game.random_algorithm == "regular")
+	if (Globals::Profiles::current->scores->score.random_algorithm == "regular")
 	{
 		int i,j;
 		int size = Piece::MAX;
