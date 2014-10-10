@@ -1,5 +1,6 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemCheckbox.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 
 MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):

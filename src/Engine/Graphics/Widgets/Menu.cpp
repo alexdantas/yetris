@@ -1,6 +1,7 @@
 #include <Engine/Graphics/Widgets/Menu.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 
 Menu::Menu(int x, int y, int width, int height):

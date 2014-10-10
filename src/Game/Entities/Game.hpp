@@ -6,7 +6,6 @@
 #include <Game/Entities/RotationSystem.hpp>
 #include <Game/Entities/Statistics.hpp>
 #include <Game/Entities/PieceGhost.hpp>
-#include <Game/Entities/Score.hpp>
 #include <Engine/Helpers/Timer.hpp>
 #include <Engine/Graphics/Widgets/Menu.hpp>
 
@@ -110,8 +109,6 @@ protected:
 
 	// Times how long the user have been playing the game.
 	Timer timer;
-
-	Score* score;
 
 	/// If the game is paused.
 	/// May show other Windows while paused.

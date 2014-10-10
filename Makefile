@@ -61,8 +61,8 @@ MANPAGE   = doc/man/$(MANFILE)
 
 # Build info
 EXE         = $(PACKAGE)
-CDEBUG      = -O2
-CXXFLAGS    = $(CDEBUG) -Wall -Wextra $(CFLAGS_PLATFORM)
+CDEBUG      =
+CXXFLAGS    = $(CDEBUG) -g -Wall -Wextra $(CFLAGS_PLATFORM)
 LDFLAGS     = -lncurses $(LDFLAGS_PLATFORM)
 INCLUDESDIR = -I"src/" -I"deps/"
 LIBSDIR     =

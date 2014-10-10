@@ -8,6 +8,7 @@
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/States/GameStateMainMenu.hpp>
+#include <Game/Entities/Profile.hpp>
 
 #include <iostream>
 

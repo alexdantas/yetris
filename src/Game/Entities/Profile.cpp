@@ -177,16 +177,18 @@ Profile::Profile(std::string name):
 	settings.screen.show_statistics = true;
 
 	// Game
-
-	settings.game.next_pieces = 7;
-	settings.game.initial_noise = 0;
+	settings.game.lines = 0;
+	settings.game.level = 1;
 	settings.game.starting_level = 1;
+
+	settings.game.initial_noise = 0;
 
 	settings.game.has_ghost = true;
 	settings.game.can_hold  = true;
 
 	settings.game.random_algorithm = "regular";
 
+	settings.game.next_pieces = 7;
 	settings.game.has_game_over_animation = true;
 	settings.game.line_clear_delay = 200; 		// ms
 
@@ -245,6 +247,8 @@ Profile::Profile(std::string name):
 	                ' ', ' ');
 
 	this->resetKeybindings();
+
+	this->scores = new ScoreFile();
 }
 Profile::~Profile()
 {

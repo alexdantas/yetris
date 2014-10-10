@@ -1,4 +1,5 @@
 #include <Game/Display/WindowGameHelp.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/Graphics/Layout.hpp>
 #include <Engine/Graphics/Colors.hpp>
 #include <Game/Config/Globals.hpp>

@@ -2,6 +2,7 @@
 #define PROFILE_H_DEFINED
 
 #include <Game/Entities/Block.hpp>
+#include <Game/Entities/ScoreFile.hpp>
 #include <Engine/Graphics/Colors.hpp>
 
 #include <vector>
@@ -80,6 +81,8 @@ public:
 	/// Where we store statistics of this Profile.
 	std::string fileStatistics;
 
+	ScoreFile* scores;
+
 	void resetKeybindings();
 
 	/// Loads settings based on the user configuration file.
@@ -119,22 +122,27 @@ public:
 
 		struct Game
 		{
-			int next_pieces;
+			int lines;
+
+			int level;
+			int starting_level;
+
 			int initial_noise;
-			unsigned int starting_level;
 
-			bool has_ghost;
-			bool can_hold;
-
-			std::string random_algorithm;
-
-			bool has_game_over_animation;
+			bool invisible;
 			bool slide_left;
 			bool slide_right;
 
-			int line_clear_delay; // ms
+			std::string random_algorithm;
 
-			bool invisible;
+			// Information for appearance and stuff
+			int next_pieces;
+			bool has_ghost;
+			bool can_hold;
+
+			bool has_game_over_animation;
+
+			int line_clear_delay; // ms
 		};
 		Game game;
 

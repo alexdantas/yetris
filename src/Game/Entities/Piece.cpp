@@ -3,6 +3,7 @@
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Window.hpp>
+#include <Game/Entities/Profile.hpp>
 
 // Local function that converts between an `int` and my `enum`.
 Piece::PieceType intToPieceType(int num)

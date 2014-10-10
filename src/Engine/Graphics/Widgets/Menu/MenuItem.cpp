@@ -1,5 +1,6 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/InputManager.hpp>
 

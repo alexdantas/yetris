@@ -1,5 +1,6 @@
 #include <Game/Entities/PieceGhost.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 
 PieceGhost::PieceGhost():
 	Piece(Piece::MAX, 0, 0)

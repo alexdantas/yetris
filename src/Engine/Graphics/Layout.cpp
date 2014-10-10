@@ -1,5 +1,6 @@
 #include <Engine/Graphics/Layout.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 

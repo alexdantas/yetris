@@ -1,3 +1,4 @@
+#include <Game/Entities/Profile.hpp>
 #include <Game/Entities/Board.hpp>
 #include <Game/Entities/PieceDefinitions.hpp>
 #include <Game/Config/Globals.hpp>

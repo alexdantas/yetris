@@ -1,7 +1,10 @@
 #ifndef GLOBALS_H_DEFINED
 #define GLOBALS_H_DEFINED
 
-#include <Game/Entities/Profile.hpp>
+#include <string>
+
+// Avoiding circular-#include
+class Profile;
 
 /// All global settings to the game.
 ///
@@ -23,7 +26,7 @@ namespace Globals
 	#define PATCH 2
 
 	/// Game version (format MMP - Major Minor Patch)
-	extern int version[3];
+	extern char version[3];
 
 	namespace Profiles
 	{

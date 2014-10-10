@@ -5,6 +5,7 @@
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/Display/Layouts/LayoutGame.hpp>
 #include <Engine/InputManager.hpp>
+#include <Game/Entities/Profile.hpp>
 
 #include <stdlib.h>
 
@@ -25,7 +26,6 @@ Game::Game():
 	canHold(true),
 	willClearLines(true),
 	isInvisible(false),
-	score(NULL),
 	isPaused(false),
 	showPauseMenu(false),
 	showHelp(false),
@@ -39,7 +39,6 @@ void Game::start()
 	SAFE_DELETE(this->pieceHold);
 	SAFE_DELETE(this->rotationSystem);
 	SAFE_DELETE(this->board);
-	SAFE_DELETE(this->score);
 	SAFE_DELETE(this->layout);
 	SAFE_DELETE(this->pieceGhost);
 	SAFE_DELETE(this->pauseMenu);
@@ -72,9 +71,6 @@ void Game::start()
 	this->pieceHold = NULL;
 
 	this->rotationSystem = new RotationSystemSRS();
-
-	this->score = new Score();
-	this->score->level = Globals::Profiles::current->settings.game.starting_level;
 
 	// Creating the menu and adding each item
 	this->pauseMenu = new Menu(1,
@@ -121,6 +117,10 @@ void Game::handleInput()
 			this->pause(true);
 
 		return;
+	}
+	else if (InputManager::isPressed((int)'l'))
+	{
+		Globals::Profiles::current->scores->score.points += 100;
 	}
 	else if (InputManager::isPressed((int)'\n') ||
 	         InputManager::isPressed(KEY_ENTER))
@@ -236,7 +236,7 @@ void Game::update()
 	// (time based on current level which is based on how
 	//  many lines were cleared)
 	this->timerPiece.pause();
-	int delta = this->getDelay(this->score->level);
+	int delta = this->getDelay(Globals::Profiles::current->scores->score.level);
 
 	if (this->timerPiece.delta_ms() >= delta)
 	{
@@ -280,7 +280,8 @@ void Game::update()
 
 		// Statistics
 		this->stats.lines += lines;
-		this->score->lines += lines;
+		Globals::Profiles::current->scores->score.lines += lines;
+
 		switch(lines)
 		{
 		case 1: this->stats.singles++; break;
@@ -302,7 +303,7 @@ void Game::update()
 		default: line_score = -1;  break; // someone's cheating...
 		}
 
-		this->score->points += line_score;
+		Globals::Profiles::current->scores->score.points += line_score;
 	}
 
 	// Updating level based on total lines cleared.
@@ -311,10 +312,10 @@ void Game::update()
 	// what currently is.
 	// It allows you to set a high current level even
 	// without clearing enough lines to get there.
-	unsigned int new_level = this->getLevel(this->score->lines);
+	unsigned int new_level = this->getLevel(Globals::Profiles::current->scores->score.lines);
 
-	if (new_level > this->score->level)
-		this->score->level = new_level;
+	if (new_level > Globals::Profiles::current->scores->score.level)
+		Globals::Profiles::current->scores->score.level = new_level;
 
 	// Checking if game over
 	if (this->board->isFull())
@@ -395,7 +396,7 @@ void Game::lockCurrentPiece()
 	this->board->lockPiece(this->pieceCurrent);
 
 	// Free score
-	this->score->points += 10;
+	Globals::Profiles::current->scores->score.points += 10;
 
 	// Sliding left/right based on options
 	if (Globals::Profiles::current->settings.game.slide_right)

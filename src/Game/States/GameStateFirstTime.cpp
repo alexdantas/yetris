@@ -1,3 +1,4 @@
+#include <Game/Entities/Profile.hpp>
 #include <Game/States/GameStateFirstTime.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Ncurses.hpp>

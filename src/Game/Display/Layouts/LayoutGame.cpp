@@ -1,5 +1,6 @@
 #include <Game/Display/Layouts/LayoutGame.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/Utils.hpp>
 
 LayoutGame::LayoutGame(Game* game, int width, int height):
@@ -291,9 +292,9 @@ void LayoutGame::draw(Menu* menu)
 	// Default color
 	wattrset(this->score->win, COLOR_PAIR(0));
 
-	mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", 9000);
-	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", this->game->score->points);
-	mvwprintw(this->score->win, lowest_y    , 1, "%8d", this->game->score->level);
+	mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", Globals::Profiles::current->scores->highScore->points);
+	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", Globals::Profiles::current->scores->score.points);
+	mvwprintw(this->score->win, lowest_y    , 1, "%8d", Globals::Profiles::current->scores->score.level);
 
 	this->score->refresh();
 
@@ -304,7 +305,7 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->clear();
 
 		// User name
-		this->rightmost->print(this->game->score->name, this->rightmost->getW() - this->game->score->name.size() - 2, 01, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
+		this->rightmost->print(Globals::Profiles::current->name, this->rightmost->getW() - Globals::Profiles::current->name.size() - 2, 01, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
 
 		// Piece and Line Statistics
 		this->rightmost->print("[I]", 2, 2, Globals::Profiles::current->settings.theme.piece_I->color);
@@ -359,7 +360,7 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->print("Delay", 2, 12, hilite);
 		wattrset(this->rightmost->win, COLOR_PAIR(0));
 
-		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(this->game->score->level));
+		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(Globals::Profiles::current->scores->highScore->level));
 
 		// Bottom line - version and Help
 		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));

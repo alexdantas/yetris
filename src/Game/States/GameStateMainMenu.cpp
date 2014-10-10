@@ -1,4 +1,5 @@
 #include <Game/States/GameStateMainMenu.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Engine/Graphics/Widgets/Dialog.hpp>

@@ -3,6 +3,7 @@
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 
 GameStateGame::GameStateGame():
 	game(NULL),
@@ -13,6 +14,16 @@ GameStateGame::~GameStateGame()
 void GameStateGame::load(int stack)
 {
 	UNUSED(stack);
+	SAFE_DELETE(this->game);
+
+	try {
+		Globals::Profiles::current->scores->load();
+	}
+	catch (ScoreFileException)
+	{
+		// File doesn't exist
+		// ...carry on
+	}
 
 	this->game = new Game();
 	this->game->start();
@@ -33,8 +44,14 @@ GameState::StateCode GameStateGame::update()
 
 	if (this->game->isOver())
 	{
+		Globals::Profiles::current->scores->handle(&Globals::Profiles::current->scores->score);
+		Globals::Profiles::current->scores->save();
+
 		Ncurses::delay_ms(500);
-		this->game->start();
+
+		// Restart the game
+		this->load();
+//		this->game->start();
 	}
 
 	if (this->game->willQuit())

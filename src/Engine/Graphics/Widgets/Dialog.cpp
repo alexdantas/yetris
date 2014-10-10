@@ -2,6 +2,7 @@
 #include <Engine/Graphics/Layout.hpp>
 #include <Engine/Graphics/Widgets/Menu.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 
 #include <vector>
