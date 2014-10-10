@@ -292,9 +292,13 @@ void LayoutGame::draw(Menu* menu)
 	// Default color
 	wattrset(this->score->win, COLOR_PAIR(0));
 
-	mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", Globals::Profiles::current->scores->highScore->points);
 	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", Globals::Profiles::current->scores->score.points);
 	mvwprintw(this->score->win, lowest_y    , 1, "%8d", Globals::Profiles::current->scores->score.level);
+
+	if (! Globals::Profiles::current->scores->highScore)
+		this->score->print("(none)", 1, lowest_y - 6);
+	else
+		mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", Globals::Profiles::current->scores->highScore->points);
 
 	this->score->refresh();
 
@@ -360,7 +364,7 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->print("Delay", 2, 12, hilite);
 		wattrset(this->rightmost->win, COLOR_PAIR(0));
 
-		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(Globals::Profiles::current->scores->highScore->level));
+		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(Globals::Profiles::current->scores->score.level));
 
 		// Bottom line - version and Help
 		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));

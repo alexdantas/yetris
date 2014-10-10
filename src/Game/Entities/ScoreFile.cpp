@@ -51,9 +51,10 @@ void ScoreFile::load()
 	// Don't want to preserve these across gameplays!
 	this->score.points = 0;
 
-	// Make it point nowhere, since we're refreshing
-	// the score entries.
+	// Reset high score and current score entries,
+	// since we're loading it all from the file.
 	this->highScore = NULL;
+	this->entries.clear();
 
 	// Score files are dependent of the level name.
 	std::string score_file = (Globals::Profiles::current->directory +
@@ -63,13 +64,7 @@ void ScoreFile::load()
 
 	if (! Utils::File::exists(score_file))
 	{
-		// Set default high score
-		ScoreEntry tmp;
-		tmp.points = 9000;
-
-		this->entries.push_back(tmp);
-		this->highScore = &(this->entries[this->entries.size() - 1]);
-
+		// Not setting default high score!
 		throw ScoreFileException("File '" + score_file + "' doesn't exist");
 	}
 
@@ -94,13 +89,7 @@ void ScoreFile::load()
 
 	if (version[0] != Globals::version[MAJOR])
 	{
-		// Set default high score
-		ScoreEntry tmp;
-		tmp.points = 9000;
-
-		this->entries.push_back(tmp);
-		this->highScore = &(this->entries[this->entries.size() - 1]);
-
+		// Not setting default high score!
 		throw ScoreFileException("File '" + score_file + "' has an old version format");
 	}
 
@@ -133,21 +122,9 @@ void ScoreFile::load()
 		this->entries.push_back(entry);
 	}
 
-	// Finally, we have to pick the highest score
-	// according to these game settings.
-	ScoreEntry tmp_score;
-	tmp_score.lines            = this->score.lines;
-	tmp_score.level            = this->score.level;
-	tmp_score.starting_level   = this->score.starting_level;
-	tmp_score.initial_noise    = this->score.initial_noise;
-	tmp_score.invisible        = this->score.invisible;
-	tmp_score.slide_left       = this->score.slide_left;
-	tmp_score.slide_right      = this->score.slide_right;
-	tmp_score.random_algorithm = this->score.random_algorithm;
-
 	for (size_t i = 0; i < (this->entries.size()); i++)
 	{
-		if (tmp_score.isLike(this->entries[i]))
+		if (this->score.isLike(this->entries[i]))
 		{
 			this->highScore = &(this->entries[i]);
 			break;
@@ -157,10 +134,8 @@ void ScoreFile::load()
 	// First high score!
 	if (this->highScore == NULL)
 	{
-		tmp_score.points = 9000;
-
-		this->entries.push_back(tmp_score);
-		this->highScore = &(this->entries[this->entries.size() - 1]);
+		// Not setting default high score!
+		// So... what should we do...?
 	}
 }
 void ScoreFile::save()
@@ -229,7 +204,6 @@ bool ScoreFile::handle(ScoreEntry* score)
 	if ((score->points) > (this->highScore->points))
 	{
 		this->highScore->points = score->points;
-
 		return true;
 	}
 	return false;
