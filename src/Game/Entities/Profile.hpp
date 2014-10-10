@@ -122,14 +122,35 @@ public:
 
 		struct Game
 		{
-			// Information for appearance and stuff
+			/**
+			 * How many next pieces appear onscreen.
+			 */
 			int next_pieces;
+
+			/**
+			 * Is there a Ghost piece on the game?
+			 *
+			 * @note Little indication of where the piece will land.
+			 */
 			bool has_ghost;
+
+			/**
+			 * Can the player hold pieces?
+			 *
+			 * @note Keep the current piece on a temporary area,
+			 *       switching it with whatever other piece was
+			 *       there already.
+			 */
 			bool can_hold;
 
 			bool has_game_over_animation;
 
-			int line_clear_delay; // ms
+			/**
+			 * Delay to wait when the player clears a line.
+			 *
+			 * @note In milliseconds.
+			 */
+			int line_clear_delay;
 		};
 		Game game;
 

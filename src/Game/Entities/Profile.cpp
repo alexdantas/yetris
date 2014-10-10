@@ -178,8 +178,12 @@ Profile::Profile(std::string name):
 
 	// Game
 	settings.game.next_pieces = 7;
+
+	settings.game.has_ghost = true;
+	settings.game.can_hold  = true;
+
 	settings.game.has_game_over_animation = true;
-	settings.game.line_clear_delay        = 200; // ms
+	settings.game.line_clear_delay = 200; // ms
 
 	// Theme
 
