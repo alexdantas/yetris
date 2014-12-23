@@ -40,7 +40,7 @@ void LayoutGame::windowsInit()
 	this->leftmost = new Window(this->main,
 	                            leftmost_x,
 	                            0,
-	                            4*2 + 2, // width of a piece
+	                            4*2 + 2 + 2, // 4 blocks + borders + 2 space
 	                            0);
 
 	if (Globals::Profiles::current->settings.game.can_hold)
