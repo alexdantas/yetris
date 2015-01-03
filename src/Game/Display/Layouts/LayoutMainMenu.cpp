@@ -59,9 +59,9 @@ void LayoutMainMenu::windowsInit()
 
 	// MENU
 	this->menu = new Window(this->main,
-	                        this->main->getW() / 3,
+	                        (this->main->getW() / 3) - 2,
 	                        this->logo->getH() + 1,
-	                        this->main->getW() / 3,
+	                        (this->main->getW() / 3) + 2,
 	                        this->main->getH() - this->logo->getH() - 2);
 
 	if (EngineGlobals::Screen::show_borders)
