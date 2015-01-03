@@ -189,52 +189,52 @@ Profile::Profile(std::string name):
 
 	// Theme
 
-	settings.theme.text        = 0;
-	settings.theme.hilite_text = Colors::pair(COLOR_CYAN, COLOR_DEFAULT);
-	settings.theme.textbox     = (settings.theme.hilite_text | A_REVERSE);
+	settings.theme.text        = ColorPair();
+	settings.theme.hilite_text = Colors::pair("cyan", "default");
+	settings.theme.textbox     = settings.theme.hilite_text.reverse();
 
 	settings.theme.piece_has_colors = true;
 	settings.theme.ghost_has_colors = true;
 	settings.theme.show_pivot_block = false;
 	settings.theme.lock_piece_color = false;
 
-	settings.theme.clear_line = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+	settings.theme.clear_line = new Block(Colors::pair("white", "default"),
 	                ':', ':');
 
-	settings.theme.piece_colorless = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
+	settings.theme.piece_colorless = new Block(Colors::pair("black", "white"),
 	                ' ', ' ');
 
-	settings.theme.piece = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE),
+	settings.theme.piece = new Block(Colors::pair("black", "white"),
 	                ' ', ' ');
 
-	settings.theme.ghost = new Block(Colors::pair(COLOR_BLACK, COLOR_WHITE, true),
+	settings.theme.ghost = new Block(Colors::pair("black", "white", true),
 	                '[', ']');
 
-	settings.theme.locked = new Block(Colors::pair(COLOR_WHITE, COLOR_WHITE),
+	settings.theme.locked = new Block(Colors::pair("white", "white"),
 	                ' ', ' ');
 
-	settings.theme.invisible = new Block(Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
+	settings.theme.invisible = new Block(Colors::pair("white", "default"),
 	                                      ' ', ' ');
 
-	settings.theme.piece_S = new Block(Colors::pair(COLOR_WHITE, COLOR_GREEN),
+	settings.theme.piece_S = new Block(Colors::pair("white", "green"),
 	                ' ', ' ');
 
-	settings.theme.piece_Z = new Block(Colors::pair(COLOR_WHITE, COLOR_RED),
+	settings.theme.piece_Z = new Block(Colors::pair("white", "red"),
 	                ' ', ' ');
 
-	settings.theme.piece_O = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW),
+	settings.theme.piece_O = new Block(Colors::pair("white", "yellow"),
 	                ' ', ' ');
 
-	settings.theme.piece_I = new Block(Colors::pair(COLOR_WHITE, COLOR_CYAN, true),
+	settings.theme.piece_I = new Block(Colors::pair("white", "cyan", true),
 	                ' ', ' ');
 
-	settings.theme.piece_L = new Block(Colors::pair(COLOR_WHITE, COLOR_YELLOW, true),
+	settings.theme.piece_L = new Block(Colors::pair("white", "yellow", true),
 	                ' ', ' ');
 
-	settings.theme.piece_J = new Block(Colors::pair(COLOR_WHITE, COLOR_BLUE),
+	settings.theme.piece_J = new Block(Colors::pair("white", "blue"),
 	                ' ', ' ');
 
-	settings.theme.piece_T = new Block(Colors::pair(COLOR_WHITE, COLOR_MAGENTA),
+	settings.theme.piece_T = new Block(Colors::pair("white", "magenta"),
 	                ' ', ' ');
 
 	this->resetKeybindings();

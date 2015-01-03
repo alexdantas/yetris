@@ -1,46 +1,35 @@
 #include <Engine/Graphics/Window.hpp>
+#include <Engine/EngineGlobals.hpp>
 
 #include <sstream>				// stringstream
 #include <iostream>
 
-/* dag-nabbit, PDCurses (windows) doesnt have 'mvwhline' */
-#if OS_IS_WINDOWS
-#define mvwhline my_mvwhline
-#endif
-
-/**
- * PDCurses (on Windows) doesn't have this function, so I need
- * to re-implement it.
- *
- * @todo implement more features - see 'man mvwhline'
- */
-void my_mvwhline(WINDOW* win, int y, int x, chtype ch, int num)
-{
-	int i;
-	for (i = 0; i < num; i++)
-		mvwaddch(win, y, (x + i), ch);
-}
-
 Window::Window(int x, int y, int w, int h):
 	win(NULL),
-	error(false),
 	x(x),
 	y(y),
 	width(w),
 	height(h),
 	borderType(BORDER_NONE),
-	title("")
+	topLeftTitle(""),
+	topRightTitle(""),
+	bottomLeftTitle(""),
+	bottomRightTitle("")
 {
 	this->win = newwin(height, width, y, x);
 
 	if (!this->win)
-		this->error = true;
+		throw "Could not create Ncurses Window";
+
+	this->setBorders();
 }
 Window::Window(Window* parent, int x, int y, int width, int height):
 	win(NULL),
-	error(false),
 	borderType(BORDER_NONE),
-	title("")
+	topLeftTitle(""),
+	topRightTitle(""),
+	bottomLeftTitle(""),
+	bottomRightTitle("")
 {
 	// By sending any parameter as 0, we want it to expand
 	// until possible.
@@ -66,22 +55,22 @@ Window::Window(Window* parent, int x, int y, int width, int height):
 	this->width  = width;
 	this->height = height;
 
+	// Creates a subwindow
 	this->win = derwin(parent->win, height, width, y, x);
 	if (!win)
-		this->error = true;
+		throw "Could not create Ncurses Window";
+
+	this->setBorders();
 }
 Window::~Window()
 {
 	if (this->win)
 		delwin(this->win);
 }
-bool Window::isValid()
-{
-	return !(this->error);
-}
 void Window::resize(int w, int h)
 {
 	wresize(this->win, h, w);
+
 	this->width  = w;
 	this->height = h;
 }
@@ -89,36 +78,34 @@ void Window::print(std::string str, int x, int y, ColorPair pair)
 {
 	Colors::pairActivate(this->win, pair);
 
-	mvwaddstr(this->win, y, x, str.c_str());
+	if (! str.empty())
+		// Ncurses has this strange habit of
+		// switching X and Y coordinates...
+		mvwaddstr(this->win, y, x, str.c_str());
 }
-void Window::print_multiline(std::string str, int x, int y, ColorPair pair)
+void Window::print(std::vector<std::string> lines, int x, int y, ColorPair pair)
 {
-	// Will get line by line and print it
-	std::stringstream ss(str);
-	std::string line;
-	int y_offset = 0;
-
-	while (std::getline(ss, line))
-	{
-		if (! line.empty())
-			this->print(line, x, y + y_offset, pair);
-		y++;
-	}
+	for (size_t i = 0; i < lines.size(); i++)
+		this->print(lines[i], x, (y + i), pair);
 }
 void Window::printChar(int c, int x, int y, ColorPair pair)
 {
 	Colors::pairActivate(this->win, pair);
 
+	// Ncurses has this strange habit of
+	// switching X and Y coordinates...
 	mvwaddch(this->win, y, x, c);
 }
 void Window::setBackground(chtype ch, ColorPair pair)
 {
-	wbkgd(this->win, ch | pair);
+	wbkgd(this->win, (ch | pair.ncurses_pair));
 }
 void Window::refresh()
 {
+	// Previously it was:
+	//
 	//wrefresh(this->win);
-
+	//
 	// I've changed all calls to wrefresh() to wnoutrefresh
 	// because when I have several WINDOW*, it gets heavy
 	// to do the former.
@@ -136,10 +123,37 @@ void Window::clear()
 	if (this->borderType != BORDER_NONE)
 		this->borders(this->borderType);
 
-	if (! this->title.empty())
-		this->print(this->title, 1, 0, Colors::pair(COLOR_BLUE,
-		                                            COLOR_DEFAULT));
+	// Now, to the titles!
+	if (! this->topLeftTitle.empty())
+	{
+		this->print(this->topLeftTitle,
+		            1, 0,
+		            Colors::pair("blue", "default"));
+	}
+	if (! this->bottomLeftTitle.empty())
+	{
+		this->print(this->bottomLeftTitle,
+		            0, this->getH() - 1,
+		            Colors::pair("blue", "default"));
+	}
+	if (! this->topRightTitle.empty())
+	{
+		int x = (this->getW() - 1);
+		int w = this->topRightTitle.size();
 
+		this->print(this->topRightTitle,
+		            x - w, 0,
+		            Colors::pair("blue", "default"));
+	}
+	if (! this->bottomRightTitle.empty())
+	{
+		int x = (this->getW() - 1);
+		int w = this->bottomRightTitle.size();
+
+		this->print(this->bottomRightTitle,
+		            x - w, this->getH() - 1,
+		            Colors::pair("blue", "default"));
+	}
 }
 int Window::getW() const
 {
@@ -161,25 +175,36 @@ void Window::borders(BorderType type)
 {
 	this->borderType = type;
 
-	if (type == BORDER_NONE)
+	if (type == Window::BORDER_NONE)
 		return;
 
-	if (type == BORDER_FANCY)
+	if (type == Window::BORDER_FANCY)
 	{
 		wborder(this->win,
-		        ACS_VLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_VLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
-		        ACS_HLINE|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_HLINE|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true),
-		        ACS_ULCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT, true),
-		        ACS_URCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_LLCORNER|Colors::pair(COLOR_WHITE, COLOR_DEFAULT),
-		        ACS_LRCORNER|Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
+		        ACS_VLINE    | Colors::pair("white", "default"      ).ncurses_pair,
+		        ACS_VLINE    | Colors::pair("black", "default", true).ncurses_pair,
+		        ACS_HLINE    | Colors::pair("white", "default"      ).ncurses_pair,
+		        ACS_HLINE    | Colors::pair("black", "default", true).ncurses_pair,
+		        ACS_ULCORNER | Colors::pair("white", "default", true).ncurses_pair,
+		        ACS_URCORNER | Colors::pair("white", "default"      ).ncurses_pair,
+		        ACS_LLCORNER | Colors::pair("white", "default"      ).ncurses_pair,
+		        ACS_LRCORNER | Colors::pair("black", "default", true).ncurses_pair);
 	}
-	else if (type == BORDER_REGULAR)
+	else if (type == Window::BORDER_REGULAR)
 	{
-		wattrset(this->win, Colors::pair(COLOR_BLACK, COLOR_DEFAULT, true));
+		ColorPair black = Colors::pair("black", "default", true);
+
+		Colors::pairActivate(this->win, black);
 		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
+	}
+}
+void Window::setBorders()
+{
+	if (EngineGlobals::Screen::show_borders)
+	{
+		this->borders(EngineGlobals::Screen::fancy_borders ?
+		              Window::BORDER_FANCY :
+		              Window::BORDER_REGULAR);
 	}
 }
 void Window::horizontalLine(int x, int y, int c, int width, ColorPair pair)
@@ -187,22 +212,15 @@ void Window::horizontalLine(int x, int y, int c, int width, ColorPair pair)
 	Colors::pairActivate(this->win, pair);
 	mvwhline(this->win, y, x, c, width);
 }
-void Window::setTitle(std::string title)
+void Window::setTitle(std::string title, WindowTitlePosition position)
 {
-	this->title = title;
+	switch (position)
+	{
+	case TOP_LEFT:     this->topLeftTitle     = title; break;
+	case TOP_RIGHT:    this->topRightTitle    = title; break;
+	case BOTTOM_LEFT:  this->bottomLeftTitle  = title; break;
+	case BOTTOM_RIGHT: this->bottomRightTitle = title; break;
+	default: return;
+	}
 }
-bool Window::hasBorders()
-{
-	return (this->borderType != Window::BORDER_NONE);
-}
-
-
-
-
-
-
-
-
-
-
 

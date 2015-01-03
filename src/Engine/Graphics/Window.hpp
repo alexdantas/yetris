@@ -2,6 +2,7 @@
 #define WINDOW_H_DEFINED
 
 #include <string>
+#include <vector>
 #include <ncurses.h>
 
 #include <Engine/Graphics/Colors.hpp>
@@ -28,24 +29,26 @@ public:
 
 	virtual void resize(int w, int h);
 
-	bool isValid();
-
 	/// Shows text #str at #x #y on the window with color #pair.
 	///
 	/// @note It defaults to white text on black background.
-	void print(std::string str, int x, int y, ColorPair pair=0);
+	void print(std::string str, int x, int y, ColorPair pair=ColorPair());
 
-	/// Shows text #str at #x #y on the window with color #pair.
-	/// The difference is that we respect newlines, showing
-	/// it up at the next line just below text above.
+	/// Shows multiple text lines #lines at #x #y on the window
+	/// with color #pair.
 	///
 	/// @note It also defaults to white text on black background.
-	void print_multiline(std::string str, int x, int y, ColorPair pair=0);
+	/// @note Use it together with `Utils::String::split`:
+	///
+	///     window.print(Utils::String::split("multiple\nlines", '\n'),
+	///                 x, y, color_pair);
+	///
+	void print(std::vector<std::string> lines, int x, int y, ColorPair pair=ColorPair());
 
 	/// Shows #c at #x #y with color #pair.
 	///
 	/// @note It also defaults to white text on black background.
-	void printChar(int c, int x, int y, ColorPair pair=0);
+	void printChar(int c, int x, int y, ColorPair pair=ColorPair());
 
 	void setBackground(chtype ch, ColorPair pair);
 
@@ -58,22 +61,35 @@ public:
 	int getX() const;
 	int getY() const;
 
+	/// Applies border of #type to this Window.
 	void borders(BorderType type);
+
+	/// Applies a board style dependent on the
+	/// EngineGlobals settings
+	void setBorders();
 
 	void horizontalLine(int x, int y, int c, int width, ColorPair pair);
 
-	void setTitle(std::string title);
+	/// All possible positions where a Window title can be.
+	/// Note that a Window can have titles on all of those.
+	enum WindowTitlePosition
+	{
+		TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+	};
 
-	bool hasBorders();
+	/// Sets a text that will appear at the top of the Window.
+	///
+	/// By default it's shown on top of the borders, with
+	/// a highlighted color tone.
+	///
+	void setTitle(std::string title, WindowTitlePosition position=Window::TOP_LEFT);
 
-	/// Ncurses' internal data structure.
-	/// IT'S PUBLIC BECAUSE SOMETIMES I NEED TO CALL DIRECT
-	/// NCURSES CALLS - FIX THIS
+	/// Ncurses' internal data structure, don't mess with it.
+	/// TODO: Make it so there's no external ncurses calls on it.
+	///       (I'm looking at you, LayoutGame!)
 	WINDOW* win;
 
 protected:
-	/// Tells if we've got some initialization error.
-	bool error;
 
 	int x;
 	int y;
@@ -82,7 +98,10 @@ protected:
 
 	BorderType borderType;
 
-	std::string title;
+	std::string topLeftTitle;
+	std::string topRightTitle;
+	std::string bottomLeftTitle;
+	std::string bottomRightTitle;
 };
 
 #endif //WINDOW_H_DEFINED

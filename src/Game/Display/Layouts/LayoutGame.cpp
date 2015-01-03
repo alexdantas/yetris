@@ -2,6 +2,7 @@
 #include <Game/Config/Globals.hpp>
 #include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Graphics/Colors.hpp>
 
 LayoutGame::LayoutGame(Game* game, int width, int height):
 	Layout(width, height),
@@ -281,7 +282,7 @@ void LayoutGame::draw(Menu* menu)
 	// A mess of direct Ncurses calls - fix this later
 	this->score->clear();
 
-	ColorPair hilite = Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true);
+	ColorPair hilite = Colors::pair("blue", "default", true);
 
 	int lowest_y = this->score->getH() - 2; // border
 
@@ -309,7 +310,7 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->clear();
 
 		// User name
-		this->rightmost->print(Globals::Profiles::current->name, this->rightmost->getW() - Globals::Profiles::current->name.size() - 2, 01, Colors::pair(COLOR_BLUE, COLOR_DEFAULT));
+		this->rightmost->print(Globals::Profiles::current->name, this->rightmost->getW() - Globals::Profiles::current->name.size() - 2, 01, Colors::pair("blue", "default"));
 
 		// Piece and Line Statistics
 		this->rightmost->print("[I]", 2, 2, Globals::Profiles::current->settings.theme.piece_I->color);
@@ -367,10 +368,10 @@ void LayoutGame::draw(Menu* menu)
 		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(Globals::Profiles::current->scores->score.level));
 
 		// Bottom line - version and Help
-		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
+		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair("cyan", "default"));
 
-		this->rightmost->print("H", this->rightmost->getW() - 5, this->rightmost->getH() - 2, Colors::pair(COLOR_YELLOW, COLOR_DEFAULT));
-		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, Colors::pair(COLOR_CYAN, COLOR_DEFAULT));
+		this->rightmost->print("H", this->rightmost->getW() - 5, this->rightmost->getH() - 2, Colors::pair("yellow", "default"));
+		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, Colors::pair("cyan", "default"));
 		this->rightmost->refresh();
 	}
 

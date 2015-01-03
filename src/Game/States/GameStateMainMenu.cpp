@@ -159,13 +159,11 @@ std::string getProfileName(Window* main)
 	             4,
 	             Globals::Profiles::current->settings.theme.hilite_text);
 
-	window.print_multiline("It may not contain the\n"
-	                       "following characters:\n"
-	                       "\\ / . ^ ; # = ~",
-	                       1,
-	                       6,
-	                       0);
-
+	window.print(Utils::String::split("It may not contain the\n"
+	                                  "following characters:\n"
+	                                  "\\ / . ^ ; # = ~", '\n'),
+	             1,
+	             6);
 
 	window.refresh();
 

@@ -69,76 +69,75 @@ void WindowGameHelp::run()
 		// Help Window
 		if (activatedIndex == 0)
 		{
-			this->windows[0]->print_multiline("yetris: customizable Tetris(tm) clone\n"
-			                                  "        for the terminal.\n",
-			                                  1, 1,
-			                                  Globals::Profiles::current->settings.theme.text);
+			this->windows[0]->print(Utils::String::split("yetris: customizable Tetris(tm) clone\n"
+			                                             "        for the terminal.\n", '\n'),
+			                        1, 1,
+			                        Globals::Profiles::current->settings.theme.text);
 
-			this->windows[0]->print_multiline("Controls:\n",
-			                                  1, 4, Globals::Profiles::current->settings.theme.hilite_text);
+			this->windows[0]->print("Controls:", 1, 4, Globals::Profiles::current->settings.theme.hilite_text);
 
-			this->windows[0]->print_multiline(" Move Left\n"
-			                                  " Move Right\n"
-			                                  " Soft Drop\n"
-			                                  " Hard Drop\n"
-			                                  " Hold Piece\n"
-			                                  " Rotate Clockwise\n"
-			                                  " Rotate Counterclockwise\n"
-			                                  " Show Help\n"
-			                                  " Pause\n"
-			                                  " Quit Anytime\n",
-			                                  11, 4,
-			                                  Globals::Profiles::current->settings.theme.hilite_text);
+			this->windows[0]->print(Utils::String::split(" Move Left\n"
+			                                             " Move Right\n"
+			                                             " Soft Drop\n"
+			                                             " Hard Drop\n"
+			                                             " Hold Piece\n"
+			                                             " Rotate Clockwise\n"
+			                                             " Rotate Counterclockwise\n"
+			                                             " Show Help\n"
+			                                             " Pause\n"
+			                                             " Quit Anytime\n", '\n'),
+			                        11, 4,
+			                        Globals::Profiles::current->settings.theme.hilite_text);
 
-			this->windows[0]->print_multiline(InputManager::keyToString(InputManager::getBind("left")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("right")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("down")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("drop")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("hold")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("rotate_clockwise")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("rotate_counterclockwise")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("rotate_180")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("help")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("pause")) + "\n" +
-			                                  InputManager::keyToString(InputManager::getBind("quit")) + "\n",
-			                                  37, 4,
-			                                  Globals::Profiles::current->settings.theme.text);
+			this->windows[0]->print(Utils::String::split(InputManager::keyToString(InputManager::getBind("left")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("right")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("down")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("drop")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("hold")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("rotate_clockwise")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("rotate_counterclockwise")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("rotate_180")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("help")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("pause")) + "\n" +
+			                                             InputManager::keyToString(InputManager::getBind("quit")) + "\n", '\n'),
+			                        37, 4,
+			                        Globals::Profiles::current->settings.theme.text);
 
-			this->windows[0]->print_multiline("Your settings and scores are stored at:\n",
-			                                  1, 16,
-			                                  Globals::Profiles::current->settings.theme.text);
+			this->windows[0]->print("Your settings and scores are stored at:",
+			                        1, 16,
+			                        Globals::Profiles::current->settings.theme.text);
 
-			this->windows[0]->print_multiline("~/.local/share/yetris/" + Globals::Profiles::current->name,
-			                                  0, 17,
-			                                  Globals::Profiles::current->settings.theme.hilite_text);
+			this->windows[0]->print("~/.local/share/yetris/" + Globals::Profiles::current->name,
+			                        0, 17,
+			                        Globals::Profiles::current->settings.theme.hilite_text);
 		}
 		//
 		// Credits
 		else if (activatedIndex == 1)
 		{
-			this->windows[1]->print_multiline(" ### ### ####### ####### ######  ####### #####\n"
-			                                  " ### ### ####      ###   ### ###   ###  ### ###\n"
-			                                  "  #####  ######    ###   ### ###   ###   ###\n"
-			                                  "   ###   ####      ###   ######    ###     ###\n"
-			                                  "   ###   ####      ###   ### ###   ###  ### ###\n"
-			                                  "   ###   #######   ###   ### ### ####### #####\n",
-			                                  0, 0, Colors::pair(COLOR_BLUE, COLOR_DEFAULT, true));
+			this->windows[1]->print(Utils::String::split(" ### ### ####### ####### ######  ####### #####\n"
+			                                             " ### ### ####      ###   ### ###   ###  ### ###\n"
+			                                             "  #####  ######    ###   ### ###   ###   ###\n"
+			                                             "   ###   ####      ###   ######    ###     ###\n"
+			                                             "   ###   ####      ###   ### ###   ###  ### ###\n"
+			                                             "   ###   #######   ###   ### ### ####### #####\n", '\n'),
+			                        0, 0, Colors::pair("blue", "default", true));
 
-			this->windows[1]->print_multiline(" v" VERSION " (built " DATE ")\n",
-			                                  24, 6, Colors::pair(COLOR_GREEN, COLOR_DEFAULT, true));
+			this->windows[1]->print(Utils::String::split(" v" VERSION " (built " DATE ")\n", '\n'),
+			                        24, 6, Colors::pair("green", "default", true));
 
-			this->windows[1]->print_multiline("yetris was created by Alexandre Dantas,\n"
-			                                  "contact him at <eu@alexdantas.net>\n"
-			                                  "\n"
-			                                  "Thanks for playing this game :)\n"
-			                                  "\n"
-			                                  "Homepage: http://yetris.alexdantas.net/\n"
-			                                  "\n"
-			                                  "Source code and other contributors:\n"
-			                                  "https://github.com/alexdantas/yetris/\n"
-			                                  "\n"
-			                                  "Support free software! http://www.gnu.org/",
-			                                  1, 7, Globals::Profiles::current->settings.theme.text);
+			this->windows[1]->print(Utils::String::split("yetris was created by Alexandre Dantas,\n"
+			                                             "contact him at <eu@alexdantas.net>\n"
+			                                             "\n"
+			                                             "Thanks for playing this game :)\n"
+			                                             "\n"
+			                                             "Homepage: http://yetris.alexdantas.net/\n"
+			                                             "\n"
+			                                             "Source code and other contributors:\n"
+			                                             "https://github.com/alexdantas/yetris/\n"
+			                                             "\n"
+			                                             "Support free software! http://www.gnu.org/", '\n'),
+			                        1, 7, Globals::Profiles::current->settings.theme.text);
 		}
 
 		this->windows[activatedIndex]->refresh();
