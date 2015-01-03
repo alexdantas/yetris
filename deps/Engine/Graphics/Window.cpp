@@ -18,7 +18,7 @@ Window::Window(int x, int y, int w, int h):
 {
 	this->win = newwin(height, width, y, x);
 
-	if (!this->win)
+	if (! this->win)
 		throw "Could not create Ncurses Window";
 
 	this->setBorders();
@@ -57,7 +57,7 @@ Window::Window(Window* parent, int x, int y, int width, int height):
 
 	// Creates a subwindow
 	this->win = derwin(parent->win, height, width, y, x);
-	if (!win)
+	if (! this->win)
 		throw "Could not create Ncurses Window";
 
 	this->setBorders();

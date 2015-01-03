@@ -43,6 +43,7 @@ void LayoutGame::windowsInit()
 	                            0,
 	                            4*2 + 2 + 2, // 4 blocks + borders + 2 space
 	                            0);
+	this->leftmost->borders(Window::BORDER_NONE); // container Window
 
 	if (Globals::Profiles::current->settings.game.can_hold)
 	{
@@ -96,17 +97,11 @@ void LayoutGame::windowsInit()
 	                               0,
 	                               10*2 + 2, // 10 blocks + borders
 	                               22);      // 20 blocks + borders
-
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->middle_left->borders(EngineGlobals::Screen::fancy_borders ?
-		                           Window::BORDER_FANCY :
-		                           Window::BORDER_REGULAR);
-	}
 	this->middle_left->refresh();
 
 	// The actual game border, inside that container.
 	this->board = new Window(this->middle_left, 0, 0, 0, 0);
+	this->board->borders(Window::BORDER_NONE);
 
 	// Middle-right, container of all the next pieces.
 	// It's height depents on how many next pieces we're showing.
@@ -118,12 +113,6 @@ void LayoutGame::windowsInit()
 	                                4*2 + 2, // 4 blocks + borders
 	                                middle_right_height);
 
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->middle_right->borders(EngineGlobals::Screen::fancy_borders ?
-		                            Window::BORDER_FANCY :
-		                            Window::BORDER_REGULAR);
-	}
 	this->middle_right->setTitle("Next");
 	this->middle_right->clear();
 	this->middle_right->refresh();
@@ -131,6 +120,7 @@ void LayoutGame::windowsInit()
 	// First next piece
 	this->next.resize(Globals::Profiles::current->settings.game.next_pieces);
 	this->next[0] = new Window(this->middle_right, 0, 0, 0, 2);
+	this->next[0]->borders(Window::BORDER_NONE);
 
 	// The rest of the next pieces
 	for (unsigned int i = 1; i < (this->next.size()); i++)
@@ -141,6 +131,7 @@ void LayoutGame::windowsInit()
 		                           0,
 		                           2);
 
+		this->next[i]->borders(Window::BORDER_NONE);
 		this->next[i]->refresh();
 	}
 
@@ -154,12 +145,6 @@ void LayoutGame::windowsInit()
 		                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
 		                             0);
 
-		if (EngineGlobals::Screen::show_borders)
-		{
-			this->rightmost->borders(EngineGlobals::Screen::fancy_borders ?
-			                         Window::BORDER_FANCY :
-			                         Window::BORDER_REGULAR);
-		}
 		this->rightmost->setTitle("Statistics");
 		this->rightmost->clear();
 		this->rightmost->refresh();
