@@ -132,7 +132,7 @@ void WindowGameHelp::run()
 			                                  "\n"
 			                                  "Thanks for playing this game :)\n"
 			                                  "\n"
-			                                  "Homepage: http://nsnake.alexdantas.net/\n"
+			                                  "Homepage: http://yetris.alexdantas.net/\n"
 			                                  "\n"
 			                                  "Source code and other contributors:\n"
 			                                  "https://github.com/alexdantas/yetris/\n"
