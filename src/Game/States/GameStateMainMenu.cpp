@@ -283,6 +283,7 @@ void GameStateMainMenu::update()
 				Globals::Profiles::current = new Profile(name);
 
 				Globals::Profiles::current->loadSettings();
+				Globals::Profiles::current->applyGraphicalSettings();
 
 				// Re-create menus based on current settings
 				createSinglePlayerMenu();

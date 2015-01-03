@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 
 			Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
 			Globals::Profiles::current->loadSettings();
+			Globals::Profiles::current->applyGraphicalSettings();
 
 			firstGameState = new GameStateMainMenu();
 		}
