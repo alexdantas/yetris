@@ -9,6 +9,9 @@ bool EngineGlobals::Screen::outer_border;
 
 ColorPair EngineGlobals::Theme::text;
 ColorPair EngineGlobals::Theme::hilite_text;
+ColorPair EngineGlobals::Theme::hilite_hilite_text;
+ColorPair EngineGlobals::Theme::dim_text;
+ColorPair EngineGlobals::Theme::dim_dim_text;
 ColorPair EngineGlobals::Theme::textbox;
 
 
@@ -21,8 +24,11 @@ void EngineGlobals::init()
 	EngineGlobals::Screen::fancy_borders = true;
 	EngineGlobals::Screen::outer_border  = true;
 
-	EngineGlobals::Theme::text        = Colors::pair("white",   "default", true);
-	EngineGlobals::Theme::hilite_text = Colors::pair("cyan",    "default", true);
-	EngineGlobals::Theme::textbox     = Colors::pair("default", "cyan");
+	EngineGlobals::Theme::text               = Colors::pair("white",   "default", true);
+	EngineGlobals::Theme::hilite_text        = Colors::pair("cyan",    "default");
+	EngineGlobals::Theme::hilite_hilite_text = Colors::pair("cyan",    "default", true);
+	EngineGlobals::Theme::dim_text           = Colors::pair("black",   "default", true);
+	EngineGlobals::Theme::dim_dim_text       = Colors::pair("black",   "default");
+	EngineGlobals::Theme::textbox            = Colors::pair("default", "cyan");
 }
 

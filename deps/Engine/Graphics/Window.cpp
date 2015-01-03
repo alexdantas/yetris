@@ -128,13 +128,13 @@ void Window::clear()
 	{
 		this->print(this->topLeftTitle,
 		            1, 0,
-		            Colors::pair("blue", "default"));
+		            EngineGlobals::Theme::hilite_hilite_text);
 	}
 	if (! this->bottomLeftTitle.empty())
 	{
 		this->print(this->bottomLeftTitle,
 		            0, this->getH() - 1,
-		            Colors::pair("blue", "default"));
+		            EngineGlobals::Theme::hilite_hilite_text);
 	}
 	if (! this->topRightTitle.empty())
 	{
@@ -143,7 +143,7 @@ void Window::clear()
 
 		this->print(this->topRightTitle,
 		            x - w, 0,
-		            Colors::pair("blue", "default"));
+		            EngineGlobals::Theme::hilite_hilite_text);
 	}
 	if (! this->bottomRightTitle.empty())
 	{
@@ -152,7 +152,7 @@ void Window::clear()
 
 		this->print(this->bottomRightTitle,
 		            x - w, this->getH() - 1,
-		            Colors::pair("blue", "default"));
+		            EngineGlobals::Theme::hilite_hilite_text);
 	}
 }
 int Window::getW() const
@@ -180,21 +180,20 @@ void Window::borders(BorderType type)
 
 	if (type == Window::BORDER_FANCY)
 	{
+		// Making shadows with Theme colors
 		wborder(this->win,
-		        ACS_VLINE    | Colors::pair("white", "default"      ).ncurses_pair,
-		        ACS_VLINE    | Colors::pair("black", "default", true).ncurses_pair,
-		        ACS_HLINE    | Colors::pair("white", "default"      ).ncurses_pair,
-		        ACS_HLINE    | Colors::pair("black", "default", true).ncurses_pair,
-		        ACS_ULCORNER | Colors::pair("white", "default", true).ncurses_pair,
-		        ACS_URCORNER | Colors::pair("white", "default"      ).ncurses_pair,
-		        ACS_LLCORNER | Colors::pair("white", "default"      ).ncurses_pair,
-		        ACS_LRCORNER | Colors::pair("black", "default", true).ncurses_pair);
+		        ACS_VLINE    | EngineGlobals::Theme::dim_text.ncurses_pair,
+		        ACS_VLINE    | EngineGlobals::Theme::dim_dim_text.ncurses_pair,
+		        ACS_HLINE    | EngineGlobals::Theme::dim_text.ncurses_pair,
+		        ACS_HLINE    | EngineGlobals::Theme::dim_dim_text.ncurses_pair,
+		        ACS_ULCORNER | EngineGlobals::Theme::text.ncurses_pair,
+		        ACS_URCORNER | EngineGlobals::Theme::dim_text.ncurses_pair,
+		        ACS_LLCORNER | EngineGlobals::Theme::dim_text.ncurses_pair,
+		        ACS_LRCORNER | EngineGlobals::Theme::dim_dim_text.ncurses_pair);
 	}
 	else if (type == Window::BORDER_REGULAR)
 	{
-		ColorPair black = Colors::pair("black", "default", true);
-
-		Colors::pairActivate(this->win, black);
+		Colors::pairActivate(this->win, EngineGlobals::Theme::dim_text);
 		wborder(this->win, '|', '|', '-', '-', '+', '+', '+', '+');
 	}
 }

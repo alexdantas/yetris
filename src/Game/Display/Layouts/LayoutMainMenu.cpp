@@ -57,7 +57,7 @@ void LayoutMainMenu::windowsInit()
 	this->logo->clear();
 	this->logo->refresh();
 
-	// MENU
+	// Menu Window (that little thing in the middle)
 	this->menu = new Window(this->main,
 	                        (this->main->getW() / 3) - 2,
 	                        this->logo->getH() + 1,

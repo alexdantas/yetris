@@ -267,16 +267,14 @@ void LayoutGame::draw(Menu* menu)
 	// A mess of direct Ncurses calls - fix this later
 	this->score->clear();
 
-	ColorPair hilite = Colors::pair("blue", "default", true);
-
 	int lowest_y = this->score->getH() - 2; // border
 
-	this->score->print("Hi-Score", 1, lowest_y - 7, hilite);
-	this->score->print("Score",    1, lowest_y - 4, hilite);
-	this->score->print("Level",    1, lowest_y - 1, hilite);
+	this->score->print("Hi-Score", 1, lowest_y - 7, EngineGlobals::Theme::hilite_text);
+	this->score->print("Score",    1, lowest_y - 4, EngineGlobals::Theme::hilite_text);
+	this->score->print("Level",    1, lowest_y - 1, EngineGlobals::Theme::hilite_text);
 
 	// Default color
-	wattrset(this->score->win, COLOR_PAIR(0));
+	Colors::pairActivate(this->score->win, EngineGlobals::Theme::text);
 
 	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", Globals::Profiles::current->scores->score.points);
 	mvwprintw(this->score->win, lowest_y    , 1, "%8d", Globals::Profiles::current->scores->score.level);
@@ -295,7 +293,7 @@ void LayoutGame::draw(Menu* menu)
 		this->rightmost->clear();
 
 		// User name
-		this->rightmost->print(Globals::Profiles::current->name, this->rightmost->getW() - Globals::Profiles::current->name.size() - 2, 01, Colors::pair("blue", "default"));
+		this->rightmost->print(Globals::Profiles::current->name, this->rightmost->getW() - Globals::Profiles::current->name.size() - 2, 01, EngineGlobals::Theme::hilite_text);
 
 		// Piece and Line Statistics
 		this->rightmost->print("[I]", 2, 2, Globals::Profiles::current->settings.theme.piece_I->color);
@@ -308,15 +306,15 @@ void LayoutGame::draw(Menu* menu)
 
 		int x_offset = this->rightmost->getW() - 15;
 
-		this->rightmost->print("Singles", x_offset, 2, hilite);
-		this->rightmost->print("Doubles", x_offset, 3, hilite);
-		this->rightmost->print("Triples", x_offset, 4, hilite);
-		this->rightmost->print("Tetris",  x_offset, 5, hilite);
+		this->rightmost->print("Singles", x_offset, 2, EngineGlobals::Theme::hilite_text);
+		this->rightmost->print("Doubles", x_offset, 3, EngineGlobals::Theme::hilite_text);
+		this->rightmost->print("Triples", x_offset, 4, EngineGlobals::Theme::hilite_text);
+		this->rightmost->print("Tetris",  x_offset, 5, EngineGlobals::Theme::hilite_text);
 
-		this->rightmost->print("Pieces", x_offset, 7, hilite);
-		this->rightmost->print("Lines",  x_offset, 8, hilite);
+		this->rightmost->print("Pieces", x_offset, 7, EngineGlobals::Theme::hilite_text);
+		this->rightmost->print("Lines",  x_offset, 8, EngineGlobals::Theme::hilite_text);
 
-		wattrset(this->rightmost->win, COLOR_PAIR(0));
+		Colors::pairActivate(this->rightmost->win, EngineGlobals::Theme::text);
 		mvwprintw(this->rightmost->win, 2, 6, "x %3d", this->game->stats.I);
 		mvwprintw(this->rightmost->win, 3, 6, "x %3d", this->game->stats.T);
 		mvwprintw(this->rightmost->win, 4, 6, "x %3d", this->game->stats.L);
@@ -334,7 +332,7 @@ void LayoutGame::draw(Menu* menu)
 		mvwprintw(this->rightmost->win, 8, x_offset + 7, "x %4d", this->game->stats.lines);
 
 		// Timer - how much time has passed since game start
-		this->rightmost->print("Timer", 2, 10, hilite);
+		this->rightmost->print("Timer", 2, 10, EngineGlobals::Theme::hilite_text);
 
 		long delta_s = this->game->timer.delta_s();
 
@@ -342,21 +340,21 @@ void LayoutGame::draw(Menu* menu)
 		int minutes = (delta_s / 60) % 60;
 		int hours   = ((delta_s / 60) / 60) % 24;
 
-		wattrset(this->rightmost->win, COLOR_PAIR(0));
+		Colors::pairActivate(this->rightmost->win, EngineGlobals::Theme::text);
 
 		mvwprintw(this->rightmost->win, 10, 8, "%02d:%02d:%02d", hours, minutes, seconds);
 
 		// Delay
-		this->rightmost->print("Delay", 2, 12, hilite);
-		wattrset(this->rightmost->win, COLOR_PAIR(0));
+		this->rightmost->print("Delay", 2, 12, EngineGlobals::Theme::hilite_text);
 
+		Colors::pairActivate(this->rightmost->win, EngineGlobals::Theme::text);
 		mvwprintw(this->rightmost->win, 12, 8, "%dms", this->game->getDelay(Globals::Profiles::current->scores->score.level));
 
 		// Bottom line - version and Help
-		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, Colors::pair("cyan", "default"));
+		this->rightmost->print("yetris v" VERSION, 1, this->rightmost->getH() - 2, EngineGlobals::Theme::hilite_text);
 
-		this->rightmost->print("H", this->rightmost->getW() - 5, this->rightmost->getH() - 2, Colors::pair("yellow", "default"));
-		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, Colors::pair("cyan", "default"));
+		this->rightmost->print("H", this->rightmost->getW() - 5, this->rightmost->getH() - 2, EngineGlobals::Theme::hilite_hilite_text);
+		this->rightmost->print("elp", this->rightmost->getW() - 4, this->rightmost->getH() - 2, EngineGlobals::Theme::hilite_text);
 		this->rightmost->refresh();
 	}
 

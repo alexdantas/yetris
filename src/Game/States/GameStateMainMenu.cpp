@@ -546,9 +546,9 @@ void GameStateMainMenu::createGameSettingsMenu()
 	SAFE_DELETE(this->menuGameSettings);
 
 	this->menuGameSettings = new Menu(1,
-	                                1,
-	                                this->layout->menu->getW() - 2,
-	                                this->layout->menu->getH() - 2);
+	                                  1,
+	                                  this->layout->menu->getW() - 2,
+	                                  this->layout->menu->getH() - 2);
 
 	MenuItem* item;
 

@@ -131,7 +131,7 @@ void Menu::draw(Window* window)
 			window->print("(more)",
 			              this->x + this->width/2 - 3,
 			              this->y + yoffset,
-			              Colors::pair("white", "default"));
+			              EngineGlobals::Theme::dim_text);
 			continue;
 		}
 		// Menu is big and needs scrolling,
@@ -141,7 +141,7 @@ void Menu::draw(Window* window)
 			window->print("(more)",
 			              this->x + this->width/2 - 3,
 			              this->y + yoffset + 1,
-			              Colors::pair("white", "default"));
+			              EngineGlobals::Theme::dim_text);
 			continue;
 		}
 
@@ -165,7 +165,7 @@ void Menu::draw(Window* window)
 				                   '-'),
 				                  this->x + j,
 				                  this->y + yoffset,
-				                  Colors::pair("white", "default"));
+				                  EngineGlobals::Theme::dim_text);
 		}
 		else
 		{

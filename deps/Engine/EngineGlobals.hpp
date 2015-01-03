@@ -54,6 +54,15 @@ namespace EngineGlobals
 		/// Color for highlighted text.
 		extern ColorPair hilite_text;
 
+		/// Color for extra highlighted text;
+		extern ColorPair hilite_hilite_text;
+
+		/// Color for text a little bit hidden on the screen.
+		extern ColorPair dim_text;
+
+		/// Color for text very hard to see.
+		extern ColorPair dim_dim_text;
+
 		/// Color for textbox prompts (where you enter information).
 		/// Usually it should be the reverse of the `hilite_text`.
 		extern ColorPair textbox;
