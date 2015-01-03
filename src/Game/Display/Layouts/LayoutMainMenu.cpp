@@ -76,10 +76,9 @@ void LayoutMainMenu::windowsInit()
 	int posy   = this->main->getH() - height - 1;
 
 	this->animationContainer = new Window(this->main,
-	                                      0,
-	                                      posy,
-	                                      0,
-	                                      height);
+	                                      0, posy,
+	                                      0, height);
+	this->animationContainer->borders(Window::BORDER_NONE);
 
 	// Deciding randomly the type of the Animation
 	switch(Utils::Random::between(0, 3))
