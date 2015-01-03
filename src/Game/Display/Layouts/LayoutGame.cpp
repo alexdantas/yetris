@@ -276,13 +276,13 @@ void LayoutGame::draw(Menu* menu)
 	// Default color
 	Colors::pairActivate(this->score->win, EngineGlobals::Theme::text);
 
-	mvwprintw(this->score->win, lowest_y - 3, 1, "%8u", Globals::Profiles::current->scores->score.points);
-	mvwprintw(this->score->win, lowest_y    , 1, "%8d", Globals::Profiles::current->scores->score.level);
+	mvwprintw(this->score->win, lowest_y - 3, 1, "%10u", Globals::Profiles::current->scores->score.points);
+	mvwprintw(this->score->win, lowest_y    , 1, "%10d", Globals::Profiles::current->scores->score.level);
 
 	if (! Globals::Profiles::current->scores->highScore)
 		this->score->print("(none)", 1, lowest_y - 6);
 	else
-		mvwprintw(this->score->win, lowest_y - 6, 1, "%8u", Globals::Profiles::current->scores->highScore->points);
+		mvwprintw(this->score->win, lowest_y - 6, 1, "%10u", Globals::Profiles::current->scores->highScore->points);
 
 	this->score->refresh();
 
