@@ -46,6 +46,7 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	USE_COLORS,
 	CENTER_HORIZONTAL,
 	CENTER_VERTICAL,
+	ANIMATION,
 
 	// Controls Submenu
 	CONTROLS_KEY_LEFT,
@@ -634,6 +635,23 @@ void GameStateMainMenu::createGUIOptionsMenu()
 	                             CENTER_VERTICAL,
 	                             EngineGlobals::Screen::center_vertically);
 	menuGUIOptions->add(check);
+
+	// Animation on the background of the menu
+	std::vector<std::string> options;
+	options.push_back("random");
+	options.push_back("fire");
+	options.push_back("water");
+	options.push_back("snakes");
+	options.push_back("life");
+	options.push_back("none");
+
+	MenuItemTextlist* list;
+
+	list = new MenuItemTextlist("Animation",
+	                            ANIMATION,
+	                            options,
+	                            Globals::Profiles::current->settings.screen.animation);
+	menuGUIOptions->add(list);
 }
 void GameStateMainMenu::createControlsMenu()
 {
@@ -751,6 +769,7 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.outer_border        = this->menuGUIOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuGUIOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically   = this->menuGUIOptions->getBool(CENTER_VERTICAL);
+	current->settings.screen.animation           = this->menuGUIOptions->getString(ANIMATION);
 	current->applyGraphicalSettings();
 
 	current->settings.screen.show_statistics = this->menuGameSettings->getBool(SHOW_STATISTICS);

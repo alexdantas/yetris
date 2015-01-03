@@ -178,6 +178,8 @@ Profile::Profile(std::string name):
 
 	settings.screen.show_statistics = true;
 
+	settings.screen.animation = std::string("random");
+
 	// Game
 	settings.game.next_pieces = 7;
 
@@ -339,6 +341,9 @@ void Profile::loadSettings()
 
 	INI_GET(settings.screen.show_statistics, "screen", "statistics");
 
+	// Special case, getting a string
+	INI_GET(settings.screen.animation, "screen", "animation");
+
 	// Game
 	INI_GET(settings.game.next_pieces, "game", "next_pieces");
 	INI_GET(settings.game.has_ghost,   "game", "ghost");
@@ -468,6 +473,8 @@ void Profile::saveSettings()
 	INI_SET("screen", "colors", settings.screen.use_colors);
 
 	INI_SET("screen", "statistics", settings.screen.show_statistics);
+
+	INI_SET("screen", "animation",  settings.screen.animation);
 
 	// Game
 

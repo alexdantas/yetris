@@ -81,27 +81,45 @@ void LayoutMainMenu::windowsInit()
 	                                      0, height);
 	this->animationContainer->borders(Window::BORDER_NONE);
 
-	// Deciding randomly the type of the Animation
-	switch(Utils::Random::between(0, 3))
+	if (Globals::Profiles::current->settings.screen.animation == "random")
 	{
-	case 0:
-		this->animation = new AnimationWater(this->animationContainer);
-		break;
+		// Deciding randomly the type of the Animation
+		switch(Utils::Random::between(0, 3))
+		{
+		case 0:
+			this->animation = new AnimationWater(this->animationContainer);
+			break;
 
-	case 1:
-		this->animation = new AnimationSnakes(this->animationContainer);
-		break;
+		case 1:
+			this->animation = new AnimationSnakes(this->animationContainer);
+			break;
 
-	case 2:
-		this->animation = new AnimationGameOfLife(this->animationContainer);
-		break;
+		case 2:
+			this->animation = new AnimationGameOfLife(this->animationContainer);
+			break;
 
-	default:
-		this->animation = new AnimationFire(this->animationContainer);
-		break;
+		default:
+			this->animation = new AnimationFire(this->animationContainer);
+			break;
+		}
 	}
+	else if (Globals::Profiles::current->settings.screen.animation == "fire")
+		this->animation = new AnimationFire(this->animationContainer);
 
-	this->animation->load();
+	else if (Globals::Profiles::current->settings.screen.animation == "water")
+		this->animation = new AnimationWater(this->animationContainer);
+
+	else if (Globals::Profiles::current->settings.screen.animation == "snakes")
+		this->animation = new AnimationSnakes(this->animationContainer);
+
+	else if (Globals::Profiles::current->settings.screen.animation == "life")
+		this->animation = new AnimationGameOfLife(this->animationContainer);
+
+	else
+		this->animation = NULL;
+
+	if (this->animation)
+		this->animation->load();
 }
 void LayoutMainMenu::windowsExit()
 {
@@ -118,8 +136,11 @@ void LayoutMainMenu::draw(Menu* menu)
 
 	this->animationContainer->clear();
 
-	this->animation->update();
-	this->animation->draw();
+	if (this->animation)
+	{
+		this->animation->update();
+		this->animation->draw();
+	}
 
 	this->animationContainer->refresh();
 

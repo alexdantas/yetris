@@ -135,6 +135,12 @@ public:
 			bool use_colors;
 
 			bool show_statistics;
+
+			/// Which animation to show on the background of the main menu.
+			///
+			/// Options (so far):
+			///     "random", "fire", "water", "snakes", "life" and "none"
+			std::string animation;
 		};
 		Screen screen;
 
