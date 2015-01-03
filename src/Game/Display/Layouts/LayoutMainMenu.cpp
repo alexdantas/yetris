@@ -1,10 +1,10 @@
 #include <Game/Display/Layouts/LayoutMainMenu.hpp>
 #include <Engine/Graphics/Colors.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
-#include <Game/Display/Animations/AnimationFire.hpp>
-#include <Game/Display/Animations/AnimationWater.hpp>
-#include <Game/Display/Animations/AnimationSnakes.hpp>
-#include <Game/Display/Animations/AnimationGameOfLife.hpp>
+#include <Engine/Graphics/Animation/AnimationFire.hpp>
+#include <Engine/Graphics/Animation/AnimationWater.hpp>
+#include <Engine/Graphics/Animation/AnimationSnakes.hpp>
+#include <Engine/Graphics/Animation/AnimationGameOfLife.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Helpers/String.hpp>

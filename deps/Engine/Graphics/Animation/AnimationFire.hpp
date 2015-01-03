@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#define PARTICLES_AMOUNT 100
-
+// This intensity determines how each cell will get drawn.
+// Bigger intensity means brighter colors and "emptier" characters.
 #define INTENSITY_MIN 0
 #define INTENSITY_MAX 100
 
@@ -16,7 +16,8 @@
 #define INTENSITY_PERCENT(x) \
 	(x * (100/(INTENSITY_MAX - INTENSITY_MIN)))
 
-/// A single particle inside the whole fire.
+/// A single particle inside the whole fire
+/// (cell within the Window matrix).
 struct ParticleFire
 {
 	int intensity;
@@ -26,7 +27,7 @@ struct ParticleFire
 	{ };
 };
 
-/// Rules and behavior of the Fire animation.
+/// Shows a nice fire animation on the screen.
 class AnimationFire: public Animation
 {
 public:
