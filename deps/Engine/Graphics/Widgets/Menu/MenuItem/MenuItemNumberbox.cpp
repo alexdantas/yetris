@@ -1,27 +1,58 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemNumberbox.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/Helpers/Utils.hpp>
-#include <Engine/Helpers/String.hpp>
 #include <Engine/Helpers/Timer.hpp>
 #include <Engine/InputManager.hpp>
 
-MenuItemNumberbox::MenuItemNumberbox(std::string label, int id, int min, int max, int initial):
+MenuItemNumberbox::MenuItemNumberbox(std::string label, int id, int min, int max, int initial, int jump):
 	MenuItem(label, id),
 	min(min),
 	max(max),
 	initial(initial),
-	current(initial)
+	current(initial),
+	jump(jump)
 {
 	this->type = MenuItem::NUMBERBOX; // placing it above wont work
 }
 void MenuItemNumberbox::draw(Window* window, int x, int y, int width, bool hilite)
 {
-	MenuItem::draw(window, x, y, width, hilite);
-
 	std::string number = Utils::String::toString(this->current);
 
-	window->print(number, (width + x - number.size()), y, Globals::Profiles::current->settings.theme.hilite_text);
+	// Will draw
+	//      label     text
+	// If not hilite.
+	// If hilite:
+	//      label   < text >
+	MenuItem::draw(window,
+	               x,
+	               y,
+	               (width - number.size() - 2),
+	               hilite);
+
+	int rightmost = x + width;
+
+	window->print(((hilite)?
+	               "<":
+	               "["),
+	              rightmost - number.size() - 2,
+	              y,
+	              ((hilite)?
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
+
+	window->print(((hilite)?
+	               ">":
+	               "]"),
+	              rightmost - 1,
+	              y,
+	              ((hilite)?
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
+
+	window->print(number,
+	              rightmost - number.size() - 1,
+	              y,
+	              EngineGlobals::Theme::hilite_text);
 }
 void MenuItemNumberbox::handleInput()
 {
@@ -107,12 +138,12 @@ void MenuItemNumberbox::set(int value)
 }
 void MenuItemNumberbox::increase()
 {
-	this->current++;
+	this->current += this->jump;
 	this->cap();
 }
 void MenuItemNumberbox::decrease()
 {
-	this->current--;
+	this->current -= this->jump;
 	this->cap();
 }
 void MenuItemNumberbox::reset()
@@ -127,4 +158,3 @@ void MenuItemNumberbox::cap()
 	if (this->current < this->min)
 		this->current = this->min;
 }
-

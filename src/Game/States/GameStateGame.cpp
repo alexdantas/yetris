@@ -45,7 +45,7 @@ void GameStateGame::update()
 		Globals::Profiles::current->scores->handle(&Globals::Profiles::current->scores->score);
 		Globals::Profiles::current->scores->save();
 
-		Ncurses::delay_ms(500);
+		Utils::Time::delay_ms(500);
 
 		// Restart the game
 		this->load();

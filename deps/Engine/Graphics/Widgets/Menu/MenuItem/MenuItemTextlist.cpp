@@ -1,7 +1,6 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemTextlist.hpp>
 #include <Engine/Helpers/Utils.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/InputManager.hpp>
 
 #include <stdexcept>
@@ -47,8 +46,8 @@ void MenuItemTextlist::draw(Window* window, int x, int y, int width, bool hilite
 	              rightmost - text.size() - 2,
 	              y,
 	              ((hilite)?
-	               Globals::Profiles::current->settings.theme.hilite_text:
-	               Globals::Profiles::current->settings.theme.text));
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 
 	window->print(((hilite)?
 	               ">":
@@ -56,13 +55,13 @@ void MenuItemTextlist::draw(Window* window, int x, int y, int width, bool hilite
 	              rightmost - 1,
 	              y,
 	              ((hilite)?
-	               Globals::Profiles::current->settings.theme.hilite_text:
-	               Globals::Profiles::current->settings.theme.text));
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 
 	window->print(text,
 	              rightmost - text.size() - 1,
 	              y,
-	              Globals::Profiles::current->settings.theme.hilite_text);
+	              EngineGlobals::Theme::hilite_text);
 }
 void MenuItemTextlist::handleInput()
 {

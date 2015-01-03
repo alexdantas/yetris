@@ -1,9 +1,7 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemTextbox.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/InputManager.hpp>
 #include <Engine/Helpers/Utils.hpp>
-#include <Engine/Helpers/String.hpp>
 
 MenuItemTextbox::MenuItemTextbox(std::string label, int id, int width, std::string initial):
 	MenuItem(label, id),
@@ -17,20 +15,20 @@ void MenuItemTextbox::draw(Window* window, int x, int y, int width, bool hilite)
 	// Drawing label before actual textbox
 	MenuItem::draw(window, x, y, width - (this->width) - 1, hilite);
 
-	// Maximum x ids
+	// Maximum x id
 	int posx = x + width;
 
 	// Drawing the current text
 	if ((int)(this->currentText.size()) > (this->width))
-		window->print(this->currentText.substr(this->width), (posx - this->width), y, Globals::Profiles::current->settings.theme.textbox);
+		window->print(this->currentText.substr(this->width), (posx - this->width), y, EngineGlobals::Theme::textbox);
 	else
-		window->print(this->currentText, (posx - this->width), y, Globals::Profiles::current->settings.theme.textbox);
+		window->print(this->currentText, (posx - this->width), y, EngineGlobals::Theme::textbox);
 
 	int spacex = (posx - this->width) - this->currentText.size();
 
 	// Drawing the rest of the spaces
 	for (unsigned int i = 0; i < (this->width - this->currentText.size()); i++)
-		window->printChar(' ', spacex + i, y, Globals::Profiles::current->settings.theme.textbox);
+		window->printChar(' ', spacex + i, y, EngineGlobals::Theme::textbox);
 }
 
 // Local function that tells in #input can be interpreted
@@ -53,6 +51,6 @@ void MenuItemTextbox::handleInput()
 	}
 
 	if (InputManager::isPressed(KEY_BACKSPACE))
-		Utils::String::pop_back(&this->currentText);
+		Utils::String::pop_back(this->currentText);
 }
 

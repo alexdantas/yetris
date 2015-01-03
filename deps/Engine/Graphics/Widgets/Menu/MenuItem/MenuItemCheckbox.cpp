@@ -1,6 +1,5 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemCheckbox.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/InputManager.hpp>
 
 MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):
@@ -12,23 +11,40 @@ MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):
 
 void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite)
 {
-	MenuItem::draw(window, x, y, width - 9, hilite); // button width
+	// Will draw
+	//      label     text
+	// If not hilite.
+	// If hilite:
+	//      label   < text >
+	MenuItem::draw(window, x, y, width - 8, hilite); // button width
 
 	int posx = x + width;
 
-	window->print("[", posx - 8, y, Globals::Profiles::current->settings.theme.text);
+	window->print(((hilite)?
+	               "<":
+	               "["),
+	              posx - 8, y,
+	              ((hilite)?
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 
 	window->print("ON", posx - 7, y, ((this->checked) ?
-	                                  Globals::Profiles::current->settings.theme.hilite_text:
-	                                  Globals::Profiles::current->settings.theme.text));
+	                                  EngineGlobals::Theme::hilite_text:
+	                                  EngineGlobals::Theme::text));
 
-	window->print("|", posx - 5, y, Globals::Profiles::current->settings.theme.text);
+	window->print("|", posx - 5, y, EngineGlobals::Theme::text);
 
 	window->print("OFF", posx - 4, y, ((this->checked) ?
-	                                   Globals::Profiles::current->settings.theme.text :
-	                                   Globals::Profiles::current->settings.theme.hilite_text));
+	                                   EngineGlobals::Theme::text :
+	                                   EngineGlobals::Theme::hilite_text));
 
-	window->print("]", posx - 1, y, Globals::Profiles::current->settings.theme.text);
+	window->print(((hilite)?
+	               ">":
+	               "]"),
+	              posx - 1, y,
+	              ((hilite)?
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 }
 void MenuItemCheckbox::handleInput()
 {
@@ -60,4 +76,3 @@ bool MenuItemCheckbox::isChecked()
 {
 	return this->checked;
 }
-

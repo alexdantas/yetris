@@ -1,6 +1,5 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem/MenuItemLabel.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 
 MenuItemLabel::MenuItemLabel(std::string label, int id, std::string rightLabel):
 	MenuItem(label, id),
@@ -19,8 +18,8 @@ void MenuItemLabel::draw(Window* window, int x, int y, int width, bool hilite)
 	              x + width - rightLabelSize,
 	              y,
 	              ((hilite) ?
-	               Globals::Profiles::current->settings.theme.hilite_text:
-	               Globals::Profiles::current->settings.theme.text));
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 }
 
 void MenuItemLabel::handleInput()

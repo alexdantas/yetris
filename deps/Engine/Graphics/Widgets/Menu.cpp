@@ -1,7 +1,6 @@
 #include <Engine/Graphics/Widgets/Menu.hpp>
 #include <Engine/Helpers/Utils.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/InputManager.hpp>
 
 Menu::Menu(int x, int y, int width, int height):
@@ -161,7 +160,7 @@ void Menu::draw(Window* window)
 		if (! this->item[curitem])
 		{
 			for (int j = 0; j < (this->width); j++)
-				window->printChar(((Globals::Profiles::current->settings.screen.fancy_borders) ?
+				window->printChar(((EngineGlobals::Screen::fancy_borders) ?
 				                   ACS_HLINE :
 				                   '-'),
 				                  this->x + j,
@@ -319,6 +318,14 @@ void Menu::goLast()
 
 	if (! this->current)
 		this->goPrevious();
+}
+void Menu::goRandom()
+{
+	if (this->item.size() == 0)
+		return;
+
+	this->currentIndex = Utils::Random::between(0, this->item.size() - 1);
+	this->current      = this->item[this->currentIndex];
 }
 bool Menu::willQuit()
 {

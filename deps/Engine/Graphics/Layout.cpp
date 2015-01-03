@@ -1,7 +1,6 @@
 #include <Engine/Graphics/Layout.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
-#include <Game/Entities/Profile.hpp>
-#include <Game/Config/Globals.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 
 #include <iostream>
@@ -33,9 +32,9 @@ void Layout::windowsInit()
 	    (current_height < intendedHeight))
 	{
 		Ncurses::exit();
-		std::cerr << "Error! Your console screen is smaller than"
+		std::cerr << "Error! Your console screen is smaller than "
 		          << intendedWidth << "x" << intendedHeight << "\n"
-		          << "Please resize your window and try again"
+		          << "Please resize your window and try again."
 		          << std::endl;
 
 		exit(EXIT_FAILURE);
@@ -50,28 +49,16 @@ void Layout::windowsInit()
 	int main_x = 0;
 	int main_y = 0;
 
-	if (Globals::Profiles::current)
-	{
-		if (Globals::Profiles::current->settings.screen.center_horizontally)
-			main_x = current_width/2 - intendedWidth/2;
+	if (EngineGlobals::Screen::center_horizontally)
+		main_x = current_width/2 - intendedWidth/2;
 
-		if (Globals::Profiles::current->settings.screen.center_vertically)
-			main_y = current_height/2 - intendedHeight/2;
-	}
+	if (EngineGlobals::Screen::center_vertically)
+		main_y = current_height/2 - intendedHeight/2;
 
-	this->main = new Window(main_x,
-	                        main_y,
-	                        intendedWidth,
-	                        intendedHeight);
+	this->main = new Window(main_x, main_y, intendedWidth, intendedHeight);
 
-	if ((Globals::Profiles::current) &&
-	    (Globals::Profiles::current->settings.screen.outer_border) &&
-	    (Globals::Profiles::current->settings.screen.show_borders))
-	{
-		this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
-	}
+	if (! EngineGlobals::Screen::outer_border)
+		this->main->borders(Window::BORDER_NONE);
 
 	this->main->refresh();
 }
@@ -83,4 +70,3 @@ void Layout::draw()
 {
 	// When subclassing, make sure to implement this!
 }
-

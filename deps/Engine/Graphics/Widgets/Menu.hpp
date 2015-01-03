@@ -70,6 +70,7 @@ public:
 
 	void goFirst();
 	void goLast();
+	void goRandom();
 
 	/// Tells if the user selected an item that quits the menu.
 	bool willQuit();
@@ -113,7 +114,7 @@ public:
 	///       the pointer itself!
 	MenuItem* current;
 
-private:
+protected:
 	/// Index of the currently selected item.
 	unsigned int currentIndex;
 

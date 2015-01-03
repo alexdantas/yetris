@@ -9,6 +9,7 @@
 # make install    Installs the package on your system
 # make uninstall  Uninstalls the package from your system
 # make clean      Cleans results of building process
+# make clean-all  Cleans everything (project files and libs)
 # make dist       Creates source code "tarball"
 # make doc        Generates the documentation with doxygen
 # make docclean   Removes the documentation
@@ -67,20 +68,26 @@ LDFLAGS     = -lncurses $(LDFLAGS_PLATFORM)
 INCLUDESDIR = -I"src/" -I"deps/"
 LIBSDIR     =
 
-# All source files
+# Project source files
 CFILES   = $(shell find src -type f -name '*.c')
 CXXFILES = $(shell find src -type f -name '*.cpp')
 OBJECTS  = $(CFILES:.c=.o) \
            $(CXXFILES:.cpp=.o)
 
+# Engine source files
+ENGINE_DIR     = deps/Engine
+ENGINE_FILES   = $(shell find $(ENGINE_DIR) -type f -name '*.cpp')
+ENGINE_OBJECTS = $(ENGINE_FILES:.cpp=.o)
+
+# Commander source files
+COMMANDER_DIR     = deps/commander
+COMMANDER_FILES   = $(shell find $(COMMANDER_DIR) -type f -name '*.c')
+COMMANDER_OBJECTS = $(COMMANDER_FILES:.c=.o)
+COMMANDER_CFLAGS  = -O2 -Wall -Wextra $(CFLAGS_PLATFORM)
+
 DEFINES = -DVERSION=\""$(VERSION)"\" \
           -DPACKAGE=\""$(PACKAGE)"\" \
           -DDATE=\""$(DATE)"\"
-
-# commander stuff
-COMMANDERDIR     = deps/commander
-COMMANDER_CFLAGS = -O2 -Wall -Wextra $(CFLAGS_PLATFORM)
-COMMANDER_OBJS   = $(COMMANDERDIR)/commander.o
 
 # Distribution tarball
 TARNAME = $(PACKAGE)
@@ -127,15 +134,15 @@ uninstall:
 	$(MUTE)rm -f $(DESTDIR)$(BINDIR)/$(EXE)
 	$(MUTE)rm -f $(DESTDIR)$(MANDIR)/$(MANFILE)
 
-$(EXE): $(OBJECTS) $(COMMANDER_OBJS)
+$(EXE): $(OBJECTS) $(ENGINE_OBJECTS) $(COMMANDER_OBJECTS)
 	# Linking...
-	$(MUTE)$(CXX) $(OBJECTS) $(COMMANDER_OBJS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
+	$(MUTE)$(CXX) $(OBJECTS) $(ENGINE_OBJECTS) $(COMMANDER_OBJECTS) -o bin/$(EXE) $(LIBSDIR) $(LDFLAGS)
 
 src/%.o: src/%.cpp
 	# Compiling $<...
 	$(MUTE)$(CXX) $(CXXFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
-dist: clean $(DISTDIR).tar.gz
+dist: clean-all $(DISTDIR).tar.gz
 
 # This creates a tarball with all the files
 # versioned by GIT.
@@ -165,9 +172,13 @@ run: all
 	$(MUTE)./bin/$(EXE)
 
 clean:
-	# Cleaning files...
-	$(MUTE)rm $(VTAG) -f $(OBJECTS) $(COMMANDER_OBJS)
+	# Cleaning object files...
+	$(MUTE)rm $(VTAG) -f $(OBJECTS)
 	$(MUTE)rm $(VTAG) -f bin/$(EXE)
+
+clean-all: clean
+	# Cleaning dependency object files...
+	$(MUTE)rm $(VTAG) -f $(ENGINE_OBJECTS) $(COMMANDER_OBJECTS)
 
 dirs:
 	$(MUTE)mkdir -p bin
@@ -182,9 +193,13 @@ docclean:
 
 .PHONY: clean dirs doc docclean uninstall
 
-# commander stuf
+# Engine stuff
+$(ENGINE_DIR)/%.o: $(ENGINE_DIR)/%.cpp
+	# Compiling $<...
+	$(MUTE)$(CXX) $(CXXFLAGS) $(CDEBUG) $< -c -o $@ $(DEFINES) $(INCLUDESDIR)
 
-$(COMMANDERDIR)/commander.o: $(COMMANDERDIR)/commander.c
+# Commander stuff
+$(COMMANDER_DIR)/%.o: $(COMMANDER_DIR)/%.c
 	# Compiling $<...
 	$(MUTE)$(CC) $(COMMANDER_CFLAGS) $< -c -o $@
 

@@ -32,7 +32,7 @@ public:
 /// Controls all game states.
 ///
 /// This is a very important class.
-/// It contains the main game loop.
+/// It contains the main game loop (
 ///
 /// It makes the transitions between GameStates, assuring
 /// they are properly cleaned and initialized.

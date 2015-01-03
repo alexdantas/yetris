@@ -1,6 +1,5 @@
 #include <Engine/Graphics/Widgets/Menu/MenuItem.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/InputManager.hpp>
 
@@ -14,8 +13,8 @@ void MenuItem::draw(Window* window, int x, int y, int width, bool hilite)
 {
 	window->print(this->label.substr(0, width), x, y,
 	              ((hilite) ?
-	               Globals::Profiles::current->settings.theme.hilite_text:
-	               Globals::Profiles::current->settings.theme.text));
+	               EngineGlobals::Theme::hilite_text:
+	               EngineGlobals::Theme::text));
 }
 void MenuItem::handleInput()
 { }

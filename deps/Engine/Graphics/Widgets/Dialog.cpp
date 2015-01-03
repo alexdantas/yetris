@@ -1,31 +1,51 @@
 #include <Engine/Graphics/Widgets/Dialog.hpp>
 #include <Engine/Graphics/Layout.hpp>
 #include <Engine/Graphics/Widgets/Menu.hpp>
-#include <Game/Config/Globals.hpp>
-#include <Game/Entities/Profile.hpp>
+#include <Engine/Graphics/Ncurses.hpp>
+#include <Engine/EngineGlobals.hpp>
 #include <Engine/InputManager.hpp>
+#include <Engine/Helpers/Utils.hpp>
 
 #include <vector>
+#include <algorithm>
 
-void Dialog::show(std::string message)
+void Dialog::show(std::string message, bool pressAnyKey)
 {
-	int windowx = Layout::screenWidth/2 - (message.size() + 2)/2;
-	int windowy = Layout::screenHeight/2 - 3/2;
+	std::vector<std::string> message_lines = Utils::String::split(message, '\n');
 
-	Window dialog(windowx,
-	              windowy,
-	              message.size() + 2, // borders + empty space
-	              3);
+	// The dialog needs to wrap around this text. So we need...
+	int message_width  = 0; // ...the char count of the widest line and...
+	int message_height = 0; // ...the number of lines of the whole message
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
-	{
-		dialog.borders(Globals::Profiles::current->settings.screen.fancy_borders ?
-		               Window::BORDER_FANCY :
-		               Window::BORDER_REGULAR);
-	}
-	dialog.print(message, 1, 1);
+	message_height = message_lines.size();
+
+	for (size_t i = 0; i < message_lines.size(); i++)
+		message_width = std::max(message_width, (int)message_lines[i].size());
+
+	// Now, to the size and position of the actual Dialog.
+	// Making it centered on the screen
+	int window_x      = Layout::screenWidth /2 - (message_width + 2)/2;
+	int window_y      = Layout::screenHeight/2 - (message_height)   /2;
+	int window_width  = message_width  + 2; // left/right borders
+	int window_height = message_height + 2; // top/bottom borders
+
+	Window dialog(window_x, window_y, window_width, window_height);
+
+	// Before showing anything on the screen we must
+	// call `refresh()`, to... well, refresh the
+	// main screen buffer
+	refresh();
+
+	// Show all lines, starting from (1, 1)
+	for (size_t i = 0; i < message_lines.size(); i++)
+		dialog.print(message_lines[i], 1, i + 1);
+
 	dialog.refresh();
 	refresh();
+
+	// Wait forever to get any key...
+	if (pressAnyKey)
+		Ncurses::getInput(-1);
 }
 
 bool Dialog::askBool(std::string question, std::string title, bool default_value)
@@ -38,12 +58,6 @@ bool Dialog::askBool(std::string question, std::string title, bool default_value
 	              question.size() + 2 + 10, // borders + empty space
 	              5);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
-	{
-		dialog.borders(Globals::Profiles::current->settings.screen.fancy_borders ?
-		               Window::BORDER_FANCY :
-		               Window::BORDER_REGULAR);
-	}
 	if (! title.empty())
 		dialog.setTitle(title);
 
