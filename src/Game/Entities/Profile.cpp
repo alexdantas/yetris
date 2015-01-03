@@ -581,3 +581,12 @@ void Profile::saveSettings()
 	SAFE_DELETE(ini);
 }
 
+void Profile::applyGraphicalSettings()
+{
+	EngineGlobals::Screen::center_horizontally = this->settings.screen.center_horizontally;
+	EngineGlobals::Screen::center_vertically   = this->settings.screen.center_vertically;
+	EngineGlobals::Screen::show_borders        = this->settings.screen.show_borders;
+	EngineGlobals::Screen::fancy_borders       = this->settings.screen.fancy_borders;
+	EngineGlobals::Screen::outer_border        = this->settings.screen.outer_border;
+}
+

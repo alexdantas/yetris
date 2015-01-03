@@ -750,6 +750,7 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.outer_border        = this->menuGUIOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuGUIOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically   = this->menuGUIOptions->getBool(CENTER_VERTICAL);
+	current->applyGraphicalSettings();
 
 	current->settings.screen.show_statistics = this->menuGameSettings->getBool(SHOW_STATISTICS);
 	current->settings.game.next_pieces       = this->menuGameSettings->getInt(NEXT_PIECES);

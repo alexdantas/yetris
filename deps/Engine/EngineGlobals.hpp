@@ -16,6 +16,10 @@
 ///     this->layout->windowsExit();
 ///     this->layout->windowsInit();
 ///
+/// What I usually do is create a "Profile" class with a copy
+/// of those variables below. Then when the game starts I
+/// apply them to thoes below and then it's ok!
+///
 namespace EngineGlobals
 {
 	/// Affects the way game Windows are drawn.

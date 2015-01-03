@@ -4,6 +4,7 @@
 #include <Game/Entities/Block.hpp>
 #include <Game/Entities/ScoreFile.hpp>
 #include <Engine/Graphics/Colors.hpp>
+#include <Engine/EngineGlobals.hpp>
 
 #include <vector>
 #include <string>
@@ -25,6 +26,17 @@
 ///
 /// On the future I might implement Achievements, so it makes
 /// sense to have Profiles.
+///
+/// ## Note for graphic settings
+///
+/// This Game Engine has some visual settings such as centering
+/// the game screen or drawing borders on windows.
+/// They're at "Engine/EngineGlobals.hpp".
+///
+/// What I do is keep a copy of those variables and, when you
+/// make changes, I apply them with `Profile::applyGraphicalSettings()`.
+/// So I never deal with the Engine variables directly, only
+/// with the Profile ones!
 ///
 class Profile
 {
@@ -90,6 +102,12 @@ public:
 
 	/// Saves current settings on the user configuration file.
 	void saveSettings();
+
+	/// Apply the visual settings directly on the Game Engine.
+	///
+	/// After that you should restart the current Layout and you'll
+	/// see the changes immediately.
+	void applyGraphicalSettings();
 
 	/// Contains all the settings for this individual Profile.
 	///
