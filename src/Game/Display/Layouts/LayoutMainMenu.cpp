@@ -5,9 +5,10 @@
 #include <Engine/Graphics/Animation/AnimationWater.hpp>
 #include <Engine/Graphics/Animation/AnimationSnakes.hpp>
 #include <Engine/Graphics/Animation/AnimationGameOfLife.hpp>
-#include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Helpers/String.hpp>
+#include <Engine/EngineGlobals.hpp>
+#include <Game/Config/Globals.hpp>
 #include <Game/States/GameStateMainMenu.hpp>
 #include <Game/Entities/Profile.hpp>
 
@@ -38,9 +39,9 @@ void LayoutMainMenu::windowsInit()
 	                        0,
 	                        9);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->logo->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->logo->borders(EngineGlobals::Screen::fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}
@@ -63,9 +64,9 @@ void LayoutMainMenu::windowsInit()
 	                        this->main->getW() / 3,
 	                        this->main->getH() - this->logo->getH() - 2);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->menu->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->menu->borders(EngineGlobals::Screen::fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}

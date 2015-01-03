@@ -18,9 +18,9 @@ WindowGameHelp::WindowGameHelp()
 	                        width,
 	                        height);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->main->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->main->borders(EngineGlobals::Screen::fancy_borders ?
 		                    Window::BORDER_FANCY :
 		                    Window::BORDER_REGULAR);
 	}

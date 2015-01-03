@@ -139,9 +139,9 @@ std::string getProfileName(Window* main)
 	              main->getW() / 3,
 	              10);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		window.borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		window.borders(EngineGlobals::Screen::fancy_borders ?
 		               Window::BORDER_FANCY :
 		               Window::BORDER_REGULAR);
 	}
@@ -612,27 +612,27 @@ void GameStateMainMenu::createGUIOptionsMenu()
 
 	check = new MenuItemCheckbox("Show Borders",
 	                             SHOW_BORDERS,
-	                             Globals::Profiles::current->settings.screen.show_borders);
+	                             EngineGlobals::Screen::show_borders);
 	menuGUIOptions->add(check);
 
 	check = new MenuItemCheckbox("Fancy Borders",
 	                             FANCY_BORDERS,
-	                             Globals::Profiles::current->settings.screen.fancy_borders);
+	                             EngineGlobals::Screen::fancy_borders);
 	menuGUIOptions->add(check);
 
 	check = new MenuItemCheckbox("Outer Border",
 	                             OUTER_BORDER,
-	                             Globals::Profiles::current->settings.screen.outer_border);
+	                             EngineGlobals::Screen::outer_border);
 	menuGUIOptions->add(check);
 
 	check = new MenuItemCheckbox("Center Horizontal",
 	                             CENTER_HORIZONTAL,
-	                             Globals::Profiles::current->settings.screen.center_horizontally);
+	                             EngineGlobals::Screen::center_horizontally);
 	menuGUIOptions->add(check);
 
 	check = new MenuItemCheckbox("Center Vertical",
 	                             CENTER_VERTICAL,
-	                             Globals::Profiles::current->settings.screen.center_vertically);
+	                             EngineGlobals::Screen::center_vertically);
 	menuGUIOptions->add(check);
 }
 void GameStateMainMenu::createControlsMenu()

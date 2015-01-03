@@ -52,9 +52,9 @@ void LayoutGame::windowsInit()
 		                        this->leftmost->getW(),
 		                        4);
 
-		if (Globals::Profiles::current->settings.screen.show_borders)
+		if (EngineGlobals::Screen::show_borders)
 		{
-			this->hold->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+			this->hold->borders(EngineGlobals::Screen::fancy_borders ?
 			                    Window::BORDER_FANCY :
 			                    Window::BORDER_REGULAR);
 		}
@@ -82,9 +82,9 @@ void LayoutGame::windowsInit()
 	                         score_height);
 
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->score->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->score->borders(EngineGlobals::Screen::fancy_borders ?
 		                     Window::BORDER_FANCY :
 		                     Window::BORDER_REGULAR);
 	}
@@ -97,9 +97,9 @@ void LayoutGame::windowsInit()
 	                               10*2 + 2, // 10 blocks + borders
 	                               22);      // 20 blocks + borders
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->middle_left->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->middle_left->borders(EngineGlobals::Screen::fancy_borders ?
 		                           Window::BORDER_FANCY :
 		                           Window::BORDER_REGULAR);
 	}
@@ -118,9 +118,9 @@ void LayoutGame::windowsInit()
 	                                4*2 + 2, // 4 blocks + borders
 	                                middle_right_height);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->middle_right->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->middle_right->borders(EngineGlobals::Screen::fancy_borders ?
 		                            Window::BORDER_FANCY :
 		                            Window::BORDER_REGULAR);
 	}
@@ -154,9 +154,9 @@ void LayoutGame::windowsInit()
 		                             this->main->getW() - (this->middle_right->getX() + this->middle_right->getW()) - 1,
 		                             0);
 
-		if (Globals::Profiles::current->settings.screen.show_borders)
+		if (EngineGlobals::Screen::show_borders)
 		{
-			this->rightmost->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+			this->rightmost->borders(EngineGlobals::Screen::fancy_borders ?
 			                         Window::BORDER_FANCY :
 			                         Window::BORDER_REGULAR);
 		}
@@ -172,9 +172,9 @@ void LayoutGame::windowsInit()
 	                         this->main->getW() / 2,
 	                         6);
 
-	if (Globals::Profiles::current->settings.screen.show_borders)
+	if (EngineGlobals::Screen::show_borders)
 	{
-		this->pause->borders(Globals::Profiles::current->settings.screen.fancy_borders ?
+		this->pause->borders(EngineGlobals::Screen::fancy_borders ?
 		                     Window::BORDER_FANCY :
 		                     Window::BORDER_REGULAR);
 	}
