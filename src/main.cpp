@@ -27,13 +27,19 @@ int main(int argc, char *argv[])
 {
 	try
 	{
-		// The following order is important
+		// The following initialization order is important
+
+		EngineGlobals::init();
 		Globals::init();
 		Arguments::parse(argc, argv);
+
 		Utils::Random::seed();
 		Ncurses::init();
 		Colors::init();
 
+		// Which game screen should we go first?
+		// If there's a Profile then we'll go to the game.
+		// If not, then we need to ask the user for a Profile name.
 		GameState* firstGameState = NULL;
 
 		// Trying to load default profile from config files
@@ -59,6 +65,7 @@ int main(int argc, char *argv[])
 		}
 
 		// Alright, start the game!
+		// This has the game loop inside.
 		StateManager states;
 		states.run(firstGameState);
 
