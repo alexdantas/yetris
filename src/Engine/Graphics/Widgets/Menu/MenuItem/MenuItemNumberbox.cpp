@@ -2,6 +2,7 @@
 #include <Game/Config/Globals.hpp>
 #include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/String.hpp>
 #include <Engine/Helpers/Timer.hpp>
 #include <Engine/InputManager.hpp>
 

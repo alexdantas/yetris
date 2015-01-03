@@ -3,6 +3,7 @@
 #include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/String.hpp>
 
 MenuItemTextbox::MenuItemTextbox(std::string label, int id, int width, std::string initial):
 	MenuItem(label, id),

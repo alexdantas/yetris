@@ -5,6 +5,8 @@
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Engine/Graphics/Widgets/Dialog.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/File.hpp>
+#include <Engine/Helpers/String.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Flow/StateManager.hpp>
 

@@ -7,6 +7,7 @@
 #include <Game/Display/Animations/AnimationGameOfLife.hpp>
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/String.hpp>
 #include <Game/States/GameStateMainMenu.hpp>
 #include <Game/Entities/Profile.hpp>
 

@@ -3,6 +3,7 @@
 #include <Game/Entities/Profile.hpp>
 #include <Engine/Flow/StateManager.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/File.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Game/Config/Globals.hpp>
 

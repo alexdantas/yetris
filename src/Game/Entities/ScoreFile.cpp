@@ -1,5 +1,8 @@
 #include <Game/Entities/ScoreFile.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/String.hpp>
+#include <Engine/Helpers/File.hpp>
+#include <Engine/Helpers/Base64.hpp>
 #include <Engine/Helpers/INI.hpp>
 #include <Game/Entities/Profile.hpp>
 

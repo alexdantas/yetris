@@ -1,6 +1,8 @@
 #include <Game/Config/Globals.hpp>
 #include <Engine/Helpers/INI.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Engine/Helpers/File.hpp>
+#include <Engine/Helpers/String.hpp>
 
 #include <ncurses.h>
 
