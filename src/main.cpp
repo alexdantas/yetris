@@ -10,13 +10,24 @@
 #include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/INI.hpp>
 
+// Welcome to the `yetris` source code!
+//
+// This is the starting point of the whole game. If you're here to
+// understand how this game was made, I strongly suggest you to skim
+// through the `README.md` file on this directory.
+//
+// As soon as you do that you'll be able to figure out what these
+// functions below do and (more importantly) what they don't do.
+//
+// I'm glad you had interest on this. Please visit the `yetris`
+// website and consider improving it - even a little bit of help
+// counts.
+
 int main(int argc, char *argv[])
 {
-	UNUSED(argc);
-	UNUSED(argv);
-
 	try
 	{
+		// The following order is important
 		Globals::init();
 		Arguments::parse(argc, argv);
 		Utils::Random::seed();

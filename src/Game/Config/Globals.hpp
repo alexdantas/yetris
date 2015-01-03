@@ -8,6 +8,9 @@ class Profile;
 
 /// All global settings to the game.
 ///
+/// Instead of having global variables scattered all over at
+/// least I threw them together under the same namespace.
+///
 namespace Globals
 {
 	/// Allocates necessary variables.
@@ -20,7 +23,9 @@ namespace Globals
 	///
 	void init();
 
-	// Accessing version numbers - version[MAJOR] for example
+	// Version numbers following SemVer.
+	// Whenever you want to use them, use it like
+	// "version[MAJOR]" or "version[PATCH]" for example.
 	#define MAJOR 0
 	#define MINOR 1
 	#define PATCH 2
@@ -33,6 +38,7 @@ namespace Globals
 		extern Profile* current;
 		extern std::string default_name;
 	}
+
 	namespace Config
 	{
 		/// Root directory where we place configurations.

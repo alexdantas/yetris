@@ -49,7 +49,6 @@ void GameStateGame::update()
 
 		// Restart the game
 		this->load();
-//		this->game->start();
 	}
 
 	if (this->game->willQuit())
