@@ -2,32 +2,65 @@
 #define STATEMANAGER_H_DEFINED
 
 #include <Engine/Flow/GameState.hpp>
+#include <exception>
 
-/// Giga-class that switches from game states.
+/// Custom exception that's used to instantly
+/// change from one state to another.
 ///
-/// It makes the transitions between them, assuring each one is
-/// properly initialized.
+class StateManagerChangeException : public std::exception
+{
+public:
+	StateManagerChangeException(GameState* newState):
+		newState(newState)
+	{ }
+
+	GameState* newState;
+};
+
+/// Custom exception for the specific case of
+/// quitting the game.
 ///
-/// ## For developers:
+/// Quile like the custom exception above.
 ///
-/// Short and simple explanation:
+class StateManagerQuitException : public std::exception
+{
+public:
+	StateManagerQuitException()
+	{ }
+};
+
+/// Controls all game states.
 ///
-/// * Creates the first state (allocating everything).
-/// * Run it (updating and drawing).
-/// * Whenever the state feels like changing, it will tell us
-///   (quit, for example).
-/// * Then we must delete the current state and repeat this whole
-///   process for the next one.
+/// This is a very important class.
+/// It contains the main game loop.
+///
+/// It makes the transitions between GameStates, assuring
+/// they are properly cleaned and initialized.
 ///
 class StateManager
 {
 public:
-	/// Initializes pretty much everything.
-	StateManager();
+	/// Immediately changes to #newState
+	///
+	/// @note Don't worry, it cleans up the current
+	///       GameState before.
+	///
+	static void change(GameState* newState);
 
+	/// Immediately quits the game.
+	///
+	/// @note Don't worry, it cleans up the current
+	///       GameState before.
+	///
+	static void quit();
+
+	StateManager();
 	virtual ~StateManager();
 
-	/// Main entry point and game loop.
+	/// Initializes pretty much everything,
+	/// setting #initialState to run first.
+	///
+	/// Main entry point to the game and game loop.
 	///
 	/// This is where it all happens. The game never leaves this
 	/// method, the only thing that's allowed to happen are
@@ -35,20 +68,10 @@ public:
 	///
 	/// If we leave this method, the game quits, as seen on
 	/// *main.cpp*.
-	void run();
+	void run(GameState* initialState);
 
 private:
-
-	/// Current game state - defines what will actually happen.
 	GameState* currentState;
-
-	/// Shared information between states.
-	///
-	/// If a state want to share something with another, it should
-	/// return a value that will be stored right here.
-	///
-	/// Perhaps I should make this a template class or something.
-	int sharedInfo;
 };
 
 #endif /* STATEMANAGER_H_DEFINED */

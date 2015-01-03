@@ -4,6 +4,11 @@
 #include <Game/Config/Globals.hpp>
 #include <Game/Config/Arguments.hpp>
 #include <Engine/Helpers/Utils.hpp>
+#include <Game/States/GameStateMainMenu.hpp>
+#include <Game/States/GameStateFirstTime.hpp>
+#include <Engine/InputManager.hpp>
+#include <Game/Entities/Profile.hpp>
+#include <Engine/Helpers/INI.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +23,66 @@ int main(int argc, char *argv[])
 		Ncurses::init();
 		Colors::init();
 
+		GameState* firstGameState = NULL;
+
+		// Trying to load default profile from config files
+		if (! Profile::load())
+		{
+			// Couldn't find any profiles - first time!
+			Globals::Profiles::default_name = "";
+
+			// Let's ask the user for his info
+			firstGameState = new GameStateFirstTime();
+		}
+		else
+		{
+			// Alright, let's load it!
+			// this is initialized on Config::init - if the global config file is found
+			if (Globals::Profiles::default_name.empty())
+				Globals::Profiles::default_name = Profile::profiles.front();
+
+			Globals::Profiles::current = new Profile(Globals::Profiles::default_name);
+			Globals::Profiles::current->loadSettings();
+
+			firstGameState = new GameStateMainMenu();
+		}
+
+		// Alright, start the game!
 		StateManager states;
-		states.run();
+		states.run(firstGameState);
+
+		// And now the game's quitting.
+		// Right before that, we must save current user's settings
+		Globals::Profiles::current->saveSettings();
+
+		// And set the current profile as the default to load next time.
+		//
+		// TODO: This is ugly as fuark, all this stuff shouldn't
+		//       be here on `main()`.
+		INI::Parser* ini;
+		try
+		{
+			ini = new INI::Parser(Globals::Config::file);
+		}
+		catch(std::runtime_error& e)
+		{
+			// File doesn't exist!
+			// Silently create
+			ini = new INI::Parser();
+			ini->create();
+		}
+		ini->top().addGroup("profiles");
+		(*ini)("profiles").addKey("default", Globals::Profiles::current->name);
+		try
+		{
+			ini->saveAs(Globals::Config::file);
+		}
+		catch(std::runtime_error& e)
+		{
+			// Couldn't save the file...
+			// ...do nothing
+		}
+		SAFE_DELETE(ini);
 
 		Ncurses::exit();
 	}
