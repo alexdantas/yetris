@@ -54,6 +54,10 @@ void StateManager::run(GameState* initialState)
 			if (this->currentState)
 				this->currentState->draw();
 
+			// This makes sure the game doesn't keep wasting
+			// 99% CPU when running.
+			// TODO: I should probably adjust this delay to
+			// better match the running machine.
 			Utils::Time::delay_ms(100);
 		}
 		// Special type of exception used to
