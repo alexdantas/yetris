@@ -1,4 +1,5 @@
 #include <Game/States/GameStateGame.hpp>
+#include <Game/States/GameStateMainMenu.hpp>
 #include <Engine/Flow/StateManager.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
@@ -11,9 +12,8 @@ GameStateGame::GameStateGame():
 { }
 GameStateGame::~GameStateGame()
 { }
-void GameStateGame::load(int stack)
+void GameStateGame::load()
 {
-	UNUSED(stack);
 	SAFE_DELETE(this->game);
 
 	try {
@@ -28,16 +28,14 @@ void GameStateGame::load(int stack)
 	this->game = new Game();
 	this->game->start();
 }
-int GameStateGame::unload()
+void GameStateGame::unload()
 {
 	SAFE_DELETE(this->game);
-
-	return 0;
 }
-GameState::StateCode GameStateGame::update()
+void GameStateGame::update()
 {
 	if (this->willQuit)
-		return GameState::QUIT;
+		StateManager::quit();
 
 	this->game->handleInput();
 	this->game->update();
@@ -58,9 +56,7 @@ GameState::StateCode GameStateGame::update()
 		this->willQuit = true;
 
 	if (this->game->willReturnToMenu())
-		return GameState::MAIN_MENU;
-
-	return GameState::CONTINUE;
+		StateManager::change(new GameStateMainMenu());
 }
 void GameStateGame::draw()
 {

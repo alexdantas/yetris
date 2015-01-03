@@ -1,5 +1,7 @@
-#include <Game/Entities/Profile.hpp>
 #include <Game/States/GameStateFirstTime.hpp>
+#include <Game/States/GameStateMainMenu.hpp>
+#include <Game/Entities/Profile.hpp>
+#include <Engine/Flow/StateManager.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Game/Config/Globals.hpp>
@@ -12,30 +14,24 @@ GameStateFirstTime::GameStateFirstTime():
 { }
 GameStateFirstTime::~GameStateFirstTime()
 { }
-void GameStateFirstTime::load(int stack)
+void GameStateFirstTime::load()
 {
-	UNUSED(stack);
-
 	this->layout = new LayoutFirstTime(80, 24);
 }
 
-int GameStateFirstTime::unload()
+void GameStateFirstTime::unload()
 {
 	SAFE_DELETE(this->layout);
-
-	return 0;
 }
 
-GameState::StateCode GameStateFirstTime::update()
+void GameStateFirstTime::update()
 {
 	// User typed already
 	if (! this->name.empty())
 	{
 		Globals::Profiles::current = new Profile(this->name);
-		return GameState::MAIN_MENU;
+		StateManager::change(new GameStateMainMenu());
 	}
-
-	return GameState::CONTINUE;
 }
 
 void GameStateFirstTime::draw()

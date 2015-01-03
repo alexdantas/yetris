@@ -20,11 +20,11 @@ public:
 	GameStateFirstTime();
 	virtual ~GameStateFirstTime();
 
-    void load(int stack=0);
+    void load();
 
-    int unload();
+    void unload();
 
-	GameState::StateCode update();
+	void update();
 
     void draw();
 

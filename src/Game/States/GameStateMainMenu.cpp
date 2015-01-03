@@ -1,10 +1,12 @@
 #include <Game/States/GameStateMainMenu.hpp>
+#include <Game/States/GameStateGame.hpp>
 #include <Game/Entities/Profile.hpp>
 #include <Engine/InputManager.hpp>
 #include <Engine/Graphics/Ncurses.hpp>
 #include <Engine/Graphics/Widgets/Dialog.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Game/Config/Globals.hpp>
+#include <Engine/Flow/StateManager.hpp>
 
 enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 {
@@ -82,10 +84,8 @@ GameStateMainMenu::GameStateMainMenu():
 { }
 GameStateMainMenu::~GameStateMainMenu()
 { }
-void GameStateMainMenu::load(int stack)
+void GameStateMainMenu::load()
 {
-	UNUSED(stack);
-
 	this->layout = new LayoutMainMenu(80, 24, this);
 
 	createMainMenu();
@@ -98,7 +98,7 @@ void GameStateMainMenu::load(int stack)
 	this->helpWindows = new WindowGameHelp();
 }
 
-int GameStateMainMenu::unload()
+void GameStateMainMenu::unload()
 {
 	saveSettingsMenuSinglePlayer();
 	saveSettingsMenuOptions();
@@ -110,8 +110,6 @@ int GameStateMainMenu::unload()
 	SAFE_DELETE(this->menuGUIOptions);
 	SAFE_DELETE(this->menuSinglePlayer);
 	SAFE_DELETE(this->menu);
-
-	return 0;
 }
 
 // This is a LOCAL FUNCTION that asks the user for a profile.
@@ -194,10 +192,10 @@ std::string getProfileName(Window* main)
 	return string_name;
 }
 
-GameState::StateCode GameStateMainMenu::update()
+void GameStateMainMenu::update()
 {
 	if (InputManager::isPressed("quit"))
-		return GameState::QUIT;
+		StateManager::quit();
 
 	if (this->menuSinglePlayerActivated)
 	{
@@ -211,7 +209,7 @@ GameState::StateCode GameStateMainMenu::update()
 			switch (this->menuSinglePlayer->currentID())
 			{
 			case START_GAME:
-				return GameState::GAME_START;
+				StateManager::change(new GameStateGame());
 				break;
 
 			case GO_BACK:
@@ -424,15 +422,12 @@ GameState::StateCode GameStateMainMenu::update()
 				break;
 
 			case QUIT_GAME:
-				return GameState::QUIT;
+				StateManager::quit();
 				break;
 			}
 			this->menu->reset();
 		}
 	}
-
-	// Otherwise, continuing things...
-	return GameState::CONTINUE;
 }
 
 void GameStateMainMenu::draw()

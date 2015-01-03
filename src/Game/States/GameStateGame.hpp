@@ -32,20 +32,12 @@ public:
 	GameStateGame();
     virtual ~GameStateGame();
 
-    /// Constructs everything necessary for the game.
-    void load(int stack=0);
+    void load();
 
-    /// Destroys anything builded during the game
-    int unload();
+    void unload();
 
-    /// Updates all possible things on the game.
-    ///
-    /// @return A status code indicating what to do (should we
-    ///         change states/quit the game?). The codes are
-    ///         defined on GameState.hpp.
-	GameState::StateCode update();
+	void update();
 
-    /// Shows everything onscreen;
     void draw();
 
 private:
