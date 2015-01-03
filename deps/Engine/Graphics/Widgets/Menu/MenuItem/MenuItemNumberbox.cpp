@@ -19,14 +19,14 @@ void MenuItemNumberbox::draw(Window* window, int x, int y, int width, bool hilit
 	std::string number = Utils::String::toString(this->current);
 
 	// Will draw
-	//      label     text
+	//      label   [ text ]
 	// If not hilite.
 	// If hilite:
 	//      label   < text >
 	MenuItem::draw(window,
 	               x,
 	               y,
-	               (width - number.size() - 2),
+	               (width - number.size() - 3),
 	               hilite);
 
 	int rightmost = x + width;

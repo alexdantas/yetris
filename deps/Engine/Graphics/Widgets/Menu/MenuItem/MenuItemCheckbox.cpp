@@ -12,11 +12,12 @@ MenuItemCheckbox::MenuItemCheckbox(std::string label, int id, bool initial):
 void MenuItemCheckbox::draw(Window* window, int x, int y, int width, bool hilite)
 {
 	// Will draw
-	//      label     text
+	//      label [ text ]
 	// If not hilite.
+	//
 	// If hilite:
-	//      label   < text >
-	MenuItem::draw(window, x, y, width - 8, hilite); // button width
+	//      label < text >
+	MenuItem::draw(window, x, y, width - 9, hilite); // button width
 
 	int posx = x + width;
 
