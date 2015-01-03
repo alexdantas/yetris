@@ -18,20 +18,15 @@ WindowGameHelp::WindowGameHelp()
 	                        width,
 	                        height);
 
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->main->borders(EngineGlobals::Screen::fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
-	}
-
 	Window* win;
 
 	// Help
 	win = new Window(this->main, 0, 0, WINDOW_FILL, WINDOW_FILL);
+	win->borders(Window::BORDER_NONE);
 	this->windows.push_back(win);
 
 	win = new Window(this->main, 0, 0, WINDOW_FILL, WINDOW_FILL);
+	win->borders(Window::BORDER_NONE);
 	this->windows.push_back(win);
 }
 void WindowGameHelp::run()
@@ -50,8 +45,8 @@ void WindowGameHelp::run()
 		                  2,
 		                  0,
 		                  ((activatedIndex == 0) ?
-		                   Globals::Profiles::current->settings.theme.textbox :
-		                   Globals::Profiles::current->settings.theme.hilite_text));
+		                   EngineGlobals::Theme::hilite_hilite_text :
+		                   EngineGlobals::Theme::text));
 
 		this->main->print(((activatedIndex == 1) ?
 		                   "(Credits)" :
@@ -59,12 +54,12 @@ void WindowGameHelp::run()
 		                  12,
 		                  0,
 		                  ((activatedIndex == 1) ?
-		                   Globals::Profiles::current->settings.theme.textbox :
-		                   Globals::Profiles::current->settings.theme.hilite_text));
+		                   EngineGlobals::Theme::hilite_hilite_text :
+		                   EngineGlobals::Theme::text));
 
 		// HACK TO AVOID THE BORDERS FROM BEING
 		// BOLD. GOTTA SOLVE THIS MISTERY.
-		Colors::pairActivate(this->main->win, Globals::Profiles::current->settings.theme.text);
+		Colors::pairActivate(this->main->win, EngineGlobals::Theme::text);
 
 		// Help Window
 		if (activatedIndex == 0)
@@ -72,9 +67,9 @@ void WindowGameHelp::run()
 			this->windows[0]->print(Utils::String::split("yetris: customizable Tetris(tm) clone\n"
 			                                             "        for the terminal.\n", '\n'),
 			                        1, 1,
-			                        Globals::Profiles::current->settings.theme.text);
+			                        EngineGlobals::Theme::text);
 
-			this->windows[0]->print("Controls:", 1, 4, Globals::Profiles::current->settings.theme.hilite_text);
+			this->windows[0]->print("Controls:", 1, 4, EngineGlobals::Theme::hilite_text);
 
 			this->windows[0]->print(Utils::String::split(" Move Left\n"
 			                                             " Move Right\n"
@@ -87,7 +82,7 @@ void WindowGameHelp::run()
 			                                             " Pause\n"
 			                                             " Quit Anytime\n", '\n'),
 			                        11, 4,
-			                        Globals::Profiles::current->settings.theme.hilite_text);
+			                        EngineGlobals::Theme::hilite_text);
 
 			this->windows[0]->print(Utils::String::split(InputManager::keyToString(InputManager::getBind("left")) + "\n" +
 			                                             InputManager::keyToString(InputManager::getBind("right")) + "\n" +
@@ -101,15 +96,15 @@ void WindowGameHelp::run()
 			                                             InputManager::keyToString(InputManager::getBind("pause")) + "\n" +
 			                                             InputManager::keyToString(InputManager::getBind("quit")) + "\n", '\n'),
 			                        37, 4,
-			                        Globals::Profiles::current->settings.theme.text);
+			                        EngineGlobals::Theme::text);
 
 			this->windows[0]->print("Your settings and scores are stored at:",
 			                        1, 16,
-			                        Globals::Profiles::current->settings.theme.text);
+			                        EngineGlobals::Theme::text);
 
 			this->windows[0]->print("~/.local/share/yetris/" + Globals::Profiles::current->name,
 			                        0, 17,
-			                        Globals::Profiles::current->settings.theme.hilite_text);
+			                        EngineGlobals::Theme::hilite_text);
 		}
 		//
 		// Credits
@@ -121,10 +116,10 @@ void WindowGameHelp::run()
 			                                             "   ###   ####      ###   ######    ###     ###\n"
 			                                             "   ###   ####      ###   ### ###   ###  ### ###\n"
 			                                             "   ###   #######   ###   ### ### ####### #####\n", '\n'),
-			                        0, 0, Colors::pair("blue", "default", true));
+			                        0, 0, EngineGlobals::Theme::hilite_text);
 
 			this->windows[1]->print(Utils::String::split(" v" VERSION " (built " DATE ")\n", '\n'),
-			                        24, 6, Colors::pair("green", "default", true));
+			                        24, 6, EngineGlobals::Theme::hilite_hilite_text);
 
 			this->windows[1]->print(Utils::String::split("yetris was created by Alexandre Dantas,\n"
 			                                             "contact him at <eu@alexdantas.net>\n"
@@ -137,7 +132,7 @@ void WindowGameHelp::run()
 			                                             "https://github.com/alexdantas/yetris/\n"
 			                                             "\n"
 			                                             "Support free software! http://www.gnu.org/", '\n'),
-			                        1, 7, Globals::Profiles::current->settings.theme.text);
+			                        1, 7, EngineGlobals::Theme::text);
 		}
 
 		this->windows[activatedIndex]->refresh();

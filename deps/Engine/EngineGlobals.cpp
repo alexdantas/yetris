@@ -29,6 +29,6 @@ void EngineGlobals::init()
 	EngineGlobals::Theme::hilite_hilite_text = Colors::pair("cyan",    "default", true);
 	EngineGlobals::Theme::dim_text           = Colors::pair("black",   "default", true);
 	EngineGlobals::Theme::dim_dim_text       = Colors::pair("black",   "default");
-	EngineGlobals::Theme::textbox            = Colors::pair("default", "cyan");
+	EngineGlobals::Theme::textbox            = Colors::pair("white",   "cyan");
 }
 
