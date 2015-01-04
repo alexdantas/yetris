@@ -57,13 +57,6 @@ void LayoutGame::windowsInit()
 		                        0,
 		                        this->leftmost->getW(),
 		                        4);
-
-		if (EngineGlobals::Screen::show_borders)
-		{
-			this->hold->borders(EngineGlobals::Screen::fancy_borders ?
-			                    Window::BORDER_FANCY :
-			                    Window::BORDER_REGULAR);
-		}
 		this->hold->refresh();
 
 		this->hold->setTitle("Hold");
@@ -86,14 +79,6 @@ void LayoutGame::windowsInit()
 	                         score_y,
 	                         0,
 	                         score_height);
-
-
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->score->borders(EngineGlobals::Screen::fancy_borders ?
-		                     Window::BORDER_FANCY :
-		                     Window::BORDER_REGULAR);
-	}
 	this->score->refresh();
 
 	// Middle-left, container for the board
@@ -162,12 +147,6 @@ void LayoutGame::windowsInit()
 	                         this->main->getW() / 2,
 	                         6);
 
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->pause->borders(EngineGlobals::Screen::fancy_borders ?
-		                     Window::BORDER_FANCY :
-		                     Window::BORDER_REGULAR);
-	}
 	this->pause->setTitle("Paused");
 
 	this->helpWindows = new WindowGameHelp();

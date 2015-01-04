@@ -140,13 +140,6 @@ std::string getProfileName(Window* main)
 	              main->getH() / 2 - 10/2,
 	              main->getW() / 3,
 	              10);
-
-	if (EngineGlobals::Screen::show_borders)
-	{
-		window.borders(EngineGlobals::Screen::fancy_borders ?
-		               Window::BORDER_FANCY :
-		               Window::BORDER_REGULAR);
-	}
 	window.setTitle("New Profile");
 
 	window.clear();

@@ -174,8 +174,8 @@ void Menu::draw(Window* window)
 			                          this->y + yoffset,
 			                          this->width,
 
-			                          // Highlighting current item if
-			                          // it's the current.
+			                          // Highlighting current item
+			                          // if it's the current.
 			                          (this->item[curitem] == this->current));
 		}
 	}

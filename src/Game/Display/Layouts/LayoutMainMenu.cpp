@@ -64,14 +64,6 @@ void LayoutMainMenu::windowsInit()
 	                        (this->main->getW() / 3) + 2,
 	                        this->main->getH() - this->logo->getH() - 2);
 
-	if (EngineGlobals::Screen::show_borders)
-	{
-		this->menu->borders(EngineGlobals::Screen::fancy_borders ?
-		                    Window::BORDER_FANCY :
-		                    Window::BORDER_REGULAR);
-	}
-	this->menu->refresh();
-
 	// Just need to create the animation below the logo
 	int height = this->main->getH() - this->logo->getH() - 1;
 	int posy   = this->main->getH() - height - 1;
