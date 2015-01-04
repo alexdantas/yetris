@@ -647,7 +647,7 @@ void GameStateMainMenu::createGUIOptionsMenu()
 
 	MenuItemTextlist* list;
 
-	list = new MenuItemTextlist("Animation",
+	list = new MenuItemTextlist("Menu Animation",
 	                            ANIMATION,
 	                            options,
 	                            Globals::Profiles::current->settings.screen.animation);

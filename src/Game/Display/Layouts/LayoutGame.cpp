@@ -3,6 +3,10 @@
 #include <Game/Entities/Profile.hpp>
 #include <Engine/Helpers/Utils.hpp>
 #include <Engine/Graphics/Colors.hpp>
+#include <Engine/Graphics/Animation/AnimationFire.hpp>
+#include <Engine/Graphics/Animation/AnimationWater.hpp>
+#include <Engine/Graphics/Animation/AnimationSnakes.hpp>
+#include <Engine/Graphics/Animation/AnimationGameOfLife.hpp>
 
 LayoutGame::LayoutGame(Game* game, int width, int height):
 	Layout(width, height),
@@ -14,7 +18,8 @@ LayoutGame::LayoutGame(Game* game, int width, int height):
 	board(NULL),
 	middle_right(NULL),
 	rightmost(NULL),
-	helpWindows(NULL)
+	helpWindows(NULL),
+	animation(NULL)
 {
 	this->windowsInit();
 }
@@ -166,6 +171,49 @@ void LayoutGame::windowsInit()
 	this->pause->setTitle("Paused");
 
 	this->helpWindows = new WindowGameHelp();
+
+
+	// Now, the (optional) animation that will go
+	// behind the game screen.
+	if (Globals::Profiles::current->settings.screen.animation == "random")
+	{
+		// Deciding randomly the type of the Animation
+		switch(Utils::Random::between(0, 3))
+		{
+		case 0:
+			this->animation = new AnimationWater(this->board);
+			break;
+
+		case 1:
+			this->animation = new AnimationSnakes(this->board);
+			break;
+
+		case 2:
+			this->animation = new AnimationGameOfLife(this->board);
+			break;
+
+		default:
+			this->animation = new AnimationFire(this->board);
+			break;
+		}
+	}
+	else if (Globals::Profiles::current->settings.screen.animation == "fire")
+		this->animation = new AnimationFire(this->board);
+
+	else if (Globals::Profiles::current->settings.screen.animation == "water")
+		this->animation = new AnimationWater(this->board);
+
+	else if (Globals::Profiles::current->settings.screen.animation == "snakes")
+		this->animation = new AnimationSnakes(this->board);
+
+	else if (Globals::Profiles::current->settings.screen.animation == "life")
+		this->animation = new AnimationGameOfLife(this->board);
+
+	else
+		this->animation = NULL;
+
+	if (this->animation)
+		this->animation->load();
 }
 void LayoutGame::windowsExit()
 {
@@ -178,6 +226,7 @@ void LayoutGame::windowsExit()
 	SAFE_DELETE(this->rightmost);
 	SAFE_DELETE(this->pause);
 	SAFE_DELETE(this->helpWindows);
+	SAFE_DELETE(this->animation);
 
 	for (unsigned int i = 0; i < this->next.size(); i++)
 		SAFE_DELETE(this->next[i]);
@@ -373,6 +422,14 @@ void LayoutGame::draw(Menu* menu)
 	}
 
 	this->board->clear();
+
+	// Need to draw the animation behind
+	// the actual game
+	if (this->animation)
+	{
+		this->animation->update();
+		this->animation->draw();
+	}
 
 	this->game->board->draw(this->board);
 

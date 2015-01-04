@@ -5,6 +5,7 @@
 #include <Engine/Graphics/Widgets/Menu.hpp>
 #include <Game/Display/WindowGameHelp.hpp>
 #include <Game/Entities/Game.hpp>
+#include <Engine/Graphics/Animation.hpp>
 
 #include <vector>
 
@@ -61,6 +62,10 @@ public:
 
 private:
 	WindowGameHelp* helpWindows;
+
+	/// This is an optional animation that keeps happening
+	/// on the back of the game board.
+	Animation* animation;
 };
 
 #endif //LAYOUTGAMEMODESURVIVAL_H_DEFINED
