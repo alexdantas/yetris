@@ -175,7 +175,7 @@ void LayoutGame::windowsInit()
 
 	// Now, the (optional) animation that will go
 	// behind the game screen.
-	if (Globals::Profiles::current->settings.screen.animation == "random")
+	if (Globals::Profiles::current->settings.screen.animation_game == "random")
 	{
 		// Deciding randomly the type of the Animation
 		switch(Utils::Random::between(0, 3))
@@ -197,16 +197,16 @@ void LayoutGame::windowsInit()
 			break;
 		}
 	}
-	else if (Globals::Profiles::current->settings.screen.animation == "fire")
+	else if (Globals::Profiles::current->settings.screen.animation_game == "fire")
 		this->animation = new AnimationFire(this->board);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "water")
+	else if (Globals::Profiles::current->settings.screen.animation_game == "water")
 		this->animation = new AnimationWater(this->board);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "snakes")
+	else if (Globals::Profiles::current->settings.screen.animation_game == "snakes")
 		this->animation = new AnimationSnakes(this->board);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "life")
+	else if (Globals::Profiles::current->settings.screen.animation_game == "life")
 		this->animation = new AnimationGameOfLife(this->board);
 
 	else

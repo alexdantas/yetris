@@ -81,7 +81,7 @@ void LayoutMainMenu::windowsInit()
 	                                      0, height);
 	this->animationContainer->borders(Window::BORDER_NONE);
 
-	if (Globals::Profiles::current->settings.screen.animation == "random")
+	if (Globals::Profiles::current->settings.screen.animation_menu == "random")
 	{
 		// Deciding randomly the type of the Animation
 		switch(Utils::Random::between(0, 3))
@@ -103,16 +103,16 @@ void LayoutMainMenu::windowsInit()
 			break;
 		}
 	}
-	else if (Globals::Profiles::current->settings.screen.animation == "fire")
+	else if (Globals::Profiles::current->settings.screen.animation_menu == "fire")
 		this->animation = new AnimationFire(this->animationContainer);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "water")
+	else if (Globals::Profiles::current->settings.screen.animation_menu == "water")
 		this->animation = new AnimationWater(this->animationContainer);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "snakes")
+	else if (Globals::Profiles::current->settings.screen.animation_menu == "snakes")
 		this->animation = new AnimationSnakes(this->animationContainer);
 
-	else if (Globals::Profiles::current->settings.screen.animation == "life")
+	else if (Globals::Profiles::current->settings.screen.animation_menu == "life")
 		this->animation = new AnimationGameOfLife(this->animationContainer);
 
 	else

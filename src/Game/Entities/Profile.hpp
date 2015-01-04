@@ -140,7 +140,10 @@ public:
 			///
 			/// Options (so far):
 			///     "random", "fire", "water", "snakes", "life" and "none"
-			std::string animation;
+			std::string animation_menu;
+
+			/// Same as above, but during the game.
+			std::string animation_game;
 		};
 		Screen screen;
 

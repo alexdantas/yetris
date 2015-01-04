@@ -46,7 +46,8 @@ enum NamesToEasilyIdentifyTheMenuItemsInsteadOfRawNumbers
 	USE_COLORS,
 	CENTER_HORIZONTAL,
 	CENTER_VERTICAL,
-	ANIMATION,
+	ANIMATION_MENU,
+	ANIMATION_GAME,
 
 	// Controls Submenu
 	CONTROLS_KEY_LEFT,
@@ -636,7 +637,7 @@ void GameStateMainMenu::createGUIOptionsMenu()
 	                             EngineGlobals::Screen::center_vertically);
 	menuGUIOptions->add(check);
 
-	// Animation on the background of the menu
+	// Animation on the background of the menu and game
 	std::vector<std::string> options;
 	options.push_back("random");
 	options.push_back("fire");
@@ -648,9 +649,15 @@ void GameStateMainMenu::createGUIOptionsMenu()
 	MenuItemTextlist* list;
 
 	list = new MenuItemTextlist("Menu Animation",
-	                            ANIMATION,
+	                            ANIMATION_MENU,
 	                            options,
-	                            Globals::Profiles::current->settings.screen.animation);
+	                            Globals::Profiles::current->settings.screen.animation_menu);
+	menuGUIOptions->add(list);
+
+	list = new MenuItemTextlist("Game Animation",
+	                            ANIMATION_GAME,
+	                            options,
+	                            Globals::Profiles::current->settings.screen.animation_game);
 	menuGUIOptions->add(list);
 }
 void GameStateMainMenu::createControlsMenu()
@@ -769,7 +776,8 @@ void GameStateMainMenu::saveSettingsMenuOptions()
 	current->settings.screen.outer_border        = this->menuGUIOptions->getBool(OUTER_BORDER);
 	current->settings.screen.center_horizontally = this->menuGUIOptions->getBool(CENTER_HORIZONTAL);
 	current->settings.screen.center_vertically   = this->menuGUIOptions->getBool(CENTER_VERTICAL);
-	current->settings.screen.animation           = this->menuGUIOptions->getString(ANIMATION);
+	current->settings.screen.animation_menu      = this->menuGUIOptions->getString(ANIMATION_MENU);
+	current->settings.screen.animation_game      = this->menuGUIOptions->getString(ANIMATION_GAME);
 	current->applyGraphicalSettings();
 
 	current->settings.screen.show_statistics = this->menuGameSettings->getBool(SHOW_STATISTICS);
