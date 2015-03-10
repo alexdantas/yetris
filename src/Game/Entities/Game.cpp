@@ -319,7 +319,23 @@ void Game::update()
 
 	// Checking if game over
 	if (this->board->isFull())
+	{
+		// HACK change the pause menu to a game over menu
+		MenuItem* item;
+		this->layout->pause->setTitle("Game Over");
+		this->pauseMenu->removeByID(RESUME);
+		item = new MenuItem("Restart", RESUME);
+		this->pauseMenu->add(item);
+		this->pauseMenu->removeByID(QUIT_MENU);
+		item = new MenuItem("Quit to Main Menu", QUIT_MENU);
+		this->pauseMenu->add(item);
+		this->pauseMenu->removeByID(QUIT_GAME);
+		item = new MenuItem("Quit Game", QUIT_GAME);
+		this->pauseMenu->add(item);
+
 		this->gameOver = true;
+		this->pause(true);
+	}
 
 	// If on invisible mode, will flash the pieces
 	// once in a while
@@ -357,7 +373,7 @@ void Game::draw()
 }
 bool Game::isOver()
 {
-	return (this->gameOver);
+	return (this->gameOver && !this->isPaused);
 }
 bool Game::movePieceIfPossible(Piece::PieceDirection direction)
 {
