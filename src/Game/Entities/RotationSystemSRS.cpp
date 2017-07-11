@@ -1,6 +1,6 @@
 #include <Game/Entities/RotationSystemSRS.hpp>
 
-char srs_possible_positions[2][2][4][5][2] =
+signed char srs_possible_positions[2][2][4][5][2] =
 {
 	// J, L, S, T, Z
 	{

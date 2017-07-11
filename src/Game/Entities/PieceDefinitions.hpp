@@ -27,7 +27,7 @@ extern char global_pieces[7][4][5][5];
 ///  When we initialize the pieces,
 ///  we add the first value to the x and the second to the y.
 ///
-extern char global_pieces_position[7][4][2];
+extern signed char global_pieces_position[7][4][2];
 
 /// Piece's positions, according to the SRS (rotation system).
 ///
@@ -46,7 +46,7 @@ extern char global_pieces_position[7][4][2];
 ///     0 -> R -> 2 -> L -> 0
 ///
 ///
-extern char srs_possible_positions[2][2][4][5][2];
+extern signed char srs_possible_positions[2][2][4][5][2];
 
 #endif /* PIECE_DEFINITIONS_H_DEFINED */
 
