@@ -312,7 +312,7 @@ void Game::update()
 	// what currently is.
 	// It allows you to set a high current level even
 	// without clearing enough lines to get there.
-	unsigned int new_level = this->getLevel(Globals::Profiles::current->scores->score.lines);
+	int new_level = this->getLevel(Globals::Profiles::current->scores->score.lines);
 
 	if (new_level > Globals::Profiles::current->scores->score.level)
 		Globals::Profiles::current->scores->score.level = new_level;
