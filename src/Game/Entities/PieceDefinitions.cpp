@@ -221,7 +221,7 @@ char global_pieces[7][4][5][5] =
 	}
 };
 
-char global_pieces_position[7][4][2] =
+signed char global_pieces_position[7][4][2] =
 {
 	// O
 	{
