@@ -43,7 +43,7 @@ VERSION = 2.3.0
 DATE    = $(shell date "+%b%Y")
 
 # Install dirs
-PREFIX      = /usr
+PREFIX      ?= /usr
 EXEC_PREFIX = $(PREFIX)
 DATAROOTDIR = $(PREFIX)/share
 BINDIR      = $(EXEC_PREFIX)/bin
